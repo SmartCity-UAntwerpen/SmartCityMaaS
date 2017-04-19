@@ -15,6 +15,6 @@ public class cardController {
     @RequestMapping({"/"})
     public String showHomepage(final ModelMap model)
             {
-                return "testPage";
+                return "reception";
             }
 }
