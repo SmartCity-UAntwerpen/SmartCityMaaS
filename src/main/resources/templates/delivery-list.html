@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Import header -->
+<head th:replace="layout :: head (title='#{user.management}')"></head>
+
+<body>
+<div class="container">
+    <!-- Import menu bar -->
+    <div th:replace="layout :: navbar"></div>
+
+    <div class="content">
+
+        <div id="user-list">
+            <input class="search" placeholder="Search" />
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th th:text="#{lastName}">Last Name</th>
+                    <th th:text="#{firstName}">First Name</th>
+                    <th th:text="#{start}">Start</th>
+                    <th th:text="#{arrival}">Arrival</th>
+                    <th th:text="#{passengers}">Passengers</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <!-- IMPORTANT, class="list" have to be at tbody -->
+                <tbody class="list">
+                <tr th:each="delivery : ${allDeliveries}">
+                    <td class="lastName" th:value="${lastName}" th:text="${delivery.lastName }">Last Name</td>
+                    <td class="firstName" th:value="${firstName}" th:text="${delivery.firstName }">First Name</td>
+                    <td class="pointA" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
+                    <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
+                    <td class="passengers" th:value="${passengers}" th:text="${delivery.passengers }">Passengers</td>
+                    <td>
+                        <a th:href="@{/orders/{id}/(id=${delivery.id})}"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
+                        <a th:href="@{/orders/{id}/delete(id=${delivery.id})}"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a href="/deliveries/put" class="btn btn-primary" th:text="#{create}">Create delivery</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
