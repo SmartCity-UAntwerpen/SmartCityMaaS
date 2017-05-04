@@ -1,8 +1,13 @@
 package be.uantwerpen;
 
+import com.mongodb.MongoClient;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -13,6 +18,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 @SpringBootApplication
+/*
+@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})*/
+@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})
+
 public class SupahuberApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
@@ -50,7 +59,19 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 			registry.addResourceHandler("/webjars/**").addResourceLocations(
 					"classpath:/META-INF/resources/webjars/");
 		}
-	}
+	}/*
+	@Bean
+	public MongoDbFactory mongoDbFactory() throws Exception {
 
+		// Set credentials
+		MongoClient mongoClient = new MongoClient( "143.129.39.159" , 27017 );
+
+		// Mongo DB Factory
+		SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(
+				mongoClient, "local");
+
+		return simpleMongoDbFactory;
+	}
+*/
 
 }

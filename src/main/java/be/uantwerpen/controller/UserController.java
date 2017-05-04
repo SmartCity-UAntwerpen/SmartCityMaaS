@@ -1,5 +1,6 @@
 package be.uantwerpen.controller;
 
+import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
@@ -92,6 +93,9 @@ public class UserController {
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage";
         }
+        delivery.setType("HumanTransport");
+        MongoDBMethods monogDBClient = new MongoDBMethods();
+        monogDBClient.putStatement(delivery);
         deliveryService.saveSomeAttributes(delivery);
         return "redirect:/deliveries";
     }
