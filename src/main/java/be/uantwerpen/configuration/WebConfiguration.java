@@ -21,8 +21,6 @@ public class WebConfiguration {
 
     }*/
 
-
-    
     @Bean
     public MongoDbFactory mongoDbFactory() throws Exception {
 
