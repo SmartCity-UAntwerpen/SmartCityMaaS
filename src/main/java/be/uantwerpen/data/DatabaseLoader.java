@@ -68,13 +68,22 @@ public class DatabaseLoader {
         Segment segment4 = new Segment("Seg 4");
         Segment segment5 = new Segment("Seg 5");
         Segment segment6 = new Segment("Seg 6");
+        Segment segment7 = new Segment("Seg 7");
+        Segment segment8 = new Segment("Seg 8");
+        Segment segment9 = new Segment("Seg 9");
+        Segment segment10 = new Segment("Seg 10");
+        Segment segment11 = new Segment("Seg 11");
         segmentRepository.save(segment1);
         segmentRepository.save(segment2);
         segmentRepository.save(segment3);
         segmentRepository.save(segment4);
         segmentRepository.save(segment5);
         segmentRepository.save(segment6);
-
+        segmentRepository.save(segment7);
+        segmentRepository.save(segment8);
+        segmentRepository.save(segment9);
+        segmentRepository.save(segment10);
+        segmentRepository.save(segment11);
     }
 }
 
