@@ -20,16 +20,23 @@ public class JobDispatching {
     }
 
     public void dispatchOrders (String path, List<Links> links ) {
-        String[] pathSplit =  path.split(",", -1);
-        for (int i = 0; i < pathSplit.length; i++) {
-            String checkEdge = pathSplit[i].concat(pathSplit[i + 1]);
-            if (links.contains(checkEdge) == true) {
-                // haal die Edge eruit, haal idvoertuig & zorg ervoor dat een job gedispatched wordt
-                //long idVehicle = 0;
-                //job newjob = new job(pathSplit[i], pathSplit[i+1], idVehicle, 0,0);
-                //joblist.add(newjob);
-            } else {
-                // print error
+        path = path.substring(1);           // eerste karakter weghalen
+        path = path.substring(0,path.length()-1);       // laatste karakter weghalen
+        String[] pathSplit =  path.split(", ", -1);
+
+            for (int i = 0; i < pathSplit.length - 1; i++) {
+                for (int j = 0; j < links.size(); j++) {
+                String checkEdge = pathSplit[i].concat(pathSplit[i + 1]);
+                if (links.get(j).getName().equals(checkEdge)) {
+                    System.out.println("test works");
+                    System.out.println(checkEdge);
+                    // haal die Edge eruit, haal idvoertuig & zorg ervoor dat een job gedispatched wordt
+                    //long idVehicle = 0;
+                    //job newjob = new job(pathSplit[i], pathSplit[i+1], idVehicle, 0,0);
+                    //joblist.add(newjob);
+                } else {
+                    // print niets
+                }
             }
         }
     }

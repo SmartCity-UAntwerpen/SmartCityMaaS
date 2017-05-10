@@ -277,14 +277,16 @@ public class Astar {
         graph.getEdge("KL").setAttribute("weight", 16.5);
         graph.addEdge("LK", "L", "K", true);
         graph.getEdge("LK").setAttribute("weight", 11.5);
-*/
-        testMakeNode(graph);
-        testMakeEdge(graph);
+
         AStar astar = new AStar(graph);
         //astar.setCosts(new DistanceCosts());
         astar.compute("A", "K");
 
-        System.out.println(astar.getShortestPath());
+        System.out.println(astar.getShortestPath());*/
+
+        testMakeNode(graph);
+        testMakeEdge(graph);
+        testDeterminePath(graph, "A", "K");
 
     }
 
@@ -327,13 +329,24 @@ public class Astar {
         }
     }
 
-    public String determinePath(Graph graph, String startPos, String endPos) {
+    public void testDeterminePath(Graph graph, String startPos, String endPos) {
+        AStar astar = new AStar(graph);
+        astar.compute("B", "L");
+        System.out.println(astar.getShortestPath());
+        Path path = astar.getShortestPath();
+        List<Links> linken = testMakeEdgeList();
+        JobDispatching jd = new JobDispatching(path.toString(), linken);
+
+
+
+    }
+/*    public String determinePath(Graph graph, String startPos, String endPos) {
         AStar astar = new AStar(graph);
         //astar.setCosts(new DistanceCosts());
         astar.compute(startPos, endPos);
         Path path = astar.getShortestPath();
         return path.toString();
-    }
+    }*/
 
     /* making test methodes that should later be taken over by code from Dries
     methodes to be removed:
