@@ -37,6 +37,7 @@ public class GraphBuilder {
     Link[] linkList;
     Point[] pointList;
     ArrayList<Cost> bestCostList = new ArrayList<>();
+    ArrayList<Link> walkLinks = new ArrayList<>();
 
     public void getMap()
     {
@@ -49,6 +50,14 @@ public class GraphBuilder {
         ResponseEntity<Link[]> responseList2;
         responseList2 = restTemplate.getForEntity("http://" + serverCoreIP + ":" + serverCorePort + "/link/", Link[].class);
         linkList = responseList2.getBody();
+        for(Link link: linkList)
+        {
+            if(link.getVehicle().equals("walk"))
+            {
+                link.setWeight(new Long(0));
+                walkLinks.add(link);
+            }
+        }
 
     }
 
@@ -70,7 +79,7 @@ public class GraphBuilder {
             } else if(vehicle.equals("car")) {
                 url += carCoreIP + ":" + carCorePort;
             } else if(vehicle.equals("walk")) {
-                link.setWeight(new Long(0));
+                //link.setWeight(new Long(0));
             } else {
                 System.out.println("no supported vehicle was given. See graphbuilder class");
             }
@@ -79,7 +88,7 @@ public class GraphBuilder {
                 url += "/calcWeight/" + startPoint + "/to/" + endPoint;
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
-                Long lowestCost = costs[0].getWeight() + costs[0].getWeightToStart();
+                Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
                 //Long vehicleID = costs[0].getIdVehicle();
                 Cost bestCost = costs[0];
                 for (Cost cost : costs) {
@@ -89,7 +98,14 @@ public class GraphBuilder {
                         bestCost = cost;
                     }
                 }
-                link.setWeight(lowestCost);
+                for(Link walkLink : walkLinks)
+                {
+                    if(walkLink.getStopPoint().getId()== endPoint)
+                    {
+                        walkLink.setWeight(bestCost.getWeightToStart());
+                    }
+                }
+                link.setWeight(bestCost.getWeight());
                 link.setVehicleID(bestCost.getIdVehicle());
                 bestCostList.add(bestCost);
             }
