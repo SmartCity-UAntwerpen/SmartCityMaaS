@@ -1,21 +1,24 @@
 package be.uantwerpen.localization.astar;
 
+import be.uantwerpen.model.Jobs;
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by Revil on 10/05/2017.
  */
 public class JobDispatching {
 
-    private List<job> joblist;
+    private List<Jobs> joblist;
 
     public JobDispatching () {
 
     }
 
     public JobDispatching (String path, List<Links> links) {
-        this.joblist = new ArrayList<job>();
+        this.joblist = new ArrayList<Jobs>();
         dispatchOrders(path, links);
     }
 
@@ -30,10 +33,10 @@ public class JobDispatching {
                 if (links.get(j).getName().equals(checkEdge)) {
                     System.out.println("test works");
                     System.out.println(checkEdge);
-                    // haal die Edge eruit, haal idvoertuig & zorg ervoor dat een job gedispatched wordt
+                    // haal die Edge eruit, haal idvoertuig & zorg ervoor dat een Job gedispatched wordt
                     //long idVehicle = 0;
-                    //job newjob = new job(pathSplit[i], pathSplit[i+1], idVehicle, 0,0);
-                    //joblist.add(newjob);
+                    //Jobs newJobs = new Jobs(pathSplit[i], pathSplit[i+1], idVehicle, 0,0);
+                    //Joblist.add(newjob);
                 } else {
                     // print niets
                 }
