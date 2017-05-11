@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import be.uantwerpen.Models.Point;
+import be.uantwerpen.Models.Link;
 import org.graphstream.algorithm.AStar;
 import org.graphstream.algorithm.AStar.DistanceCosts;
 import org.graphstream.graph.Edge;
@@ -290,11 +292,11 @@ public class Astar {
 
     }
 
- /*   public void makeNode(List<String> namenodes, Graph graph) {
-        List<Node> nodes = new ArrayList<Node>();
+/*    public void makeNode(List<Point> namenodes, Graph graph) {
+        List<Point> nodes = new ArrayList<Point>();
         // all the nodes
         for (int i = 0; i < namenodes.size(); i++) {
-            nodes.add(graph.addNode(namenodes.get(i).getName()));
+            nodes.add(graph.addNode(namenodes.get(i).getId().toString()));
             graph.getNode(i).setAttribute("xy", namenodes.get(i).getX(), namenodes.get(i).getY());
         }
     }*/
@@ -309,12 +311,10 @@ public class Astar {
         }
     }
 
-/*    public void makeEdge(Graph graph, List<Links> links) {
+/*    public void makeEdge(Graph graph, List<Link> links) {
         for (int i = 0; i < links.size(); i++) {
-            graph.addEdge(links(i).getName(), links(i).getStart(), links(i).getEnd(), true);
-            graph.getEdge(links(i).getName()).setAttribute("weight", links(i).getWeight());
-            // type voertuig insteken. nog na te kijken.
-            // graph.getEdge(links(i).getName()).setAttribute("weight", links(i).getWeight());
+            graph.addEdge(links.get(i).getId().toString(), links.get(i).getStartPoint().getId().toString(), links.get(i).getStopPoint().getId().toString(), true);
+            graph.getEdge(links.get(i).getId().toString()).setAttribute("weight", links.get(i).getWeight());
         }
     }*/
 
