@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by dries on 10/05/2017.
@@ -18,16 +20,23 @@ public class GraphBuilder {
     @Value("#{new Integer(${sc.core.port}) ?: 1994}")
     private int serverCorePort;
 
-    private String droneCoreIP = "";
-    private String carCoreIP = "";
-    private String robotCoreIP = "";
+    @Value("${sc.drone.ip:localhost}")
+    private String droneCoreIP;
+    @Value("${sc.car.ip:localhost}")
+    private String carCoreIP;
+    @Value("${sc.robot.ip:localhost}")
+    private String robotCoreIP;
 
-    private String droneCorePort = "";
-    private String carCorePort = "";
-    private String robotCorePort = "";
+    @Value("#{new Integer(${sc.drone.port}) ?: 1994}")
+    private String droneCorePort;
+    @Value("#{new Integer(${sc.car.port}) ?: 1994}")
+    private String carCorePort;
+    @Value("#{new Integer(${sc.robot.port}) ?: 1994}")
+    private String robotCorePort;
 
     Link[] linkList;
     Point[] pointList;
+    ArrayList<Cost> bestCostList = new ArrayList<>();
 
     public void getMap()
     {
@@ -71,16 +80,18 @@ public class GraphBuilder {
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
                 Long lowestCost = costs[0].getWeight() + costs[0].getWeightToStart();
-                Long vehicleID = costs[0].getIdVehicle();
+                //Long vehicleID = costs[0].getIdVehicle();
+                Cost bestCost = costs[0];
                 for (Cost cost : costs) {
                     if(cost.getWeightToStart()+cost.getWeight() < lowestCost)
                     {
                         lowestCost = cost.getWeightToStart()+cost.getWeight();
-                        vehicleID = cost.getIdVehicle();
+                        bestCost = cost;
                     }
                 }
                 link.setWeight(lowestCost);
-                link.setVehicleID(vehicleID);
+                link.setVehicleID(bestCost.getIdVehicle());
+                bestCostList.add(bestCost);
             }
         }
     }
@@ -94,4 +105,6 @@ public class GraphBuilder {
     {
             return pointList;
     }
+
+    public ArrayList<Cost> getBestCostList() {return bestCostList;}
 }
