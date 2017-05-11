@@ -2,32 +2,36 @@ package be.uantwerpen.model;
 
 import be.uantwerpen.Models.Job;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Revil on 11/05/2017.
  */
 public class Jobs extends Job {
-    private long weightToStart;
+    //TODO ALLES HERSCHRIJVEN
     private int passengers;
 
     public Jobs (){
         super();
-        this.weightToStart = (long)-1;
+        this.jobs = new ArrayList<Job>();
         this.passengers = -1;
     }
 
-    public Jobs(Long idJob, Long idStart, Long idEnd, Long idVehicle,Long weightToStart, int passengers) {
+    public Jobs(Long idJob, Long idStart, Long idEnd, Long idVehicle, int passengers) {
         super(idJob, idStart, idEnd, idVehicle);
-        this.weightToStart = weightToStart;
+        this.jobs = new ArrayList<Jobs>();
         this.passengers = passengers;
     }
 
-    public long getWeightToStart() {
-        return weightToStart;
+    public List<Jobs> getJobs() {
+        return jobs;
     }
 
-    public void setWeightToStart(long weightToStart) {
-        this.weightToStart = weightToStart;
+    public void setJobs(List<Jobs> jobs) {
+        this.jobs = jobs;
     }
+
 
     public int getPassengers() {
         return passengers;
