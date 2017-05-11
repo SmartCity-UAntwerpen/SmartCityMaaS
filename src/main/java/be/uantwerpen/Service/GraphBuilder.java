@@ -18,6 +18,14 @@ public class GraphBuilder {
     @Value("#{new Integer(${sc.core.port}) ?: 1994}")
     private int serverCorePort;
 
+    private String droneCoreIP = "";
+    private String carCoreIP = "";
+    private String robotCoreIP = "";
+
+    private String droneCorePort = "";
+    private String carCorePort = "";
+    private String robotCorePort = "";
+
     Link[] linkList;
     Point[] pointList;
 
@@ -47,11 +55,11 @@ public class GraphBuilder {
             Cost[] costs;
             String url = "http://";
             if(vehicle.equals("robot")) {
-                url += "ip:port/" + startPoint + "/to/" + endPoint;
+                url += robotCoreIP + ":" + robotCorePort;
             } else if(vehicle.equals("drone")) {
-                url += "ip:port/" + startPoint + "/to/" + endPoint;
+                url += droneCoreIP + ":" + droneCorePort;
             } else if(vehicle.equals("car")) {
-                url += "ip:port/" + startPoint + "/to/" + endPoint;
+                url += carCoreIP + ":" + carCorePort;
             } else if(vehicle.equals("walk")) {
                 link.setWeight(new Long(0));
             } else {
@@ -59,6 +67,7 @@ public class GraphBuilder {
             }
 
             if(!vehicle.equals("walk")) {
+                url += "/calcWeight/" + startPoint + "/to/" + endPoint;
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
                 Long lowestCost = costs[0].getWeight() + costs[0].getWeightToStart();

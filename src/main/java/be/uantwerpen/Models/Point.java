@@ -13,6 +13,8 @@ public class Point
     private String rfid;
     private String type;
     private int pointLock;
+    private int x;
+    private int y;
 
     @Id
     @Column(name = "pid")
@@ -87,6 +89,22 @@ public class Point
     public void setPointLock(int pointLock)
     {
         this.pointLock = pointLock;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override
