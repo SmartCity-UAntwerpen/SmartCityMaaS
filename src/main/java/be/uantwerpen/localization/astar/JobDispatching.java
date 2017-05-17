@@ -39,6 +39,17 @@ public class JobDispatching {
 
             for (int i = 0; i < pathSplit.length - 1; i++) {
                 for (int j = 0; j < links.size(); j++) {
+                    // TODO: zorg ervoor dat via de functie van Dries met begin en eindpunt een id van de link wordt opgehaald!
+                    // TODO: nakijken of de getlinkID functie niet ergens beter geschreven kan worden dan in GraphBuilder
+                    // TODO: als een link ID = -1 retourneert moet er een error volgen!
+                    /* long lid = getlinkID(pathSplit[i], pathSplit[i+1]);
+                     if (links.get(j).getName().equals(lid)) {
+                        Link templink = Link.get(lid)
+                        Job job = new Job (Long.valueOf(pathSplit[i]).longValue(), Long.valueOf(pathSplit[i+1]).longValue(), getVehicleID());
+                        jobRepository.save(job);
+                    }
+
+
                 String checkEdge = pathSplit[i].concat(pathSplit[i + 1]);
                 if (links.get(j).getName().equals(checkEdge)) {
                     System.out.println("test works");
@@ -47,15 +58,6 @@ public class JobDispatching {
 
                     Job job = new Job(Long.valueOf(1), checkEdge.charAt(0), checkEdge.charAt(1), Long.valueOf(1));
                     jobRepository.save(job);
-                    //TODO zorgen voor een correcte Job ID aanmaken, zolas in de core gedaan voor de bots, auto's etc. joblist.size()+1 moet dus vervangen worden door een correcte ID
-                    //TODO juiste referentie verzorgen naar idvehicle, weighttostart & passengers onderdeel.
-                    //TODO ALLES HERSCHRIJVEN (assholes!)
-                    //Jobs tempJob = new Jobs(this.joblist.size()+1, tempLink.getStartPos(), tempLink.getEndPos(), long(0), long(0), )
-                    //this.joblist.add(tempJob)
-                    // haal die Edge eruit, haal idvoertuig & zorg ervoor dat een Job gedispatched wordt
-                    //long idVehicle = 0;
-                    //Jobs newJobs = new Jobs(pathSplit[i], pathSplit[i+1], idVehicle, 0,0);
-                    //Joblist.add(newjob);
                 } else {
                     // print niets
                 }

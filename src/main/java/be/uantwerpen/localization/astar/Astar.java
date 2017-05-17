@@ -9,6 +9,7 @@ import java.util.List;
 
 import be.uantwerpen.Models.Point;
 import be.uantwerpen.Models.Link;
+import be.uantwerpen.Service.GraphBuilder;
 import org.graphstream.algorithm.AStar;
 import org.graphstream.algorithm.AStar.DistanceCosts;
 import org.graphstream.graph.Edge;
@@ -301,6 +302,18 @@ public class Astar {
         }
     }*/
 
+    public void makeNode(Graph graph, GraphBuilder graphbuilder) {
+        Point[] listOfPoints = graphbuilder.getPointList();
+        List<Node> nodes = new ArrayList<Node>();
+        // provide all the nodes
+        for (int i = 0; i < listOfPoints.length-1; i++) {
+            nodes.add(graph.addNode(listOfPoints[i].getId().toString()));
+            // TODO: uncomment when updated
+            //graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
+        }
+        // TODO: boolean mss returnen voor succes of failure?
+    }
+
     public void testMakeNode( Graph graph) {
         List<Knoop> knopen = testMakeNodeList();
         List<Node> nodes = new ArrayList<Node>();
@@ -317,6 +330,14 @@ public class Astar {
             graph.getEdge(links.get(i).getId().toString()).setAttribute("weight", links.get(i).getWeight());
         }
     }*/
+
+    public void makeEdge(Graph graph, GraphBuilder graphbuilder) {
+        Link[] listOfEdges = graphbuilder.getLinkList();
+        for (int i = 0; i < listOfEdges.length-1; i++){
+            graph.addEdge(listOfEdges[i].getId().toString(), listOfEdges[i].getStartPoint().getId().toString(), listOfEdges[i].getStopPoint().getId().toString(), true);
+            graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("weight", listOfEdges[i].getWeight());
+        }
+    }
 
 
     public void testMakeEdge(Graph graph) {
