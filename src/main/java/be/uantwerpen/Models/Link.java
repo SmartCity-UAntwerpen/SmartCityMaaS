@@ -153,8 +153,8 @@ public class Link
         this.vehicle = vehicle;
     }
 
-    @Basic
-    @Column(name = "vehicleID")
+//    @Basic
+//    @Column(name = "vehicleID")
     public Long getVehicleID() { return vehicleID;}
 
     public void setVehicleID(Long vehicleID) { this.vehicleID = vehicleID;}

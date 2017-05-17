@@ -9,6 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Job extends MyAbstractPersistable<Long> {
+
     private long idJob;
     private long idStart;
     private long idEnd;
@@ -31,7 +32,7 @@ public class Job extends MyAbstractPersistable<Long> {
         this.idVehicle = idVehicle;
     }*/
 
-    @Id
+
     @Column(name = "jid")
     @GeneratedValue(strategy = GenerationType.AUTO)
     //TODO nog nakijken voor duplicate ID's!

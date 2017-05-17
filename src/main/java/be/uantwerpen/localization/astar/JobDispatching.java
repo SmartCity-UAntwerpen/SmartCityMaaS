@@ -17,7 +17,7 @@ import java.util.List;
 
 public class JobDispatching {
 
-    //@Autowired
+    @Autowired
     private JobRepository jobRepository;
 
     public JobDispatching () {
@@ -41,19 +41,31 @@ public class JobDispatching {
                 // TODO: nakijken of de getlinkID functie niet ergens beter geschreven kan worden dan in GraphBuilder
                 // TODO: als een link ID = -1 retourneert moet er een error volgen!
                 long lid = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
-                if (listOfEdges[j].getId() == lid) {
+                if (listOfEdges[j].getId().equals(lid)) {
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
-                    Job job = new Job();
-                    job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
-                    job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
-                    job.setIdVehicle(listOfEdges[j].getVehicleID());
-                    jobRepository.save(job);
+                    if (listOfEdges[j].getVehicle().equals("walk")){
+                        //don't add job!
+                    }
+                    else {
+                        Job job = new Job();
+                        job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
+                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
+                        job.setIdVehicle(listOfEdges[j].getVehicleID());
+                        jobRepository.save(job);
+                    }
                 } else {
                     // niets doen omdat de correcte edge niet gevonden is
+                    //System.out.println("failed to find link");
                 }
             }
         }
 
     }
+
+ /*   public void printJobList() {
+        for (int x = 0; x < jobRepository.findAll().size(); x++) {
+            jobRepository.findAll().get(x).getIdJob();
+        }
+    }*/
 }

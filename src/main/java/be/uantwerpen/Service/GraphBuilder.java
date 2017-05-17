@@ -319,7 +319,7 @@ public class GraphBuilder {
         Link foundLink = new Link(new Long(-1), pointList[0], pointList[1], "none");
         for(Link link : linkList)
         {
-            if(link.getStartPoint().getId() == startPoint && link.getStopPoint().getId() == endPoint)
+            if(link.getStartPoint().getId().equals(startPoint) && link.getStopPoint().getId().equals(endPoint))
             {
                 foundLink = link;
             }
