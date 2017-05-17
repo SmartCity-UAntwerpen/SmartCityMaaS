@@ -1,7 +1,10 @@
 package be.uantwerpen.localization.astar;
 
+import be.uantwerpen.Models.Job;
 import be.uantwerpen.Models.Link;
 import be.uantwerpen.model.Jobs;
+import be.uantwerpen.repositories.JobRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +15,14 @@ import java.util.List;
  */
 public class JobDispatching {
 
-    private List<Jobs> joblist;
+    @Autowired
+    private JobRepository jobRepository;
 
     public JobDispatching () {
 
     }
 
     public JobDispatching (String path, List<Links> linken) {
-        this.joblist = new ArrayList<Jobs>();
         testdispatchOrders(path, linken);
     }
 
@@ -41,6 +44,9 @@ public class JobDispatching {
                     System.out.println("test works");
                     System.out.println(checkEdge);
                     Links tempLink = links.get(j);
+
+                    Job job = new Job(Long.valueOf(1), checkEdge.charAt(0), checkEdge.charAt(1), Long.valueOf(1));
+                    jobRepository.save(job);
                     //TODO zorgen voor een correcte Job ID aanmaken, zolas in de core gedaan voor de bots, auto's etc. joblist.size()+1 moet dus vervangen worden door een correcte ID
                     //TODO juiste referentie verzorgen naar idvehicle, weighttostart & passengers onderdeel.
                     //TODO ALLES HERSCHRIJVEN (assholes!)
