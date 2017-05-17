@@ -300,7 +300,7 @@ public class Astar {
         //Testfiles met correcte graaf
         makeNode(graph, graphBuilder);
         makeEdge(graph, graphBuilder);
-        testDeterminePath(graph, "1000", "1016");
+        testDeterminePath(graph, "1004", "1016");
 
     }
 
@@ -317,10 +317,9 @@ public class Astar {
         Point[] listOfPoints = graphbuilder.getPointList();
         List<Node> nodes = new ArrayList<Node>();
         // provide all the nodes
-        for (int i = 0; i < listOfPoints.length-1; i++) {
+        for (int i = 0; i < listOfPoints.length; i++) {
             nodes.add(graph.addNode(listOfPoints[i].getId().toString()));
-            // TODO: uncomment when updated
-            //graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
+            graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
         }
         // TODO: boolean mss returnen voor succes of failure?
     }
@@ -344,7 +343,7 @@ public class Astar {
 
     public void makeEdge(Graph graph, GraphBuilder graphbuilder) {
         Link[] listOfEdges = graphbuilder.getLinkList();
-        for (int i = 0; i < listOfEdges.length-1; i++){
+        for (int i = 0; i < listOfEdges.length; i++){
             graph.addEdge(listOfEdges[i].getId().toString(), listOfEdges[i].getStartPoint().getId().toString(), listOfEdges[i].getStopPoint().getId().toString(), true);
             graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("weight", listOfEdges[i].getWeight());
         }
@@ -363,7 +362,7 @@ public class Astar {
 
     public void testDeterminePath(Graph graph, String startPos, String endPos) {
         AStar astar = new AStar(graph);
-        astar.compute("B", "L");
+        astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         //TODO: verder werken naar jobdispatching van hier uit
         //Path path = astar.getShortestPath();

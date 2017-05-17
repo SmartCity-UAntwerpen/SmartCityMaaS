@@ -34,8 +34,8 @@ public class GraphBuilder {
     @Value("#{new Integer(${sc.robot.port}) ?: 1994}")
     private String robotCorePort;
 
-    Link[] linkList;
-    Point[] pointList;
+    Link[] linkList = new Link[60];
+    Point[] pointList = new Point[18];
     ArrayList<Cost> bestCostList = new ArrayList<>();
     ArrayList<Link> walkLinks = new ArrayList<>();
 
