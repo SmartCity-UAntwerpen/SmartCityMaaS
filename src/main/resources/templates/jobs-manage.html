@@ -34,8 +34,8 @@
         </div>
 
         <div class="form-group" th:classappend="${#fields.hasErrors('idVehicle')}?'has-error': ''">
-            <label class="control-label" th:text="#{idStart}">Vehicle</label>
-            <span class="control-label" th:if="${#fields.hasErrors('idVehicle')}" th:errors="*{idStart}">Vehicle Error</span>
+            <label class="control-label" th:text="#{idVehicle}">Vehicle</label>
+            <span class="control-label" th:if="${#fields.hasErrors('idVehicle')}" th:errors="*{idVehicle}">Vehicle Error</span>
             <input class="form-control" type="text" th:field="*{idVehicle}" />
         </div>
 
