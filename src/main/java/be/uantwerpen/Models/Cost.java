@@ -9,6 +9,14 @@ public class Cost {
     private long weight;
     private long idVehicle;
 
+    public Cost(boolean status, long weightToStart, long weight, long idVehicle)
+    {
+        this.status = status;
+        this.weightToStart = weightToStart;
+        this.weight = weight;
+        this.idVehicle = idVehicle;
+    }
+
     public boolean isStatus() {
         return status;
     }

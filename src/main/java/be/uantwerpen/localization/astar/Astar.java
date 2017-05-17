@@ -356,7 +356,7 @@ public class Astar {
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
         List<Links> linken = testMakeEdgeList();
-        JobDispatching jd = new JobDispatching(path.toString(), linken);
+        //JobDispatching jd = new JobDispatching(path.toString(), linken);
 
 
 
