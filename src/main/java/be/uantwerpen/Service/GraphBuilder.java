@@ -146,9 +146,10 @@ public class GraphBuilder {
         linkList[57] = new Link(new Long(2057), pointList[12], pointList[11], "walk");
         linkList[58] = new Link(new Long(2058), pointList[15], pointList[16], "walk");
         linkList[59] = new Link(new Long(2059), pointList[16], pointList[15], "walk");
+        setLinkCosts();
     }
 
-    public void setLinkCosts()
+    private void setLinkCosts()
     {
         linkList[0].setWeight(new Long(10));
         linkList[0].setVehicleID(new Long(1001));
