@@ -15,10 +15,10 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
-    @RequestMapping(value="/users", method= RequestMethod.GET)
+    @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showUsers(final ModelMap model){
-        model.addAttribute("allUsers", jobService.findAll());
-        return "users-list";
+        model.addAttribute("allJobs", jobService.findAll());
+        return "jobs-list";
     }
 
 }

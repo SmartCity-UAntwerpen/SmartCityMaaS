@@ -5,6 +5,7 @@ import be.uantwerpen.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Convert;
 import java.util.List;
 
 /**
@@ -15,6 +16,10 @@ public class JobService {
 
     @Autowired
     private JobRepository jobRepository;
+
+    public Iterable<Job> findAll() {
+        return this.jobRepository.findAll();
+    }
 
     // add function
     public Job saveJob (Job job){
@@ -39,6 +44,19 @@ public class JobService {
            return true;
        }
    }
+
+    public void saveSomeAttributes(Job job) {
+        Job tempJob = (((Long)job.getIdJob() == null) ? null : getJob(job.getIdJob()));
+        if (tempJob != null){
+            tempJob.setIdStart(job.getIdStart());
+            tempJob.setIdEnd(job.getIdEnd());
+            tempJob.setIdVehicle(job.getIdVehicle());
+            jobRepository.save(tempJob);
+        }
+        else{
+            jobRepository.save(job);
+        }
+    }
 
    //TODO stuur alle jobs door naar backbone
 }
