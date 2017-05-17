@@ -63,9 +63,10 @@ public class JobDispatching {
 
     }
 
- /*   public void printJobList() {
+    public void printJobList() {
+        System.out.println("lijst van jobs afprinten");
         for (int x = 0; x < jobRepository.findAll().size(); x++) {
-            jobRepository.findAll().get(x).getIdJob();
+            System.out.println("jobID: " + jobRepository.findAll().get(x).getIdJob() + ";   startPos :" + jobRepository.findAll().get(x).getIdStart() + ";   endPos :" + jobRepository.findAll().get(x).getIdEnd() + ";   vehicleID :" + jobRepository.findAll().get(x).getIdVehicle());
         }
-    }*/
+    }
 }
