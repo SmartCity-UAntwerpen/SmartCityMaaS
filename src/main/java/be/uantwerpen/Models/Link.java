@@ -18,6 +18,14 @@ public class Link
     private String vehicle;
     private Long vehicleID;
 
+    public Link(Long id, Point startPoint, Point stopPoint, String vehicle)
+    {
+        this.id = id;
+        this.startPoint = startPoint;
+        this.stopPoint = stopPoint;
+        this.vehicle = vehicle;
+    }
+
     @Id
     @Column(name = "lid")
     @GeneratedValue(strategy = GenerationType.AUTO)

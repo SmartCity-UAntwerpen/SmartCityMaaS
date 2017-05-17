@@ -16,6 +16,14 @@ public class Point
     private int x;
     private int y;
 
+    public Point(Long id, int x, int y, String type)
+    {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.type = type;
+    }
+
     @Id
     @Column(name = "pid")
     @GeneratedValue(strategy = GenerationType.AUTO)

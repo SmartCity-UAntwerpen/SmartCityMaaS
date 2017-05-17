@@ -39,6 +39,7 @@ public class GraphBuilder {
     ArrayList<Cost> bestCostList = new ArrayList<>();
     ArrayList<Link> walkLinks = new ArrayList<>();
 
+
     public void getMap()
     {
         RestTemplate restTemplate = new RestTemplate();
@@ -59,6 +60,92 @@ public class GraphBuilder {
             }
         }
 
+    }
+
+    public void setUpTest()
+    {
+        pointList[0] = new Point(new Long(1000), 0, 0, "car");
+        pointList[1] = new Point(new Long(1001), 1, 0, "robot");
+        pointList[2] = new Point(new Long(1002), 0, 1, "drone");
+        pointList[3] = new Point(new Long(1003), 20, 0, "car");
+        pointList[4] = new Point(new Long(1004), 20, 1, "robot");
+        pointList[5] = new Point(new Long(1005), 20, 20, "robot");
+        pointList[6] = new Point(new Long(1006), 20, 21, "drone");
+        pointList[7] = new Point(new Long(1007), 0, 19, "car");
+        pointList[8] = new Point(new Long(1008), 0, 20, "drone");
+        pointList[9] = new Point(new Long(1009), 1, 20, "robot");
+        pointList[10] = new Point(new Long(1010), 10, 30, "drone");
+        pointList[11] = new Point(new Long(1011), 20, 40, "robot");
+        pointList[12] = new Point(new Long(1012), 20, 41, "drone");
+        pointList[13] = new Point(new Long(1013), 0, 35, "drone");
+        pointList[14] = new Point(new Long(1014), 0, 36, "car");
+        pointList[15] = new Point(new Long(1015), 10, 51, "drone");
+        pointList[16] = new Point(new Long(1016), 10, 50, "car");
+        pointList[17] = new Point(new Long(1017), 10, 29, "robot");
+
+        linkList[0] = new Link(new Long(2000), pointList[0], pointList[3], "car");
+        linkList[1] = new Link(new Long(2001), pointList[3], pointList[0], "car");
+        linkList[2] = new Link(new Long(2002), pointList[0], pointList[7], "car");
+        linkList[3] = new Link(new Long(2003), pointList[7], pointList[0], "car");
+        linkList[4] = new Link(new Long(2004), pointList[7], pointList[14], "car");
+        linkList[5] = new Link(new Long(2005), pointList[14], pointList[7], "car");
+        linkList[6] = new Link(new Long(2006), pointList[14], pointList[16], "car");
+        linkList[7] = new Link(new Long(2007), pointList[16], pointList[14], "car");
+
+        linkList[8] = new Link(new Long(2008), pointList[2], pointList[8], "drone");
+        linkList[9] = new Link(new Long(2009), pointList[8], pointList[2], "drone");
+        linkList[10] = new Link(new Long(2010), pointList[8], pointList[10], "drone");
+        linkList[11] = new Link(new Long(2011), pointList[10], pointList[8], "drone");
+        linkList[12] = new Link(new Long(2012), pointList[10], pointList[6], "drone");
+        linkList[13] = new Link(new Long(2013), pointList[6], pointList[10], "drone");
+        linkList[14] = new Link(new Long(2014), pointList[10], pointList[12], "drone");
+        linkList[15] = new Link(new Long(2015), pointList[12], pointList[10], "drone");
+        linkList[16] = new Link(new Long(2016), pointList[12], pointList[15], "drone");
+        linkList[17] = new Link(new Long(2017), pointList[15], pointList[12], "drone");
+        linkList[18] = new Link(new Long(2018), pointList[10], pointList[13], "drone");
+        linkList[19] = new Link(new Long(2019), pointList[13], pointList[10], "drone");
+
+        linkList[20] = new Link(new Long(2020), pointList[1], pointList[4], "robot");
+        linkList[21] = new Link(new Long(2021), pointList[4], pointList[1], "robot");
+        linkList[22] = new Link(new Long(2022), pointList[1], pointList[5], "robot");
+        linkList[23] = new Link(new Long(2023), pointList[5], pointList[1], "robot");
+        linkList[24] = new Link(new Long(2024), pointList[1], pointList[9], "robot");
+        linkList[25] = new Link(new Long(2025), pointList[9], pointList[1], "robot");
+        linkList[26] = new Link(new Long(2026), pointList[4], pointList[5], "robot");
+        linkList[27] = new Link(new Long(2027), pointList[5], pointList[4], "robot");
+        linkList[28] = new Link(new Long(2028), pointList[4], pointList[9], "robot");
+        linkList[29] = new Link(new Long(2029), pointList[9], pointList[4], "robot");
+        linkList[30] = new Link(new Long(2030), pointList[5], pointList[9], "robot");
+        linkList[31] = new Link(new Long(2031), pointList[9], pointList[5], "robot");
+        linkList[32] = new Link(new Long(2032), pointList[5], pointList[17], "robot");
+        linkList[33] = new Link(new Long(2033), pointList[17], pointList[9], "robot");
+        linkList[34] = new Link(new Long(2034), pointList[17], pointList[11], "robot");
+        linkList[35] = new Link(new Long(2035), pointList[11], pointList[17], "robot");
+
+        linkList[36] = new Link(new Long(2036), pointList[0], pointList[1], "walk");
+        linkList[37] = new Link(new Long(2037), pointList[0], pointList[2], "walk");
+        linkList[38] = new Link(new Long(2038), pointList[1], pointList[0], "walk");
+        linkList[39] = new Link(new Long(2039), pointList[1], pointList[2], "walk");
+        linkList[40] = new Link(new Long(2040), pointList[2], pointList[0], "walk");
+        linkList[41] = new Link(new Long(2041), pointList[2], pointList[1], "walk");
+        linkList[42] = new Link(new Long(2042), pointList[3], pointList[4], "walk");
+        linkList[43] = new Link(new Long(2043), pointList[4], pointList[3], "walk");
+        linkList[44] = new Link(new Long(2044), pointList[5], pointList[6], "walk");
+        linkList[45] = new Link(new Long(2045), pointList[6], pointList[5], "walk");
+        linkList[46] = new Link(new Long(2046), pointList[7], pointList[8], "walk");
+        linkList[47] = new Link(new Long(2047), pointList[7], pointList[9], "walk");
+        linkList[48] = new Link(new Long(2048), pointList[8], pointList[7], "walk");
+        linkList[49] = new Link(new Long(2049), pointList[8], pointList[9], "walk");
+        linkList[50] = new Link(new Long(2050), pointList[9], pointList[7], "walk");
+        linkList[51] = new Link(new Long(2051), pointList[9], pointList[8], "walk");
+        linkList[52] = new Link(new Long(2052), pointList[10], pointList[17], "walk");
+        linkList[53] = new Link(new Long(2053), pointList[17], pointList[10], "walk");
+        linkList[54] = new Link(new Long(2054), pointList[13], pointList[14], "walk");
+        linkList[55] = new Link(new Long(2055), pointList[14], pointList[13], "walk");
+        linkList[56] = new Link(new Long(2056), pointList[11], pointList[12], "walk");
+        linkList[57] = new Link(new Long(2057), pointList[12], pointList[11], "walk");
+        linkList[58] = new Link(new Long(2058), pointList[15], pointList[16], "walk");
+        linkList[59] = new Link(new Long(2059), pointList[16], pointList[15], "walk");
     }
 
     public void getLinkCost()
