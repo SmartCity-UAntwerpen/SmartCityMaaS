@@ -11,5 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface JobRepository extends CrudRepository <Job, Long>{
-    List <Job> findAll();
+    List<Job> findAll();
 }

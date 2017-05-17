@@ -26,9 +26,17 @@ public class JobService {
         return jobRepository .save(job);
     }
 
+    public Job findOne(Long id) {
+        return this.jobRepository.findOne(id);
+    }
+
    public Job getJob (Long id){
         return jobRepository.findOne(id);
    }
+
+    public void delete(Long id) {
+        this.jobRepository.delete(id);
+    }
 
    public List<Job> getAllJobs () {
        return jobRepository.findAll();

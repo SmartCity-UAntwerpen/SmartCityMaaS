@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Import header -->
+<head th:replace="layout :: head (title='#{jobs.management}')"></head>
+
+<body onload="initPage()">
+<script type="text/javascript">
+    function initPage(){
+
+    }
+</script>
+<div class="container">
+
+    <!-- Import menu bar -->
+    <div th:replace="layout :: navbar"></div>
+    <form action="#" th:action="@{/jobs/{id}(id=${job})}" th:object="${job}" method="post">
+        <input th:type="hidden" th:field="*{id}"/>
+        <div class="form-group" th:classappend="${#fields.hasErrors('idJob')}?'has-error': ''">
+            <label class="control-label" th:text="#{idJob}">ID</label>
+            <span class="control-label" th:if="${#fields.hasErrors('idJob')}" th:errors="*{idJob}"> ID Error</span>
+            <input class="form-control" type="text" th:field="*{idJob}" />
+        </div>
+
+        <div class="form-group" th:classappend="${#fields.hasErrors('idStart')}?'has-error': ''">
+            <label class="control-label" th:text="#{idStart}">Start</label>
+            <span class="control-label" th:if="${#fields.hasErrors('idStart')}" th:errors="*{idStart}">Start Error</span>
+            <input class="form-control" type="text" th:field="*{idStart}" />
+        </div>
+
+        <div class="form-group" th:classappend="${#fields.hasErrors('idEnd')}?'has-error': ''">
+            <label class="control-label" th:text="#{idEnd}">End</label>
+            <span class="control-label" th:if="${#fields.hasErrors('idEnd')}" th:errors="*{idEnd}"> End Error</span>
+            <input class="form-control" type="text" th:field="*{idEnd}" />
+        </div>
+
+        <div class="form-group" th:classappend="${#fields.hasErrors('idVehicle')}?'has-error': ''">
+            <label class="control-label" th:text="#{idStart}">Vehicle</label>
+            <span class="control-label" th:if="${#fields.hasErrors('idVehicle')}" th:errors="*{idStart}">Vehicle Error</span>
+            <input class="form-control" type="text" th:field="*{idVehicle}" />
+        </div>
+
+        <p>
+            <a href="/jobs" th:text="#{close}" class="btn btn-primary">Close</a>
+            <button type="submit" th:text="#{save}" class="btn btn-primary">Save</button>
+        </p>
+    </form>
+</div>
+</body>
+</html>
+
