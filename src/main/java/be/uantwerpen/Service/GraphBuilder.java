@@ -148,6 +148,109 @@ public class GraphBuilder {
         linkList[59] = new Link(new Long(2059), pointList[16], pointList[15], "walk");
     }
 
+    public void setLinkCosts()
+    {
+        linkList[0].setWeight(new Long(10));
+        linkList[0].setVehicleID(new Long(1001));
+        linkList[1].setWeight(new Long(10));
+        linkList[1].setVehicleID(new Long(1001));
+        linkList[2].setWeight(new Long(10));
+        linkList[2].setVehicleID(new Long(1001));
+        linkList[3].setWeight(new Long(10));
+        linkList[3].setVehicleID(new Long(1001));
+        linkList[4].setWeight(new Long(15));
+        linkList[4].setVehicleID(new Long(1001));
+        linkList[5].setWeight(new Long(15));
+        linkList[5].setVehicleID(new Long(1002));
+        linkList[6].setWeight(new Long(15));
+        linkList[6].setVehicleID(new Long(1002));
+        linkList[7].setWeight(new Long(15));
+        linkList[7].setVehicleID(new Long(1002));
+
+        linkList[8].setWeight(new Long(5));
+        linkList[8].setVehicleID(new Long(2001));
+        linkList[9].setWeight(new Long(5));
+        linkList[9].setVehicleID(new Long(2001));
+        linkList[10].setWeight(new Long(10));
+        linkList[10].setVehicleID(new Long(2001));
+        linkList[11].setWeight(new Long(10));
+        linkList[11].setVehicleID(new Long(2002));
+        linkList[12].setWeight(new Long(10));
+        linkList[12].setVehicleID(new Long(2002));
+        linkList[13].setWeight(new Long(10));
+        linkList[13].setVehicleID(new Long(2002));
+        linkList[14].setWeight(new Long(10));
+        linkList[14].setVehicleID(new Long(2002));
+        linkList[15].setWeight(new Long(10));
+        linkList[15].setVehicleID(new Long(2002));
+        linkList[16].setWeight(new Long(10));
+        linkList[16].setVehicleID(new Long(2002));
+        linkList[17].setWeight(new Long(10));
+        linkList[17].setVehicleID(new Long(2002));
+        linkList[18].setWeight(new Long(10));
+        linkList[18].setVehicleID(new Long(2002));
+        linkList[19].setWeight(new Long(10));
+        linkList[19].setVehicleID(new Long(2002));
+
+        linkList[20].setWeight(new Long(20));
+        linkList[20].setVehicleID(new Long(0002));
+        linkList[21].setWeight(new Long(20));
+        linkList[21].setVehicleID(new Long(0002));
+        linkList[22].setWeight(new Long(30));
+        linkList[22].setVehicleID(new Long(0002));
+        linkList[23].setWeight(new Long(30));
+        linkList[23].setVehicleID(new Long(0001));
+        linkList[24].setWeight(new Long(20));
+        linkList[24].setVehicleID(new Long(0002));
+        linkList[25].setWeight(new Long(20));
+        linkList[25].setVehicleID(new Long(0002));
+        linkList[26].setWeight(new Long(20));
+        linkList[26].setVehicleID(new Long(0002));
+        linkList[27].setWeight(new Long(20));
+        linkList[27].setVehicleID(new Long(0001));
+        linkList[28].setWeight(new Long(30));
+        linkList[28].setVehicleID(new Long(0002));
+        linkList[29].setWeight(new Long(30));
+        linkList[29].setVehicleID(new Long(0001));
+        linkList[30].setWeight(new Long(20));
+        linkList[30].setVehicleID(new Long(0001));
+        linkList[31].setWeight(new Long(20));
+        linkList[31].setVehicleID(new Long(0001));
+        linkList[32].setWeight(new Long(20));
+        linkList[32].setVehicleID(new Long(0001));
+        linkList[33].setWeight(new Long(20));
+        linkList[33].setVehicleID(new Long(0001));
+        linkList[34].setWeight(new Long(20));
+        linkList[34].setVehicleID(new Long(0001));
+        linkList[35].setWeight(new Long(20));
+        linkList[35].setVehicleID(new Long(0001));
+
+        linkList[36].setWeight(new Long(0));
+        linkList[37].setWeight(new Long(5));
+        linkList[38].setWeight(new Long(0));
+        linkList[39].setWeight(new Long(5));
+        linkList[40].setWeight(new Long(0));
+        linkList[41].setWeight(new Long(0));
+        linkList[42].setWeight(new Long(20));
+        linkList[43].setWeight(new Long(10));
+        linkList[44].setWeight(new Long(10));
+        linkList[45].setWeight(new Long(0));
+        linkList[46].setWeight(new Long(0));
+        linkList[47].setWeight(new Long(20));
+        linkList[48].setWeight(new Long(10));
+        linkList[49].setWeight(new Long(20));
+        linkList[50].setWeight(new Long(10));
+        linkList[51].setWeight(new Long(0));
+        linkList[52].setWeight(new Long(20));
+        linkList[53].setWeight(new Long(0));
+        linkList[54].setWeight(new Long(0));
+        linkList[55].setWeight(new Long(10));
+        linkList[56].setWeight(new Long(10));
+        linkList[57].setWeight(new Long(40));
+        linkList[58].setWeight(new Long(10));
+        linkList[59].setWeight(new Long(20));
+    }
+
     public void getLinkCost()
     {
         for(Link link: linkList)
@@ -209,5 +312,18 @@ public class GraphBuilder {
             return pointList;
     }
 
-    public ArrayList<Cost> getBestCostList() {return bestCostList;}
+    //public ArrayList<Cost> getBestCostList() {return bestCostList;}
+
+    public Long getCertainLink(Long startPoint, Long endPoint)
+    {
+        Link foundLink = new Link(new Long(-1), pointList[0], pointList[1], "none");
+        for(Link link : linkList)
+        {
+            if(link.getStartPoint().getId() == startPoint && link.getStopPoint().getId() == endPoint)
+            {
+                foundLink = link;
+            }
+        }
+        return foundLink.getId();
+    }
 }
