@@ -1,5 +1,7 @@
 package be.uantwerpen;
 
+import be.uantwerpen.Models.Cost;
+import be.uantwerpen.Service.GraphBuilder;
 import be.uantwerpen.localization.astar.Astar;
 import com.mongodb.MongoClient;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 @SpringBootApplication
@@ -26,10 +29,19 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SupahuberApplication.class, args);
-		/*System.out.println("#### AStar ####");
+		System.out.println("#### AStar ####");
 		Astar astar = new Astar();
 		astar.startAStar();
-		System.out.println("#### end AStar ####");*/
+		System.out.println("#### end AStar ####");
+		/*System.out.println("starting request");
+		GraphBuilder graphBuilder = new GraphBuilder();
+		ArrayList<Cost> costs = graphBuilder.testRequests((long)1, (long)2);
+		for(Cost cost: costs)
+		{
+			System.out.println("status: " + cost.isStatus() + ", weight: " + cost.getWeight() + ", weightToStart: " + cost.getWeightToStart() + ", vehicleID: " + cost.getIdVehicle());
+		}
+		System.out.println("the end");*/
+
 	}
 	@Bean
 	public LocaleResolver localeResolver() {

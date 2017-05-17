@@ -5,7 +5,7 @@ import javax.persistence.*;
  * Created by Niels on 24/03/2016.
  */
 @Entity
-@Table(name = "link", schema = "", catalog = "smartcitydb")
+//@Table(name = "link", schema = "", catalog = "smartcitydb")
 public class Link
 {
     private Long id;
@@ -17,6 +17,8 @@ public class Link
     private Long weight;
     private String vehicle;
     private Long vehicleID;
+
+    public Link() {}
 
     public Link(Long id, Point startPoint, Point stopPoint, String vehicle)
     {

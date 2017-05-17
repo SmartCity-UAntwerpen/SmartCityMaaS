@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Niels on 24/03/2016.
  */
 @Entity
-@Table(name = "point", schema = "", catalog = "smartcitydb")
+//@Table(name = "point", schema = "", catalog = "smartcitydb")
 public class Point
 {
     private Long id;
@@ -15,6 +15,8 @@ public class Point
     private int pointLock;
     private int x;
     private int y;
+
+    public Point() {}
 
     public Point(Long id, int x, int y, String type)
     {

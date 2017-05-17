@@ -9,6 +9,8 @@ public class Cost {
     private long weight;
     private long idVehicle;
 
+    public Cost() {}
+
     public Cost(boolean status, long weightToStart, long weight, long idVehicle)
     {
         this.status = status;
