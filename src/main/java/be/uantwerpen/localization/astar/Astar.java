@@ -10,6 +10,8 @@ import java.util.List;
 import be.uantwerpen.Models.Point;
 import be.uantwerpen.Models.Link;
 import be.uantwerpen.Service.GraphBuilder;
+import be.uantwerpen.repositories.JobRepository;
+import be.uantwerpen.services.JobService;
 import org.graphstream.algorithm.AStar;
 import org.graphstream.algorithm.AStar.DistanceCosts;
 import org.graphstream.graph.Edge;
@@ -19,9 +21,14 @@ import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSourceDGS;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Astar {
 
+    @Autowired
+    private JobService jobService;
     GraphBuilder graphBuilder;
 
     //     B-(1)-C
@@ -69,10 +76,17 @@ public class Astar {
 
 
     public Astar() {
+
+        /*graphBuilder = new GraphBuilder();
+        graphBuilder.setUpTest();
+        graphBuilder.setLinkCosts();*/
+    }
+
+    public void init( JobService jobService) {
+        this.jobService = jobService;
         graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
         graphBuilder.setLinkCosts();
-
     }
 
      /*   public static void main(String[] args) throws IOException {
@@ -300,7 +314,7 @@ public class Astar {
         //Testfiles met correcte graaf
         makeNode(graph, graphBuilder);
         makeEdge(graph, graphBuilder);
-        testDeterminePath(graph, "1004", "1016");
+        testDeterminePath(graph, "1004", "1015");
 
     }
 
@@ -366,7 +380,7 @@ public class Astar {
         System.out.println(astar.getShortestPath());
         //TODO: verder werken naar jobdispatching van hier uit
         Path path = astar.getShortestPath();
-        JobDispatching jd = new JobDispatching(path.toString(), graphBuilder);
+        JobDispatching jd = new JobDispatching(jobService, path.toString(), graphBuilder);
 
 
 

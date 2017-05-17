@@ -3,12 +3,8 @@ package be.uantwerpen.localization.astar;
 import be.uantwerpen.Models.Job;
 import be.uantwerpen.Models.Link;
 import be.uantwerpen.Service.GraphBuilder;
-import be.uantwerpen.repositories.JobRepository;
+import be.uantwerpen.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -18,13 +14,15 @@ import java.util.List;
 public class JobDispatching {
 
     @Autowired
-    private JobRepository jobRepository;
+    private JobService jobService;
 
-    public JobDispatching () {
+    public JobDispatching (JobService jobService) {
+        this.jobService = jobService;
 
     }
 
-    public JobDispatching (String path, GraphBuilder graphBuilder) {
+    public JobDispatching (JobService jobService, String path, GraphBuilder graphBuilder) {
+        this.jobService = jobService;
         testdispatchOrders(path, graphBuilder);
     }
 
@@ -34,6 +32,8 @@ public class JobDispatching {
         path = path.substring(0,path.length()-1);       // laatste karakter weghalen
         String[] pathSplit =  path.split(", ", -1);
         Link[] listOfEdges = graphBuilder.getLinkList();
+        // need to delete the first item since it was random generated
+        //jobService.delete(Long.valueOf(1));
 
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
@@ -52,7 +52,7 @@ public class JobDispatching {
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
                         job.setIdVehicle(listOfEdges[j].getVehicleID());
-                        jobRepository.save(job);
+                        jobService.save(job);
                     }
                 } else {
                     // niets doen omdat de correcte edge niet gevonden is
@@ -60,13 +60,28 @@ public class JobDispatching {
                 }
             }
         }
+        printJobList();
 
     }
 
+    /*public void printJobList() {
+        System.out.println("lijst van jobs afprinten");
+        for (int x = 0; x < jobService.findAll().size(); x++) {
+            System.out.println("jobID: " + jobService.findAll().get(x).getIdJob() + ";   startPos :" + jobService.findAll().get(x).getIdStart() + ";   endPos :" + jobService.findAll().get(x).getIdEnd() + ";   vehicleID :" + jobService.findAll().get(x).getIdVehicle());
+        }
+    }*/
     public void printJobList() {
         System.out.println("lijst van jobs afprinten");
-        for (int x = 0; x < jobRepository.findAll().size(); x++) {
-            System.out.println("jobID: " + jobRepository.findAll().get(x).getIdJob() + ";   startPos :" + jobRepository.findAll().get(x).getIdStart() + ";   endPos :" + jobRepository.findAll().get(x).getIdEnd() + ";   vehicleID :" + jobRepository.findAll().get(x).getIdVehicle());
+        for (Job j: jobService.findAll()){
+            System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
+        }
+    }
+
+    // check to make sure you don't change from 1 drone to another drone the same platform
+    public void OptimiseVehicleUsage () {
+        for (Job j: jobService.findAll()){
+            //TODO zorg ervoor dat indien het eenzelfde vehicle is, dat je niet overstapt
+            System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
         }
     }
 }

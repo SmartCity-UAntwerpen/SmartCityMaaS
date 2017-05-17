@@ -87,10 +87,6 @@ public class DatabaseLoader {
         segmentRepository.save(segment9);
         segmentRepository.save(segment10);
         segmentRepository.save(segment11);
-
-        Job j = new Job();
-        jobRepository.save(j);
-
     }
 }
 

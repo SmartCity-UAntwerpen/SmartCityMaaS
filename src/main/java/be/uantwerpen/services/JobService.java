@@ -40,7 +40,7 @@ public class JobService {
 
 
     public void saveSomeAttributes(Job job) {
-        Job tempJob = (((Long)job.getIdJob() == null) ? null : getJob(job.getIdJob()));
+        Job tempJob = (((Long)job.getId() == null) ? null : getJob(job.getId()));
         if (tempJob != null){
             tempJob.setIdStart(job.getIdStart());
             tempJob.setIdEnd(job.getIdEnd());

@@ -150,9 +150,9 @@ public class GraphBuilder {
 
     public void setLinkCosts()
     {
-        linkList[0].setWeight(new Long(10));
+        linkList[0].setWeight(new Long(500));   //10
         linkList[0].setVehicleID(new Long(1001));
-        linkList[1].setWeight(new Long(10));
+        linkList[1].setWeight(new Long(500));   //10
         linkList[1].setVehicleID(new Long(1001));
         linkList[2].setWeight(new Long(10));
         linkList[2].setVehicleID(new Long(1001));

@@ -1,6 +1,7 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.Models.Job;
+import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,18 @@ import javax.validation.Valid;
 @Controller
 public class JobController {
     @Autowired
+    private Astar astar;
+    @Autowired
     private JobService jobService;
+
+
+    @RequestMapping(value="/initAstar", method= RequestMethod.GET)
+    public String initAstar(final ModelMap model){
+        astar.init(jobService);
+        astar.startAStar();
+        return "jobs-list";
+    }
+
 
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
