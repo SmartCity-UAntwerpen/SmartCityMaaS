@@ -26,37 +26,18 @@ public class JobService {
         this.jobRepository.save(job);
     }
 
-    // add function
-    public Job saveJob (Job job){
-        return jobRepository.save(job);
-    }
-
     public Job findOne(Long id) {
         return this.jobRepository.findOne(id);
     }
 
-   public Job getJob (Long id){
-        return jobRepository.findOne(id);
+    public Job getJob (Long id){
+        return this.jobRepository.findOne(id);
    }
 
     public void delete(Long id) {
         this.jobRepository.delete(id);
     }
 
-   public List<Job> getAllJobs () {
-       return jobRepository.findAll();
-   }
-
-   public boolean deleteJob (Long id){
-       if(this.getJob(id) == null){
-           //could not find job
-           return false;
-       }
-       else {
-           jobRepository.delete(id);
-           return true;
-       }
-   }
 
     public void saveSomeAttributes(Job job) {
         Job tempJob = (((Long)job.getIdJob() == null) ? null : getJob(job.getIdJob()));
