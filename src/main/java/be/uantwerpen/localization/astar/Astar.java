@@ -22,6 +22,8 @@ import org.graphstream.stream.file.FileSourceDGS;
 
 public class Astar {
 
+    GraphBuilder graphBuilder;
+
     //     B-(1)-C
     //    /       \
     //  (1)       (10)
@@ -67,6 +69,9 @@ public class Astar {
 
 
     public Astar() {
+        graphBuilder = new GraphBuilder();
+        graphBuilder.setUpTest();
+        graphBuilder.setLinkCosts();
 
     }
 
@@ -287,9 +292,15 @@ public class Astar {
 
         System.out.println(astar.getShortestPath());*/
 
+ /*       //testfiles met apparte dummy methodes voor genereren van Graph
         testMakeNode(graph);
         testMakeEdge(graph);
-        testDeterminePath(graph, "A", "K");
+        testDeterminePath(graph, "A", "K");*/
+
+        //Testfiles met correcte graaf
+        makeNode(graph, graphBuilder);
+        makeEdge(graph, graphBuilder);
+        testDeterminePath(graph, "1000", "1016");
 
     }
 
@@ -354,8 +365,9 @@ public class Astar {
         AStar astar = new AStar(graph);
         astar.compute("B", "L");
         System.out.println(astar.getShortestPath());
-        Path path = astar.getShortestPath();
-        List<Links> linken = testMakeEdgeList();
+        //TODO: verder werken naar jobdispatching van hier uit
+        //Path path = astar.getShortestPath();
+        //List<Links> linken = testMakeEdgeList();
         //JobDispatching jd = new JobDispatching(path.toString(), linken);
 
 

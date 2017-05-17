@@ -1,9 +1,14 @@
 package be.uantwerpen.Models;
 
+import be.uantwerpen.model.MyAbstractPersistable;
+
+import javax.persistence.Entity;
+
 /**
  * Created by Revil on 11/05/2017.
  */
-public class Job {
+@Entity
+public class Job extends MyAbstractPersistable<Long> {
     private long idJob;
     private long idStart;
     private long idEnd;

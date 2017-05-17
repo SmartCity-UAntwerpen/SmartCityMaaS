@@ -2,7 +2,6 @@ package be.uantwerpen.localization.astar;
 
 import be.uantwerpen.Models.Job;
 import be.uantwerpen.Models.Link;
-import be.uantwerpen.model.Jobs;
 import be.uantwerpen.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -60,7 +59,7 @@ public class JobDispatching {
                     jobRepository.save(job);
                 } else {
                     // print niets
-                }
+                }*/
             }
         }
     }

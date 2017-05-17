@@ -1,5 +1,6 @@
 package be.uantwerpen.data;
 
+import be.uantwerpen.Models.Job;
 import be.uantwerpen.model.*;
 import be.uantwerpen.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,16 @@ public class DatabaseLoader {
     private final UserRepository userRepository;
     private final DeliveryRepository deliveryRepository;
     private final SegmentRepository segmentRepository;
+    private final JobRepository jobRepository;
 
     @Autowired
-    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, SegmentRepository segmentRepository) {
+    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, SegmentRepository segmentRepository, JobRepository jobRepository) {
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.deliveryRepository = deliveryRepository;
         this.segmentRepository = segmentRepository;
+        this.jobRepository = jobRepository;
     }
 
     @PostConstruct
@@ -84,6 +87,10 @@ public class DatabaseLoader {
         segmentRepository.save(segment9);
         segmentRepository.save(segment10);
         segmentRepository.save(segment11);
+
+        Job j = new Job();
+        jobRepository.save(j);
+
     }
 }
 
