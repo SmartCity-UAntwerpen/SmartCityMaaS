@@ -21,9 +21,14 @@ public class JobService {
         return this.jobRepository.findAll();
     }
 
+    public void save(final Job job){
+
+        this.jobRepository.save(job);
+    }
+
     // add function
     public Job saveJob (Job job){
-        return jobRepository .save(job);
+        return jobRepository.save(job);
     }
 
     public Job findOne(Long id) {

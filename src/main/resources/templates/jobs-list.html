@@ -7,7 +7,7 @@
 <script type="text/javascript">
     function initPage(){
         var options = {
-            valueNames: [ 'jobName']
+            valueNames: [ 'idJob']
         };
         var userList = new List('jobs-list', options);
     }
@@ -18,7 +18,7 @@
 
     <div class="content">
 
-        <div id="user-list">
+        <div id="jobs-list">
             <input class="search" placeholder="Search" />
             <table class="table table-hover">
                 <thead>
@@ -38,8 +38,8 @@
                     <td class="End" th:value="${idEnd}" th:text="${job.idEnd }">End</td>
                     <td class="Vehicle" th:value="${idVehicle}" th:text="${job.idVehicle }">Vehicle</td>
                     <td>
-                        <a th:href="@{/jobs/{id}/(id=${job.idJob})}"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
-                        <a th:href="@{/jobs/{id}/delete(id=${job.idJob})}"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a th:href="@{/jobs/{id}/(id=${job.id})}"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
+                        <a th:href="@{/jobs/{id}/delete(id=${job.id})}"><span class="glyphicon glyphicon-trash"></span></a>
                     </td>
                 </tr>
                 </tbody>
