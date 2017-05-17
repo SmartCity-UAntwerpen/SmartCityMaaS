@@ -1,4 +1,4 @@
-package be.uantwerpen.Service;
+package be.uantwerpen.services;
 
 import be.uantwerpen.Models.Job;
 import be.uantwerpen.repositories.JobRepository;
@@ -32,7 +32,7 @@ public class JobService {
    public boolean deleteJob (Long id){
        if(this.getJob(id) == null){
            //could not find job
-           return false
+           return false;
        }
        else {
            jobRepository.delete(id);
