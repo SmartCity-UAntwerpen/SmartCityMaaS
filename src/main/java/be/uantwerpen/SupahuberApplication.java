@@ -27,8 +27,8 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 	public static void main(String[] args) {
 		SpringApplication.run(SupahuberApplication.class, args);
 		System.out.println("#### AStar ####");
-	//	Astar astar = new Astar();
-	//	astar.startAStar();
+		Astar astar = new Astar();
+		astar.startAStar();
 		System.out.println("#### end AStar ####");
 	}
 	@Bean
