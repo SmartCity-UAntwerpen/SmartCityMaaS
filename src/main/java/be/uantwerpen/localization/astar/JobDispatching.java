@@ -37,11 +37,10 @@ public class JobDispatching {
 
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
-                // TODO: zorg ervoor dat via de functie van Dries met begin en eindpunt een id van de link wordt opgehaald!
-                // TODO: nakijken of de getlinkID functie niet ergens beter geschreven kan worden dan in GraphBuilder
                 // TODO: als een link ID = -1 retourneert moet er een error volgen!
-                long lid = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
-                if (listOfEdges[j].getId().equals(lid)) {
+                Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
+                Link previous = link;
+                if (listOfEdges[j].getId().equals(link.getId())) {
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
                     if (listOfEdges[j].getVehicle().equals("walk")){
@@ -51,8 +50,15 @@ public class JobDispatching {
                         Job job = new Job();
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
-                        job.setIdVehicle(listOfEdges[j].getVehicleID());
+                        // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
+                        if(previous.getStopPoint().equals(job.getIdStart())){
+                            job.setIdVehicle(previous.getVehicleID());
+                        }
+                        else {
+                            job.setIdVehicle(listOfEdges[j].getVehicleID());
+                        }
                         jobService.save(job);
+                        previous = link;
                     }
                 } else {
                     // niets doen omdat de correcte edge niet gevonden is

@@ -314,7 +314,7 @@ public class GraphBuilder {
 
     //public ArrayList<Cost> getBestCostList() {return bestCostList;}
 
-    public Long getCertainLink(Long startPoint, Long endPoint)
+    public Link getCertainLink(Long startPoint, Long endPoint)
     {
         Link foundLink = new Link(new Long(-1), pointList[0], pointList[1], "none");
         for(Link link : linkList)
@@ -324,6 +324,6 @@ public class GraphBuilder {
                 foundLink = link;
             }
         }
-        return foundLink.getId();
+        return foundLink;
     }
 }
