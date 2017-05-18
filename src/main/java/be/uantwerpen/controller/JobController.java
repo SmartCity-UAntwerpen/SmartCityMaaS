@@ -1,6 +1,6 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.Models.Job;
+import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;

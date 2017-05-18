@@ -1,4 +1,4 @@
-package be.uantwerpen.Models;
+package be.uantwerpen.model;
 
 import be.uantwerpen.model.MyAbstractPersistable;
 

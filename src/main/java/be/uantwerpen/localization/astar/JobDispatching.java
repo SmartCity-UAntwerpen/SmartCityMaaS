@@ -1,8 +1,8 @@
 package be.uantwerpen.localization.astar;
 
-import be.uantwerpen.Models.Job;
-import be.uantwerpen.Models.Link;
-import be.uantwerpen.Service.GraphBuilder;
+import be.uantwerpen.model.Job;
+import be.uantwerpen.model.Link;
+import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,4 +1,4 @@
-package be.uantwerpen.Models;
+package be.uantwerpen.model;
 
 /**
  * Created by dries on 10/05/2017.

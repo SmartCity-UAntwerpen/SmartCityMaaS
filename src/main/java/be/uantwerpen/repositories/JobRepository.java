@@ -1,6 +1,6 @@
 package be.uantwerpen.repositories;
 
-import be.uantwerpen.Models.Job;
+import be.uantwerpen.model.Job;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
