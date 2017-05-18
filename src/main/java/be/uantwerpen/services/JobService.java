@@ -1,12 +1,9 @@
 package be.uantwerpen.services;
 
-import be.uantwerpen.Models.Job;
+import be.uantwerpen.model.Job;
 import be.uantwerpen.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.Convert;
-import java.util.List;
 
 /**
  * Created by Revil on 17/05/2017.

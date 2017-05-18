@@ -1,26 +1,18 @@
 package be.uantwerpen.localization.astar;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 
-import be.uantwerpen.Models.Point;
-import be.uantwerpen.Models.Link;
-import be.uantwerpen.Service.GraphBuilder;
-import be.uantwerpen.repositories.JobRepository;
+import be.uantwerpen.model.Point;
+import be.uantwerpen.model.Link;
+import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
 import org.graphstream.algorithm.AStar;
-import org.graphstream.algorithm.AStar.DistanceCosts;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.stream.file.FileSourceDGS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,7 +78,6 @@ public class Astar {
         this.jobService = jobService;
         graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
-        graphBuilder.setLinkCosts();
     }
 
      /*   public static void main(String[] args) throws IOException {

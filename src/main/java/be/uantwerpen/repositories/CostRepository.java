@@ -1,6 +1,6 @@
 package be.uantwerpen.repositories;
 
-import be.uantwerpen.Models.Cost;
+import be.uantwerpen.model.Cost;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

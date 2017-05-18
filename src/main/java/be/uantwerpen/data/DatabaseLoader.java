@@ -1,6 +1,5 @@
 package be.uantwerpen.data;
 
-import be.uantwerpen.Models.Job;
 import be.uantwerpen.model.*;
 import be.uantwerpen.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
