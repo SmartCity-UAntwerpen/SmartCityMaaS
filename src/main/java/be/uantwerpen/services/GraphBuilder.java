@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 /**
  * Created by dries on 10/05/2017.
+ * Made for getting all the information for the A* algorithm.
  */
 public class GraphBuilder {
     @Value("${sc.core.ip:localhost}")
@@ -39,7 +40,7 @@ public class GraphBuilder {
     //ArrayList<Cost> bestCostList = new ArrayList<>();
     private ArrayList<Link> walkLinks = new ArrayList<>();
 
-
+    //request the map from the core
     public void getMap()
     {
         RestTemplate restTemplate = new RestTemplate();
@@ -62,6 +63,7 @@ public class GraphBuilder {
 
     }
 
+    //request the cost from all vehicle cores.
     public void getLinkCost()
     {
         for(Link link: linkList)
@@ -122,11 +124,13 @@ public class GraphBuilder {
         }
     }
 
+    //for returning the list with all the links
     public Link[] getLinkList()
     {
         return linkList;
     }
 
+    //for returning the list with all the points
     public Point[] getPointList()
     {
             return pointList;
@@ -147,6 +151,7 @@ public class GraphBuilder {
         return foundLink;
     }
 
+    //for testing purposes, of request cost from an adress.
     public ArrayList<Cost> testRequests(Long start, Long stop)
     {
         ArrayList<Cost> testCosts = new ArrayList<>();
@@ -163,6 +168,7 @@ public class GraphBuilder {
         return testCosts;
     }
 
+    //for setting up a costum map.
     public void setUpTest()
     {
         pointList[0] = new Point((long)(1000), 0, 0, "car");
@@ -250,6 +256,7 @@ public class GraphBuilder {
         setLinkCosts();
     }
 
+    //for setting up the cost and vehicles of that map.
     private void setLinkCosts()
     {
         linkList[0].setWeight((long)(500));   //10
