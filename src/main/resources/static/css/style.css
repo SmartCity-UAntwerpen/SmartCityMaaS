@@ -85,14 +85,14 @@ a{color:inherit;text-decoration:none}
 	border:none;
 	padding:15px 20px;
 	border-radius:25px;
-	background:rgba(255,255,255,.1);
+	background:rgba(232, 12, 12, 0.1);
 }
 .login-form .group input[data-type="password"]{
 	text-security:circle;
 	-webkit-text-security:circle;
 }
 .login-form .group .label{
-	color:#aaa;
+	color:#dc2222;
 	font-size:12px;
 }
 .login-form .group .button{
