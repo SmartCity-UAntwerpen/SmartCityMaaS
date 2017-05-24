@@ -23,7 +23,10 @@ public class HomeController {
         return this.userService.findAll();
     }
 
-    @RequestMapping({"/","/home"})
+    @RequestMapping({"/"})
+    public String showLogIn() {return "logInPage2";}
+
+    @RequestMapping({"/home"})
     public String showHomepage(){
         return "homepage";
     }
