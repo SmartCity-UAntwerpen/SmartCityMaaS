@@ -87,7 +87,8 @@ public class UserController {
     public String viewCreateDelivery(final ModelMap model){
         model.addAttribute("allSegments", segmentService.findAll());
         model.addAttribute("allPassengers", passengerService.findAll());
-        model.addAttribute("delivery",new Delivery("",""));
+        Delivery del = new Delivery("","");
+        model.addAttribute("delivery",del);
         World world = new World(300,300);
         return "delivery-manage2";
     }

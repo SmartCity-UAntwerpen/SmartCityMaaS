@@ -11,6 +11,8 @@ public class World {
     private int dimensionX;
     private int dimensionY;
     private int unitWorld;
+    // Defines the diameter around a location point.
+    private int surround_layer = 2;
 
     public World(int dimensionX, int dimensionY) {
         this.dimensionX = dimensionX;
@@ -30,6 +32,39 @@ public class World {
 
     }
 
+    public void surroundPoint(int y, int x)
+    {
+
+        int  y_underLimit = y- surround_layer;
+        int y_upperLimit = y+ surround_layer +1;
+        int  x_underLimit = x- surround_layer;
+        int x_upperLimit = x+ surround_layer +1;
+        for(int i = y_underLimit; i < y_upperLimit;i++)
+        {
+           if(i >= 0 && i < dimensionY) {
+               for (int j = x_underLimit; j < x_upperLimit; j++) {
+                   if(j >= 0 && j < dimensionX) {
+                       if (i != y || j != x) {
+                           cells.get(i).getCellList().get(j).setType(3);
+                           cells.get(i).getCellList().get(j).setSur_x(x);
+                           cells.get(i).getCellList().get(j).setSur_y(y);
+                       }else
+                       {
+                           cells.get(i).getCellList().get(j).setType(2);
+                           cells.get(i).getCellList().get(j).setSur_x(x);
+                           cells.get(i).getCellList().get(j).setSur_y(y);
+                       }
+                   }
+               }
+           }
+        }
+        /*
+        for(int i = 0; i < surround_layer*8;i++)
+        {
+            cells.get(y_coor).getCellList().get(x_coor).setType(2);
+        }*/
+    }
+
     public void parseMap()
     {
         DummyMap dummyMap = new DummyMap();
@@ -42,7 +77,8 @@ public class World {
             DummyPoint point = pointsList.get(m);
             x_coor = point.getPhysicalPoisionX()*dummyMap.getUnit();
             y_coor = point.getPhysicalPoisionY()*dummyMap.getUnit();
-            cells.get(y_coor).getCellList().get(x_coor).setType(2);
+            //cells.get(y_coor).getCellList().get(x_coor).setType(2);
+            surroundPoint(y_coor,x_coor);
             System.out.println("set road point on column "+x_coor + " and row "+ y_coor);
             for(int n = 0; n < point.getNeighbours().size(); n++) {
                 int neighbourPoint = point.getNeighbours().get(n);
@@ -63,7 +99,10 @@ public class World {
                     {
                         int y_temp = y_coor_neighbour;
                         for(int c = x_coor_neighbour; c < x_coor; c = c+unitWorld) {
-                            cells.get(y_temp).getCellList().get(c).setType(2);
+
+                            if(cells.get(y_temp).getCellList().get(c).getType() != 3 && cells.get(y_temp).getCellList().get(c).getType() != 2) {
+                                cells.get(y_temp).getCellList().get(c).setType(4);
+                            }
                             if(y_temp !=y_coor)
                             {
                                 y_temp++;
@@ -72,13 +111,17 @@ public class World {
                     }else if (y_coor_neighbour == y_coor)
                     {
                         for(int c = x_coor_neighbour; c < x_coor; c = c+unitWorld) {
-                            cells.get(y_coor_neighbour).getCellList().get(c).setType(2);
+                            if(cells.get(y_coor_neighbour).getCellList().get(c).getType() != 3 && cells.get(y_coor_neighbour).getCellList().get(c).getType() != 2) {
+                                cells.get(y_coor_neighbour).getCellList().get(c).setType(4);
+                            }
                         }
                     }else
                     {
                         int y_temp = y_coor_neighbour;
                         for(int c = x_coor_neighbour; c < x_coor; c = c+unitWorld) {
-                            cells.get(y_temp).getCellList().get(c).setType(2);
+                            if( cells.get(y_temp).getCellList().get(c).getType() != 3 && cells.get(y_temp).getCellList().get(c).getType() != 2){
+                                cells.get(y_temp).getCellList().get(c).setType(4);
+                            }
                             if(y_temp !=y_coor)
                             {
                                 y_temp--;
@@ -90,7 +133,10 @@ public class World {
                     if(y_coor_neighbour < y_coor)
                     {
                         for(int c = y_coor_neighbour; c < y_coor; c = c+unitWorld) {
-                            cells.get(c).getCellList().get(x_coor).setType(2);
+                            if( cells.get(c).getCellList().get(x_coor).getType() != 3 && cells.get(c).getCellList().get(x_coor).getType() != 2) {
+                                cells.get(c).getCellList().get(x_coor).setType(4);
+                            }
+
                         }
                     }else if (y_coor_neighbour == y_coor)
                     {
@@ -98,7 +144,9 @@ public class World {
                     }else
                     {
                         for(int c = y_coor_neighbour; c > y_coor; c = c-unitWorld) {
-                            cells.get(c).getCellList().get(x_coor).setType(2);
+                            if( cells.get(c).getCellList().get(x_coor).getType() != 3 && cells.get(c).getCellList().get(x_coor).getType() != 2) {
+                                cells.get(c).getCellList().get(x_coor).setType(4);
+                            }
                         }
                     }
                 }
@@ -107,7 +155,9 @@ public class World {
                     {
                         int y_temp = y_coor_neighbour;
                         for(int c = x_coor_neighbour; c > x_coor; c = c-unitWorld) {
-                            cells.get(y_temp).getCellList().get(c).setType(2);
+                            if( cells.get(y_temp).getCellList().get(c).getType() != 3 && cells.get(y_temp).getCellList().get(c).getType() != 2) {
+                                cells.get(y_temp).getCellList().get(c).setType(4);
+                            }
                             if(y_temp !=y_coor)
                             {
                                 y_temp++;
@@ -116,13 +166,17 @@ public class World {
                     }else if (y_coor_neighbour == y_coor)
                     {
                         for(int c = x_coor_neighbour; c > x_coor; c = c-unitWorld) {
-                            cells.get(y_coor_neighbour).getCellList().get(c).setType(2);
+                            if( cells.get(y_coor_neighbour).getCellList().get(c).getType() != 3 && cells.get(y_coor_neighbour).getCellList().get(c).getType() != 2) {
+                                cells.get(y_coor_neighbour).getCellList().get(c).setType(4);
+                            }
                         }
                     }else
                     {
                         int y_temp = y_coor_neighbour;
                         for(int c = x_coor_neighbour; c > x_coor; c = c-unitWorld) {
-                            cells.get(y_temp).getCellList().get(c).setType(2);
+                            if( cells.get(y_temp).getCellList().get(c).getType() != 3 && cells.get(y_temp).getCellList().get(c).getType() != 2) {
+                                cells.get(y_temp).getCellList().get(c).setType(4);
+                            }
                             if(y_temp !=y_coor)
                             {
                                 y_temp--;
@@ -132,9 +186,6 @@ public class World {
                 }
             }
         }
-
-
-
     }
 
     public List<CellRow> getCells() {
@@ -166,5 +217,13 @@ public class World {
 
     public void setUnitWorld(int unitWorld) {
         this.unitWorld = unitWorld;
+    }
+
+    public int getSurround_layer() {
+        return surround_layer;
+    }
+
+    public void setSurround_layer(int surround_layer) {
+        this.surround_layer = surround_layer;
     }
 }

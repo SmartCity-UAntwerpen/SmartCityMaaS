@@ -20,8 +20,21 @@ function start() {
     mapCanvasContext = mapCanvas.getContext("2d");
     drawMap();
     mapCanvas.addEventListener("click", onClick, false);
+    // firstDraw()
     //setInterval(loop, 15);
 }
+/*
+function drawMap() {
+    x_size = mapCanvas.width/world.dimensionY;
+    y_size = mapCanvas.height/world.dimensionX;
+    var cell;
+    for(var i=0; i<world.dimensionY; i++){
+        for(var j=0; j<world.dimensionX; j++){
+            cell = world.cells[i].cellList[j];
+
+        }
+    }
+}*/
 function drawMap() {
     x_size = mapCanvas.width/world.dimensionY;
     y_size = mapCanvas.height/world.dimensionX;
@@ -31,12 +44,21 @@ function drawMap() {
     console.log("x_size "+x_size);
     console.log("y_size "+y_size);
     var cell;
+    var redraw;
     for(var i=0; i<world.dimensionY; i++){
         for(var j=0; j<world.dimensionX; j++){
             cell = world.cells[i].cellList[j];
-            drawCell( j, i,cell);
+            redraw = drawCell( j, i,cell);
+            if(redraw == true)
+            {
+                i = -1;
+                j = world.dimensionX;
+            }
         }
     }
+    document.getElementById('inputA').value = ""+pointA_x+pointA_y;
+    document.getElementById('inputB').value = ""+pointB_x+pointB_y;
+
 }
 /*
 function loop()
@@ -57,35 +79,96 @@ function drawCell(j, i, cell) {
 
     var columns = x_size * j;
     var rows = y_size * i;
-    if(cell.type != 1) {
+    var change_color = "null";
+    if(cell.type != 1 && cell.type != 4) {
         if (pointA_set == true) {
             if (columns <= pointA_x && pointA_x < columns + x_size && rows <= pointA_y && pointA_y < rows + y_size) {
-                pointA_x_cell = columns;
-                pointA_y_cell = rows;
-                mapCanvasContext.drawImage(cellPointA, pointA_x_cell, pointA_y_cell, x_size, y_size);
+                if (cell.type == 3) {
+                    console.log("FUCK IT3é");
+                    pointA_x = cell.sur_x*x_size;
+                    pointA_y = cell.sur_y*y_size;
+                    return true;
+                }else
+                {
+                    pointA_x_cell = columns;
+                    pointA_y_cell = rows;
+                    pointA_x = cell.sur_x*x_size;
+                    pointA_y = cell.sur_y*y_size;
+                    change_color = "A";
+                }
             } else {
-
                 if (pointB_set == true) {
                     if (columns <= pointB_x && pointB_x < columns + x_size && rows <= pointB_y && pointB_y < rows + y_size) {
-                        pointB_x_cell = columns;
-                        pointB_y_cell = rows;
-                        mapCanvasContext.drawImage(cellPointB, pointB_x_cell, pointB_y_cell, x_size, y_size);
-                    } else {
-                        mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-
+                        if (cell.type == 3) {
+                            console.log("FUCK IT3é");
+                            if( cell.sur_x*x_size == pointB_x && cell.sur_y*y_size == pointB_y)
+                            {
+                                pointB_set = false;
+                                return true;
+                            }else
+                            {
+                                pointB_x = cell.sur_x*x_size;
+                                pointB_y = cell.sur_y*y_size;
+                                return true;
+                            }
+                        }else
+                        {
+                            pointB_x_cell = columns;
+                            pointB_y_cell = rows;
+                            pointB_x = cell.sur_x*x_size;
+                            pointB_y = cell.sur_y*y_size;
+                            change_color = "B";
+                        }
                     }
-                } else {
-                    mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
                 }
             }
-        } else {
-            mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
         }
+    }
+    if(rows == pointA_y && columns == pointA_x)
+    {
+        if(change_color == "A") {
+            console.log("-----------------------------------------------------------------");
+            console.log("ROWS " + rows);
+            console.log("COLUMNS " + columns);
+            console.log("pointA_x " + pointA_x);
+            console.log("pointA_y " + pointA_y);
+            console.log("pointB_x " + pointB_x);
+            console.log("pointB_y " + pointB_y);
+            console.log("-----------------------------------------------------------------");
+
+            mapCanvasContext.drawImage(cellPointA, columns, rows, x_size, y_size);
+        }
+    }else if(rows == pointB_y && columns == pointB_x)
+    {
+        if(change_color == "B") {
+            console.log("-----------------------------------------------------------------");
+            console.log("ROWS " + rows);
+            console.log("COLUMNS " + columns);
+            console.log("pointA_x " + pointA_x);
+            console.log("pointA_y " + pointA_y);
+            console.log("pointB_x " + pointB_x);
+            console.log("pointB_y " + pointB_y);
+            console.log("-----------------------------------------------------------------");
+            mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
+        }
+
     }else
     {
-
-        mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
+        if(cell.type == 2)
+        {
+            mapCanvasContext.drawImage(spot, columns, rows, x_size, y_size);
+        }else if(cell.type == 3)
+        {
+            mapCanvasContext.drawImage(surrounding, columns, rows, x_size, y_size);
+        }else if (cell.type == 4)
+        {
+            mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
+        }else
+        {
+            mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
+        }
     }
+    return false;
 }
 
 function loadImages() {
@@ -97,6 +180,11 @@ function loadImages() {
     cellPointA.src = pointAImage;
     cellPointB = new Image();
     cellPointB.src = pointBImage;
+    spot = new Image();
+    spot.src = spotImage;
+    surrounding = new Image();
+    surrounding.src = surroundImage;
+
 }
 
 function getWorld(){
@@ -113,7 +201,7 @@ function legitArea(x, y)
             var column = x_size * j;
             var row = y_size * i;
             if (column <= x && x < column + x_size && row <= y && y < row + y_size) {
-                if (world.cells[i].cellList[j].type == 1) {
+                if (world.cells[i].cellList[j].type == 1 || world.cells[i].cellList[j].type == 4) {
                     return false;
                 } else {
                     return true;
@@ -123,41 +211,58 @@ function legitArea(x, y)
     }
 }
 function onClick(e) {
-    if(legitArea(e.pageX, e.pageY) == true) {
+    console.log("MOUSE CLICK x "+ e.pageX + " en y " +e.pageY);
+    var map = document.getElementById('myMapCanvas');
+    console.log("Map info x "+ map.offsetLeft + " en y " +map.offsetTop);
+    console.log("DELIVERY FROM THYMLEAF " +pointA);
+    document.getElementById('inputA').value = "JellyFish";
+    var x_click = e.pageX-map.offsetLeft;
+    var y_click = e.pageY-map.offsetTop;
+    console.log("COMBO info x "+ x_click + " en y " +y_click);
+    var sideVariation_X = (0.5 + world.surround_layer)*x_size;
+    var sideVariation_Y = (0.5 + world.surround_layer)*y_size;
+    if(legitArea(x_click, y_click) == true) {
+        var midpointA_X = pointA_x+(x_size/2);
+        var midpointA_Y = pointA_y+(y_size/2);
+
         if (pointA_set == true) {
-            if (pointA_x_cell < e.pageX && e.pageX < pointA_x_cell + x_size && pointA_y_cell < e.pageY && e.pageY < pointA_y_cell + y_size) {
-                pointA_x = e.pageX;
-                pointA_y = e.pageY;
+            if (midpointA_X - sideVariation_X < x_click && x_click < midpointA_X + sideVariation_X && midpointA_Y-sideVariation_Y < y_click && y_click < midpointA_Y + sideVariation_Y) {
+                console.log(":'(");
+
+                pointA_x = x_click;
+                pointA_y = y_click;
                 pointA_set = false;
                 if (pointB_set == true) {
-                    pointB_x = e.pageX;
-                    pointB_y = e.pageY;
+                    pointB_x = x_click;
+                    pointB_y = y_click;
                     pointB_set = false;
                 }
             } else {
                 if (pointB_set == true) {
-                    if (pointB_x_cell < e.pageX && e.pageX < pointB_x_cell + x_size && pointB_y_cell < e.pageY && e.pageY < pointB_y_cell + y_size) {
-                        pointB_x = e.pageX;
-                        pointB_y = e.pageY;
+                    var midpointB_X = pointB_x+(x_size/2);
+                    var midpointB_Y = pointB_y+(y_size/2);
+                    if (midpointB_X - sideVariation_X < x_click && x_click < midpointB_X + sideVariation_X && midpointB_Y - sideVariation_Y < y_click && y_click < midpointB_Y + sideVariation_Y) {
+                        pointB_x = x_click;
+                        pointB_y = y_click;
                         pointB_set = false;
                     }
                 } else {
-                    pointB_x = e.pageX;
-                    pointB_y = e.pageY;
+                    pointB_x = x_click;
+                    pointB_y = y_click;
                     pointB_set = true;
                 }
             }
-
         } else {
-            pointA_x = e.pageX;
-            pointA_y = e.pageY;
+            pointA_x = x_click;
+            pointA_y = y_click;
             pointA_set = true;
         }
         drawMap();
     }
 }
 
-loadImages();
-getWorld();
-start();
-setTimeout(start, 500);
+    loadImages();
+    getWorld();
+    start();
+    setTimeout(start, 500);
+

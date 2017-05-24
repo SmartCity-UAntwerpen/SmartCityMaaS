@@ -6,10 +6,11 @@
 <body onload="initPage()">
 <script type="text/javascript">
     function initPage(){
+        /*
         $('#segments').multiSelect({
             selectableHeader: '<div class="custom-header" th:text="#{selectable.items}">Selectable items</div>',
             selectionHeader: '<div class="custom-header" th:text="#{selected.items}">Selected items</div>'
-        });
+        });*/
     }
 </script>
 <div class="container">
@@ -31,21 +32,26 @@
         </div>
 
         <div>
-            <label th:text="#{segments.pointName}">Segment Point A</label>
-            <select th:field="*{pointName}">
+            <label th:id="pointA" th:text="#{segments.pointA}">Segment Point A</label>
+            <input class="form-control" th:type="hidden" id="inputA" type="text" th:field="*{pointA}" />
+
+            <!--<select th:field="*{pointA}">
                 <option th:each="segment : ${allSegments}"
                         th:value="${segment.name}"
                         th:text="${segment.name}">Wireframe</option>
-            </select>
+
+            </select> -->
         </div>
 
         <div>
-            <label th:text="#{segments.pointB}">Segment Point A</label>
-            <select th:field="*{pointB}">
+            <label th:text="#{segments.pointB}">Segment Point B</label>
+            <input class="form-control" th:type="hidden" id="inputB" type="text" th:field="*{pointB}" />
+
+            <!-- <select th:field="*{pointB}">
                 <option th:each="segment : ${allSegments}"
                         th:value="${segment.name}"
                         th:text="${segment.name}">Wireframe</option>
-            </select>
+            </select>-->
         </div>
 
         <div>
@@ -56,6 +62,25 @@
                         th:text="${passenger}">Wireframe</option>
             </select>
         </div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var cellImageBackGround = /*[[@{/images/map/test_lol.png}]]*/;
+            var cellImageRoad = /*[[@{/images/map/road.png}]]*/;
+            var pointAImage = /*[[@{/images/map/pointA.png}]]*/;
+            var pointBImage = /*[[@{/images/map/pointB.png}]]*/;
+            var spotImage = /*[[@{/images/map/spot.png}]]*/;
+            var surroundImage = /*[[@{/images/map/surrounding.png}]]*/;
+            var pointA =  /*[[*{pointA}]]*/
+            /*]]>*/
+        </script>
+        <div class="content">
+            <div id="myDiv">
+                <div id="myMapCanvas" width="1000" height="1000">
+                    <canvas id="mapCanvas" width="1000" height="1000" style="border:1px solid #000000"></canvas>
+                </div>
+            </div>
+        </div>
+        <script  th:inline="javascript" type="text/javascript" th:src="@{/js/map.js}"></script>
 
         <p>
             <a href="/deliveries" th:text="#{close}" class="btn btn-primary">Close</a>
