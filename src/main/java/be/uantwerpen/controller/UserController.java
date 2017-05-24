@@ -4,6 +4,7 @@ import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
+import be.uantwerpen.visualization.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,6 +39,11 @@ public class UserController {
         model.addAttribute("allUsers", userService.findAll());
         return "users-list";
     }
+    @RequestMapping(value="/map", method= RequestMethod.GET)
+    public String showMap(final ModelMap model){
+        return "map";
+    }
+
 
     @RequestMapping(value="/users/put", method= RequestMethod.GET)
     public String viewCreateUser(final ModelMap model){
@@ -81,8 +87,10 @@ public class UserController {
     public String viewCreateDelivery(final ModelMap model){
         model.addAttribute("allSegments", segmentService.findAll());
         model.addAttribute("allPassengers", passengerService.findAll());
-        model.addAttribute("delivery",new Delivery("",""));
-        return "delivery-manage";
+        Delivery del = new Delivery("","");
+        model.addAttribute("delivery",del);
+        World world = new World(300,300);
+        return "delivery-manage2";
     }
 
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
@@ -91,7 +99,7 @@ public class UserController {
         if(result.hasErrors()){
             model.addAttribute("allSegments", segmentService.findAll());
             model.addAttribute("allPassengers", passengerService.findAll());
-            return "delivery-manage";
+            return "delivery-manage2";
         }
         delivery.setType("HumanTransport");
         MongoDBMethods monogDBClient = new MongoDBMethods();
