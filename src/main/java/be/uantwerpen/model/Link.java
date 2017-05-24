@@ -16,7 +16,7 @@ public class Link
     private Point stopPoint;
     private Long weight;
     private String vehicle;
-    private Long vehicleID;
+    private Long IDVehicle;
 
     public Link() {}
 
@@ -157,9 +157,9 @@ public class Link
 
 //    @Basic
 //    @Column(name = "vehicleID")
-    public Long getVehicleID() { return vehicleID;}
+    public Long getVehicleID() { return IDVehicle;}
 
-    public void setVehicleID(Long vehicleID) { this.vehicleID = vehicleID;}
+    public void setVehicleID(Long vehicleID) { this.IDVehicle = vehicleID;}
 
     @Override
     public String toString() {
