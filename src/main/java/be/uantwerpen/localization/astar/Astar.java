@@ -78,7 +78,6 @@ public class Astar {
         this.jobService = jobService;
         graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
-        //graphBuilder.setLinkCosts();
     }
 
      /*   public static void main(String[] args) throws IOException {
