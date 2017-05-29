@@ -2,8 +2,10 @@ package be.uantwerpen.localization.astar;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.Link;
+import be.uantwerpen.model.Order;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
+import be.uantwerpen.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -15,15 +17,19 @@ public class JobDispatching {
 
     @Autowired
     private JobService jobService;
+    @Autowired
+    private OrderService orderService;
 
 
-    public JobDispatching (JobService jobService) {
+    public JobDispatching (JobService jobService, OrderService orderService) {
         this.jobService = jobService;
+        this.orderService = orderService;
 
     }
 
-    public JobDispatching (JobService jobService, String path, GraphBuilder graphBuilder) {
+    public JobDispatching (JobService jobService, OrderService orderService, String path, GraphBuilder graphBuilder) {
         this.jobService = jobService;
+        this.orderService = orderService;
         testdispatchOrders(path, graphBuilder);
     }
 
@@ -38,7 +44,7 @@ public class JobDispatching {
 
         // keep initeal Jobservice counter
  //       long tempInitCount = jobService.getSize();
-
+        Order order = new Order();
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
                 // TODO: als een link ID = -1 retourneert moet er een error volgen!
@@ -54,7 +60,12 @@ public class JobDispatching {
                         Job job = new Job();
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
+
+                        jobService.save(job);
+                        order.addJob(job);
+
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
+
                         if(previous.getStopPoint().equals(job.getIdStart())){
                             job.setIdVehicle(previous.getVehicleID());
                         }
@@ -62,6 +73,7 @@ public class JobDispatching {
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
                         jobService.save(job);
+
                         previous = link;
                     }
                 } else {
@@ -70,7 +82,7 @@ public class JobDispatching {
                 }
             }
         }
-
+        orderService.saveOrder(order);
         System.out.println("starting Order input");
 
         // ask for endcounter, so that difference can be calculated.

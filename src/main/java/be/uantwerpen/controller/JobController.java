@@ -3,6 +3,7 @@ package be.uantwerpen.controller;
 import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.services.JobService;
+import be.uantwerpen.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,10 +23,12 @@ public class JobController {
     private Astar astar;
     @Autowired
     private JobService jobService;
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping(value="/initAstar", method= RequestMethod.GET)
     public String initAstar(final ModelMap model){
-        astar.init(jobService);
+        astar.init(jobService, orderService);
         astar.startAStar();
         return "jobs-list";
     }

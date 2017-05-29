@@ -25,6 +25,9 @@ public class Job extends MyAbstractPersistable<Long> {
     private long idStart;
     private long idEnd;
     private long idVehicle;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ORDER_ID")
+    private Order order;
     //@ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "idOrder", unique = false, nullable = false)
     //@Column(name="idOrder")
