@@ -83,4 +83,19 @@ public class User extends MyAbstractPersistable<Long> {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    public boolean hasPermission(String permission)
+    {
+        for(Role r: roles)
+        {
+            for(Permission p: r.getPermissions())
+            {
+                if(p.getName().equals(permission))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

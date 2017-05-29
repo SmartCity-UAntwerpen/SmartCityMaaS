@@ -3,6 +3,7 @@ package be.uantwerpen.services;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,8 +26,16 @@ public class UserService {
         return this.userRepository.findOne(id);
     }
 
+    public User findByUserName(String userName) {return userRepository.findByUserName(userName);}
+
     public void delete(Long id) {
         this.userRepository.delete(id);
+    }
+
+    public User getPrincipalUser()
+    {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUserName(user.getUsername());
     }
 
     public void saveSomeAttributes(User user) {

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -23,11 +24,11 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SupahuberApplication.class, args);
-		System.out.println("#### AStar ####");
+		/*System.out.println("#### AStar ####");
 		Astar astar = new Astar();
 		astar.startAStar();
 		System.out.println("#### end AStar ####");
-		/*System.out.println("starting request");
+		System.out.println("starting request");
 		GraphBuilder graphBuilder = new GraphBuilder();
 		ArrayList<Cost> costs = graphBuilder.testRequests((long)1, (long)2);
 		for(Cost cost: costs)
@@ -69,7 +70,16 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 			registry.addResourceHandler("/webjars/**").addResourceLocations(
 					"classpath:/META-INF/resources/webjars/");
 		}
-	}/*
+	}
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry)
+	{
+		registry.addViewController("/login").setViewName("login");
+		registry.addViewController("/access").setViewName("access");
+	}
+
+	/*
 	@Bean
 	public MongoDbFactory mongoDbFactory() throws Exception {
 
