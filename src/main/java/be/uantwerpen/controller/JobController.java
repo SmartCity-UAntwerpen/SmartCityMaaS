@@ -23,14 +23,12 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
-
     @RequestMapping(value="/initAstar", method= RequestMethod.GET)
     public String initAstar(final ModelMap model){
         astar.init(jobService);
         astar.startAStar();
         return "jobs-list";
     }
-
 
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
@@ -66,5 +64,13 @@ public class JobController {
         model.clear();
         return "redirect:/jobs";
     }
+
+    @RequestMapping(value ="/createOrder/{A}/{B}")
+    public String createOrder(@PathVariable String A, @PathVariable String  B)
+    {
+        return "";
+
+    }
+
 
 }

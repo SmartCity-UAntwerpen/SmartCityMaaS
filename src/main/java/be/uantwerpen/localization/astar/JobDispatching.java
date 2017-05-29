@@ -16,6 +16,7 @@ public class JobDispatching {
     @Autowired
     private JobService jobService;
 
+
     public JobDispatching (JobService jobService) {
         this.jobService = jobService;
 
@@ -34,6 +35,9 @@ public class JobDispatching {
         Link[] listOfEdges = graphBuilder.getLinkList();
         // need to delete the first item since it was random generated
         //jobService.delete(Long.valueOf(1));
+
+        // keep initeal Jobservice counter
+ //       long tempInitCount = jobService.getSize();
 
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
@@ -66,8 +70,18 @@ public class JobDispatching {
                 }
             }
         }
-        printJobList();
 
+        System.out.println("starting Order input");
+
+        // ask for endcounter, so that difference can be calculated.
+//        long tempEndCount = jobService.getSize();
+/*        Order tempOrder = new Order();
+        for (int i = 0; i < tempEndCount-tempInitCount; i++) {
+            // voeg een job toe aan een order
+            tempOrder.getOrders().add(jobService.findOne(tempInitCount+i));
+        }
+        orderService.save(tempOrder);*/
+        printJobList();
     }
 
     /*public void printJobList() {
