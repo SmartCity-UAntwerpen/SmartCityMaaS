@@ -25,7 +25,6 @@ public class HomeController {
     }
 
     @RequestMapping({"/"})
-    @PreAuthorize("hasRole('logon')")
     public String showLogIn() {return "homepage";}
 
     @RequestMapping({"/home"})

@@ -45,12 +45,14 @@ public class GraphBuilder {
     {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Point[]> responseList;
-        responseList = restTemplate.getForEntity("http://" + serverCoreIP + ":" + serverCorePort + "/point/", Point[].class);
+        String pointUrl = "http://146.175.140.44:1994/map/topmapjson/points";
+        responseList = restTemplate.getForEntity(pointUrl, Point[].class);
         pointList = responseList.getBody();
 
         restTemplate = new RestTemplate();
         ResponseEntity<Link[]> responseList2;
-        responseList2 = restTemplate.getForEntity("http://" + serverCoreIP + ":" + serverCorePort + "/link/", Link[].class);
+        String linkUrl = "http://146.175.140.44:1994/map/topmapjson/links";
+        responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
         for(Link link: linkList)
         {

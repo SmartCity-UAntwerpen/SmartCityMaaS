@@ -28,6 +28,15 @@ public class Link
         this.vehicle = vehicle;
     }
 
+    public Link(Long id, Point startPoint, Point stopPoint, String vehicle, Long weight)
+    {
+        this.id = id;
+        this.startPoint = startPoint;
+        this.stopPoint = stopPoint;
+        this.vehicle = vehicle;
+        this.weight = weight;
+    }
+
     @Id
     @Column(name = "lid")
     @GeneratedValue(strategy = GenerationType.AUTO)
