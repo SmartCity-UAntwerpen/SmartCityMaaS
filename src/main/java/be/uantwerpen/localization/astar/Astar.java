@@ -100,6 +100,7 @@ public class Astar {
         makeNode(graph, graphBuilder);
         makeEdge(graph, graphBuilder);
         testDeterminePath(graph, "1004", "1015");
+        testDeterminePath(graph, "1014", "1002");
 
     }
 

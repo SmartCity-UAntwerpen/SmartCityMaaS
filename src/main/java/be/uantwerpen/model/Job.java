@@ -26,8 +26,8 @@ public class Job extends MyAbstractPersistable<Long> {
     private long idEnd;
     private long idVehicle;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ORDER_ID")
-    private Order order;
+    @JoinColumn(name="JOBLIST_ID")
+    private JobList joblist;
     //@ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "idOrder", unique = false, nullable = false)
     //@Column(name="idOrder")
@@ -93,11 +93,11 @@ public class Job extends MyAbstractPersistable<Long> {
 
  //   @ManyToOne(cascade = CascadeType.REMOVE)
  //   @JoinColumn(name = "OrderID", referencedColumnName = "idOrder")
- /*   public Order getOrder() {
-        return order;
+ /*   public JobList getOrder() {
+        return JobList;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(JobList order) {
         this.order = order;
     }*/
 }

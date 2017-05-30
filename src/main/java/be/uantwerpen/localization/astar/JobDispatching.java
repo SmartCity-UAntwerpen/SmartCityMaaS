@@ -2,7 +2,7 @@ package be.uantwerpen.localization.astar;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.Link;
-import be.uantwerpen.model.Order;
+import be.uantwerpen.model.JobList;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.OrderService;
@@ -44,7 +44,7 @@ public class JobDispatching {
 
         // keep initeal Jobservice counter
  //       long tempInitCount = jobService.getSize();
-        Order order = new Order();
+        JobList joblist = new JobList();
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
                 // TODO: als een link ID = -1 retourneert moet er een error volgen!
@@ -61,8 +61,12 @@ public class JobDispatching {
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
 
+
                         jobService.save(job);
-                        order.addJob(job);
+                        if (joblist.isEmpty() == true) {
+                            joblist.setStartPoint(job.getIdStart());
+                        }
+                        joblist.addJob(job);
 
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
 
@@ -74,6 +78,9 @@ public class JobDispatching {
                         }
                         jobService.save(job);
 
+                        // update last endpoint of joblist to the last added endpoint
+                        joblist.setEndPoint(job.getIdEnd());
+
                         previous = link;
                     }
                 } else {
@@ -82,12 +89,14 @@ public class JobDispatching {
                 }
             }
         }
-        orderService.saveOrder(order);
+
+        //joblist.setStartPoint(joblist.getJobs());
+        orderService.saveOrder(joblist);
         System.out.println("starting Order input");
 
         // ask for endcounter, so that difference can be calculated.
 //        long tempEndCount = jobService.getSize();
-/*        Order tempOrder = new Order();
+/*        JobList tempOrder = new JobList();
         for (int i = 0; i < tempEndCount-tempInitCount; i++) {
             // voeg een job toe aan een order
             tempOrder.getOrders().add(jobService.findOne(tempInitCount+i));
@@ -116,4 +125,6 @@ public class JobDispatching {
             System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
         }
     }
+
+
 }

@@ -1,7 +1,7 @@
 package be.uantwerpen.services;
 
 import be.uantwerpen.model.Job;
-import be.uantwerpen.model.Order;
+import be.uantwerpen.model.JobList;
 import be.uantwerpen.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +15,12 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public Iterable<Order> findAll() {
+    public Iterable<JobList> findAll() {
         return this.orderRepository.findAll();
     }
 
-    public void saveOrder(Order order)
+    public void saveOrder(JobList joblist)
     {
-        this.orderRepository.save(order);
+        this.orderRepository.save(joblist);
     }
 }
