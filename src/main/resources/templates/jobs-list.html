@@ -23,6 +23,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th th:text="#{idOrder}">IDOrder</th>
                     <th th:text="#{idJob}">ID</th>
                     <th th:text="#{idStart}">Start</th>
                     <th th:text="#{idEnd}">End</th>
@@ -33,6 +34,7 @@
                 <!-- IMPORTANT, class="list" have to be at tbody -->
                 <tbody class="list">
                 <tr th:each="job : ${allJobs}">
+                    <!--td class="IDOrder" th:value="${id}" th:text="${joblist.id }">ID</td-->
                     <td class="ID" th:value="${id}" th:text="${job.id }">ID</td>
                     <td class="Start" th:value="${idStart}" th:text="${job.idStart }">Start</td>
                     <td class="End" th:value="${idEnd}" th:text="${job.idEnd }">End</td>

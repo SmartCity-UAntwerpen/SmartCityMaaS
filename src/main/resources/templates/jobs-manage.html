@@ -15,10 +15,10 @@
     <div th:replace="layout :: navbar"></div>
     <form action="#" th:action="@{/jobs/{id}(id=${job})}" th:object="${job}" method="post">
         <input th:type="hidden" th:field="*{id}"/>
-        <div class="form-group" th:classappend="${#fields.hasErrors('idJob')}?'has-error': ''">
-            <label class="control-label" th:text="#{idJob}">ID</label>
-            <span class="control-label" th:if="${#fields.hasErrors('idJob')}" th:errors="*{idJob}"> ID Error</span>
-            <input class="form-control" type="text" th:field="*{idJob}" />
+        <div class="form-group" th:classappend="${#fields.hasErrors('id')}?'has-error': ''">
+            <label class="control-label" th:text="#{id}">ID</label>
+            <span class="control-label" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"> ID Error</span>
+            <input class="form-control" type="text" th:field="*{id}" />
         </div>
 
         <div class="form-group" th:classappend="${#fields.hasErrors('idStart')}?'has-error': ''">
