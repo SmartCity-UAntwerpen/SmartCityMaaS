@@ -23,4 +23,15 @@ public class OrderService {
     {
         this.orderRepository.save(joblist);
     }
+
+
+    public void printJobList() {
+        System.out.println(" Lijst van Orders afdrukken");
+        for (JobList jl: this.orderRepository.findAll()) {
+            System.out.println(" Order #" + jl.getId());
+            for(int x = 0; x<jl.getJobs().size(); x++) {
+                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+            }
+        }
+    }
 }

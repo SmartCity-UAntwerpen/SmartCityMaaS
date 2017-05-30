@@ -116,11 +116,11 @@ public class JobDispatching {
         }
     }*/
     public void printJobList() {
-        System.out.println("lijst van jobs afprinten");
+ /*       System.out.println("lijst van jobs afprinten");
         for (Job j: jobService.findAll()) {
             System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
         }
-
+*/
 
         System.out.println(" Lijst van Orders afdrukken");
         for (JobList jl: orderService.findAll()) {

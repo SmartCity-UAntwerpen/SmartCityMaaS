@@ -35,7 +35,8 @@ public class JobController {
 
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
-        model.addAttribute("allJobs", jobService.findAll());
+       model.addAttribute("allJobs", jobService.findAll());
+        orderService.printJobList();
         return "jobs-list";
     }
 
