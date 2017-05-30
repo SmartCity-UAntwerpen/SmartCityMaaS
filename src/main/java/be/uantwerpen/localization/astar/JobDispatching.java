@@ -8,6 +8,9 @@ import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by Revil on 10/05/2017.
@@ -66,7 +69,7 @@ public class JobDispatching {
                         if (joblist.isEmpty() == true) {
                             joblist.setStartPoint(job.getIdStart());
                         }
-                        joblist.addJob(job);
+
 
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
 
@@ -76,6 +79,7 @@ public class JobDispatching {
                         else {
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
+                        joblist.addJob(job);
                         jobService.save(job);
 
                         // update last endpoint of joblist to the last added endpoint
@@ -113,8 +117,17 @@ public class JobDispatching {
     }*/
     public void printJobList() {
         System.out.println("lijst van jobs afprinten");
-        for (Job j: jobService.findAll()){
+        for (Job j: jobService.findAll()) {
             System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
+        }
+
+
+        System.out.println(" Lijst van Orders afdrukken");
+        for (JobList jl: orderService.findAll()) {
+            System.out.println(" Order #" + jl.getId());
+            for(int x = 0; x<jl.getJobs().size(); x++) {
+                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+            }
         }
     }
 

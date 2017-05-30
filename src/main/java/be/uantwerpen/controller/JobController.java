@@ -75,5 +75,13 @@ public class JobController {
 
     }
 
+    @RequestMapping(value="/CoreCommunication")
+    public String communicateToCore()
+    {
+        return "";
+    }
+
+
+
 
 }

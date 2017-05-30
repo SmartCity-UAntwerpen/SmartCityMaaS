@@ -46,7 +46,7 @@ public class Job extends MyAbstractPersistable<Long> {
 
 
     //TODO nog nakijken voor duplicate ID's!
-    //@Id
+/*    //@Id
     //@Column(name = "jid", unique = true, nullable = false)
     //@GeneratedValue(strategy = GenerationType.AUTO)
     //@GeneratedValue(strategy = IDENTITY)
@@ -57,7 +57,7 @@ public class Job extends MyAbstractPersistable<Long> {
     public void setIdJob(long idJob) {
         this.idJob = idJob;
     }
-
+*/
     //@Basic
 //    @Column(name = "start_direction", unique = false, nullable = false)
     public long getIdStart() {
