@@ -8,9 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
-/**
- * Created by Edwin on 22/10/2015.
- */
 @Configuration
 public class WebConfiguration {
     @Bean

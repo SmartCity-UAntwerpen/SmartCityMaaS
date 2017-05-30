@@ -41,6 +41,14 @@ public class User extends MyAbstractPersistable<Long> {
         roles = new ArrayList<>();
     }
 
+    public User(String firstName, String lastName, String userName, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public User(String firstName, String lastName, String userName, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;

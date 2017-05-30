@@ -50,12 +50,12 @@ public class DatabaseLoader {
         permissions.add(p2);
         administrator.setPermissions(permissions);
         roleRepository.save(administrator);
-        User u1 = new User("Edwin","Walsh");
+        User u1 = new User("Edwin","Walsh", "eddy", "admin");
         List<Role> roles = new ArrayList<>();
         roles.add(administrator);
         u1.setRoles(roles);
         userRepository.save(u1);
-        User u2 = new User("Siegfried","Mercelis");
+        User u2 = new User("Siegfried","Mercelis", "siggy", "test");
         roles = new ArrayList<>();
         roles.add(tester);
         u2.setRoles(roles);
