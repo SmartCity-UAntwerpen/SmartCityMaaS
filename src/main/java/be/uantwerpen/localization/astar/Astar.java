@@ -8,7 +8,7 @@ import be.uantwerpen.model.Point;
 import be.uantwerpen.model.Link;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
-import be.uantwerpen.services.OrderService;
+import be.uantwerpen.services.JobListService;
 import org.graphstream.algorithm.AStar;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -23,7 +23,7 @@ public class Astar {
     @Autowired
     private JobService jobService;
     @Autowired
-    private OrderService orderService;
+    private JobListService jobListService;
     GraphBuilder graphBuilder;
 
     //     B-(1)-C
@@ -77,9 +77,9 @@ public class Astar {
         graphBuilder.setLinkCosts();*/
     }
 
-    public void init( JobService jobService, OrderService orderService) {
+    public void init(JobService jobService, JobListService jobListService) {
         this.jobService = jobService;
-        this.orderService = orderService;
+        this.jobListService = jobListService;
         graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
     }
@@ -166,7 +166,7 @@ public class Astar {
         System.out.println(astar.getShortestPath());
         //TODO: verder werken naar jobdispatching van hier uit
         Path path = astar.getShortestPath();
-        JobDispatching jd = new JobDispatching(jobService, orderService, path.toString(), graphBuilder);
+        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
 
 
 

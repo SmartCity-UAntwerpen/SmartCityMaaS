@@ -22,17 +22,17 @@ public class DatabaseLoader {
     private final DeliveryRepository deliveryRepository;
     private final SegmentRepository segmentRepository;
     private final JobRepository jobRepository;
-    private final OrderRepository orderRepository;
+    private final JobListRepository jobListRepository;
 
     @Autowired
-    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, SegmentRepository segmentRepository, JobRepository jobRepository, OrderRepository orderRepository) {
+    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, SegmentRepository segmentRepository, JobRepository jobRepository, JobListRepository jobListRepository) {
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.deliveryRepository = deliveryRepository;
         this.segmentRepository = segmentRepository;
         this.jobRepository = jobRepository;
-        this.orderRepository = orderRepository;
+        this.jobListRepository = jobListRepository;
     }
 
     @PostConstruct

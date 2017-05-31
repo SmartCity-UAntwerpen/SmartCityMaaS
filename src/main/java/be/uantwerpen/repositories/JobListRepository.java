@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by Revil on 29/05/2017.
  */
 @Repository
-public interface OrderRepository extends CrudRepository<JobList, Long>
+public interface JobListRepository extends CrudRepository<JobList, Long>
 {
 
 

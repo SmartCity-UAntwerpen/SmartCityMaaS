@@ -5,11 +5,8 @@ import be.uantwerpen.model.Link;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
-import be.uantwerpen.services.OrderService;
+import be.uantwerpen.services.JobListService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -21,18 +18,18 @@ public class JobDispatching {
     @Autowired
     private JobService jobService;
     @Autowired
-    private OrderService orderService;
+    private JobListService jobListService;
 
 
-    public JobDispatching (JobService jobService, OrderService orderService) {
+    public JobDispatching (JobService jobService, JobListService jobListService) {
         this.jobService = jobService;
-        this.orderService = orderService;
+        this.jobListService = jobListService;
 
     }
 
-    public JobDispatching (JobService jobService, OrderService orderService, String path, GraphBuilder graphBuilder) {
+    public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder) {
         this.jobService = jobService;
-        this.orderService = orderService;
+        this.jobListService = jobListService;
         testdispatchOrders(path, graphBuilder);
     }
 
@@ -95,17 +92,8 @@ public class JobDispatching {
         }
 
         //joblist.setStartPoint(joblist.getJobs());
-        orderService.saveOrder(joblist);
+        jobListService.saveOrder(joblist);
         System.out.println("starting Order input");
-
-        // ask for endcounter, so that difference can be calculated.
-//        long tempEndCount = jobService.getSize();
-/*        JobList tempOrder = new JobList();
-        for (int i = 0; i < tempEndCount-tempInitCount; i++) {
-            // voeg een job toe aan een order
-            tempOrder.getOrders().add(jobService.findOne(tempInitCount+i));
-        }
-        orderService.save(tempOrder);*/
         printJobList();
     }
 
@@ -123,7 +111,7 @@ public class JobDispatching {
 */
 
         System.out.println(" Lijst van Orders afdrukken");
-        for (JobList jl: orderService.findAll()) {
+        for (JobList jl: jobListService.findAll()) {
             System.out.println(" Order #" + jl.getId());
             for(int x = 0; x<jl.getJobs().size(); x++) {
                 System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
