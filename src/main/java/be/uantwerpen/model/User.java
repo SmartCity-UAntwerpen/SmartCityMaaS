@@ -18,7 +18,9 @@ public class User extends MyAbstractPersistable<Long> {
     private String firstName;
     @NotBlank(message = "***")
     private String lastName;
+    @NotBlank(message = "***")
     private String userName;
+    @NotBlank(message = "***")
     private String password;
 
     @ManyToMany

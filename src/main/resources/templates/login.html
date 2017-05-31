@@ -19,49 +19,42 @@
 					<p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
 					<h2>Login</h2>
 					<form name="f" th:action="@{/login}" action="/login" method="POST">
-						<fieldset>
-							<div class="group">
-								<label for="username" class="label">Username</label>
-								<input type="text" name="username" value="" class="input"/>
-							</div>
-							<div class="group">
-								<label for="pass" class="label">Password</label>
-								<input type="pass" name="password" class="input"/>
-							</div>
-							<div class="group">
-								<input type="submit" id="login" value="Login" class="button" />
-							</div>
-						</fieldset>
+						<div class="group">
+							<label for="username" class="label">Username</label>
+							<input type="text" name="username" value="" class="input"/>
+						</div>
+						<div class="group">
+							<label for="password" class="label">Password</label>
+							<input type="password" name="password" class="input"/>
+						</div>
+						<div class="group">
+							<input type="submit" id="login" value="Login" class="button" />
+						</div>
 					</form>
 				</div>
 				<div class="sign-up-htm">
-					<div class="group">
-						<label for="username" class="label">Username</label>
-						<input id="username" type="text" class="input"/>
-					</div>
-					<div class="group">
-						<label for="pass" class="label">Password</label>
-						<input id="pass" type="password" class="input" data-type="password"/>
-					</div>
-					<div class="group">
-						<label for="pass" class="label">Repeat Password</label>
-						<input id="pass" type="password" class="input" data-type="password"/>
-					</div>
-					<div class="group">
-						<label for="Name" class="label">Name</label>
-						<input id="Name" type="text" class="input"/>
-					</div>
-					<div class="group">
-						<label for="Surname" class="label">Surname</label>
-						<input id="Surname" type="text" class="input"/>
-					</div>
-					<div class="group">
-						<input type="submit" class="button" value="Sign Up"/>
-					</div>
-					<div class="hr"></div>
-					<!--<div class="foot-lnk">
-						<label for="tab-1"><a>Already Member?</a></label>
-					</div>-->
+					<form name="addUser" th:action="@{/login}" action="/users/" method="POST" th:object="${user}">
+						<div class="group">
+							<label for="userName" class="label">Username</label>
+							<input th:field="*{userName}" id="userName" type="text" class="input"/>
+						</div>
+						<div class="group">
+							<label for="password" class="label">Password</label>
+							<input th:field="*{password}" id="password" type="password" class="input" data-type="password"/>
+						</div>
+						<div class="group">
+							<label for="firstName" class="label">firstName</label>
+							<input th:field="*{firstName}" id="firstName" type="text" class="input"/>
+						</div>
+						<div class="group">
+							<label for="lastName" class="label">lastName</label>
+							<input th:field="*{lastName}" id="lastName" type="text" class="input"/>
+						</div>
+						<div class="group">
+							<input type="submit" class="button" value="Sign Up"/>
+						</div>
+						<div class="hr"></div>
+					</form>
 				</div>
 			</div>
 		</div>

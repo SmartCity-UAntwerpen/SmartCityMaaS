@@ -90,7 +90,7 @@ public class GraphBuilder {
             }
 
             if(!vehicle.equals("wait")) {
-                url += "/calcWeight/" + startPoint + "/to/" + endPoint;
+                url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
                 Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());

@@ -1,4 +1,4 @@
-package be.uantwerpen.controller;
+package be.uantwerpen.Controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,8 @@ public class UserController {
     @Autowired
     private PassengerService passengerService;
 
+    @ModelAttribute("user")
+    private User getUser(){ return new User();}
 
     @RequestMapping(value="/users", method= RequestMethod.GET)
     public String showUsers(final ModelMap model){
