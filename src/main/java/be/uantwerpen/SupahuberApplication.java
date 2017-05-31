@@ -27,19 +27,6 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SupahuberApplication.class, args);
-		GraphBuilder graphBuilder = new GraphBuilder();
-		graphBuilder.getMap();
-
-		Link[] linklist = graphBuilder.getLinkList();
-		for(Link link: linklist)
-		{
-			System.out.println(link);
-		}
-		Point[] pointlist = graphBuilder.getPointList();
-		for(Point point: pointlist)
-		{
-			System.out.println(point);
-		}
 		/*System.out.println("#### AStar ####");
 		Astar astar = new Astar();
 		astar.startAStar();

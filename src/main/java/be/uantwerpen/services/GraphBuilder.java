@@ -45,18 +45,20 @@ public class GraphBuilder {
     {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Point[]> responseList;
-        String pointUrl = "http://146.175.140.44:1994/map/topmapjson/points";
+        //String pointUrl = "http://146.175.140.44:1994/map/topmapjson/points";
+        String pointUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/points";
         responseList = restTemplate.getForEntity(pointUrl, Point[].class);
         pointList = responseList.getBody();
 
         restTemplate = new RestTemplate();
         ResponseEntity<Link[]> responseList2;
-        String linkUrl = "http://146.175.140.44:1994/map/topmapjson/links";
+        //String linkUrl = "http://146.175.140.44:1994/map/topmapjson/links";
+        String linkUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/links";
         responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
         for(Link link: linkList)
         {
-            if(link.getVehicle().equals("walk"))
+            if(link.getVehicle().equals("wait"))
             {
                 link.setWeight((long)(0));
                 walkLinks.add(link);
@@ -77,28 +79,17 @@ public class GraphBuilder {
             ResponseEntity<Cost[]> responseList;
             Cost[] costs;
             String url = "http://";
-            /*if(vehicle.equals("robot")) {
-                url += robotCoreIP + ":" + robotCorePort;
-            } else if(vehicle.equals("drone")) {
-                url += droneCoreIP + ":" + droneCorePort;
-            } else if(vehicle.equals("car")) {
-                url += carCoreIP + ":" + carCorePort + "/carmanager";
-            } else if(vehicle.equals("walk")) {
-                link.setWeight((long)(0));
-            } else {
-                System.out.println("no supported vehicle was given. See graphbuilder class");
-            }*/
 
             switch (vehicle)
             {
                 case "robot": url += robotCoreIP + ":" + robotCorePort;
                 case "drone": url += droneCoreIP + ":" + droneCorePort;
                 case "car": url += carCoreIP + ":" + carCorePort + "/carmanager";
-                case "walk": link.setWeight((long)(0));
+                case "wait": link.setWeight((long)(0));
                 default: System.out.println("no supported vehicle was given. See graphbuilder class");
             }
 
-            if(!vehicle.equals("walk")) {
+            if(!vehicle.equals("wait")) {
                 url += "/calcWeight/" + startPoint + "/to/" + endPoint;
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();

@@ -95,6 +95,8 @@ public class Point
         return "PointEntity{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
+                ", x= " + x +
+                ", y= " + y +
                 '}';
     }
 }
