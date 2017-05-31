@@ -81,6 +81,24 @@ public class JobController {
 
     }
 
+    @RequestMapping(value="/completeJob/{idJob}", method= RequestMethod.GET)
+    public String completeJob (@PathVariable Long idJob) {
+        jobService.delete(idJob);
+        for (JobList jl: jobListService.findAll()){
+            if (jl.getJobs().get(0).getId().equals(idJob) == true) {
+                jl.getJobs().get(0).setStatus("done");
+                jl.getJobs().remove(0);
+            }
+            else {
+                // do nothing for now
+            }
+        }
+        // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
+        return "";
+    }
+
+
+    //TODO waarschijnlijk te deleten
     @RequestMapping(value="/dispatchJobs")
     public String dispatchJobs()
     {
@@ -88,26 +106,20 @@ public class JobController {
 
         // iterate over all orders
         for (JobList jl: jobListService.findAll()) {
-            // TODO: iterate differently, because you need to check the job status!
-
-
-
-            // iterate over all  Get the jobtype of the first type --> use it to know to which core you have to dispatch a job
-            for(int x = 0; x<jl.getJobs().size(); x++) {
-                // recognize the type
-                // in the event it is a drone: communicate with the Drone core
-                if (jl.getJobs().get(x).getTypeVehicle() == "drone") {
-
+            if (jl.getJobs().get(0).getStatus() == "ready") {
+                //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
+                if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
+                    //TODO communication with the drone core
                 }
-                // in the event it is a car: communicate with the Car core
-                else if (jl.getJobs().get(x).getTypeVehicle() == "car") {
-
+                // communication needed with car core
+                else if (jl.getJobs().get(0).getTypeVehicle() == "car") {
+                    //TODO communication with the car core
                 }
                 // else event: type is robot: communicate with the robot core
                 else {
-
+                    //TODO communication with the robot core
                 }
-                //if System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+
             }
         }
 /*        Map<String,Object> params = new LinkedHashMap<>();
