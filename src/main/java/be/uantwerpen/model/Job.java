@@ -25,6 +25,7 @@ public class Job extends MyAbstractPersistable<Long> {
     private long idStart;
     private long idEnd;
     private long idVehicle;
+    private String typeVehicle;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="JOBLIST_ID")
     private JobList joblist;
@@ -90,8 +91,15 @@ public class Job extends MyAbstractPersistable<Long> {
         this.idVehicle = idVehicle;
     }
 
+    public String getTypeVehicle() {
+        return typeVehicle;
+    }
 
- //   @ManyToOne(cascade = CascadeType.REMOVE)
+    public void setTypeVehicle(String typeVehicle) {
+        this.typeVehicle = typeVehicle;
+    }
+
+//   @ManyToOne(cascade = CascadeType.REMOVE)
  //   @JoinColumn(name = "OrderID", referencedColumnName = "idOrder")
  /*   public JobList getOrder() {
         return JobList;

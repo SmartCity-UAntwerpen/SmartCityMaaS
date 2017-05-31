@@ -2,6 +2,7 @@ package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
+import be.uantwerpen.model.JobList;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.net.URL;
+import java.util.*;
+
 
 /**
  * Created by Kevin on 17/05/2017.
@@ -76,9 +80,25 @@ public class JobController {
 
     }
 
-    @RequestMapping(value="/CoreCommunication")
-    public String communicateToCore()
+    @RequestMapping(value="/dispatchJobs")
+    public String dispatchJobs()
     {
+        /*
+
+        // alle orders oproepen
+        for (JobList jl: jobListService.findAll()) {
+            // haal type van het eerste order op --> daarmee werk je om te weten naar welke core je gaat sturen
+            for(int x = 0; x<jl.getJobs().size(); x++) {
+                // herken het type voertuig
+                if jl.getJobs().get(x).getIdVehicle() {
+
+                }
+                if System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+            }
+        }
+        Map<String,Object> params = new LinkedHashMap<>();
+        params.put("idJob", )
+        URL url = new URL("executeJob/{idJob}/{idVehicle}/{idStart}/{idEnd}"); // url een van de 3 cores*/
         return "";
     }
 

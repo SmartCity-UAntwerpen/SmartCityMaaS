@@ -18,7 +18,7 @@ public class JobListService {
         return this.jobListRepository.findAll();
     }
 
-    public void saveOrder(JobList joblist)
+    public void saveOrder(final JobList joblist)
     {
         this.jobListRepository.save(joblist);
     }
@@ -29,7 +29,7 @@ public class JobListService {
         for (JobList jl: this.jobListRepository.findAll()) {
             System.out.println(" Order #" + jl.getId());
             for(int x = 0; x<jl.getJobs().size(); x++) {
-                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle());
             }
         }
     }

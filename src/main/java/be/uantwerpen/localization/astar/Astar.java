@@ -94,7 +94,7 @@ public class Astar {
 
     public void startAStar() {
 
-        //TODO: deze methode uitcommenten van zodra er het geintegreerd wordt in het gehele project
+        //TODO: deze methode uitcommenten in jobcontroller van zodra er het geintegreerd wordt in het gehele project
 
  /*       //testfiles met apparte dummy methodes voor genereren van Graph
         testMakeNode(graph);
@@ -143,6 +143,7 @@ public class Astar {
         for (int i = 0; i < listOfEdges.length; i++){
             this.graph.addEdge(listOfEdges[i].getId().toString(), listOfEdges[i].getStartPoint().getId().toString(), listOfEdges[i].getStopPoint().getId().toString(), true);
             this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("weight", listOfEdges[i].getWeight());
+            //this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("vehicleType", listOfEdges[i].getVehicle());
         }
     }
 
@@ -181,7 +182,6 @@ public class Astar {
 
     public void DeterminePath(String startPos, String endPos) {
         AStar astar = new AStar(this.graph);
-        //TODO update graphbuilder function
         updateNaE();
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
