@@ -94,6 +94,8 @@ public class Astar {
 
     public void startAStar() {
 
+        //TODO: deze methode uitcommenten van zodra er het geintegreerd wordt in het gehele project
+
  /*       //testfiles met apparte dummy methodes voor genereren van Graph
         testMakeNode(graph);
         testMakeEdge(graph);
