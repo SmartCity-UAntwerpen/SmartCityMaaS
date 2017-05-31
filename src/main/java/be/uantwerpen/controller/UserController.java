@@ -2,6 +2,7 @@ package be.uantwerpen.Controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.World;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +57,19 @@ public class UserController {
         return "users-manage";
     }
 
+    /*@RequestMapping(value="/addUser", method=RequestMethod.POST)
+    public String addRealUser(@Valid User user, BindingResult result final ModelMap model) {
+        if(userService.findByUserName(user.getUserName()).equals(null)) {
+            List<Role> roles = new ArrayList<>();
+            roles.add(roleService.findRole("user"));
+            user.setRoles(roles);
+            userService.saveSomeAttributes(user);
+            return "redirect:/login";
+        } else {
+            return "error";
+        }
+    }*/
+
     @RequestMapping(value="/users/{id}", method= RequestMethod.GET)
     public String viewEditUser(@PathVariable Long id, final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
@@ -65,12 +80,15 @@ public class UserController {
     @RequestMapping(value={"/users/", "/users/{id}"}, method= RequestMethod.POST)
     public String addUser(@Valid User user, BindingResult result, final ModelMap model){
         System.out.println(result.getModel());
-        if(result.hasErrors()){
-            model.addAttribute("allRoles", roleService.findAll());
-            return "users-manage";
+        if(userService.findByUserName(user.getUserName()) == null) {
+            List<Role> roles = new ArrayList<>();
+            roles.add(roleService.findRole("user"));
+            user.setRoles(roles);
+            userService.saveSomeAttributes(user);
+            return "redirect:/login";
+        } else {
+            return "redirect:/login?error";
         }
-        userService.saveSomeAttributes(user);
-        return "redirect:/users";
     }
 
     @RequestMapping(value="/users/{id}/delete")
