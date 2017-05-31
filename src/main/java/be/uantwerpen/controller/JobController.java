@@ -83,20 +83,33 @@ public class JobController {
     @RequestMapping(value="/dispatchJobs")
     public String dispatchJobs()
     {
-        /*
 
-        // alle orders oproepen
+
+        // iterate over all orders
         for (JobList jl: jobListService.findAll()) {
-            // haal type van het eerste order op --> daarmee werk je om te weten naar welke core je gaat sturen
+            // TODO: iterate differently, because you need to check the job status!
+
+
+
+            // iterate over all  Get the jobtype of the first type --> use it to know to which core you have to dispatch a job
             for(int x = 0; x<jl.getJobs().size(); x++) {
-                // herken het type voertuig
-                if jl.getJobs().get(x).getIdVehicle() {
+                // recognize the type
+                // in the event it is a drone: communicate with the Drone core
+                if (jl.getJobs().get(x).getTypeVehicle() == "drone") {
 
                 }
-                if System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+                // in the event it is a car: communicate with the Car core
+                else if (jl.getJobs().get(x).getTypeVehicle() == "car") {
+
+                }
+                // else event: type is robot: communicate with the robot core
+                else {
+
+                }
+                //if System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
             }
         }
-        Map<String,Object> params = new LinkedHashMap<>();
+/*        Map<String,Object> params = new LinkedHashMap<>();
         params.put("idJob", )
         URL url = new URL("executeJob/{idJob}/{idVehicle}/{idStart}/{idEnd}"); // url een van de 3 cores*/
         return "";

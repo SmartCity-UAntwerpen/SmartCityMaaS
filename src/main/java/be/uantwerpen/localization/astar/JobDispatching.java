@@ -62,6 +62,7 @@ public class JobDispatching {
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
                         job.setTypeVehicle((listOfEdges[j].getVehicle()));
+                        job.setStatus("ready");
 
 
                         jobService.save(job);
@@ -116,7 +117,7 @@ public class JobDispatching {
         for (JobList jl: jobListService.findAll()) {
             System.out.println(" Order #" + jl.getId());
             for(int x = 0; x<jl.getJobs().size(); x++) {
-                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle());
+                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
