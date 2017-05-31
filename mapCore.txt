@@ -1,0 +1,1 @@
+{"pointList" :[{"id" : 0, "x" :10, "y" : 0, "neighbours" : [{"neighbour" : 1},{"neighbour" : 2}]}, {"id" : 1, "x" :10, "y" : 10, "neighbours" : [{"neighbour" : 0},{"neighbour" : 2}]}, {"id" : 2, "x" :0, "y" : 10, "neighbours" : [{"neighbour" : 0},{"neighbour" : 1}]},{"id" : 3, "x" :0, "y" : 0, "neighbours" : [{"neighbour" : 0},{"neighbour" : 1}]}]}
