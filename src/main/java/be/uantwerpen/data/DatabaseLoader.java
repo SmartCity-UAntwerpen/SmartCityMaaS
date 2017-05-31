@@ -40,11 +40,11 @@ public class DatabaseLoader {
         Permission p2 = new Permission("secret-message");
         permissionRepository.save(p2);
         Role administrator = new Role("Administrator");
-        Role tester = new Role("Tester");
+        Role User = new Role("user");
         List<Permission> permissions =  new ArrayList<Permission>();
         permissions.add(p1);
-        tester.setPermissions(permissions);
-        roleRepository.save(tester);
+        User.setPermissions(permissions);
+        roleRepository.save(User);
         permissions =  new ArrayList<Permission>();
         permissions.add(p1);
         permissions.add(p2);
@@ -57,7 +57,7 @@ public class DatabaseLoader {
         userRepository.save(u1);
         User u2 = new User("Siegfried","Mercelis", "siggy", "test");
         roles = new ArrayList<>();
-        roles.add(tester);
+        roles.add(User);
         u2.setRoles(roles);
         userRepository.save(u2);
 

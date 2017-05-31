@@ -18,7 +18,7 @@
 					<p th:if="${param.logout}" class="alert">You have been logged out</p>
 					<p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
 					<h2>Login</h2>
-					<form name="f" th:action="@{/login}" action="/login" method="POST">
+					<form name="f" th:action="@{/login}" method="POST">
 						<div class="group">
 							<label for="username" class="label">Username</label>
 							<input type="text" name="username" value="" class="input"/>
@@ -33,7 +33,7 @@
 					</form>
 				</div>
 				<div class="sign-up-htm">
-					<form name="addUser" th:action="@{/login}" action="/users/" method="POST" th:object="${user}">
+					<form name="addUser" th:action="@{/users/}" method="POST" th:object="${user}">
 						<div class="group">
 							<label for="userName" class="label">Username</label>
 							<input th:field="*{userName}" id="userName" type="text" class="input"/>
