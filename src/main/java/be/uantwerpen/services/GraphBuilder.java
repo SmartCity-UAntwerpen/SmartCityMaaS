@@ -20,21 +20,21 @@ public class GraphBuilder {
     @Value("${sc.core.ip:localhost}")
     private String serverCoreIP;
 
-    @Value("#{new Integer(${sc.core.port}) ?: 1994}")
+    @Value("#{new Integer(${core.port}) ?: 1994}")
     private int serverCorePort;
 
-    @Value("${sc.drone.ip:localhost}")
+    @Value("${drone.ip:localhost}")
     private String droneCoreIP;
-    @Value("${sc.car.ip:localhost}")
+    @Value("${car.ip:localhost}")
     private String carCoreIP;
-    @Value("${sc.robot.ip:localhost}")
+    @Value("${robot.ip:localhost}")
     private String robotCoreIP;
 
-    @Value("#{new Integer(${sc.drone.port}) ?: 1994}")
+    @Value("#{new Integer(${drone.port}) ?: 1994}")
     private String droneCorePort;
-    @Value("#{new Integer(${sc.car.port}) ?: 1994}")
+    @Value("#{new Integer(${car.port}) ?: 1994}")
     private String carCorePort;
-    @Value("#{new Integer(${sc.robot.port}) ?: 1994}")
+    @Value("#{new Integer(${robot.port}) ?: 1994}")
     private String robotCorePort;
 
     private Link[] linkList = new Link[60];

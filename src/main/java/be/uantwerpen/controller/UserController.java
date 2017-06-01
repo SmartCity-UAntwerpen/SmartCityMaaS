@@ -7,6 +7,7 @@ import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -40,6 +41,7 @@ public class UserController {
     private User getUser(){ return new User();}
 
     @RequestMapping(value="/users", method= RequestMethod.GET)
+    //@PreAuthorize("hasRole('admin')")
     public String showUsers(final ModelMap model){
         model.addAttribute("allUsers", userService.findAll());
         return "users-list";
@@ -51,6 +53,7 @@ public class UserController {
 
 
     @RequestMapping(value="/users/put", method= RequestMethod.GET)
+    //@PreAuthorize("hasRole('admin') and hasRole('logon')")
     public String viewCreateUser(final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",new User("",""));
@@ -77,7 +80,7 @@ public class UserController {
         return "users-manage";
     }
 
-    @RequestMapping(value={"/users/", "/users/{id}"}, method= RequestMethod.POST)
+    @RequestMapping(value={"/users/"}, method= RequestMethod.POST)
     public String addUser(@Valid User user, BindingResult result, final ModelMap model){
         System.out.println(result.getModel());
         if(userService.findByUserName(user.getUserName()) == null) {
@@ -89,6 +92,17 @@ public class UserController {
         } else {
             return "redirect:/login?error";
         }
+    }
+
+    @RequestMapping(value={"/users/{id}"}, method= RequestMethod.POST)
+    public String editUser(@Valid User user, BindingResult result, final ModelMap model){
+        System.out.println(result.getModel());
+        if(result.hasErrors()){
+            model.addAttribute("allRoles", roleService.findAll());
+            return "users-manage";
+        }
+        userService.saveSomeAttributes(user);
+        return "redirect:/users";
     }
 
     @RequestMapping(value="/users/{id}/delete")
