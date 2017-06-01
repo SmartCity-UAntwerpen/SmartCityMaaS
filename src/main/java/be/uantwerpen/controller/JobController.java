@@ -98,39 +98,4 @@ public class JobController {
         //TODO 2: nakijken of ORDER nog een job bevat. Zoniet, ORDERN DELETEN!
         return "/dispatchJobs";
     }
-
-
-    //TODO waarschijnlijk te deleten
-    @RequestMapping(value="/dispatchJobs")
-    public String dispatchJobs()
-    {
-
-
-        // iterate over all orders
-        for (JobList jl: jobListService.findAll()) {
-            if (jl.getJobs().get(0).getStatus() == "ready") {
-                //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
-                if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
-                    //TODO communication with the drone core
-                }
-                // communication needed with car core
-                else if (jl.getJobs().get(0).getTypeVehicle() == "car") {
-                    //TODO communication with the car core
-                }
-                // else event: type is robot: communicate with the robot core
-                else {
-                    //TODO communication with the robot core
-                }
-
-            }
-        }
-/*        Map<String,Object> params = new LinkedHashMap<>();
-        params.put("idJob", )
-        URL url = new URL("executeJob/{idJob}/{idVehicle}/{idStart}/{idEnd}"); // url een van de 3 cores*/
-        return "";
-    }
-
-
-
-
 }

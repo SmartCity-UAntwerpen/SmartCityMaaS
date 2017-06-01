@@ -25,7 +25,8 @@ public class Astar {
     @Autowired
     private JobListService jobListService;
     private  Graph graph;
-    GraphBuilder graphBuilder;
+    @Autowired
+    private GraphBuilder graphBuilder;
 
     //     B-(1)-C
     //    /       \
@@ -82,7 +83,7 @@ public class Astar {
         this.jobService = jobService;
         this.jobListService = jobListService;
         this.graph = new SingleGraph("SmartCityGraph");
-        graphBuilder = new GraphBuilder();
+        //graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
         //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
         //graphBuilder.getMap();
