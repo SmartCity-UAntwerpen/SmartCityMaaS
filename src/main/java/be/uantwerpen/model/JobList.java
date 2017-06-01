@@ -1,8 +1,6 @@
 package be.uantwerpen.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +10,8 @@ import java.util.List;
 @Entity
 public class JobList extends MyAbstractPersistable<Long>{
 
-    @OneToMany(mappedBy = "joblist")
+    @OneToMany
+    @JoinColumn(name="ID_ORDER", referencedColumnName="ID")
     private List<Job> jobs;
     @Column(name="SP", unique = false, nullable = false)
     private long startPoint;

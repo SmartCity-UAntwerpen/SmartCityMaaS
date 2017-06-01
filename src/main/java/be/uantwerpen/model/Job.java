@@ -21,14 +21,14 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class Job extends MyAbstractPersistable<Long> {
 
 
-    private long idJob;
+   // private long idJob;
     private long idStart;
     private long idEnd;
     private long idVehicle;
     private String typeVehicle;
     private String Status;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="JOBLIST_ID")
+    @JoinColumn(name="ID_ORDER")
     private JobList joblist;
     //@ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "idOrder", unique = false, nullable = false)
@@ -39,14 +39,20 @@ public class Job extends MyAbstractPersistable<Long> {
     }
 
 
-    public Job(Long idJob, Long idStart, Long idEnd, Long idVehicle) {
-        this.idJob = idJob;
+    public Job(Long idStart, Long idEnd, Long idVehicle) {
+       // this.idJob = idJob;
         this.idStart = idStart;
         this.idEnd = idEnd;
         this.idVehicle = idVehicle;
     }
 
+    public JobList getJoblist() {
+        return joblist;
+    }
 
+    public void setJoblist(JobList joblist) {
+        this.joblist = joblist;
+    }
     //TODO nog nakijken voor duplicate ID's!
 /*    //@Id
     //@Column(name = "jid", unique = true, nullable = false)
