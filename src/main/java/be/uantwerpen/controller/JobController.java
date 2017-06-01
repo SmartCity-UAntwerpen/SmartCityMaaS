@@ -94,7 +94,9 @@ public class JobController {
             }
         }
         // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
-        return "";
+
+        //TODO 2: nakijken of ORDER nog een job bevat. Zoniet, ORDERN DELETEN!
+        return "/dispatchJobs";
     }
 
 

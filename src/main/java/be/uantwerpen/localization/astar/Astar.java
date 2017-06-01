@@ -104,8 +104,10 @@ public class Astar {
         //Testfiles met correcte graaf
         makeNode();
         makeEdge();
-        testDeterminePath(graph, "1004", "1015");
+        //testDeterminePath(graph, "1002", "1015");
         testDeterminePath(graph, "1014", "1002");
+        testDeterminePath(graph, "1004", "1015");
+
 
     }
 

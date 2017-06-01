@@ -5,6 +5,12 @@ import be.uantwerpen.repositories.JobListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.*;
+
+
+
 /**
  * Created by Revil on 29/05/2017.
  */
@@ -31,6 +37,83 @@ public class JobListService {
             for(int x = 0; x<jl.getJobs().size(); x++) {
                 System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl.getJobs().get(x).getStatus());
             }
+        }
+    }
+
+    public void dispatch2Core() {
+        for (JobList jl : this.jobListRepository.findAll()) {
+            // iterate over all orders
+            if (jl.getJobs().get(0).getStatus() == "ready") {
+                //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
+                if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
+                    dispatch2Drone(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle());
+                }
+                // communication needed with car core
+                else if (jl.getJobs().get(0).getTypeVehicle() == "car") {
+                    dispatch2Car(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle());
+                }
+                // else event: type is robot: communicate with the robot core
+                else {
+                    dispatch2Robot(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle());
+                }
+            }
+        }
+    }
+
+    public void dispatch2Drone(long idJob, long idStart, long idEnd, long idVehicle) {
+        String temp = "http://146.175.140.38:8082/executeJob/";
+        //temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        temp=temp+("911/78/0/2");
+        System.out.println(temp);
+        try {
+            URL url = new URL(temp);
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+           // conn.setRequestProperty("Content-Type", "application/json");
+           // OutputStream os = conn.getOutputStream();
+           // os.write(temp.getBytes());
+            //os.flush();
+            conn.getResponseMessage();
+            conn.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void dispatch2Car(long idJob, long idStart, long idEnd, long idVehicle) {
+        String temp = "http://143.129.39.151:8081/carmanager/executeJob/";
+        //temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        temp=temp+("0/0/9/10");
+        try {
+            URL url = new URL(temp);
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.getResponseMessage();
+            conn.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void dispatch2Robot(long idJob, long idStart, long idEnd, long idVehicle) {
+        //String temp = "143.129.39.112:1949/executeJob/";
+        String temp = "http://146.175.140.154:1949/executeJob/";
+        temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        try {
+            URL url = new URL(temp);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.getResponseMessage();
+            conn.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

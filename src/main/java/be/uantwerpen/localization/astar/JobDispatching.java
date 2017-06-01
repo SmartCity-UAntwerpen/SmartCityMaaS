@@ -98,6 +98,7 @@ public class JobDispatching {
         jobListService.saveOrder(joblist);
         System.out.println("starting Order input");
         printJobList();
+        jobListService.dispatch2Core();
     }
 
     /*public void printJobList() {
@@ -125,6 +126,7 @@ public class JobDispatching {
     // check to make sure you don't change from 1 drone to another drone the same platform
     public void OptimiseVehicleUsage () {
         for (Job j: jobService.findAll()){
+
             //TODO zorg ervoor dat indien het eenzelfde vehicle is, dat je niet overstapt
             System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
         }
