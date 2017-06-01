@@ -23,6 +23,11 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
+	<properties>
+		<tomcat.version>8.5.4</tomcat.version>
+		<jersey.version>2.23.2</jersey.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<dependencies>
         <dependency>

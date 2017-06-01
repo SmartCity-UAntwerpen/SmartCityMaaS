@@ -5,6 +5,7 @@ import be.uantwerpen.model.Link;
 import be.uantwerpen.model.Point;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  * Created by dries on 10/05/2017.
  * Made for getting all the information for the A* algorithm.
  */
+@Service
 public class GraphBuilder {
     @Value("${sc.core.ip:localhost}")
     private String serverCoreIP;
