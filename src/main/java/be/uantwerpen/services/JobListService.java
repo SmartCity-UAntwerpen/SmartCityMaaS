@@ -46,21 +46,27 @@ public class JobListService {
             if (jl.getJobs().get(0).getStatus() == "ready") {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
                 if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
-                    dispatch2Drone(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle());
+                    if (dispatch2Drone(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
+
+                    }
                 }
                 // communication needed with car core
                 else if (jl.getJobs().get(0).getTypeVehicle() == "car") {
-                    dispatch2Car(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle());
+                    if (dispatch2Car(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
+
+                    }
                 }
                 // else event: type is robot: communicate with the robot core
                 else {
-                    dispatch2Robot(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle());
+                    if (dispatch2Robot(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
+
+                    }
                 }
             }
         }
     }
 
-    public void dispatch2Drone(long idJob, long idStart, long idEnd, long idVehicle) {
+    public Boolean dispatch2Drone(long idJob, long idStart, long idEnd, long idVehicle) {
         String temp = "http://146.175.140.38:8082/executeJob/";
         //temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         temp=temp+("911/78/0/2");
@@ -80,10 +86,12 @@ public class JobListService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
 
-    public void dispatch2Car(long idJob, long idStart, long idEnd, long idVehicle) {
+    public boolean dispatch2Car(long idJob, long idStart, long idEnd, long idVehicle) {
+        boolean status = true;
         String temp = "http://143.129.39.151:8081/carmanager/executeJob/";
         //temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         temp=temp+("0/0/9/10");
@@ -93,15 +101,28 @@ public class JobListService {
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("GET");
-            conn.getResponseMessage();
-            conn.disconnect();
+            //an error has occured
+            if (conn.getResponseCode() == 200) {
+                String msgresponse = conn.getResponseMessage();
+                if (msgresponse == "ACK") {
+                    conn.disconnect();
+                    status = true;
+                }
+            }
+            // an error has occured
+            else{
+                conn.disconnect();
+                //TODO juist code schrijven om dit af te handelen.
+                status = false;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return status;
     }
 
 
-    public void dispatch2Robot(long idJob, long idStart, long idEnd, long idVehicle) {
+    public boolean dispatch2Robot(long idJob, long idStart, long idEnd, long idVehicle) {
         //String temp = "143.129.39.112:1949/executeJob/";
         String temp = "http://146.175.140.154:1949/executeJob/";
         temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
@@ -115,5 +136,19 @@ public class JobListService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
+    }
+
+    public boolean isEmpty(long id) {
+        if (this.jobListRepository.findOne(id).getJobs().size() == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void deleteOrder (long id) {
+        this.jobListRepository.delete(id);
     }
 }

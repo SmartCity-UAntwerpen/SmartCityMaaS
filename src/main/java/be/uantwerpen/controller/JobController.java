@@ -88,14 +88,20 @@ public class JobController {
             if (jl.getJobs().get(0).getId().equals(idJob) == true) {
                 jl.getJobs().get(0).setStatus("done");
                 jl.getJobs().remove(0);
+                if (jl.getJobs().isEmpty() == true) {
+                    //TODO need to test to see if this works
+                    jobListService.deleteOrder(jl.getId());
+                }
             }
             else {
                 // do nothing for now
             }
         }
-        // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
 
-        //TODO 2: nakijken of ORDER nog een job bevat. Zoniet, ORDERN DELETEN!
+        // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
+        jobListService.dispatch2Core();
+
+
         return "/dispatchJobs";
     }
 }
