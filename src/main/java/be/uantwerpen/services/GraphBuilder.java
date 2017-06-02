@@ -107,7 +107,7 @@ public class GraphBuilder {
                 }
                 for(Link walkLink : walkLinks)
                 {
-                    if(walkLink.getStopPoint().getId().equals(endPoint))
+                    if(walkLink.getStopPoint().getId().equals(startPoint))
                     {
                         walkLink.setWeight(bestCost.getWeightToStart());
                     }
