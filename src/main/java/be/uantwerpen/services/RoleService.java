@@ -5,6 +5,8 @@ import be.uantwerpen.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
+
 /**
  * Created by Frédéric Melaerts on 26/04/2017.
  */
@@ -15,6 +17,19 @@ public class RoleService {
 
     public Iterable<Role> findAll() {
         return this.roleRepository.findAll();
+    }
+
+    public Role findRole(String role) {
+        Iterator<Role> iterator = roleRepository.findAll().iterator();
+        while(iterator.hasNext())
+        {
+            Role current = iterator.next();
+            if(current.getName().equals(role))
+            {
+                return current;
+            }
+        }
+        return null;
     }
 
 }

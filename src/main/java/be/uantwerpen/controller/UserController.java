@@ -2,18 +2,22 @@ package be.uantwerpen.controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,8 +37,11 @@ public class UserController {
     @Autowired
     private PassengerService passengerService;
 
+    @ModelAttribute("user")
+    private User getUser(){ return new User();}
 
     @RequestMapping(value="/users", method= RequestMethod.GET)
+    //@PreAuthorize("hasRole('admin')")
     public String showUsers(final ModelMap model){
         model.addAttribute("allUsers", userService.findAll());
         return "users-list";
@@ -46,11 +53,25 @@ public class UserController {
 
 
     @RequestMapping(value="/users/put", method= RequestMethod.GET)
+    //@PreAuthorize("hasRole('admin') and hasRole('logon')")
     public String viewCreateUser(final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",new User("",""));
         return "users-manage";
     }
+
+    /*@RequestMapping(value="/addUser", method=RequestMethod.POST)
+    public String addRealUser(@Valid User user, BindingResult result final ModelMap model) {
+        if(userService.findByUserName(user.getUserName()).equals(null)) {
+            List<Role> roles = new ArrayList<>();
+            roles.add(roleService.findRole("user"));
+            user.setRoles(roles);
+            userService.saveSomeAttributes(user);
+            return "redirect:/login";
+        } else {
+            return "error";
+        }
+    }*/
 
     @RequestMapping(value="/users/{id}", method= RequestMethod.GET)
     public String viewEditUser(@PathVariable Long id, final ModelMap model){
@@ -59,8 +80,22 @@ public class UserController {
         return "users-manage";
     }
 
-    @RequestMapping(value={"/users/", "/users/{id}"}, method= RequestMethod.POST)
+    @RequestMapping(value={"/users/"}, method= RequestMethod.POST)
     public String addUser(@Valid User user, BindingResult result, final ModelMap model){
+        System.out.println(result.getModel());
+        if(userService.findByUserName(user.getUserName()) == null) {
+            List<Role> roles = new ArrayList<>();
+            roles.add(roleService.findRole("user"));
+            user.setRoles(roles);
+            userService.saveSomeAttributes(user);
+            return "redirect:/login";
+        } else {
+            return "redirect:/login?error";
+        }
+    }
+
+    @RequestMapping(value={"/users/{id}"}, method= RequestMethod.POST)
+    public String editUser(@Valid User user, BindingResult result, final ModelMap model){
         System.out.println(result.getModel());
         if(result.hasErrors()){
             model.addAttribute("allRoles", roleService.findAll());

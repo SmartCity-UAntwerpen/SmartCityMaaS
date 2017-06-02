@@ -1,17 +1,18 @@
 package be.uantwerpen;
 
 import be.uantwerpen.localization.astar.Astar;
-import com.mongodb.MongoClient;
+import be.uantwerpen.model.Link;
+import be.uantwerpen.model.Point;
+import be.uantwerpen.services.GraphBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -29,7 +30,16 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 		/*System.out.println("#### AStar ####");
 		Astar astar = new Astar();
 		astar.startAStar();
-		System.out.println("#### end AStar ####");*/
+		System.out.println("#### end AStar ####");
+		System.out.println("starting request");
+		GraphBuilder graphBuilder = new GraphBuilder();
+		ArrayList<Cost> costs = graphBuilder.testRequests((long)1, (long)2);
+		for(Cost cost: costs)
+		{
+			System.out.println("status: " + cost.isStatus() + ", weight: " + cost.getWeight() + ", weightToStart: " + cost.getWeightToStart() + ", vehicleID: " + cost.getIdVehicle());
+		}
+		System.out.println("the end");*/
+
 	}
 	@Bean
 	public LocaleResolver localeResolver() {
@@ -63,7 +73,16 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 			registry.addResourceHandler("/webjars/**").addResourceLocations(
 					"classpath:/META-INF/resources/webjars/");
 		}
-	}/*
+	}
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry)
+	{
+		registry.addViewController("/login").setViewName("login");
+		registry.addViewController("/access").setViewName("access");
+	}
+
+	/*
 	@Bean
 	public MongoDbFactory mongoDbFactory() throws Exception {
 

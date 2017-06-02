@@ -21,12 +21,14 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class Job extends MyAbstractPersistable<Long> {
 
 
-    private long idJob;
+   // private long idJob;
     private long idStart;
     private long idEnd;
     private long idVehicle;
+    private String typeVehicle;
+    private String Status;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="JOBLIST_ID")
+    @JoinColumn(name="ID_ORDER")
     private JobList joblist;
     //@ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "idOrder", unique = false, nullable = false)
@@ -37,14 +39,20 @@ public class Job extends MyAbstractPersistable<Long> {
     }
 
 
-    public Job(Long idJob, Long idStart, Long idEnd, Long idVehicle) {
-        this.idJob = idJob;
+    public Job(Long idStart, Long idEnd, Long idVehicle) {
+       // this.idJob = idJob;
         this.idStart = idStart;
         this.idEnd = idEnd;
         this.idVehicle = idVehicle;
     }
 
+    public JobList getJoblist() {
+        return joblist;
+    }
 
+    public void setJoblist(JobList joblist) {
+        this.joblist = joblist;
+    }
     //TODO nog nakijken voor duplicate ID's!
 /*    //@Id
     //@Column(name = "jid", unique = true, nullable = false)
@@ -90,8 +98,22 @@ public class Job extends MyAbstractPersistable<Long> {
         this.idVehicle = idVehicle;
     }
 
+    public String getTypeVehicle() {
+        return typeVehicle;
+    }
 
- //   @ManyToOne(cascade = CascadeType.REMOVE)
+    public void setTypeVehicle(String typeVehicle) {
+        this.typeVehicle = typeVehicle;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
+    //   @ManyToOne(cascade = CascadeType.REMOVE)
  //   @JoinColumn(name = "OrderID", referencedColumnName = "idOrder")
  /*   public JobList getOrder() {
         return JobList;

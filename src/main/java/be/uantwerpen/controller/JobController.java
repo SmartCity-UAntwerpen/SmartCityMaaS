@@ -2,6 +2,7 @@ package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
+import be.uantwerpen.model.JobList;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.net.URL;
+import java.util.*;
+
 
 /**
  * Created by Kevin on 17/05/2017.
@@ -35,7 +39,8 @@ public class JobController {
 
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
-       model.addAttribute("allJobs", jobService.findAll());
+        model.addAttribute("allJobs", jobService.findAll());
+        model.addAttribute("allJobList", jobListService.findAll());
         jobListService.printJobList();
         return "jobs-list";
     }
@@ -76,13 +81,21 @@ public class JobController {
 
     }
 
-    @RequestMapping(value="/CoreCommunication")
-    public String communicateToCore()
-    {
-        return "";
+    @RequestMapping(value="/completeJob/{idJob}", method= RequestMethod.GET)
+    public String completeJob (@PathVariable Long idJob) {
+        jobService.delete(idJob);
+        for (JobList jl: jobListService.findAll()){
+            if (jl.getJobs().get(0).getId().equals(idJob) == true) {
+                jl.getJobs().get(0).setStatus("done");
+                jl.getJobs().remove(0);
+            }
+            else {
+                // do nothing for now
+            }
+        }
+        // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
+
+        //TODO 2: nakijken of ORDER nog een job bevat. Zoniet, ORDERN DELETEN!
+        return "/dispatchJobs";
     }
-
-
-
-
 }

@@ -53,6 +53,7 @@ public class JobDispatching {
                 if (listOfEdges[j].getId().equals(link.getId())) {
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
+                    //TODO: if (listOfEdges[j].getVehicle().equals("wait")){
                     if (listOfEdges[j].getVehicle().equals("walk")){
                         //don't add job!
                     }
@@ -60,6 +61,8 @@ public class JobDispatching {
                         Job job = new Job();
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
+                        job.setTypeVehicle((listOfEdges[j].getVehicle()));
+                        job.setStatus("ready");
 
 
                         jobService.save(job);
@@ -95,6 +98,7 @@ public class JobDispatching {
         jobListService.saveOrder(joblist);
         System.out.println("starting Order input");
         printJobList();
+        jobListService.dispatch2Core();
     }
 
     /*public void printJobList() {
@@ -114,7 +118,7 @@ public class JobDispatching {
         for (JobList jl: jobListService.findAll()) {
             System.out.println(" Order #" + jl.getId());
             for(int x = 0; x<jl.getJobs().size(); x++) {
-                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle());
+                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
@@ -122,6 +126,7 @@ public class JobDispatching {
     // check to make sure you don't change from 1 drone to another drone the same platform
     public void OptimiseVehicleUsage () {
         for (Job j: jobService.findAll()){
+
             //TODO zorg ervoor dat indien het eenzelfde vehicle is, dat je niet overstapt
             System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
         }

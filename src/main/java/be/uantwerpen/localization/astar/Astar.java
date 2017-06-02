@@ -24,7 +24,9 @@ public class Astar {
     private JobService jobService;
     @Autowired
     private JobListService jobListService;
-    GraphBuilder graphBuilder;
+    private  Graph graph;
+    @Autowired
+    private GraphBuilder graphBuilder;
 
     //     B-(1)-C
     //    /       \
@@ -80,8 +82,11 @@ public class Astar {
     public void init(JobService jobService, JobListService jobListService) {
         this.jobService = jobService;
         this.jobListService = jobListService;
-        graphBuilder = new GraphBuilder();
+        this.graph = new SingleGraph("SmartCityGraph");
+        //graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
+        //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
+        //graphBuilder.getMap();
     }
 
      /*   public static void main(String[] args) throws IOException {
@@ -89,7 +94,8 @@ public class Astar {
 
 
     public void startAStar() {
-        Graph graph = new SingleGraph("A* Test");
+
+        //TODO: deze methode uitcommenten in jobcontroller van zodra er het geintegreerd wordt in het gehele project
 
  /*       //testfiles met apparte dummy methodes voor genereren van Graph
         testMakeNode(graph);
@@ -97,32 +103,32 @@ public class Astar {
         testDeterminePath(graph, "A", "K");*/
 
         //Testfiles met correcte graaf
-        makeNode(graph, graphBuilder);
-        makeEdge(graph, graphBuilder);
-        testDeterminePath(graph, "1004", "1015");
+        makeNode();
+        makeEdge();
+        //testDeterminePath(graph, "1002", "1015");
         testDeterminePath(graph, "1014", "1002");
+        testDeterminePath(graph, "1004", "1015");
+
 
     }
 
-/*    public void makeNode(List<Point> namenodes, Graph graph) {
-        List<Point> nodes = new ArrayList<Point>();
-        // all the nodes
-        for (int i = 0; i < namenodes.size(); i++) {
-            nodes.add(graph.addNode(namenodes.get(i).getId().toString()));
-            graph.getNode(i).setAttribute("xy", namenodes.get(i).getX(), namenodes.get(i).getY());
-        }
-    }*/
 
-    public void makeNode(Graph graph, GraphBuilder graphbuilder) {
-        Point[] listOfPoints = graphbuilder.getPointList();
+    public void makeNode() {
+        Point[] listOfPoints = this.graphBuilder.getPointList();
         List<Node> nodes = new ArrayList<Node>();
         // provide all the nodes
         for (int i = 0; i < listOfPoints.length; i++) {
-            nodes.add(graph.addNode(listOfPoints[i].getId().toString()));
-            graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
+            nodes.add(this.graph.addNode(listOfPoints[i].getId().toString()));
+            this.graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
         }
-        // TODO: boolean mss returnen voor succes of failure?
     }
+
+    public void destroyNodes() {
+        for (int i = this.graph.getNodeCount(); i > 0; i--) {
+            this.graph.removeNode(i);
+        }
+    }
+
 
     public void testMakeNode( Graph graph) {
         List<Knoop> knopen = testMakeNodeList();
@@ -134,18 +140,19 @@ public class Astar {
         }
     }
 
-/*    public void makeEdge(Graph graph, List<Link> links) {
-        for (int i = 0; i < links.size(); i++) {
-            graph.addEdge(links.get(i).getId().toString(), links.get(i).getStartPoint().getId().toString(), links.get(i).getStopPoint().getId().toString(), true);
-            graph.getEdge(links.get(i).getId().toString()).setAttribute("weight", links.get(i).getWeight());
-        }
-    }*/
 
-    public void makeEdge(Graph graph, GraphBuilder graphbuilder) {
-        Link[] listOfEdges = graphbuilder.getLinkList();
+    public void makeEdge() {
+        Link[] listOfEdges = this.graphBuilder.getLinkList();
         for (int i = 0; i < listOfEdges.length; i++){
-            graph.addEdge(listOfEdges[i].getId().toString(), listOfEdges[i].getStartPoint().getId().toString(), listOfEdges[i].getStopPoint().getId().toString(), true);
-            graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("weight", listOfEdges[i].getWeight());
+            this.graph.addEdge(listOfEdges[i].getId().toString(), listOfEdges[i].getStartPoint().getId().toString(), listOfEdges[i].getStopPoint().getId().toString(), true);
+            this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("weight", listOfEdges[i].getWeight());
+            //this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("vehicleType", listOfEdges[i].getVehicle());
+        }
+    }
+
+    public void destroyEdges() {
+        for (int i = this.graph.getEdgeCount(); i > 0; i--) {
+            this.graph.removeEdge(i);
         }
     }
 
@@ -160,16 +167,29 @@ public class Astar {
         }
     }
 
+    public void updateNaE () {
+        destroyNodes();
+        destroyEdges();
+        this.graphBuilder.getMap();
+        makeNode();
+        makeEdge();
+    }
+
     public void testDeterminePath(Graph graph, String startPos, String endPos) {
         AStar astar = new AStar(graph);
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
-        //TODO: verder werken naar jobdispatching van hier uit
         Path path = astar.getShortestPath();
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
+    }
 
-
-
+    public void DeterminePath(String startPos, String endPos) {
+        AStar astar = new AStar(this.graph);
+        updateNaE();
+        astar.compute(startPos, endPos);
+        System.out.println(astar.getShortestPath());
+        Path path = astar.getShortestPath();
+        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 /*    public String determinePath(Graph graph, String startPos, String endPos) {
         AStar astar = new AStar(graph);

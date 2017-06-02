@@ -18,7 +18,9 @@ public class User extends MyAbstractPersistable<Long> {
     private String firstName;
     @NotBlank(message = "***")
     private String lastName;
+    @NotBlank(message = "***")
     private String userName;
+    @NotBlank(message = "***")
     private String password;
 
     @ManyToMany
@@ -39,6 +41,14 @@ public class User extends MyAbstractPersistable<Long> {
         this.userName = firstName;
         this.password = lastName;
         roles = new ArrayList<>();
+    }
+
+    public User(String firstName, String lastName, String userName, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+        this.roles = roles;
     }
 
     public User(String firstName, String lastName, String userName, String password, List<Role> roles) {
@@ -82,5 +92,20 @@ public class User extends MyAbstractPersistable<Long> {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean hasPermission(String permission)
+    {
+        for(Role r: roles)
+        {
+            for(Permission p: r.getPermissions())
+            {
+                if(p.getName().equals(permission))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -5,6 +5,7 @@ import be.uantwerpen.model.Link;
 import be.uantwerpen.model.Point;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -14,26 +15,26 @@ import java.util.ArrayList;
  * Created by dries on 10/05/2017.
  * Made for getting all the information for the A* algorithm.
  */
-
+@Service
 public class GraphBuilder {
     @Value("${sc.core.ip:localhost}")
     private String serverCoreIP;
 
-    @Value("#{new Integer(${sc.core.port}) ?: 1994}")
+    @Value("#{new Integer(${core.port}) ?: 1994}")
     private int serverCorePort;
 
-    @Value("${sc.drone.ip:localhost}")
+    @Value("${drone.ip:localhost}")
     private String droneCoreIP;
-    @Value("${sc.car.ip:localhost}")
+    @Value("${car.ip:localhost}")
     private String carCoreIP;
-    @Value("${sc.robot.ip:localhost}")
+    @Value("${robot.ip:localhost}")
     private String robotCoreIP;
 
-    @Value("#{new Integer(${sc.drone.port}) ?: 1994}")
+    @Value("#{new Integer(${drone.port}) ?: 1994}")
     private String droneCorePort;
-    @Value("#{new Integer(${sc.car.port}) ?: 1994}")
+    @Value("#{new Integer(${car.port}) ?: 1994}")
     private String carCorePort;
-    @Value("#{new Integer(${sc.robot.port}) ?: 1994}")
+    @Value("#{new Integer(${robot.port}) ?: 1994}")
     private String robotCorePort;
 
     private Link[] linkList = new Link[60];
@@ -46,16 +47,20 @@ public class GraphBuilder {
     {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Point[]> responseList;
-        responseList = restTemplate.getForEntity("http://" + serverCoreIP + ":" + serverCorePort + "/point/", Point[].class);
+        //String pointUrl = "http://146.175.140.44:1994/map/topmapjson/points";
+        String pointUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/points";
+        responseList = restTemplate.getForEntity(pointUrl, Point[].class);
         pointList = responseList.getBody();
 
         restTemplate = new RestTemplate();
         ResponseEntity<Link[]> responseList2;
-        responseList2 = restTemplate.getForEntity("http://" + serverCoreIP + ":" + serverCorePort + "/link/", Link[].class);
+        //String linkUrl = "http://146.175.140.44:1994/map/topmapjson/links";
+        String linkUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/links";
+        responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
         for(Link link: linkList)
         {
-            if(link.getVehicle().equals("walk"))
+            if(link.getVehicle().equals("wait"))
             {
                 link.setWeight((long)(0));
                 walkLinks.add(link);
@@ -76,29 +81,18 @@ public class GraphBuilder {
             ResponseEntity<Cost[]> responseList;
             Cost[] costs;
             String url = "http://";
-            /*if(vehicle.equals("robot")) {
-                url += robotCoreIP + ":" + robotCorePort;
-            } else if(vehicle.equals("drone")) {
-                url += droneCoreIP + ":" + droneCorePort;
-            } else if(vehicle.equals("car")) {
-                url += carCoreIP + ":" + carCorePort + "/carmanager";
-            } else if(vehicle.equals("walk")) {
-                link.setWeight((long)(0));
-            } else {
-                System.out.println("no supported vehicle was given. See graphbuilder class");
-            }*/
 
             switch (vehicle)
             {
                 case "robot": url += robotCoreIP + ":" + robotCorePort;
                 case "drone": url += droneCoreIP + ":" + droneCorePort;
                 case "car": url += carCoreIP + ":" + carCorePort + "/carmanager";
-                case "walk": link.setWeight((long)(0));
+                case "wait": link.setWeight((long)(0));
                 default: System.out.println("no supported vehicle was given. See graphbuilder class");
             }
 
-            if(!vehicle.equals("walk")) {
-                url += "/calcWeight/" + startPoint + "/to/" + endPoint;
+            if(!vehicle.equals("wait")) {
+                url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
                 Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
@@ -134,7 +128,7 @@ public class GraphBuilder {
     //for returning the list with all the points
     public Point[] getPointList()
     {
-        return pointList;
+            return pointList;
     }
 
     //public ArrayList<Cost> getBestCostList() {return bestCostList;}
@@ -303,37 +297,37 @@ public class GraphBuilder {
         linkList[19].setVehicleID((long)(2002));
 
         linkList[20].setWeight((long)(20));
-        linkList[20].setVehicleID((long)(0002));
+        linkList[20].setVehicleID((long)(2));
         linkList[21].setWeight((long)(20));
-        linkList[21].setVehicleID((long)(0002));
+        linkList[21].setVehicleID((long)(2));
         linkList[22].setWeight((long)(30));
-        linkList[22].setVehicleID((long)(0002));
+        linkList[22].setVehicleID((long)(2));
         linkList[23].setWeight((long)(30));
-        linkList[23].setVehicleID((long)(0001));
+        linkList[23].setVehicleID((long)(1));
         linkList[24].setWeight((long)(20));
-        linkList[24].setVehicleID((long)(0002));
+        linkList[24].setVehicleID((long)(2));
         linkList[25].setWeight((long)(20));
-        linkList[25].setVehicleID((long)(0002));
+        linkList[25].setVehicleID((long)(2));
         linkList[26].setWeight((long)(20));
-        linkList[26].setVehicleID((long)(0002));
+        linkList[26].setVehicleID((long)(2));
         linkList[27].setWeight((long)(20));
-        linkList[27].setVehicleID((long)(0001));
+        linkList[27].setVehicleID((long)(1));
         linkList[28].setWeight((long)(30));
-        linkList[28].setVehicleID((long)(0002));
+        linkList[28].setVehicleID((long)(2));
         linkList[29].setWeight((long)(30));
-        linkList[29].setVehicleID((long)(0001));
+        linkList[29].setVehicleID((long)(1));
         linkList[30].setWeight((long)(20));
-        linkList[30].setVehicleID((long)(0001));
+        linkList[30].setVehicleID((long)(1));
         linkList[31].setWeight((long)(20));
-        linkList[31].setVehicleID((long)(0001));
+        linkList[31].setVehicleID((long)(1));
         linkList[32].setWeight((long)(20));
-        linkList[32].setVehicleID((long)(0001));
+        linkList[32].setVehicleID((long)(1));
         linkList[33].setWeight((long)(20));
-        linkList[33].setVehicleID((long)(0001));
+        linkList[33].setVehicleID((long)(1));
         linkList[34].setWeight((long)(20));
-        linkList[34].setVehicleID((long)(0001));
+        linkList[34].setVehicleID((long)(1));
         linkList[35].setWeight((long)(20));
-        linkList[35].setVehicleID((long)(0001));
+        linkList[35].setVehicleID((long)(1));
 
         linkList[36].setWeight((long)(0));
         linkList[37].setWeight((long)(5));
