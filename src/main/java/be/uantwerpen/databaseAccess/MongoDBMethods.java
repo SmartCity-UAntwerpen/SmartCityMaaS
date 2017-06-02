@@ -31,6 +31,7 @@ public class MongoDBMethods {
 
     public MongoDBMethods()
     {
+        //143.129.39.159
         mongo =  new MongoClient( "172.10.0.8" , 27017 );
         /**** Get database ****/
         // if database doesn't exists, MongoDB will create it for you
