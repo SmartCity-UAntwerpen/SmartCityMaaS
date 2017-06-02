@@ -1,5 +1,6 @@
 package be.uantwerpen.controller;
 
+import be.uantwerpen.visualization.model.CellLink;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.DummyVehicle;
 import be.uantwerpen.visualization.model.World;
@@ -16,26 +17,37 @@ import java.util.List;
 @RestController
 public class DataController {
 
-    DummyVehicle vehicle = new DummyVehicle();
+    DummyVehicle vehicle = new DummyVehicle(1);
+
+    List<DummyVehicle> vehicles = new ArrayList<DummyVehicle>();
     public World world  = new World(200,200);;
+    public boolean vehicle_start = false;
     @Autowired
     public BackendRestemplate backendRestemplate;
+
     @RequestMapping(value="/retrieveWorld")
     public World getWorld(){
         System.out.println("### Retrieve world callled ###");
 
         List<DummyPoint> listPoints = getMapDataBackend();
+
         world.parseMap(listPoints);
+
         return world;
     }
     // http://146.175.140.44:1994/map/stringmapjson/top
 
 
-    @RequestMapping(value="/startVehicle")
-    public String startVehicle(){
+    @RequestMapping(value="/startVehicle/{id}")
+    public String startVehicle(@PathVariable int id){
+      //
+        vehicle.setID(id);
         new Thread(vehicle).start();
+        vehicle_start = true;
         return "vehicle started";
     }
+
+
 
 
     @RequestMapping(value="/dataCore")
@@ -45,13 +57,37 @@ public class DataController {
         return listofPoints;
     }
 
-    @RequestMapping(value="/{id}/progress")
+    @RequestMapping(value="/progress/{id}")
     public int[] getProgress(@PathVariable int id){
         int progress = vehicle.getValue();
-        world.startDelivery(progress);
-        System.out.println("Progress request for delivery: "+id + " progress "+progress);
+       /* for(int i = 0 ; i < vehicles.size();i++)
+        {
+            if(id == vehicles.get(i).getID())
+            {
+                progress = vehicles.get(i).getValue();
+                i = vehicles.size()+1;
+            }
+        }*/
+        //world.startDelivery(progress);
 
-        return world.startDelivery(progress);
+        int[] coordinatesVehicle = new int[2];
+        if(vehicle_start == true)
+        {
+            //System.out.println("Progress request for delivery: "+id + " progress "+progress);
+           // System.out.println("World: "+world.getDimensionY());
+
+            List<CellLink> cellLInks = world.getCellLinks();
+            /*for(CellLink cl :  cellLInks)
+            {
+                System.out.println("CellLInk " + cl.getStartCell());
+            }*/
+            coordinatesVehicle = world.getDistancePoints(progress);
+        }else
+        {
+            coordinatesVehicle[0] = -1;
+            coordinatesVehicle[1] = -1;
+        }
+        return coordinatesVehicle;
     }
 
 

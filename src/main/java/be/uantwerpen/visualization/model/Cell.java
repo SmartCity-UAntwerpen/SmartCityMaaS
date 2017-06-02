@@ -10,6 +10,7 @@ public class Cell {
     private String specific;
     private float sur_x;
     private float sur_y;
+    private int spotID;
     /*
      * Type defenition
      * type: 1 = background
@@ -25,8 +26,16 @@ public class Cell {
         this.type = type;
         this.sur_x = 0;
         this.sur_y = 0;
+        this.spotID = -1;
     }
-
+    public Cell() {
+        this.x = 0;
+        this.y = 0;
+        this.type = "unknown";
+        this.sur_x = 0;
+        this.sur_y = 0;
+        this.spotID = -1;
+    }
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
@@ -34,6 +43,7 @@ public class Cell {
         specific = "robot";
         this.sur_x = 0;
         this.sur_y = 0;
+        this.spotID = -1;
     }
 
     public int getX() {
@@ -82,5 +92,13 @@ public class Cell {
 
     public void setSpecific(String specific) {
         this.specific = specific;
+    }
+
+    public int getSpotID() {
+        return spotID;
+    }
+
+    public void setSpotID(int spotID) {
+        this.spotID = spotID;
     }
 }

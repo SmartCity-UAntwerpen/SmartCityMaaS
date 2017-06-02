@@ -27,14 +27,14 @@ public class BackendRestemplate {
 
     public List<DummyPoint> getdataBackend() {
         System.out.println("Retrieve info from core " );
-        HttpHeaders headers = new HttpHeaders();
+       /* HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         List<String> pointList = new ArrayList<String>();
         // Set destination of the core for retrieving information.
 
         // Quentin
-        /*
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://146.175.140.44:1994/map/stringmapjson/top")
                 .queryParam("pointList", pointList);
 
@@ -49,7 +49,7 @@ public class BackendRestemplate {
 
         System.out.println("Response core : "+httpResponse.toString());
         System.out.println("Response body core : "+ httpResponse.hasBody());
-        */
+
 
         new JSONObject();
         //JSONObject obj = new JSONObject();

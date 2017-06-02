@@ -19,49 +19,18 @@
     <div th:replace="layout :: navbar"></div>
     <form action="#" th:action="@{/deliveries/{id}(id=${delivery})}" th:object="${delivery}" method="post">
         <input th:type="hidden" th:field="*{id}"/>
-        <div class="form-group" th:classappend="${#fields.hasErrors('lastName')}?'has-error': ''">
-            <label class="control-label" th:text="#{lastName}">Name</label>
-            <span class="control-label" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Lastname Error</span>
-            <input class="form-control" type="text" th:field="*{lastName}" />
-        </div>
-
-        <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}?'has-error': ''">
-            <label class="control-label" th:text="#{firstName}">Name</label>
-            <span class="control-label" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName Error</span>
-            <input class="form-control" type="text" th:field="*{firstName}" />
-        </div>
 
         <div>
             <label th:id="pointA" th:text="#{segments.pointA}">Segment Point A</label>
             <input class="form-control" th:type="hidden" id="inputA" type="text" th:field="*{pointA}" />
 
-            <!--<select th:field="*{pointA}">
-                <option th:each="segment : ${allSegments}"
-                        th:value="${segment.name}"
-                        th:text="${segment.name}">Wireframe</option>
-
-            </select> -->
         </div>
 
         <div>
             <label th:text="#{segments.pointB}">Segment Point B</label>
             <input class="form-control" th:type="hidden" id="inputB" type="text" th:field="*{pointB}" />
-
-            <!-- <select th:field="*{pointB}">
-                <option th:each="segment : ${allSegments}"
-                        th:value="${segment.name}"
-                        th:text="${segment.name}">Wireframe</option>
-            </select>-->
         </div>
 
-        <div>
-            <label th:text="#{passengers}">Passengers</label>
-            <select th:field="*{passengers}">
-                <option th:each="passenger : ${allPassengers}"
-                        th:value="${passenger}"
-                        th:text="${passenger}">Wireframe</option>
-            </select>
-        </div>
         <script th:inline="javascript">
             /*<![CDATA[*/
             var cellImageBackGround = /*[[@{/images/map/test_lol.png}]]*/;

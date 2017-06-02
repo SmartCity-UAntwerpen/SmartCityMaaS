@@ -123,4 +123,15 @@ public class Delivery extends MyAbstractPersistable<Long> {
     public void setDate(String date) {
         this.date = date;
     }
+    public void print() {
+        System.out.print(" idDelivery: "+ idDelivery+ ", ");
+        System.out.print(" firstName: "+ firstName+ ", ");
+        System.out.print(" lastName: "+ lastName+ ", ");
+        System.out.print(" pointA: "+ pointA+ ", ");
+        System.out.print(" pointB: "+ pointB+ ", ");
+        System.out.print(" passengers: "+ passengers+ ", ");
+        System.out.print(" type: "+ type+ ", ");
+        System.out.println(" date: "+ date);
+    }
+
 }

@@ -104,8 +104,29 @@ public class UserController {
         delivery.setType("HumanTransport");
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.putStatement(delivery);
-        deliveryService.saveSomeAttributes(delivery);
+        Delivery delivery_return = monogDBClient.getLastDelivery();
+        if(delivery_return.getFirstName() == null)
+        {
+            System.out.println("-- !! Could not retrieve last delivery from MongoDB service !! --");
+
+        }else
+        {
+            System.out.println("-- Retrieve last delivery from MongoDB service --");
+            delivery_return.print();
+            deliveryService.saveSomeAttributes(delivery_return);
+        }
         return "redirect:/deliveries";
+    }
+    @RequestMapping(value="/simulation",method= RequestMethod.GET)
+    public String getSimulation(final ModelMap model){
+
+
+        model.addAttribute("allSegments", segmentService.findAll());
+        model.addAttribute("allPassengers", passengerService.findAll());
+        Delivery del = new Delivery("","");
+        model.addAttribute("delivery",del);
+        World world = new World(300,300);
+        return "simulation";
     }
 }
 

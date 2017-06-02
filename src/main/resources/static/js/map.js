@@ -351,10 +351,14 @@ function getWorld(){
     });
 }
 function getProgress(){
-    $.getJSON("/1/progress", function(result){
+    $.getJSON("/progress/0", function(result){
         progress = result;
         console.log("Result: "+progress[0]+" - " + progress[1]);
-        mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+        if(progress[0] != -1)
+        {
+            mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+
+        }
 
     });
 

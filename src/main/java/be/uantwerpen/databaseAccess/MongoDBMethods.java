@@ -31,7 +31,7 @@ public class MongoDBMethods {
 
     public MongoDBMethods()
     {
-        mongo =  new MongoClient( "143.129.39.159" , 27017 );
+        mongo =  new MongoClient( "172.10.0.8" , 27017 );
         /**** Get database ****/
         // if database doesn't exists, MongoDB will create it for you
         db = mongo.getDatabase("local");
@@ -222,6 +222,35 @@ public class MongoDBMethods {
         //String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
     }
 
+    public Delivery getLastDelivery()
+    {
+        System.out.println("----- Get last data of MongoDB -----");
+
+        Delivery lastDelivery = new Delivery();
+        MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
+        FindIterable<Document> cursor = mydatabaserecords.find().sort(new Document("_id", -1)).limit(1);
+        if(cursor != null) {
+            Document doc = cursor.first();
+            ObjectId object_id = doc.getObjectId("_id");
+            String typeDelivery = doc.getString("typeDelivery");
+            String firstname = doc.getString("firstname");
+            String lastname = doc.getString("lastname");
+            String pointA = doc.getString("pointA");
+            String pointB = doc.getString("pointB");
+            String passengers = doc.getString("passengers");
+            Date d = new Date(doc.getDate("timesample").getTime());
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
+            lastDelivery.setIdDelivery(object_id.toString());
+            lastDelivery.setFirstName(firstname);
+            lastDelivery.setLastName(lastname);
+            lastDelivery.setPointA(pointA);
+            lastDelivery.setPointB(pointB);
+            lastDelivery.setType(typeDelivery);
+            lastDelivery.setPassengers(Integer.parseInt(passengers));
+            lastDelivery.setDate(timestamp);
+        }
+        return lastDelivery;
+    }
 
     public void defineStatement(Query Q, String specific)
     {
