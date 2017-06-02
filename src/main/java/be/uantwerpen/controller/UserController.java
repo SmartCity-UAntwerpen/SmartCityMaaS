@@ -1,4 +1,4 @@
-package be.uantwerpen.Controller;
+package be.uantwerpen.controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
