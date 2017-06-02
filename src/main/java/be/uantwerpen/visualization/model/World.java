@@ -11,6 +11,7 @@ import java.util.List;
  * Created by Frédéric Melaerts on 10/05/2017.
  */
 public class World {
+    private String world_ID;
     private List<CellRow> cells;
     private int dimensionX;
     private int dimensionY;
@@ -33,6 +34,10 @@ public class World {
             cells.add(cellRow);
         }
     }
+
+    public World() {
+    }
+
 
     public void surroundPoint(int y, int x, String specific, int spotID) {
         int y_underLimit = y - surround_layer;
@@ -697,5 +702,13 @@ public class World {
 
     public void setCellLinks(List<CellLink> cellLinks) {
         this.cellLinks = cellLinks;
+    }
+
+    public String getWorld_ID() {
+        return world_ID;
+    }
+
+    public void setWorld_ID(String world_ID) {
+        this.world_ID = world_ID;
     }
 }

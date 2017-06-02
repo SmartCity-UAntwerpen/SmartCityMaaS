@@ -1,5 +1,6 @@
 package be.uantwerpen.controller;
 
+import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.Permission;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
@@ -27,7 +28,12 @@ public class HomeController {
     private UserService userService;
 
     @RequestMapping({"/"})
-    public String showMap() {return "redirect:/home";}
+    public String showMap(Model model) {
+        Delivery del = new Delivery("","");
+        model.addAttribute("delivery",del);
+        //return "redirect:/home";
+        return "delivery-manage2";
+    }
 
     @RequestMapping({"/login"})
     public String showLogIn(Model model) {

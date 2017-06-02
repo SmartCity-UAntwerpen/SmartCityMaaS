@@ -321,8 +321,6 @@ function redrawCell(j, i, cell) {
     return false;
 }
 
-
-
 function loadImages() {
     cellBackground = new Image();
     cellBackground.src = cellImageBackGround;
@@ -351,7 +349,7 @@ function getWorld(){
     });
 }
 function getProgress(){
-    $.getJSON("/progress/0", function(result){
+    $.getJSON("/world1/progress/0", function(result){
         progress = result;
         console.log("Result: "+progress[0]+" - " + progress[1]);
         if(progress[0] != -1)
