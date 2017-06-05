@@ -12,11 +12,19 @@ public class DummyPoint {
     private List<Integer> neighbours;
     private int physicalPoisionX;
     private int physicalPoisionY;
-
+    private String type;
 
     public DummyPoint() {
         this.neighbours = new ArrayList<Integer>();
 
+    }
+
+    public DummyPoint(int pointName, List<Integer> neighbours, int physicalPoisionX, int physicalPoisionY, String type) {
+        this.pointName = pointName;
+        this.neighbours = neighbours;
+        this.physicalPoisionX = physicalPoisionX;
+        this.physicalPoisionY = physicalPoisionY;
+        this.type = type;
     }
 
     public DummyPoint(int pointName, List<Integer> neighbours, int physicalPoisionX, int physicalPoisionY) {
@@ -78,4 +86,11 @@ public class DummyPoint {
         this.neighbours = neighbours;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

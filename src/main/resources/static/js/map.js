@@ -5,10 +5,19 @@
 var mapCanvas;
 var mapCanvasContext;
 var world = [];
-var pointA_x,pointA_y;
-var pointA_x_cell,pointA_y_cell;
-var pointB_x_cell,pointB_y_cell;
-var pointB_x, pointB_y;
+
+var pointA_x = -1;
+var pointA_y = -1;
+// A point index in the world
+var pointA_x_cell = 0;
+var pointA_y_cell = 0;
+
+var pointB_x = -1;
+var pointB_y = -1;
+// B point index in the world
+var pointB_x_cell = 0;
+var pointB_y_cell = 0;
+
 var pointA_set = false;
 var pointB_set = false;
 var x_size;
@@ -40,6 +49,8 @@ function drawMap() {
     }
 }*/
 function drawMap() {
+    // x_size and y_size resemble the amoutn of pixels needed to draw one unit of the respective dimension in the
+    // canvas.
     x_size = mapCanvas.width/world.dimensionY;
     y_size = mapCanvas.height/world.dimensionX;
     console.log("--- Information ---");
@@ -61,9 +72,10 @@ function drawMap() {
             }
         }
     }
-    document.getElementById('inputA').value = ""+pointA_x+pointA_y;
-    document.getElementById('inputB').value = ""+pointB_x+pointB_y;
-
+  //  document.getElementById('inputA').value = ""+world.cells[pointA_y/5].cellList[pointA_x/5].spotID;//pointA_x+pointA_y;
+  //  document.getElementById('inputB').value = ""+world.cells[pointB_y/5].cellList[pointB_x/5].spotID;//pointB_x+pointB_y;
+ //   console.log("inputA "+world.cells[pointA_y/5].cellList[pointA_x/5].spotID);
+  //  console.log("inputB "+world.cells[pointB_y/5].cellList[pointB_x/5].spotID);
 }
 /*
 function loop()
@@ -90,15 +102,17 @@ function drawCell(j, i, cell) {
             if (columns <= pointA_x && pointA_x < columns + x_size && rows <= pointA_y && pointA_y < rows + y_size) {
 
                 if (cell.type.localeCompare("surrounding_point") == 0) {
-                    console.log("FUCK IT3é");
+                    // Set point A's index to a not allowed value
+                    pointA_x_cell = -1;
+                    pointA_y_cell = -1;
                     pointA_x = cell.sur_x*x_size;
                     pointA_y = cell.sur_y*y_size;
                     mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
                     return true;
                 }else
                 {
-                    pointA_x_cell = columns;
-                    pointA_y_cell = rows;
+                    pointA_x_cell = j;
+                    pointA_y_cell = i;
                     pointA_x = cell.sur_x*x_size;
                     pointA_y = cell.sur_y*y_size;
                     change_color = "A";
@@ -110,6 +124,9 @@ function drawCell(j, i, cell) {
                             console.log("FUCK IT3é");
                             if( cell.sur_x*x_size == pointB_x && cell.sur_y*y_size == pointB_y)
                             {
+                                // Set point B's index to a not allowed value
+                                pointB_x_cell = -1;
+                                pointB_y_cell = -1;
                                 pointB_set = false;
                                 return true;
                             }else
@@ -121,8 +138,8 @@ function drawCell(j, i, cell) {
                             }
                         }else
                         {
-                            pointB_x_cell = columns;
-                            pointB_y_cell = rows;
+                            pointB_x_cell = j;
+                            pointB_y_cell = i;
                             pointB_x = cell.sur_x*x_size;
                             pointB_y = cell.sur_y*y_size;
                             change_color = "B";
@@ -138,12 +155,14 @@ function drawCell(j, i, cell) {
             console.log("-----------------------------------------------------------------");
             console.log("ROWS " + rows);
             console.log("COLUMNS " + columns);
-            console.log("pointA_x " + pointA_x);
-            console.log("pointA_y " + pointA_y);
-            console.log("pointB_x " + pointB_x);
-            console.log("pointB_y " + pointB_y);
+            console.log("pointA_x " + pointA_x+" pointA_y " + pointA_y);
+            console.log("pointA_x_cell " + pointA_x_cell + " pointA_y_cell "+pointA_y_cell);
+            console.log("pointB_x " + pointB_x + " pointB_y " + pointB_y);
+            console.log("pointB_x_cell " + pointB_x_cell + " pointB_y_cell "+pointB_y_cell)
             console.log("-----------------------------------------------------------------");
             mapCanvasContext.drawImage(cellPointA, columns, rows, x_size, y_size);
+            document.getElementById('inputA').value = ""+world.cells[pointA_y_cell].cellList[pointA_x_cell].spotID;
+
         }
     }else if(rows == pointB_y && columns == pointB_x)
     {
@@ -151,12 +170,13 @@ function drawCell(j, i, cell) {
             console.log("-----------------------------------------------------------------");
             console.log("ROWS " + rows);
             console.log("COLUMNS " + columns);
-            console.log("pointA_x " + pointA_x);
-            console.log("pointA_y " + pointA_y);
-            console.log("pointB_x " + pointB_x);
-            console.log("pointB_y " + pointB_y);
+            console.log("pointA_x " + pointA_x+" pointA_y " + pointA_y);
+            console.log("pointA_x_cell " + pointA_x_cell + " pointA_y_cell "+pointA_y_cell);
+            console.log("pointB_x " + pointB_x + " pointB_y " + pointB_y);
+            console.log("pointB_x_cell " + pointB_x_cell + " pointB_y_cell "+pointB_y_cell);
             console.log("-----------------------------------------------------------------");
             mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
+            document.getElementById('inputB').value = ""+world.cells[pointB_y_cell].cellList[pointB_x_cell].spotID;
         }
 
     }else
@@ -200,7 +220,7 @@ function drawCell(j, i, cell) {
     return false;
 }
 
-
+/*
 function redrawCell(j, i, cell) {
 
     var columns = x_size * j;
@@ -289,6 +309,8 @@ function redrawCell(j, i, cell) {
      * type: 3 = surrounding_point
      * type: 4 = road_robot
      */
+
+/*
     {
         if(cell.type.localeCompare("spot") == 0)
         {
@@ -320,7 +342,7 @@ function redrawCell(j, i, cell) {
     }
     return false;
 }
-
+*/
 function loadImages() {
     cellBackground = new Image();
     cellBackground.src = cellImageBackGround;
@@ -352,12 +374,11 @@ function getProgress(){
     $.getJSON("/world1/progress/0", function(result){
         progress = result;
         console.log("Result: "+progress[0]+" - " + progress[1]);
+        // Controls if x index of progress is an allowed value
         if(progress[0] != -1)
         {
             mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-
         }
-
     });
 
 
@@ -440,8 +461,11 @@ function onClick(e) {
 
     loadImages();
     getWorld();
-    start();
+    // start();
     // Execute getProgress every 250 milliseconds
-    setInterval(getProgress, 100)
-    setTimeout(start, 500);
+
+
+    setInterval(getProgress, 100);
+    // Execute start after 700 milliseconds
+    setTimeout(start, 700);
 

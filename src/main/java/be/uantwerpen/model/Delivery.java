@@ -19,6 +19,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
     private String type;
     private String date;
     private String idDelivery;
+    private boolean complete = false;
 
     public Delivery() {
     }

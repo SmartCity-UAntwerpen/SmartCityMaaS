@@ -29,10 +29,15 @@ public class MongoDBMethods {
         SELECT_ALL, SELECT_OBJECT_ID, SELECT_PUT_DELIVERY, SELECT_DELIVERYTYPE, SELECT_FIRSTNAME, SELECT_LASTNAME,SELECT_POINTA,SELECT_POINTB, SELECT_PASSENGERS, SELECT_TIME, SELECT_LAST
     }
 
+    /**
+     * Initialize the parameters fot the MongoDB client connection.
+     */
     public MongoDBMethods()
     {
-        //143.129.39.159
-        mongo =  new MongoClient( "172.10.0.8" , 27017 );
+        // IP address public centos VM : 143.129.39.159
+        // IP address for proxy server : 172.10.0.8
+        // Windows VM on own PC : 192.168.10.2
+        mongo =  new MongoClient( "192.168.10.2" , 27017 );
         /**** Get database ****/
         // if database doesn't exists, MongoDB will create it for you
         db = mongo.getDatabase("local");

@@ -1,11 +1,13 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
+import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.World;
+import org.graphstream.graph.Graph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,22 @@ public class UserController {
     private SegmentService segmentService;
     @Autowired
     private PassengerService passengerService;
+
+    @Autowired
+    public BackendRestemplate backendRestemplate;
+
+
+
+
+    @Autowired
+    private JobService jobService;
+    @Autowired
+    private JobListService jobListService;
+
+
+
+
+
 
     @ModelAttribute("user")
     private User getUser(){ return new User();}
@@ -131,12 +149,25 @@ public class UserController {
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
     public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
         System.out.println(result.getModel());
+        System.out.println("--- Delivery point A "+ delivery.getPointA() + " point B "+ delivery.getPointB()+" ---");
+
         if(result.hasErrors()){
             model.addAttribute("allSegments", segmentService.findAll());
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage2";
         }
         delivery.setType("HumanTransport");
+
+        /*
+        ASTAR gedeelte
+         */
+        /*
+        Astar astar = new Astar();
+        astar.init(jobService, jobListService);
+        astar.determinePath(delivery.getPointA(), delivery.getPointB());
+        */
+        delivery.setPointA(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
+        delivery.setPointB(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.putStatement(delivery);
         Delivery delivery_return = monogDBClient.getLastDelivery();

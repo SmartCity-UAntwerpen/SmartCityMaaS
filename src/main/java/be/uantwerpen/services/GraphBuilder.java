@@ -40,7 +40,7 @@ public class GraphBuilder {
     private Link[] linkList = new Link[60];
     private Point[] pointList = new Point[18];
     //ArrayList<Cost> bestCostList = new ArrayList<>();
-    private ArrayList<Link> walkLinks = new ArrayList<>();
+    private ArrayList<Link> waitLinks = new ArrayList<>();
 
     //request the map from the core
     public void getMap()
@@ -63,7 +63,7 @@ public class GraphBuilder {
             if(link.getVehicle().equals("wait"))
             {
                 link.setWeight((long)(0));
-                walkLinks.add(link);
+                waitLinks.add(link);
             }
         }
 
@@ -105,11 +105,11 @@ public class GraphBuilder {
                         bestCost = cost;
                     }
                 }
-                for(Link walkLink : walkLinks)
+                for(Link waitLink : waitLinks)
                 {
-                    if(walkLink.getStopPoint().getId().equals(endPoint))
+                    if(waitLink.getStopPoint().getId().equals(startPoint))
                     {
-                        walkLink.setWeight(bestCost.getWeightToStart());
+                        waitLink.setWeight(bestCost.getWeightToStart());
                     }
                 }
                 link.setWeight(bestCost.getWeight());
@@ -224,30 +224,30 @@ public class GraphBuilder {
         linkList[34] = new Link((long)(2034), pointList[17], pointList[11], "robot");
         linkList[35] = new Link((long)(2035), pointList[11], pointList[17], "robot");
 
-        linkList[36] = new Link((long)(2036), pointList[0], pointList[1], "walk");
-        linkList[37] = new Link((long)(2037), pointList[0], pointList[2], "walk");
-        linkList[38] = new Link((long)(2038), pointList[1], pointList[0], "walk");
-        linkList[39] = new Link((long)(2039), pointList[1], pointList[2], "walk");
-        linkList[40] = new Link((long)(2040), pointList[2], pointList[0], "walk");
-        linkList[41] = new Link((long)(2041), pointList[2], pointList[1], "walk");
-        linkList[42] = new Link((long)(2042), pointList[3], pointList[4], "walk");
-        linkList[43] = new Link((long)(2043), pointList[4], pointList[3], "walk");
-        linkList[44] = new Link((long)(2044), pointList[5], pointList[6], "walk");
-        linkList[45] = new Link((long)(2045), pointList[6], pointList[5], "walk");
-        linkList[46] = new Link((long)(2046), pointList[7], pointList[8], "walk");
-        linkList[47] = new Link((long)(2047), pointList[7], pointList[9], "walk");
-        linkList[48] = new Link((long)(2048), pointList[8], pointList[7], "walk");
-        linkList[49] = new Link((long)(2049), pointList[8], pointList[9], "walk");
-        linkList[50] = new Link((long)(2050), pointList[9], pointList[7], "walk");
-        linkList[51] = new Link((long)(2051), pointList[9], pointList[8], "walk");
-        linkList[52] = new Link((long)(2052), pointList[10], pointList[17], "walk");
-        linkList[53] = new Link((long)(2053), pointList[17], pointList[10], "walk");
-        linkList[54] = new Link((long)(2054), pointList[13], pointList[14], "walk");
-        linkList[55] = new Link((long)(2055), pointList[14], pointList[13], "walk");
-        linkList[56] = new Link((long)(2056), pointList[11], pointList[12], "walk");
-        linkList[57] = new Link((long)(2057), pointList[12], pointList[11], "walk");
-        linkList[58] = new Link((long)(2058), pointList[15], pointList[16], "walk");
-        linkList[59] = new Link((long)(2059), pointList[16], pointList[15], "walk");
+        linkList[36] = new Link((long)(2036), pointList[0], pointList[1], "wait");
+        linkList[37] = new Link((long)(2037), pointList[0], pointList[2], "wait");
+        linkList[38] = new Link((long)(2038), pointList[1], pointList[0], "wait");
+        linkList[39] = new Link((long)(2039), pointList[1], pointList[2], "wait");
+        linkList[40] = new Link((long)(2040), pointList[2], pointList[0], "wait");
+        linkList[41] = new Link((long)(2041), pointList[2], pointList[1], "wait");
+        linkList[42] = new Link((long)(2042), pointList[3], pointList[4], "wait");
+        linkList[43] = new Link((long)(2043), pointList[4], pointList[3], "wait");
+        linkList[44] = new Link((long)(2044), pointList[5], pointList[6], "wait");
+        linkList[45] = new Link((long)(2045), pointList[6], pointList[5], "wait");
+        linkList[46] = new Link((long)(2046), pointList[7], pointList[8], "wait");
+        linkList[47] = new Link((long)(2047), pointList[7], pointList[9], "wait");
+        linkList[48] = new Link((long)(2048), pointList[8], pointList[7], "wait");
+        linkList[49] = new Link((long)(2049), pointList[8], pointList[9], "wait");
+        linkList[50] = new Link((long)(2050), pointList[9], pointList[7], "wait");
+        linkList[51] = new Link((long)(2051), pointList[9], pointList[8], "wait");
+        linkList[52] = new Link((long)(2052), pointList[10], pointList[17], "wait");
+        linkList[53] = new Link((long)(2053), pointList[17], pointList[10], "wait");
+        linkList[54] = new Link((long)(2054), pointList[13], pointList[14], "wait");
+        linkList[55] = new Link((long)(2055), pointList[14], pointList[13], "wait");
+        linkList[56] = new Link((long)(2056), pointList[11], pointList[12], "wait");
+        linkList[57] = new Link((long)(2057), pointList[12], pointList[11], "wait");
+        linkList[58] = new Link((long)(2058), pointList[15], pointList[16], "wait");
+        linkList[59] = new Link((long)(2059), pointList[16], pointList[15], "wait");
         setLinkCosts();
     }
 

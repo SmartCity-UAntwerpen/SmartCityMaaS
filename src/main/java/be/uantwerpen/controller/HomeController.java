@@ -5,6 +5,7 @@ import be.uantwerpen.model.Permission;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.UserRepository;
+import be.uantwerpen.services.PassengerService;
 import be.uantwerpen.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +27,14 @@ public class HomeController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PassengerService passengerService;
 
     @RequestMapping({"/"})
     public String showMap(Model model) {
         Delivery del = new Delivery("","");
         model.addAttribute("delivery",del);
+        model.addAttribute("allPassengers", passengerService.findAll());
         //return "redirect:/home";
         return "delivery-manage2";
     }

@@ -83,7 +83,7 @@ public class Astar {
         this.jobService = jobService;
         this.jobListService = jobListService;
         this.graph = new SingleGraph("SmartCityGraph");
-        //graphBuilder = new GraphBuilder();
+       // graphBuilder = new GraphBuilder();
         graphBuilder.setUpTest();
         //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
         //graphBuilder.getMap();
@@ -183,7 +183,7 @@ public class Astar {
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
-    public void DeterminePath(String startPos, String endPos) {
+    public void determinePath(String startPos, String endPos) {
         AStar astar = new AStar(this.graph);
         updateNaE();
         astar.compute(startPos, endPos);

@@ -12,9 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Frédéric Melaerts on 30/05/2017.
@@ -25,6 +23,13 @@ public class BackendRestemplate {
     @Autowired
     private RestTemplate restTemplate;
 
+    private HashMap<Integer,Integer> pointTransition;
+
+
+    /**
+     * Retrieves the map information from the backend and stores it in DummyPoints that are used in the world-map.
+     * @return
+     */
     public List<DummyPoint> getdataBackend() {
         System.out.println("Retrieve info from core " );
        /* HttpHeaders headers = new HttpHeaders();
@@ -132,7 +137,7 @@ public class BackendRestemplate {
 
 
 
-
+        pointTransition = new HashMap<Integer,Integer>();
         JSONParser parser = new JSONParser();
 
         Object obj = null;
@@ -151,27 +156,57 @@ public class BackendRestemplate {
 
                 int counter =0;
                 Iterator<String> iterator = pointsList.iterator();
+                int index_counter  = 0;
                 while (iterator.hasNext()) {
                     DummyPoint point = new DummyPoint();
 
                     pointObject = iterator.next();
                     JSONObject point_jsonObject = (JSONObject) pointObject;
                     int point_ID = ((Long)point_jsonObject.get("id")).intValue();
+                    if(pointTransition.containsKey(point_ID) == false)
+                    {
+                        System.out.println("Point ID is null for "+point_ID+ " index counter "+index_counter);
+                        pointTransition.put(point_ID,index_counter);
+                        point_ID = pointTransition.get(point_ID);
+                        index_counter++;
+                    }else
+                    {
+                        System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
+
+                        point_ID = pointTransition.get(point_ID);
+                    }
                     System.out.println(" index "+counter + " value of point_ID "+point_ID);
                     int x = ((Long)point_jsonObject.get("x")).intValue();
                     int y = ((Long)point_jsonObject.get("y")).intValue();
+                    String type = (String) point_jsonObject.get("type");
+
                     JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
                     System.out.println("neighbourS " + neighbours.toString());
                     point.setPointName(point_ID);
                     point.setPhysicalPoisionX(x);
                     point.setPhysicalPoisionY(y);
-
+                    point.setType(type);
                     Iterator<String> iter = neighbours.iterator();
                     while (iter.hasNext())
                     {
                         neighbourObject = iter.next();
                         JSONObject neigbourJSON = (JSONObject) neighbourObject;
                         int neighbour = ((Long)neigbourJSON.get("neighbour")).intValue();
+                        /*
+                        if(pointTransition.containsKey(p.getNeighbours().get(i)) == true)
+                        {
+                            //System.out.println("Neighbour point ID is null for "+neighbour + " index counter "+index_counter);
+                            p.set
+                            pointTransition.put(neighbour,index_counter);
+                            neighbour = pointTransition.get(neighbour);
+                            index_counter++;
+                        }else
+                        {
+                            // Retrieve tis world id.
+                            System.out.println("Neighbour point ID is NOT null for "+neighbour+ " index counter "+index_counter);
+
+                            neighbour = pointTransition.get(neighbour);
+                        }*/
                         System.out.println("neighbour " + neighbour);
                         point.addNeighbour(neighbour);
                     }
@@ -186,14 +221,64 @@ public class BackendRestemplate {
         }
 
 
+        // Transform the id of the neigbours to the right one of the Hashmap
+        for(int p =0 ; p < points.size(); p++)
+        {
+
+            DummyPoint point = points.get(p);
+            List<Integer> neighbours = point.getNeighbours();
+
+            for(int i =0 ; i < neighbours.size(); i++)
+            {
+                if(pointTransition.containsKey(neighbours.get(i)) == true)
+                {
+                    //System.out.println("Neighbour point ID is null for "+neighbour + " index counter "+index_counter);
+
+                    int temp_neig = pointTransition.get(neighbours.get(i));
+                    neighbours.set(i,temp_neig);
+                }else
+                {
+                    // Retrieve tis world id.
+                    System.out.println("Neighbour not found in point hashmap");
+
+                }
+            }
+            point.setNeighbours(neighbours);
+            points.set(p,point);
+        }
+
+
+        Iterator it = pointTransition.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+            //it.remove(); // avoids a ConcurrentModificationException
+        }
         System.out.println("Print points");
         for(int i = 0 ; i <points.size(); i++)
         {
             points.get(i).print();
-
+            System.out.println(" tttttttttttttttttttttttttttttt "+ pointTransition.get(1000));
         }
 
         return points; //new MessageWrapper<>(tracksamples, "server called using eureka with rest template");
     }
 
+    /**
+     * Retrieve the orginal value from a DummyPoint in the world.
+     * It is equal to the key of the imposed value.
+     * @param value
+     * @return
+     */
+    public Integer getKeyHashMap(Integer value)
+    {
+        System.out.println("Key value request for "+value+"  fuck "+pointTransition.get(1000));
+        for (Integer pointKey : pointTransition.keySet()) {
+            System.out.println("pointTransition.get(pointKey) key "+pointTransition.get(pointKey) + " value "+value);
+            if (pointTransition.get(pointKey).equals(value) == true) {
+                return pointKey;
+            }
+        }
+        return -1;
+    }
 }

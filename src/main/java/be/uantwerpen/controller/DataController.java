@@ -33,7 +33,9 @@ public class DataController {
         System.out.println("### Retrieve world callled ###");
 
         List<DummyPoint> listPoints = getMapDataBackend();
-        World world  = new World(200,200);
+        World world  = new World(250,250);
+        System.out.println("### CELLIS POINTS SIZE ###"+listPoints.size());
+
         world.parseMap(listPoints);
         world.setWorld_ID("world1");
         //this.world.parseMap(listPoints);
@@ -52,8 +54,23 @@ public class DataController {
         return "vehicle started";
     }
 
-
-
+    /**
+     * Retrieve the real name a point as it is defined in the received map.
+     * @param valuePoint
+     * @return
+     */
+    @RequestMapping(value="/retrieveRealPointName/{valuePoint}")
+    public int getPointName(@PathVariable int valuePoint){
+        int keyPoint = backendRestemplate.getKeyHashMap(valuePoint);
+        if(valuePoint != -1)
+        {
+            System.out.println("### Retrieve key point name from "+valuePoint+ " which is "+ keyPoint+" ###");
+        }else
+        {
+            System.out.println("### Could not retrieve key point name from "+valuePoint+ ", error "+ keyPoint+" ###");
+        }
+        return keyPoint;
+    }
 
     @RequestMapping(value="/dataCore")
     public List<DummyPoint> getMapDataBackend(){

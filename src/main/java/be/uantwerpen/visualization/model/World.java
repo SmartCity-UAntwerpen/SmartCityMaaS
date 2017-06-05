@@ -122,30 +122,28 @@ public class World {
                     if (y_coor_neighbour < y_coor) {
                         int y_temp = y_coor_neighbour;
 
-                        for (int c = x_coor_neighbour; c < x_coor; c = c + unitWorld) {
+                        for (int c = x_coor_neighbour; c <= x_coor; c = c + unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
                                     roadCell =  cells.get(c).getCellList().get(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
-                                    if(point.getPointName() == 1)
-                                    {
-                                        System.out.println("SpecialV x"+ c+ " y "+c);
-                                    }
                                 }
                             }else{
+                                // When a cell is a surrounding point, it needs to be added to the intermediate point list
+                                // of a link.
                                 if(cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true  && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
                                     roadCell =  cells.get(c).getCellList().get(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
-                                    if(point.getPointName() == 1)
-                                    {
-                                        System.out.println("SpecialV x"+ c+ " y "+c);
-                                    }
                                 }
                             }
                             if (y_temp != y_coor) {
+                                if(c == x_coor)
+                                {
+                                    c = x_coor-unitWorld;
+                                }
                                 y_temp++;
                             }
                         }
@@ -157,25 +155,17 @@ public class World {
                                 {
                                     roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
                                     cellLink.addIntermediateCell(roadCell);
-                                    if(point.getPointName() == 1)
-                                    {
-                                        System.out.println("SpecialZ x"+ c+ " y "+c);
-                                    }
                                 }
                             }
                             if (cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor)
                             {
                                 roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
                                 cellLink.addIntermediateCell(roadCell);
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialZ x"+ c+ " y "+c);
-                                }
                             }
                         }
-                    } else {
+                    } else { //y_coor_neighbour > y_coor
                         int y_temp = y_coor_neighbour;
-                        for (int c = x_coor_neighbour; c < x_coor; c = c + unitWorld) {
+                        for (int c = x_coor_neighbour; c <= x_coor; c = c + unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
@@ -183,21 +173,18 @@ public class World {
                                     roadCell =  cells.get(c).getCellList().get(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialQ x"+ c+ " y "+c);
-                                }
+
                             }
                             if(cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                             {
                                 roadCell =  cells.get(c).getCellList().get(y_temp);
                                 cellLink.addIntermediateCell(roadCell);
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialQ x"+ c+ " y "+c);
-                                }
                             }
                             if (y_temp != y_coor) {
+                                if(c == x_coor)
+                                {
+                                    c = x_coor-unitWorld;
+                                }
                                 y_temp--;
                             }
                         }
@@ -210,46 +197,25 @@ public class World {
 
                                 if(c != y_coor_neighbour && c != y_coor)
                                 {
-                                    /*if(point.getPointName() == 1)
-                                    {
-                                        System.out.println("Special x"+ x_coor + " y "+c);
-                                        System.out.println("In roadcellDDD x"+ x_coor+ " y "+c);
-                                        roadCell =  cells.get(c).getCellList().get(x_coor);
-                                        cellLink.addIntermediateCell(roadCell);
-
-                                    }else
-                                    {*/
-                                        roadCell =  cells.get(c).getCellList().get(x_coor);
-                                        cellLink.addIntermediateCell(roadCell);
-                                   // }
+                                    roadCell =  cells.get(c).getCellList().get(x_coor);
+                                    cellLink.addIntermediateCell(roadCell);
                                 }
                             }
                             if(cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == true && c != y_coor_neighbour && c != y_coor)
                             {
-                                /*if(point.getPointName() == 1)
-                                {
-                                    System.out.println("Special x"+ x_coor + " y "+c);
-                                    System.out.println("In roadcellZZZ x"+ x_coor+ " y "+c);
-                                    roadCell =  cells.get(c).getCellList().get(x_coor);
-                                    cellLink.addIntermediateCell(roadCell);
-
-                                }else {*/
-                                    roadCell = cells.get(c).getCellList().get(x_coor);
-                                    cellLink.addIntermediateCell(roadCell);
-                                //}
+                                roadCell = cells.get(c).getCellList().get(x_coor);
+                                cellLink.addIntermediateCell(roadCell);
                             }
                         }
                     } else if (y_coor_neighbour == y_coor) {
+                        // This point has itself as neighbour, this is not allowed.
+                        System.out.println("!! Cell has itselfs as neighbour, adjust map so avoid this instance !!");
 
                     } else {
                         for (int c = y_coor_neighbour; c > y_coor; c = c - unitWorld) {
 
                             if (cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == false && cells.get(c).getCellList().get(x_coor).getType().equals("spot") == false) {
                                 cells.get(c).getCellList().get(x_coor).setType("road");
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialA x"+ c+ " y "+c);
-                                }
                                 if(c != y_coor_neighbour && c != y_coor)
                                 {
                                     roadCell =  cells.get(x_coor).getCellList().get(c);
@@ -258,10 +224,6 @@ public class World {
                             }
                             if(cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == true && c != y_coor_neighbour && c != y_coor)
                             {
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialA x"+ c+ " y "+c);
-                                }
                                 roadCell =  cells.get(x_coor).getCellList().get(c);
                                 cellLink.addIntermediateCell(roadCell);
                             }
@@ -270,7 +232,7 @@ public class World {
                 } else {
                     if (y_coor_neighbour < y_coor) {
                         int y_temp = y_coor_neighbour;
-                        for (int c = x_coor_neighbour; c > x_coor; c = c - unitWorld) {
+                        for (int c = x_coor_neighbour; c >= x_coor; c = c - unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
@@ -278,21 +240,17 @@ public class World {
                                     roadCell =  cells.get(c).getCellList().get(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 };
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialB x"+ c+ " y "+c);
-                                }
                             }
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                             {
                                 roadCell =  cells.get(c).getCellList().get(y_temp);
                                 cellLink.addIntermediateCell(roadCell);
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialB x"+ c+ " y "+c);
-                                }
                             }
                             if (y_temp != y_coor) {
+                                if(c == x_coor)
+                                {
+                                    c = x_coor+unitWorld;
+                                }
                                 y_temp++;
                             }
                         }
@@ -305,25 +263,17 @@ public class World {
                                     roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialC x"+ c+ " y "+c);
-                                }
                             }
 
                             if(cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("surrounding_point") == true &&  c != x_coor_neighbour && c != x_coor)
                             {
                                 roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
                                 cellLink.addIntermediateCell(roadCell);
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialC x"+ c+ " y "+c);
-                                }
                             }
                         }
                     } else {
                         int y_temp = y_coor_neighbour;
-                        for (int c = x_coor_neighbour; c > x_coor; c = c - unitWorld) {
+                        for (int c = x_coor_neighbour; c >= x_coor; c = c - unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
@@ -331,22 +281,18 @@ public class World {
                                     roadCell =  cells.get(c).getCellList().get(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialD x"+ c+ " y "+c);
-                                }
                             }
                             if(cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                             {
                                 roadCell =  cells.get(c).getCellList().get(y_temp);
                                 cellLink.addIntermediateCell(roadCell);
-                                if(point.getPointName() == 1)
-                                {
-                                    System.out.println("SpecialD x"+ c+ " y "+c);
-                                }
                             }
 
                             if (y_temp != y_coor) {
+                                if(c == x_coor)
+                                {
+                                    c = x_coor+unitWorld;
+                                }
                                 y_temp--;
                             }
                         }
@@ -631,6 +577,8 @@ public class World {
      */
     public CellLink cotrolOrderLink(CellLink cellLink)
     {
+
+        System.out.println("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
         int x_start = cellLink.getStartCell().getX();
         int y_start = cellLink.getStartCell().getY();
         int x_end = cellLink.getEndCell().getX();
