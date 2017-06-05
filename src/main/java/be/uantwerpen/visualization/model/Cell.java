@@ -8,8 +8,8 @@ public class Cell {
     private int y;
     private String type;
     private String specific;
-    private float sur_x;
-    private float sur_y;
+    private int sur_x;
+    private int sur_y;
     private int spotID;
     /*
      * Type defenition
@@ -70,19 +70,19 @@ public class Cell {
         this.type = type;
     }
 
-    public float getSur_x() {
+    public int getSur_x() {
         return sur_x;
     }
 
-    public void setSur_x(float sur_x) {
+    public void setSur_x(int sur_x) {
         this.sur_x = sur_x;
     }
 
-    public float getSur_y() {
+    public int getSur_y() {
         return sur_y;
     }
 
-    public void setSur_y(float sur_y) {
+    public void setSur_y(int sur_y) {
         this.sur_y = sur_y;
     }
 

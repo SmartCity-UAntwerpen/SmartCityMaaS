@@ -53,6 +53,7 @@ public class World {
                             cells.get(i).getCellList().get(j).setSpecific(specific);
                             cells.get(i).getCellList().get(j).setSur_x(x);
                             cells.get(i).getCellList().get(j).setSur_y(y);
+                            cells.get(i).getCellList().get(j).setSpotID(spotID);
                         } else {
                             cells.get(i).getCellList().get(j).setType("spot");
                             cells.get(i).getCellList().get(j).setSpecific(specific);
@@ -90,12 +91,11 @@ public class World {
             startPoint.setSpotID(point.getPointName());
 
             //cells.get(y_coor).getCellList().get(x_coor).setType(2);
-            surroundPoint(y_coor, x_coor, specific, point.getPointName());
+            surroundPoint(y_coor, x_coor, point.getType(), point.getPointName());
             System.out.println("set road point on column " + x_coor + " and row " + y_coor);
             for (int n = 0; n < point.getNeighbours().size(); n++) {
                 CellLink cellLink = new CellLink();
                 cellLink.setStartCell(startPoint);
-
 
 
                 int neighbourPoint = point.getNeighbours().get(n);

@@ -178,7 +178,7 @@ public class BackendRestemplate {
                     System.out.println(" index "+counter + " value of point_ID "+point_ID);
                     int x = ((Long)point_jsonObject.get("x")).intValue();
                     int y = ((Long)point_jsonObject.get("y")).intValue();
-                    String type = (String) point_jsonObject.get("type");
+                    String type = (String) point_jsonObject.get("access");
 
                     JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
                     System.out.println("neighbourS " + neighbours.toString());
