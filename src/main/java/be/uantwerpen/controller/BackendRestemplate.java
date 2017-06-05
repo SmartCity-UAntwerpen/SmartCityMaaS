@@ -146,7 +146,9 @@ public class BackendRestemplate {
         List<DummyPoint> points = new ArrayList<DummyPoint>();
 
         try {
+            //BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentin.txt"));
             BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
+
             String line;
             while ((line = br.readLine()) != null) {
                 obj = parser.parse(line);

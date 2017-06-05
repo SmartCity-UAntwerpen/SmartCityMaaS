@@ -496,10 +496,13 @@ function legitArea(x, y)
 function onClick(e) {
     console.log("MOUSE CLICK x "+ e.pageX + " en y " +e.pageY);
     var map = document.getElementById('myMapCanvas');
-    console.log("Map info x "+ map.offsetLeft + " en y " +map.offsetTop);
+    console.log("Map offset x "+ map.offsetLeft + " en y " +map.offsetTop);
+
     console.log("DELIVERY FROM THYMLEAF " +pointA);
-    document.getElementById('inputA').value = "JellyFish";
-    var x_click = e.pageX-map.offsetLeft;
+
+
+     var x_click = e.pageX-map.offsetLeft ;
+   // var x_click = e.pageX;
     var y_click = e.pageY-map.offsetTop;
     console.log("COMBO info x "+ x_click + " en y " +y_click);
     var sideVariation_X = (0.5 + world.surround_layer)*x_size;

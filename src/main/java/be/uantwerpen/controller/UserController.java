@@ -69,7 +69,6 @@ public class UserController {
         return "map";
     }
 
-
     @RequestMapping(value="/users/put", method= RequestMethod.GET)
     //@PreAuthorize("hasRole('admin') and hasRole('logon')")
     public String viewCreateUser(final ModelMap model){
@@ -138,12 +137,21 @@ public class UserController {
 
     @RequestMapping(value="/deliveries/put", method= RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model){
-        model.addAttribute("allSegments", segmentService.findAll());
+        /*model.addAttribute("allSegments", segmentService.findAll());
         model.addAttribute("allPassengers", passengerService.findAll());
         Delivery del = new Delivery("","","");
         model.addAttribute("delivery",del);
-        World world = new World(300,300);
-        return "delivery-manage2";
+        World world = new World(300,300);*/
+
+
+        Delivery del = new Delivery("","","");
+        model.addAttribute("delivery",del);
+        model.addAttribute("allPassengers", passengerService.findAll());
+
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
+        System.out.println("User logged in: "+loginUser.getUserName());
+        return "delivery-manage-user";
     }
 
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)

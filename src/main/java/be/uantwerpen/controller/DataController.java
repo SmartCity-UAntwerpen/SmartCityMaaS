@@ -25,6 +25,7 @@ public class DataController {
     List<World> worlds = new ArrayList<World>();
 
     public boolean vehicle_start = false;
+
     @Autowired
     public BackendRestemplate backendRestemplate;
 
@@ -33,6 +34,8 @@ public class DataController {
         System.out.println("### Retrieve world callled ###");
 
         List<DummyPoint> listPoints = getMapDataBackend();
+        // Quentin wereld = World world  =
+        // Dries wereld = World world  = new World(250,250);
         World world  = new World(250,250);
         System.out.println("### CELLIS POINTS SIZE ###"+listPoints.size());
 

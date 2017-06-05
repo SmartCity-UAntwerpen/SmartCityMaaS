@@ -12,7 +12,10 @@ public class DummyMap {
     private int unit = 3;
 
     public DummyMap() {
-        unit = 4; // 5 meter
+        //Dries wereld is 4 meter
+        //Quentin wereld is 2 meter
+
+        unit = 4;
         /*dummyPoints = new ArrayList<DummyPoint>();
         List<Integer> neighbourList = new ArrayList<Integer>();
         neighbourList.add(1);

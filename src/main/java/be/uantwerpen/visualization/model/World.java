@@ -411,16 +411,16 @@ public class World {
         job1.setIdEnd(1);
         Job job2 = new Job();
         job2.setIdStart(1);
-        job2.setIdEnd(2);
+        job2.setIdEnd(4);
         Job job3 = new Job();
-        job3.setIdStart(2);
-        job3.setIdEnd(0);
+        job3.setIdStart(4);
+        job3.setIdEnd(9);
         Job job4 = new Job();
-        job4.setIdStart(0);
-        job4.setIdEnd(3);
+        job4.setIdStart(9);
+        job4.setIdEnd(28);
         Job job5 = new Job();
-        job5.setIdStart(3);
-        job5.setIdEnd(1);
+        job5.setIdStart(28);
+        job5.setIdEnd(26);
         JobList jobList = new JobList();
         jobList.addJob(job1);
         jobList.addJob(job2);
@@ -452,6 +452,7 @@ public class World {
             // Add the the total distance of a link to temp_distance
             // Plus one for the last endPoint
             distance_temp = distance_temp + cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells()+1;
+            System.out.println("Cell link start "+ cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID() + "size intermediate "+ cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells() +" end "+cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID());
             if(intermediateDistance <= distance_temp)
             {
                 int modulo = intermediateDistance % distance_temp;
@@ -461,7 +462,7 @@ public class World {
                 int cellIndexOfLink = intermediateDistance - distance_start;
 
 
-                System.out.println("cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start);
+                System.out.println("cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start+" distance_start");
                 // If the index is equal to the size of intermediate cells, then the endpoint is reached of
                 // of this link
                 if((cellIndexOfLink == 0))
