@@ -524,6 +524,7 @@ function onClick(e) {
                     pointB_ID = -100;
                     redraw_onPointB = false;
                 }
+                document.getElementById('saveDelivery').style.visibility = 'hidden';
                 initdraw();
             } else {
                 if (pointB_set == true) {
@@ -535,6 +536,7 @@ function onClick(e) {
                         pointB_set = false;
                         pointB_ID = -100;
                         redraw_onPointB = false;
+                        document.getElementById('saveDelivery').style.visibility = 'hidden';
 
                         // Draw first init, so that the original B point is certainly cleared from the canvas.
                         initdraw();
@@ -545,6 +547,8 @@ function onClick(e) {
                     pointB_x = x_click;
                     pointB_y = y_click;
                     pointB_set = true;
+                    document.getElementById('saveDelivery').style.visibility = 'visible';
+
                 }
                 drawMap();
             }
@@ -552,14 +556,20 @@ function onClick(e) {
             pointA_x = x_click;
             pointA_y = y_click;
             pointA_set = true;
+            document.getElementById('saveDelivery').style.visibility = 'hidden';
+
             drawMap();
         }
 
     }
+    console.log("current user "+document.getElementById("userName").value)
 }
 
     loadImages();
     getWorld();
+    // Hide save button
+    document.getElementById('saveDelivery').style.visibility = 'hidden';
+
     // start();
     // Execute getProgress every 250 milliseconds
 

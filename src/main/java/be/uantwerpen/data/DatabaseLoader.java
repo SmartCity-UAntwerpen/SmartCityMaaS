@@ -66,7 +66,7 @@ public class DatabaseLoader {
         u2.setRoles(roles);
         userRepository.save(u2);
 
-        Delivery delivery = new Delivery("Lorance", "Malfait","Seg 9", "Seg 10",2);
+        Delivery delivery = new Delivery("Jack", "Lorance", "Malfait","Seg 9", "Seg 10",2);
         deliveryRepository.save(delivery);
 
         Segment segment1 = new Segment("Seg 1");

@@ -26,7 +26,7 @@ public class MongoDBMethods {
     protected String specificQueryInfo = null;
 
     public enum Query{
-        SELECT_ALL, SELECT_OBJECT_ID, SELECT_PUT_DELIVERY, SELECT_DELIVERYTYPE, SELECT_FIRSTNAME, SELECT_LASTNAME,SELECT_POINTA,SELECT_POINTB, SELECT_PASSENGERS, SELECT_TIME, SELECT_LAST
+        SELECT_ALL, SELECT_OBJECT_ID, SELECT_PUT_DELIVERY, SELECT_DELIVERYTYPE, SELECT_USERNAME, SELECT_FIRSTNAME, SELECT_LASTNAME,SELECT_POINTA,SELECT_POINTB, SELECT_PASSENGERS, SELECT_TIME, SELECT_LAST
     }
 
     /**
@@ -62,6 +62,8 @@ public class MongoDBMethods {
 
             ObjectId object_id = doc.getObjectId("_id");
             String type = doc.getString("delivery");
+            String username = doc.getString("username");
+
             String firstname = doc.getString("firstname");
 
             String lastname = doc.getString("lastname");
@@ -112,6 +114,7 @@ public class MongoDBMethods {
                     Document doc = cursor.first();
                     ObjectId object_id = doc.getObjectId("_id");
                     String type = doc.getString("typeDelivery");
+                    String username = doc.getString("username");
                     String firstname = doc.getString("firstname");
                     String lastname = doc.getString("lastname");
                     String pointA = doc.getString("pointA");
@@ -135,19 +138,29 @@ public class MongoDBMethods {
                         while (cursor.hasNext()) {
                             Document doc = cursor.next();
                             ObjectId object_id = doc.getObjectId("_id");
-                            String type = doc.getString("typeDelivery");
+                            String typeDelivery = doc.getString("typeDelivery");
+                            String username = doc.getString("username");
                             String firstname = doc.getString("firstname");
                             String lastname = doc.getString("lastname");
                             String pointA = doc.getString("pointA");
                             String pointB = doc.getString("pointB");
                             String pas = doc.getString("passengers");
-                            int passengers = Integer.parseInt(pas);
+                            String passengers = doc.getString(pas);
                             Date time = doc.getDate("timestamp");
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(time);
-                            delivery = new Delivery(object_id.toString(), type, firstname,lastname,pointA,pointB,passengers, timestamp);
+                            delivery = new Delivery();
+                            delivery.setIdDelivery(object_id.toString());
+                            delivery.setUserName(username);
+                            delivery.setFirstName(firstname);
+                            delivery.setLastName(lastname);
+                            delivery.setPointA(pointA);
+                            delivery.setPointB(pointB);
+                            delivery.setType(typeDelivery);
+                            delivery.setPassengers(Integer.parseInt(passengers));
+                            delivery.setDate(timestamp);
                             deliveries.add(delivery);
                             System.out.println("Object_ID: " + object_id);
-                            System.out.println("type: " + type);
+                            System.out.println("type: " + typeDelivery);
                             System.out.println("firstname: " + firstname);
                             System.out.println("lastname: " + lastname);
                             System.out.println("pointA: " + pointA);
@@ -211,12 +224,14 @@ public class MongoDBMethods {
         System.out.println("----- Finish writing to MongoDB -----");
         return "h";
     }
+
     public void putStatement(Delivery delivery)
     {
         System.out.println("----- Write data to MongoDB -----");
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         Document document = new Document();
         document.put("typeDelivery", delivery.getType());
+        document.put("username", delivery.getUserName());
         document.put("firstname", delivery.getFirstName());
         document.put("lastname", delivery.getLastName());
         document.put("pointA", delivery.getPointA());
@@ -239,6 +254,7 @@ public class MongoDBMethods {
             Document doc = cursor.first();
             ObjectId object_id = doc.getObjectId("_id");
             String typeDelivery = doc.getString("typeDelivery");
+            String username = doc.getString("username");
             String firstname = doc.getString("firstname");
             String lastname = doc.getString("lastname");
             String pointA = doc.getString("pointA");
@@ -247,6 +263,7 @@ public class MongoDBMethods {
             Date d = new Date(doc.getDate("timesample").getTime());
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
             lastDelivery.setIdDelivery(object_id.toString());
+            lastDelivery.setUserName(username);
             lastDelivery.setFirstName(firstname);
             lastDelivery.setLastName(lastname);
             lastDelivery.setPointA(pointA);
@@ -277,6 +294,9 @@ public class MongoDBMethods {
                 break;
             case SELECT_DELIVERYTYPE:
                 searchQuery.put("typeDelivery",specific);
+                break;
+            case SELECT_USERNAME:
+                searchQuery.put("username",specific);
                 break;
             case SELECT_FIRSTNAME:
                 searchQuery.put("firstname",specific);

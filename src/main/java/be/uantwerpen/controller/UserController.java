@@ -140,7 +140,7 @@ public class UserController {
     public String viewCreateDelivery(final ModelMap model){
         model.addAttribute("allSegments", segmentService.findAll());
         model.addAttribute("allPassengers", passengerService.findAll());
-        Delivery del = new Delivery("","");
+        Delivery del = new Delivery("","","");
         model.addAttribute("delivery",del);
         World world = new World(300,300);
         return "delivery-manage2";
@@ -152,7 +152,6 @@ public class UserController {
         System.out.println("--- Delivery point A "+ delivery.getPointA() + " point B "+ delivery.getPointB()+" ---");
 
         if(result.hasErrors()){
-            model.addAttribute("allSegments", segmentService.findAll());
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage2";
         }
@@ -189,7 +188,7 @@ public class UserController {
 
         model.addAttribute("allSegments", segmentService.findAll());
         model.addAttribute("allPassengers", passengerService.findAll());
-        Delivery del = new Delivery("","");
+        Delivery del = new Delivery("","","");
         model.addAttribute("delivery",del);
         World world = new World(300,300);
         return "simulation";
