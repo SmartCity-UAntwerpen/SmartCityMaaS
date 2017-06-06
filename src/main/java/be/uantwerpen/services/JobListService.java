@@ -54,7 +54,7 @@ public class JobListService {
                         jl.getJobs().get(0).setStatus("busy");
                     }
                     else {
-                        recalculatePathAfterError(jl.getJobs().get(0).getId());
+                        //recalculatePathAfterError(jl.getJobs().get(0).getId());
                     }
                 }
                 // communication needed with car core
@@ -63,7 +63,7 @@ public class JobListService {
                         jl.getJobs().get(0).setStatus("busy");
                     }
                     else {
-                        recalculatePathAfterError(jl.getJobs().get(0).getId());
+                        //recalculatePathAfterError(jl.getJobs().get(0).getId());
                     }
                 }
                 // else event: type is robot: communicate with the robot core
@@ -72,7 +72,7 @@ public class JobListService {
                         jl.getJobs().get(0).setStatus("busy");
                     }
                     else {
-                        recalculatePathAfterError(jl.getJobs().get(0).getId());
+                        //recalculatePathAfterError(jl.getJobs().get(0).getId());
                     }
                 }
             }
@@ -83,7 +83,7 @@ public class JobListService {
         boolean status = true;
         String temp = "http://143.129.39.151:8082/executeJob/";
         //temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-        temp=temp+("911/78/0/2");
+        temp=temp+("911/78/0/3");
         System.out.println("DroneDispatch");
         System.out.println(temp);
         try {
@@ -156,6 +156,7 @@ public class JobListService {
             // an error has occured
             else{
                 String msgresponse = conn.getResponseMessage();
+                System.out.println(msgresponse);
                 if (msgresponse == "idVehicleError") {
                     //TODO: doet iets met de error code
 
@@ -209,6 +210,7 @@ public class JobListService {
             // an error has occured
             else{
                 String msgresponse = conn.getResponseMessage();
+                System.out.println(msgresponse);
                 if (msgresponse == "idVehicleError") {
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
