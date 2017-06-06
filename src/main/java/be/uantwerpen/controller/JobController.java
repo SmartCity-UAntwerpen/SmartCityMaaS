@@ -77,6 +77,11 @@ public class JobController {
     @RequestMapping(value ="/createOrder/{A}/{B}")
     public String createOrder(@PathVariable String A, @PathVariable String  B)
     {
+        astar.init(jobService, jobListService);
+        astar.makeNode();
+        astar.makeEdge();
+      //  astar.startAStar();
+        astar.testDeterminePath(astar.getGraph(),A,B);
         return "redirect:/jobs";
 
     }

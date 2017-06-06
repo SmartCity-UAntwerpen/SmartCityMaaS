@@ -81,7 +81,7 @@ public class JobListService {
 
     public Boolean dispatch2Drone(long idJob, long idStart, long idEnd, long idVehicle) {
         boolean status = true;
-        String temp = "http://146.175.140.38:8082/executeJob/";
+        String temp = "http://143.129.39.151:8082/executeJob/";
         //temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         temp=temp+("911/78/0/2");
         System.out.println("DroneDispatch");
@@ -186,7 +186,7 @@ public class JobListService {
     public boolean dispatch2Robot(long idJob, long idStart, long idEnd, long idVehicle) {
         boolean status = true;
         //String temp = "143.129.39.112:1949/executeJob/";
-        String temp = "http://146.175.140.154:1949/executeJob/";
+        String temp = "http://143.129.39.151:8083/executeJob/";
         temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         System.out.println("RobotDispatch");
         System.out.println(temp);

@@ -39,6 +39,7 @@ public class JobDispatching {
         path = path.substring(0,path.length()-1);       // laatste karakter weghalen
         String[] pathSplit =  path.split(", ", -1);
         Link[] listOfEdges = graphBuilder.getLinkList();
+        Link previous = listOfEdges[0];
         // need to delete the first item since it was random generated
         //jobService.delete(Long.valueOf(1));
 
@@ -49,23 +50,26 @@ public class JobDispatching {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
                 // TODO: als een link ID = -1 retourneert moet er een error volgen!
                 Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
-                Link previous = link;
+
                 if (listOfEdges[j].getId().equals(link.getId())) {
+                    //System.out.println("Path: " + path);
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
+                    //System.out.println("Edge: " + listOfEdges[j]);
                     //TODO: if (listOfEdges[j].getVehicle().equals("wait")){
-                    if (listOfEdges[j].getVehicle().equals("walk")){
+                    if (listOfEdges[j].getVehicle().equals("wait")){
                         //don't add job!
                     }
                     else {
                         Job job = new Job();
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
+                        System.out.println("path id: " + job.getIdStart());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
                         job.setTypeVehicle((listOfEdges[j].getVehicle()));
                         job.setStatus("ready");
 
 
-                        jobService.save(job);
+
                         if (joblist.isEmpty() == true) {
                             joblist.setStartPoint(job.getIdStart());
                         }
@@ -73,7 +77,7 @@ public class JobDispatching {
 
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
 
-                        if(previous.getStopPoint().equals(job.getIdStart())){
+                        if(previous.getStopPoint().getId().equals(job.getIdStart())){
                             job.setIdVehicle(previous.getVehicleID());
                         }
                         else {

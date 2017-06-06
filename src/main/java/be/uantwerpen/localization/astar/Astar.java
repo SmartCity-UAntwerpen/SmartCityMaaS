@@ -92,6 +92,9 @@ public class Astar {
      /*   public static void main(String[] args) throws IOException {
     }*/
 
+     public Graph getGraph(){
+         return graph;
+     }
 
     public void startAStar() {
 
