@@ -54,7 +54,7 @@ public class JobDispatching {
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
                     //TODO: if (listOfEdges[j].getVehicle().equals("wait")){
-                    if (listOfEdges[j].getVehicle().equals("walk")){
+                    if (listOfEdges[j].getVehicle().equals("wait")){
                         //don't add job!
                     }
                     else {
