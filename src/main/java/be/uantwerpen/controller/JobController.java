@@ -77,7 +77,7 @@ public class JobController {
     @RequestMapping(value ="/createOrder/{A}/{B}")
     public String createOrder(@PathVariable String A, @PathVariable String  B)
     {
-        return "";
+        return "redirect:/jobs";
 
     }
 
@@ -86,7 +86,6 @@ public class JobController {
         jobService.delete(idJob);
         for (JobList jl: jobListService.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob) == true) {
-                jl.getJobs().get(0).setStatus("done");
                 jl.getJobs().remove(0);
                 if (jl.getJobs().isEmpty() == true) {
                     //TODO need to test to see if this works
@@ -102,6 +101,6 @@ public class JobController {
         jobListService.dispatch2Core();
 
 
-        return "/dispatchJobs";
+        return "redirect:/jobs";
     }
 }
