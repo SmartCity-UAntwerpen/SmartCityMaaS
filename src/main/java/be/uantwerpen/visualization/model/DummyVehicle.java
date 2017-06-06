@@ -10,12 +10,13 @@ public class DummyVehicle implements Runnable {
         public void run() {
             distance = 0;
             // 1000 = 100,0%
-            while(distance < 1000)
+            while(distance < 100)
             {
                 try {
                     // every 50 millisecons, increase: 0.1%
                     // or 1% every second
-                    Thread.sleep(50);
+                    Thread.sleep(100);
+                    //Thread.sleep(50);
                     distance++;
 
                 } catch (InterruptedException e) {

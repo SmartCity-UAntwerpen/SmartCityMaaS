@@ -15,7 +15,7 @@ public class DummyMap {
         //Dries wereld is 4 meter
         //Quentin wereld is 2 meter
 
-        unit = 4;
+        unit = 2;
         /*dummyPoints = new ArrayList<DummyPoint>();
         List<Integer> neighbourList = new ArrayList<Integer>();
         neighbourList.add(1);

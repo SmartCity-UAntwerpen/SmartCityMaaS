@@ -18,7 +18,7 @@ public class World {
     private int unitWorld;
     private List<CellLink> cellLinks;
     // Defines the diameter around a location point.
-    private int surround_layer = 2;
+    private int surround_layer = 1;
 
     public World(int dimensionX, int dimensionY) {
         this.dimensionX = dimensionX;
@@ -39,7 +39,7 @@ public class World {
     }
 
 
-    public void surroundPoint(int y, int x, String specific, int spotID) {
+    public void surroundPoint(int y, int x, String specific, int spotID, String characteristic) {
         int y_underLimit = y - surround_layer;
         int y_upperLimit = y + surround_layer + 1;
         int x_underLimit = x - surround_layer;
@@ -54,12 +54,14 @@ public class World {
                             cells.get(i).getCellList().get(j).setSur_x(x);
                             cells.get(i).getCellList().get(j).setSur_y(y);
                             cells.get(i).getCellList().get(j).setSpotID(spotID);
+                            cells.get(i).getCellList().get(j).setCharacteristic(characteristic);
                         } else {
                             cells.get(i).getCellList().get(j).setType("spot");
                             cells.get(i).getCellList().get(j).setSpecific(specific);
                             cells.get(i).getCellList().get(j).setSur_x(x);
                             cells.get(i).getCellList().get(j).setSur_y(y);
                             cells.get(i).getCellList().get(j).setSpotID(spotID);
+                            cells.get(i).getCellList().get(j).setCharacteristic(characteristic);
                         }
                     }
                 }
@@ -91,7 +93,7 @@ public class World {
             startPoint.setSpotID(point.getPointName());
 
             //cells.get(y_coor).getCellList().get(x_coor).setType(2);
-            surroundPoint(y_coor, x_coor, point.getType(), point.getPointName());
+            surroundPoint(y_coor, x_coor, point.getType(), point.getPointName(),point.getPointCharacteristic());
             System.out.println("set road point on column " + x_coor + " and row " + y_coor);
             for (int n = 0; n < point.getNeighbours().size(); n++) {
                 CellLink cellLink = new CellLink();
@@ -118,6 +120,7 @@ public class World {
                 double temp_interpolate = Math.sqrt(tempPow_x + tempPow_y);
                 int interpolate = (int) temp_interpolate;
                 Cell roadCell = new Cell();
+                roadCell.setSpecific(point.getType());
                 if (x_coor_neighbour < x_coor) {
                     if (y_coor_neighbour < y_coor) {
                         int y_temp = y_coor_neighbour;
@@ -125,9 +128,12 @@ public class World {
                         for (int c = x_coor_neighbour; c <= x_coor; c = c + unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
+                                cells.get(y_temp).getCellList().get(c).setSpecific(point.getType());
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_temp);
+                                    roadCell =  cells.get(y_temp).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }else{
@@ -135,7 +141,9 @@ public class World {
                                 // of a link.
                                 if(cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true  && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_temp);
+                                    roadCell =  cells.get(y_temp).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }
@@ -151,15 +159,20 @@ public class World {
                         for (int c = x_coor_neighbour; c < x_coor; c = c + unitWorld) {
                             if (cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_coor_neighbour).getCellList().get(c).setType("road");
+                                cells.get(y_coor_neighbour).getCellList().get(c).setSpecific(point.getType());
                                 if(c != x_coor_neighbour && c != x_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
+                                    roadCell =  cells.get(y_coor_neighbour).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_coor_neighbour);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }
                             if (cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor)
                             {
-                                roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
+                                roadCell =  cells.get(y_coor_neighbour).getCellList().get(c);
+                                roadCell.setX(c);
+                                roadCell.setY(y_coor_neighbour);
                                 cellLink.addIntermediateCell(roadCell);
                             }
                         }
@@ -168,16 +181,22 @@ public class World {
                         for (int c = x_coor_neighbour; c <= x_coor; c = c + unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
+                                cells.get(y_temp).getCellList().get(c).setSpecific(point.getType());
+
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_temp);
+                                    roadCell =  cells.get(y_temp).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
 
                             }
                             if(cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                             {
-                                roadCell =  cells.get(c).getCellList().get(y_temp);
+                                roadCell =  cells.get(y_temp).getCellList().get(c);
+                                roadCell.setX(c);
+                                roadCell.setY(y_temp);
                                 cellLink.addIntermediateCell(roadCell);
                             }
                             if (y_temp != y_coor) {
@@ -194,16 +213,22 @@ public class World {
                         for (int c = y_coor_neighbour; c < y_coor; c = c + unitWorld) {
                             if (cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == false && cells.get(c).getCellList().get(x_coor).getType().equals("spot")== false) {
                                 cells.get(c).getCellList().get(x_coor).setType("road");
+                                cells.get(c).getCellList().get(x_coor).setSpecific(point.getType());
+
 
                                 if(c != y_coor_neighbour && c != y_coor)
                                 {
                                     roadCell =  cells.get(c).getCellList().get(x_coor);
+                                    roadCell.setX(x_coor);
+                                    roadCell.setY(c);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }
                             if(cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == true && c != y_coor_neighbour && c != y_coor)
                             {
                                 roadCell = cells.get(c).getCellList().get(x_coor);
+                                roadCell.setX(x_coor);
+                                roadCell.setY(c);
                                 cellLink.addIntermediateCell(roadCell);
                             }
                         }
@@ -216,15 +241,21 @@ public class World {
 
                             if (cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == false && cells.get(c).getCellList().get(x_coor).getType().equals("spot") == false) {
                                 cells.get(c).getCellList().get(x_coor).setType("road");
+                                cells.get(c).getCellList().get(x_coor).setSpecific(point.getType());
+
                                 if(c != y_coor_neighbour && c != y_coor)
                                 {
-                                    roadCell =  cells.get(x_coor).getCellList().get(c);
+                                    roadCell =  cells.get(c).getCellList().get(x_coor);
+                                    roadCell.setX(x_coor);
+                                    roadCell.setY(c);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }
                             if(cells.get(c).getCellList().get(x_coor).getType().equals("surrounding_point") == true && c != y_coor_neighbour && c != y_coor)
                             {
-                                roadCell =  cells.get(x_coor).getCellList().get(c);
+                                roadCell =  cells.get(c).getCellList().get(x_coor);
+                                roadCell.setX(x_coor);
+                                roadCell.setY(c);
                                 cellLink.addIntermediateCell(roadCell);
                             }
                         }
@@ -235,15 +266,21 @@ public class World {
                         for (int c = x_coor_neighbour; c >= x_coor; c = c - unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
+                                cells.get(y_temp).getCellList().get(c).setSpecific(point.getType());
+
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_temp);
+                                    roadCell =  cells.get(y_temp).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 };
                             }
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                             {
-                                roadCell =  cells.get(c).getCellList().get(y_temp);
+                                roadCell =  cells.get(y_temp).getCellList().get(c);
+                                roadCell.setX(c);
+                                roadCell.setY(y_temp);
                                 cellLink.addIntermediateCell(roadCell);
                             }
                             if (y_temp != y_coor) {
@@ -258,16 +295,22 @@ public class World {
                         for (int c = x_coor_neighbour; c > x_coor; c = c - unitWorld) {
                             if (cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_coor_neighbour).getCellList().get(c).setType("road");
+                                cells.get(y_coor_neighbour).getCellList().get(c).setSpecific(point.getType());
+
                                 if(c != x_coor_neighbour && c != x_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
+                                    roadCell =  cells.get(y_coor_neighbour).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_coor_neighbour);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }
 
                             if(cells.get(y_coor_neighbour).getCellList().get(c).getType().equals("surrounding_point") == true &&  c != x_coor_neighbour && c != x_coor)
                             {
-                                roadCell =  cells.get(c).getCellList().get(y_coor_neighbour);
+                                roadCell =  cells.get(y_coor_neighbour).getCellList().get(c);
+                                roadCell.setX(c);
+                                roadCell.setY(y_coor_neighbour);
                                 cellLink.addIntermediateCell(roadCell);
                             }
                         }
@@ -276,15 +319,21 @@ public class World {
                         for (int c = x_coor_neighbour; c >= x_coor; c = c - unitWorld) {
                             if (cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == false && cells.get(y_temp).getCellList().get(c).getType().equals("spot") == false) {
                                 cells.get(y_temp).getCellList().get(c).setType("road");
+                                cells.get(y_temp).getCellList().get(c).setSpecific(point.getType());
+
                                 if(c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                                 {
-                                    roadCell =  cells.get(c).getCellList().get(y_temp);
+                                    roadCell =  cells.get(y_temp).getCellList().get(c);
+                                    roadCell.setX(c);
+                                    roadCell.setY(y_temp);
                                     cellLink.addIntermediateCell(roadCell);
                                 }
                             }
                             if(cells.get(y_temp).getCellList().get(c).getType().equals("surrounding_point") == true && c != x_coor_neighbour && c != x_coor && y_temp != y_coor_neighbour && y_temp != y_coor)
                             {
-                                roadCell =  cells.get(c).getCellList().get(y_temp);
+                                roadCell =  cells.get(y_temp).getCellList().get(c);
+                                roadCell.setX(c);
+                                roadCell.setY(y_temp);
                                 cellLink.addIntermediateCell(roadCell);
                             }
 
@@ -303,9 +352,10 @@ public class World {
             }
         }
         System.out.println("---- Print cellLinks ----");
-        for(CellLink cl: cellLinks)
+        for(int i = 0;i < cellLinks.size(); i++)
         {
-            cl.print();
+            System.out.println("Cell index is "+i);
+            cellLinks.get(i).print();
         }
         System.out.println("Life is a bitch");
     }
@@ -391,7 +441,7 @@ public class World {
      * Returns the distance between two points on the map.
      * @return
      */
-    public int[] getDistancePoints(int progress)
+    public int[] getDistancePoints(List<Integer> jobs, int progress)
     {
         int distance = 0;
         /*
@@ -405,7 +455,9 @@ public class World {
         distance = temp_interpolate.intValue();*/
 
         // Mock object jobList
-        List<Job> jobs = new ArrayList<Job>();
+        //List<Job> jobs = new ArrayList<Job>();
+        /*
+
         Job job1 = new Job();
         job1.setIdStart(0);
         job1.setIdEnd(1);
@@ -421,13 +473,54 @@ public class World {
         Job job5 = new Job();
         job5.setIdStart(28);
         job5.setIdEnd(26);
+
+
+        */
+        /*Job job1 = new Job();
+        job1.setIdStart(0);
+        job1.setIdEnd(1);
+        Job job2 = new Job();
+        job2.setIdStart(1);
+        job2.setIdEnd(2);
+        Job job3 = new Job();
+        job3.setIdStart(2);
+        job3.setIdEnd(8);
+        Job job4 = new Job();
+        job4.setIdStart(8);
+        job4.setIdEnd(9);
+        Job job5 = new Job();
+        job5.setIdStart(9);
+        job5.setIdEnd(10);
+
+
+
+
         JobList jobList = new JobList();
         jobList.addJob(job1);
         jobList.addJob(job2);
         jobList.addJob(job3);
         jobList.addJob(job4);
-        jobList.addJob(job5);
-        List<Integer> listLinkIDs = getLinkList(jobList);
+        jobList.addJob(job5);*/
+
+        // List<Integer> listLinkIDs = getLinkList(jobList);
+        List<Integer> listLinkIDs = new ArrayList<Integer>();
+        for(int i = 0; i < jobs.size(); i = i+2)
+        {
+            System.out.println("getLinkIDofStartEnd start "+jobs.get(i) +" end "+jobs.get(i+1) );
+
+            listLinkIDs.add(getLinkIDofStartEnd(jobs.get(i), jobs.get(i+1)));
+        }
+
+        for(int i = 0; i < listLinkIDs.size(); i++)
+        {
+             System.out.println("ID of link list "+listLinkIDs.get(i));
+        }
+
+
+
+
+
+
         // For the total distance there should be one extra point added for endpoint.
         // One because the startpoint is also seen as one distance.
         int totalDistance = 1;
@@ -436,7 +529,9 @@ public class World {
             totalDistance = totalDistance+cellLinks.get(listLinkIDs.get(i)).sizeIntermediateCells()+1;
         }
         // Current distance progress (remeber progress = 100,0%)
-        distance = totalDistance*progress/1000;
+        distance = totalDistance*progress/100;
+        System.out.println("Total distance "+totalDistance + " current distance "+distance);
+
         // Remove the endpoints' size of the distance
         int intermediateDistance = distance;// - listLinkIDs.size();
         if(intermediateDistance < 0)
@@ -452,17 +547,17 @@ public class World {
             // Add the the total distance of a link to temp_distance
             // Plus one for the last endPoint
             distance_temp = distance_temp + cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells()+1;
-            System.out.println("Cell link start "+ cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID() + "size intermediate "+ cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells() +" end "+cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID());
+            System.out.println("Cell link start "+ cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID() + "size intermediate "+ cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells() +" end "+cellLinks.get(listLinkIDs.get(l)).getEndCell().getSpotID() +" progress "+progress +" distance_temp "+distance_temp);
+            // If intermediate distance is lower than distance_temp than this is current x and y are set in this link.
             if(intermediateDistance <= distance_temp)
             {
-                int modulo = intermediateDistance % distance_temp;
                 // Distance from the start of this link
                 int distance_start = distance_temp-cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells();
                 // Cell index
                 int cellIndexOfLink = intermediateDistance - distance_start;
 
 
-                System.out.println("cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start+" distance_start");
+                System.out.println("listLinkIDs " + listLinkIDs.get(l)+ " cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start);
                 // If the index is equal to the size of intermediate cells, then the endpoint is reached of
                 // of this link
                 if((cellIndexOfLink == 0))
@@ -472,8 +567,18 @@ public class World {
                 {
                     System.out.println(" Size of links "+cellLinks.get(listLinkIDs.get(l)).getLinkCells().size());
                     currentCell = cellLinks.get(listLinkIDs.get(l)).getEndCell();
+                }else if(cellIndexOfLink < 0)
+                {
+                    System.out.println(" A cellLink smaller the 0 has been calculated. Value is adjusted to start cell.");
+                    currentCell = cellLinks.get(listLinkIDs.get(l)).getStartCell();
                 }else
                 {
+                    if(listLinkIDs.get(l) == 3)
+                    {
+                        Cell testcell = cellLinks.get(listLinkIDs.get(l)).getLinkCells().get(cellIndexOfLink);
+                        System.out.println("Test cell  x "+testcell.getX() + " y "+testcell.getY());
+
+                    }
                     currentCell = cellLinks.get(listLinkIDs.get(l)).getLinkCells().get(cellIndexOfLink);
                 }
                 x = currentCell.getX();
@@ -586,10 +691,10 @@ public class World {
         int y_end = cellLink.getEndCell().getY();
 
         int differenceX_start = Math.abs(x_start - cellLink.getLinkCells().get(0).getX());
-        int differenceY_start = Math.abs(x_start - cellLink.getLinkCells().get(0).getY());
-        int differenceX_end = Math.abs(x_start - cellLink.getLinkCells().get(0).getX());
-        int differenceY_end = Math.abs(x_start - cellLink.getLinkCells().get(0).getY());
-        if((differenceX_start  ==  differenceX_end && differenceX_start != 0)|| (differenceY_start  ==  differenceY_end &&  differenceY_start!= 0))
+        int differenceY_start = Math.abs(y_start - cellLink.getLinkCells().get(0).getY());
+        int differenceX_end = Math.abs(x_end - cellLink.getLinkCells().get(cellLink.getLinkCells().size()-1).getX());
+        int differenceY_end = Math.abs(y_end - cellLink.getLinkCells().get(cellLink.getLinkCells().size()-1).getY());
+        if((differenceX_start  ==  differenceX_end && differenceX_start != 1) || (differenceY_start  ==  differenceY_end &&  differenceY_start!= 1))
         {
             List<Cell> intermediate_temp = new ArrayList<Cell>();
             for(int i = cellLink.getLinkCells().size()-1 ; i > -1;i--)
@@ -605,6 +710,19 @@ public class World {
 
         return cellLink;
     }
+
+    public int getLinkIDofStartEnd(int startID, int endID) {
+        for(int i = 0 ;i < cellLinks.size();i++)
+        {
+            if(cellLinks.get(i).getStartCell().getSpotID() == startID &&  cellLinks.get(i).getEndCell().getSpotID() ==  endID)
+            {
+                System.out.println("Retrieve id "+i+" of link with start "+ startID +" and end "+endID);
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public List<CellRow> getCells() {
         return cells;
     }

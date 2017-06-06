@@ -41,7 +41,8 @@ public class UserController {
 
     @Autowired
     public BackendRestemplate backendRestemplate;
-
+    @Autowired
+    public Astar astarService;
 
 
 
@@ -165,14 +166,8 @@ public class UserController {
         }
         delivery.setType("HumanTransport");
 
-        /*
-        ASTAR gedeelte
-         */
-        /*
-        Astar astar = new Astar();
-        astar.init(jobService, jobListService);
-        astar.determinePath(delivery.getPointA(), delivery.getPointB());
-        */
+
+
         delivery.setPointA(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
         delivery.setPointB(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods monogDBClient = new MongoDBMethods();
@@ -188,7 +183,24 @@ public class UserController {
             delivery_return.print();
             deliveryService.saveSomeAttributes(delivery_return);
         }
-        return "redirect:/deliveries";
+
+        /*
+            ASTAR gedeelte
+         */
+        //Astar astar = new Astar();
+/*
+        astarService.init(jobService, jobListService);
+        astarService.determinePath(delivery.getPointA(), delivery.getPointB());
+*/
+
+
+        System.out.println("REDIRECT IS PERFORMED");
+        User loginUser = userService.getPrincipalUser();
+        System.out.println("User logged in: "+loginUser.getUserName());
+        model.addAttribute("currentUser", loginUser);
+        model.addAttribute("delivery", delivery_return);
+        return "delivery-navigate-user";
+        // return "redirect:/deliveries";
     }
     @RequestMapping(value="/simulation",method= RequestMethod.GET)
     public String getSimulation(final ModelMap model){

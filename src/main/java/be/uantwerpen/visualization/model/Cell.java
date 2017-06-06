@@ -8,6 +8,8 @@ public class Cell {
     private int y;
     private String type;
     private String specific;
+    private String characteristic;
+
     private int sur_x;
     private int sur_y;
     private int spotID;
@@ -100,5 +102,13 @@ public class Cell {
 
     public void setSpotID(int spotID) {
         this.spotID = spotID;
+    }
+
+    public String getCharacteristic() {
+        return characteristic;
+    }
+
+    public void setCharacteristic(String characteristic) {
+        this.characteristic = characteristic;
     }
 }

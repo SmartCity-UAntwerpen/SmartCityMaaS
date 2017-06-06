@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="/css/style.css"/>
     <script src="http://cdn.jsdelivr.net/webjars/jquery/2.1.4/jquery.min.js"
             th:src="@{/webjars/jquery/2.1.4/jquery.min.js}" type="text/javascript"></script>
+    <script  th:inline="javascript" type="text/javascript" th:src="@{/js/map.js}"></script>
 </head>
 
-<body>
+<body onload="initFunction()" style="margin:0;">
+<div id="loader"></div>
 <div class="login-wrap">
     <div class="login-html">
         <div class="login-form">
@@ -57,29 +59,15 @@
 
                     <div>
                         <input class="form-control" th:type="hidden" id="inputA" type="text" th:field="*{pointA}" />
-
-                        <!--<select th:field="*{pointA}">
-                            <option th:each="segment : ${allSegments}"
-                                    th:value="${segment.name}"
-                                    th:text="${segment.name}">Wireframe</option>
-
-                        </select> -->
-
                     </div>
 
                     <div>
                         <input class="form-control" th:type="hidden" id="inputB" type="text" th:field="*{pointB}" />
-
-                        <!-- <select th:field="*{pointB}">
-                            <option th:each="segment : ${allSegments}"
-                                    th:value="${segment.name}"
-                                    th:text="${segment.name}">Wireframe</option>
-                        </select>-->
                     </div>
 
                     <div>
-                        <label th:text="#{passengers}">Passengers</label>
-                        <select th:field="*{passengers}">
+                        <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
+                        <select id="passengersSelect" th:field="*{passengers}">
                             <option th:each="passenger : ${allPassengers}"
                                     th:value="${passenger}"
                                     th:text="${passenger}">Wireframe</option>
@@ -104,34 +92,37 @@
                         var cellImageDrone = /*[[@{/images/map/drone.png}]]*/;
 
                         var cellImageSpotCar = /*[[@{/images/map/spot_car.png}]]*/;
+                        // The user can also interact with the map
+                        var only_view = false;
 
                         /*]]>*/
                     </script>
 
 
                     <p>
-                        <a href="/deliveries" th:text="#{close}" class="button" >Close</a>
+                        <a id="closeButton" href="/deliveries" th:text="#{close}" class="button" >Close</a>
                     </p>
                     <p>
                         <button id="saveDelivery" type="submit" th:text="#{save}" class="button">Save</button>
                     </p>
-                    <script  th:inline="javascript" type="text/javascript" th:src="@{/js/map.js}"></script>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<div class="content" id="content" style="width:100%">
-    <div id="myDiv" style="width:100%">
+<div class="content" id="content" ><!--style="width:100%">-->
+    <div id="myDiv">   <!-- style="width:100%"> -->
         <!-- Quentin wereld
         <div id="myMapCanvas" width="1500" height="1500">
             <canvas id="mapCanvas" width="1500" height="1500" style="border:1px solid #000000"></canvas>
         </div>
         -->
-        <div id="myMapCanvas" width="1000" height="1000" >
-            <canvas id="mapCanvas" width="1000" height="1000" style="border:1px solid #000000"></canvas>
+        <div id="myMapCanvas" width="900" height="900" >
+            <canvas id="mapCanvas" width="900" height="900" style="border:1px solid #000000"></canvas>
         </div>
     </div>
 </div>
+
+
 </body>
 </html>

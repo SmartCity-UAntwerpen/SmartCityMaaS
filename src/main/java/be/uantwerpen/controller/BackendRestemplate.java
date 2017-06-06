@@ -3,6 +3,7 @@ package be.uantwerpen.controller;
 import be.uantwerpen.visualization.model.DummyPoint;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -12,6 +13,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -19,6 +24,12 @@ import java.util.*;
  */
 @Component
 public class BackendRestemplate {
+
+    @Value("${sc.core.ip:localhost}")
+    private String serverCoreIP;
+
+    @Value("#{new Integer(${core.port}) ?: 1994}")
+    private int serverCorePort;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -32,7 +43,7 @@ public class BackendRestemplate {
      */
     public List<DummyPoint> getdataBackend() {
         System.out.println("Retrieve info from core " );
-       /* HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         List<String> pointList = new ArrayList<String>();
@@ -40,10 +51,40 @@ public class BackendRestemplate {
 
         // Quentin
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://146.175.140.44:1994/map/stringmapjson/top")
+        /*
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://" + serverCoreIP+":"serverCorePort+"/map/stringmapjson/top")
                 .queryParam("pointList", pointList);
 
+        */
+/*
+        URL url = null;
+        try {
+            url = new URL("http://143.129.39.151:10000/map/stringmapjson/top");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            //String input = "{\"qty\":100,\"name\":\"iPad 4\"}";µ
+            String response =  conn.getResponseMessage();
+            System.out.println("Response of core " + response);
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://143.129.39.151:10000/map/stringmapjson/top")
+                .queryParam("pointList", pointList);
+        System.out.println("Make builder to Quentin " );
+
         HttpEntity<?> entity = new HttpEntity<>(headers);
+        System.out.println("Entity to Quentin" );
 
         // Get response from the core
         HttpEntity<String> httpResponse = restTemplate.exchange(
@@ -52,9 +93,11 @@ public class BackendRestemplate {
                 entity,
                 String.class);
 
+        System.out.println("Performed exchange to Quentin" );
+
         System.out.println("Response core : "+httpResponse.toString());
         System.out.println("Response body core : "+ httpResponse.hasBody());
-
+*/
 
         new JSONObject();
         //JSONObject obj = new JSONObject();
@@ -93,16 +136,6 @@ public class BackendRestemplate {
         }
         for(int i = 0; i<points.size();i++)
             points.get(i).print();
-
-
-
-
-
-
-
-
-
-
 
         */
         /*
@@ -146,8 +179,8 @@ public class BackendRestemplate {
         List<DummyPoint> points = new ArrayList<DummyPoint>();
 
         try {
-            //BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentin.txt"));
-            BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentin.txt"));
+            //BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -180,14 +213,21 @@ public class BackendRestemplate {
                     System.out.println(" index "+counter + " value of point_ID "+point_ID);
                     int x = ((Long)point_jsonObject.get("x")).intValue();
                     int y = ((Long)point_jsonObject.get("y")).intValue();
-                    String type = (String) point_jsonObject.get("access");
 
+                    String type = (String) point_jsonObject.get("access");
+                    String characteristic = "unknown";
+                    characteristic = (String) point_jsonObject.get("type");
+                    if(characteristic == null)
+                    {
+                        characteristic = "inbetween";
+                    }
                     JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
                     System.out.println("neighbourS " + neighbours.toString());
                     point.setPointName(point_ID);
                     point.setPhysicalPoisionX(x);
                     point.setPhysicalPoisionY(y);
                     point.setType(type);
+                    point.setPointCharacteristic(characteristic);
                     Iterator<String> iter = neighbours.iterator();
                     while (iter.hasNext())
                     {
@@ -260,7 +300,7 @@ public class BackendRestemplate {
         for(int i = 0 ; i <points.size(); i++)
         {
             points.get(i).print();
-            System.out.println(" tttttttttttttttttttttttttttttt "+ pointTransition.get(1000));
+            //System.out.println(" tttttttttttttttttttttttttttttt "+ pointTransition.get(1000));
         }
 
         return points; //new MessageWrapper<>(tracksamples, "server called using eureka with rest template");
@@ -274,13 +314,17 @@ public class BackendRestemplate {
      */
     public Integer getKeyHashMap(Integer value)
     {
-        System.out.println("Key value request for "+value+"  fuck "+pointTransition.get(1000));
+       // System.out.println("Key value request for "+value+"  fuck "+pointTransition.get(1000));
         for (Integer pointKey : pointTransition.keySet()) {
-            System.out.println("pointTransition.get(pointKey) key "+pointTransition.get(pointKey) + " value "+value);
+          //  System.out.println("pointTransition.get(pointKey) key "+pointTransition.get(pointKey) + " value "+value);
             if (pointTransition.get(pointKey).equals(value) == true) {
                 return pointKey;
             }
         }
         return -1;
+    }
+    public Integer getValueofKeyHashMap(Integer key)
+    {
+        return pointTransition.get(key);
     }
 }

@@ -54,7 +54,7 @@ public class JobDispatching {
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
                     //TODO: if (listOfEdges[j].getVehicle().equals("wait")){
-                    if (listOfEdges[j].getVehicle().equals("walk")){
+                    if (listOfEdges[j].getVehicle().equals("wait")){
                         //don't add job!
                     }
                     else {
@@ -76,7 +76,12 @@ public class JobDispatching {
                         if(previous.getStopPoint().equals(job.getIdStart())){
                             job.setIdVehicle(previous.getVehicleID());
                         }
-                        else {
+                        else
+                        {
+
+                            System.out.println("Job "+job);
+                            System.out.println("listOfEdges[j] "+listOfEdges[j]);
+                            System.out.println("listOfEdges[j].getVehicleID() "+listOfEdges[j].getVehicleID());
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
                         joblist.addJob(job);

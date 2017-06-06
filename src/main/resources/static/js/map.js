@@ -29,6 +29,8 @@ var y_size;
 var change_color = "null";
 var redraw_onPointA = false;
 var redraw_onPointB = false;
+var map_ready = false;
+
 
 
 var progress;
@@ -43,7 +45,14 @@ function start() {
     mapCanvasContext = mapCanvas.getContext("2d");
     initdraw();
     //drawMap();
-    mapCanvas.addEventListener("click", onClick, false);
+    if(only_view == false)
+    {
+        mapCanvas.addEventListener("click", onClick, false);
+
+    }else
+    {
+        setInterval(getProgress, 100);
+    }
 
     // firstDraw()
     //setInterval(loop, 15);
@@ -283,23 +292,55 @@ function initdraw()
             var cell = world.cells[i].cellList[j];
             var columns = x_size * j;
             var rows = y_size * i;
+
             if (cell.type.localeCompare("spot") == 0 || cell.type.localeCompare("surrounding_point") == 0) {
                 //console.log("Map info x " +cell.specific);
+                if (cell.characteristic.localeCompare("inbetween")== 0) {
+                    mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
+/*
+                    if (cell.type.localeCompare("spot") == 0)
+                    {
+                        mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
+                    }else
+                    {
+                        if(cell.sur_x == cell.x || cell.sur_y == cell.y )
+                        {
+                            mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
 
+                        }else
+                        {
+                            mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
+                        }
+                    }*/
+                }else {
+                    if (cell.specific.localeCompare("drone") == 0) {
+                        mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
+                    } else if (cell.specific.localeCompare("car") == 0) {
+                        mapCanvasContext.drawImage(spot_car, columns, rows, x_size, y_size);
+                    } else {
+                        mapCanvasContext.drawImage(spot_robot, columns, rows, x_size, y_size);
+                    }
+                }
+            } else if (cell.type.localeCompare("road") == 0) {
+
+                //console.log( " Road cell.specific "+cell.specific);
                 if (cell.specific.localeCompare("drone") == 0) {
                     mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
                 } else if (cell.specific.localeCompare("car") == 0) {
                     mapCanvasContext.drawImage(spot_car, columns, rows, x_size, y_size);
-                } else {
+                } else if (cell.specific.localeCompare("robot") == 0){
                     mapCanvasContext.drawImage(spot_robot, columns, rows, x_size, y_size);
+                }else
+                {
+                    mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
                 }
-            } else if (cell.type.localeCompare("road") == 0) {
-                mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
+
             } else {
                 mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
             }
         }
     }
+    map_ready = true;
 }
 
 
@@ -484,7 +525,7 @@ function legitArea(x, y)
                  * type: 3 = surrounding_point
                  * type: 4 = road_robot
                  */
-                if (world.cells[i].cellList[j].type.localeCompare("background") == 0 || world.cells[i].cellList[j].type.localeCompare("road") == 0) {
+                if (world.cells[i].cellList[j].type.localeCompare("background") == 0 || world.cells[i].cellList[j].type.localeCompare("road") == 0 || world.cells[i].cellList[j].characteristic.localeCompare("inbetween") == 0) {
                     return false;
                 } else {
                     return true;
@@ -568,16 +609,81 @@ function onClick(e) {
     console.log("current user "+document.getElementById("userName").value)
 }
 
+
+
+var myVar;
+
+function initFunction() {
+
+
+    showPage();
+    setInterval(showPage, 250);
     loadImages();
     getWorld();
-    // Hide save button
-    document.getElementById('saveDelivery').style.visibility = 'hidden';
 
-    // start();
     // Execute getProgress every 250 milliseconds
+    if(only_view == true)
+    {
 
-
-    setInterval(getProgress, 100);
+       // setInterval(getProgress, 100);
+    }else
+    {
+        // Hide save button, this button will only be showed when both of the points are selected.
+        document.getElementById('saveDelivery').style.visibility = 'hidden';
+    }
     // Execute start after 700 milliseconds
-    setTimeout(start, 700);
+    setTimeout(start, 1800)
+
+}
+function showPage() {
+    if(map_ready == false) {
+        if(only_view == false)
+        {
+            // Hide the devices,labels,... and show them when the that og the map is loaded.
+            document.getElementById("content").style.visibility = "hidden";
+            document.getElementById("passengersLabel").style.visibility = "hidden";
+            document.getElementById("passengersSelect").style.visibility = "hidden";
+            document.getElementById("closeButton").style.visibility = "hidden";
+            document.getElementById("myDiv").style.visibility = "hidden";
+        }else
+        {
+            document.getElementById("content").style.visibility = "hidden";
+            document.getElementById("passengersLabel").style.visibility = "hidden";
+            document.getElementById("passengersNumber").style.visibility = "hidden";
+            document.getElementById("pointALabel").style.visibility = "hidden";
+            document.getElementById("pointAtext").style.visibility = "hidden";
+            document.getElementById("pointBLabel").style.visibility = "hidden";
+            document.getElementById("pointBtext").style.visibility = "hidden";
+            document.getElementById("closeButton").style.visibility = "hidden";
+            document.getElementById("myDiv").style.visibility = "hidden";
+            document.getElementById("deliveryIDLabel").style.visibility = "hidden";
+            document.getElementById("deliveryID").style.visibility = "hidden";
+        }
+
+    }else
+    {
+        if(only_view == false)
+        {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("content").style.visibility = "visible";
+            document.getElementById("passengersLabel").style.visibility = "visible";
+            document.getElementById("passengersSelect").style.visibility = "visible";
+            document.getElementById("closeButton").style.visibility = "visible";
+            document.getElementById("myDiv").style.visibility = "visible";
+        }else {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("content").style.visibility = "visible";
+            document.getElementById("passengersLabel").style.visibility = "visible";
+            document.getElementById("passengersNumber").style.visibility = "visible";
+            document.getElementById("pointALabel").style.visibility = "visible";
+            document.getElementById("pointAtext").style.visibility = "visible";
+            document.getElementById("pointBLabel").style.visibility = "visible";
+            document.getElementById("pointBtext").style.visibility = "visible";
+            document.getElementById("closeButton").style.visibility = "visible";
+            document.getElementById("myDiv").style.visibility = "visible";
+            document.getElementById("deliveryIDLabel").style.visibility = "visible";
+            document.getElementById("deliveryID").style.visibility = "visible";
+        }
+    }
+}
 

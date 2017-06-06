@@ -170,7 +170,7 @@ public class Astar {
     public void updateNaE () {
         destroyNodes();
         destroyEdges();
-        this.graphBuilder.getMap();
+       // this.graphBuilder.getMap();
         makeNode();
         makeEdge();
     }

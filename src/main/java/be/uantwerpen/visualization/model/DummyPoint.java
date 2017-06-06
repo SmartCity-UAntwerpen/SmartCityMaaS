@@ -13,10 +13,10 @@ public class DummyPoint {
     private int physicalPoisionX;
     private int physicalPoisionY;
     private String type;
+    private String pointCharacteristic;
 
     public DummyPoint() {
         this.neighbours = new ArrayList<Integer>();
-
     }
 
     public DummyPoint(int pointName, List<Integer> neighbours, int physicalPoisionX, int physicalPoisionY, String type) {
@@ -92,5 +92,12 @@ public class DummyPoint {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPointCharacteristic() {
+        return pointCharacteristic;
+    }
+    public void setPointCharacteristic(String pointCharacteristic) {
+        this.pointCharacteristic = pointCharacteristic;
     }
 }

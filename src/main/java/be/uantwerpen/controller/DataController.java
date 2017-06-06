@@ -1,5 +1,7 @@
 package be.uantwerpen.controller;
 
+import be.uantwerpen.model.Job;
+import be.uantwerpen.model.JobList;
 import be.uantwerpen.visualization.model.CellLink;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.DummyVehicle;
@@ -16,6 +18,9 @@ import java.util.List;
  */
 @RestController
 public class DataController {
+
+
+
 
     DummyVehicle vehicle = new DummyVehicle(1);
 
@@ -34,9 +39,14 @@ public class DataController {
         System.out.println("### Retrieve world callled ###");
 
         List<DummyPoint> listPoints = getMapDataBackend();
-        // Quentin wereld = World world  =
+        // Quentin wereld = World world (300,300)
         // Dries wereld = World world  = new World(250,250);
-        World world  = new World(250,250);
+
+        /*
+            !!! The dimensions of the world must in the right ration with the Mapcanvas from the  html file !!!
+            Example: html : width : 1000 height : 1000 ==> world : 250,250
+         */
+        World world  = new World(300,300);
         System.out.println("### CELLIS POINTS SIZE ###"+listPoints.size());
 
         world.parseMap(listPoints);
@@ -54,6 +64,8 @@ public class DataController {
         vehicle.setID(id);
         new Thread(vehicle).start();
         vehicle_start = true;
+        System.out.println("START VEHICLE");
+
         return "vehicle started";
     }
 
@@ -82,8 +94,8 @@ public class DataController {
         return listofPoints;
     }
 
-    @RequestMapping(value="/{worldid}/progress/{id}")
-    public int[] getProgress(@PathVariable String worldid,@PathVariable int id){
+    @RequestMapping(value="/{worldid}/progress/{delivery_id}")
+    public int[] getProgress(@PathVariable String worldid,@PathVariable int delivery_id){
         int progress = vehicle.getValue();
        /* for(int i = 0 ; i < vehicles.size();i++)
         {
@@ -94,7 +106,7 @@ public class DataController {
             }
         }*/
         //world.startDelivery(progress);
-        System.out.println("World id " + worldid);
+        // System.out.println("World id " + worldid);
         World world = new World();
         for(int i = 0; i < worlds.size();i++)
         {
@@ -104,6 +116,67 @@ public class DataController {
                 i = worlds.size()+1;
             }
         }
+        // TODO op basis van de deliveryID wordt de juist joblistopgehaald
+
+
+        Job job1 = new Job();
+        job1.setIdStart(1);
+        job1.setIdEnd(2);
+        job1.setTypeVehicle("car");
+        job1.setIdVehicle(1);
+
+        Job job2 = new Job();
+        job2.setIdStart(2);
+        job2.setIdEnd(3);
+        job2.setTypeVehicle("car");
+        job2.setIdVehicle(1);
+
+        Job job3 = new Job();
+        job3.setIdStart(3);
+        job3.setIdEnd(7);
+        job3.setTypeVehicle("robot");
+        job3.setIdVehicle(1);
+
+        Job job4 = new Job();
+        job4.setIdStart(7);
+        job4.setIdEnd(8);
+        job4.setTypeVehicle("robot");
+        job4.setIdVehicle(1);
+
+        Job job5 = new Job();
+        job5.setIdStart(8);
+        job5.setIdEnd(2);
+        job5.setTypeVehicle("drone");
+        job5.setIdVehicle(1);
+
+        JobList jobList = new JobList();
+        jobList.addJob(job1);
+        jobList.addJob(job2);
+
+        jobList.addJob(job3);
+        jobList.addJob(job4);
+        jobList.addJob(job5);
+
+        List<Job> jobs = jobList.getJobs();
+
+        List<Integer> currentListofJobs = new ArrayList<Integer>();
+
+        for(int i = 0; i < jobs.size();i++)
+        {
+            int id_start = Math.toIntExact(jobs.get(i).getIdStart());
+            int id_end = Math.toIntExact(jobs.get(i).getIdEnd());
+            id_start = backendRestemplate.getValueofKeyHashMap(id_start);
+            id_end = backendRestemplate.getValueofKeyHashMap(id_end);
+            currentListofJobs.add(id_start);
+            currentListofJobs.add(id_end);
+        }
+
+
+
+
+
+
+
 
         int[] coordinatesVehicle = new int[2];
         if(vehicle_start == true)
@@ -116,7 +189,7 @@ public class DataController {
             {
                 System.out.println("CellLInk " + cl.getStartCell());
             }*/
-            coordinatesVehicle = world.getDistancePoints(progress);
+            coordinatesVehicle = world.getDistancePoints(currentListofJobs,progress);
         }else
         {
             coordinatesVehicle[0] = -1;
