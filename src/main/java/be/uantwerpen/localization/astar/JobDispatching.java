@@ -56,19 +56,16 @@ public class JobDispatching {
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
                     //System.out.println("Edge: " + listOfEdges[j]);
-                    //TODO: if (listOfEdges[j].getVehicle().equals("wait")){
                     if (listOfEdges[j].getVehicle().equals("wait")){
                         //don't add job!
                     }
                     else {
                         Job job = new Job();
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
-                        System.out.println("path id: " + job.getIdStart());
+                        //System.out.println("path id: " + job.getIdStart());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
                         job.setTypeVehicle((listOfEdges[j].getVehicle()));
                         job.setStatus("ready");
-
-
 
                         if (joblist.isEmpty() == true) {
                             joblist.setStartPoint(job.getIdStart());

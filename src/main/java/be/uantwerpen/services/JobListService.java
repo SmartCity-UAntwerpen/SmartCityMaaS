@@ -4,6 +4,7 @@ import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.repositories.JobListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,26 @@ import java.net.*;
  */
 @Service
 public class JobListService {
+
+    @Value("${sc.core.ip:localhost}")
+    private String serverCoreIP;
+
+    @Value("#{new Integer(${core.port}) ?: 1994}")
+    private int serverCorePort;
+
+    @Value("${drone.ip:localhost}")
+    private String droneCoreIP;
+    @Value("${car.ip:localhost}")
+    private String carCoreIP;
+    @Value("${robot.ip:localhost}")
+    private String robotCoreIP;
+
+    @Value("#{new Integer(${drone.port}) ?: 1994}")
+    private String droneCorePort;
+    @Value("#{new Integer(${car.port}) ?: 1994}")
+    private String carCorePort;
+    @Value("#{new Integer(${robot.port}) ?: 1994}")
+    private String robotCorePort;
 
     @Autowired
     private JobListRepository jobListRepository;
@@ -81,7 +102,7 @@ public class JobListService {
 
     public Boolean dispatch2Drone(long idJob, long idStart, long idEnd, long idVehicle) {
         boolean status = true;
-        String temp = "http://143.129.39.151:8082/executeJob/";
+        String temp = "http://" + droneCoreIP + ":" + droneCorePort + "/executeJob/";
         //temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         temp=temp+("911/78/0/3");
         System.out.println("DroneDispatch");
@@ -133,7 +154,7 @@ public class JobListService {
 
     public boolean dispatch2Car(long idJob, long idStart, long idEnd, long idVehicle) {
         boolean status = true;
-        String temp = "http://143.129.39.151:8081/carmanager/executeJob/";
+        String temp = "http://" + carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
         //temp=temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         temp=temp+("0/0/9/10");
         System.out.println(temp);
@@ -187,7 +208,7 @@ public class JobListService {
     public boolean dispatch2Robot(long idJob, long idStart, long idEnd, long idVehicle) {
         boolean status = true;
         //String temp = "143.129.39.112:1949/executeJob/";
-        String temp = "http://143.129.39.151:8083/executeJob/";
+        String temp = "http://" + robotCoreIP + ":" + robotCorePort + "/executeJob/";
         temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         System.out.println("RobotDispatch");
         System.out.println(temp);

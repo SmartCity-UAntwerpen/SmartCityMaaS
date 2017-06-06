@@ -1,7 +1,8 @@
-package be.uantwerpen.controller;
+package be.uantwerpen.Controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.Role;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
