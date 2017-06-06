@@ -1,5 +1,6 @@
 package be.uantwerpen.services;
 
+import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.repositories.JobListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class JobListService {
 
     @Autowired
     private JobListRepository jobListRepository;
+
+    @Autowired
+    private Astar astar;
 
     public Iterable<JobList> findAll() {
         return this.jobListRepository.findAll();
@@ -50,7 +54,7 @@ public class JobListService {
                         jl.getJobs().get(0).setStatus("busy");
                     }
                     else {
-                        //Todo: schrijf delete en voer astar opnieuw uit
+                        recalculatePathAfterError(jl.getJobs().get(0).getId());
                     }
                 }
                 // communication needed with car core
@@ -58,11 +62,17 @@ public class JobListService {
                     if (dispatch2Car(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
                         jl.getJobs().get(0).setStatus("busy");
                     }
+                    else {
+                        recalculatePathAfterError(jl.getJobs().get(0).getId());
+                    }
                 }
                 // else event: type is robot: communicate with the robot core
                 else {
                     if (dispatch2Robot(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
                         jl.getJobs().get(0).setStatus("busy");
+                    }
+                    else {
+                        recalculatePathAfterError(jl.getJobs().get(0).getId());
                     }
                 }
             }
@@ -148,6 +158,7 @@ public class JobListService {
                 String msgresponse = conn.getResponseMessage();
                 if (msgresponse == "idVehicleError") {
                     //TODO: doet iets met de error code
+
                     System.out.println(msgresponse);
                 }
                 else if (msgresponse == "idVehicleError"){
@@ -234,4 +245,22 @@ public class JobListService {
     public void deleteOrder (long id) {
         this.jobListRepository.delete(id);
     }
+
+    public void recalculatePathAfterError (long idJob){
+        for (JobList jl: this.jobListRepository.findAll()){
+            if (jl.getJobs().get(0).getId().equals(idJob) == true) {
+                String sPos =  Long.toString(jl.getJobs().get(0).getIdStart());
+                String ePos =  Long.toString(jl.getEndPoint());
+                deleteOrder(jl.getId());
+                astar.DeterminePath(sPos,ePos);
+            }
+            else {
+                // do nothing for now
+            }
+        }
+    }
+
 }
+
+
+
