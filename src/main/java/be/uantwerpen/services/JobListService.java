@@ -104,7 +104,7 @@ public class JobListService {
         boolean status = true;
         String temp = "http://" + droneCoreIP + ":" + droneCorePort + "/executeJob/";
         //temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-        temp=temp+("911/78/0/3");
+        temp=temp+("911/78/0/2");
         System.out.println("DroneDispatch");
         System.out.println(temp);
         try {

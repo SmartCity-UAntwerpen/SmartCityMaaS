@@ -1,4 +1,4 @@
-package be.uantwerpen.Controller;
+package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
@@ -78,9 +78,10 @@ public class JobController {
     public String createOrder(@PathVariable String Start, @PathVariable String Stop)
     {
         astar.init(jobService, jobListService);
-        astar.makeEdge();
         astar.makeNode();
-        astar.DeterminePath(Start, Stop);
+        astar.makeEdge();
+
+        astar.testDeterminePath(astar.getGraph(),Start,Stop);
         return "redirect:/jobs";
     }
 
