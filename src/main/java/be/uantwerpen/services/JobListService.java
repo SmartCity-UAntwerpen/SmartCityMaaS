@@ -47,19 +47,22 @@ public class JobListService {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
                 if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
                     if (dispatch2Drone(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
-
+                        jl.getJobs().get(0).setStatus("busy");
+                    }
+                    else {
+                        //Todo: schrijf delete en voer astar opnieuw uit
                     }
                 }
                 // communication needed with car core
                 else if (jl.getJobs().get(0).getTypeVehicle() == "car") {
                     if (dispatch2Car(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
-
+                        jl.getJobs().get(0).setStatus("busy");
                     }
                 }
                 // else event: type is robot: communicate with the robot core
                 else {
                     if (dispatch2Robot(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
-
+                        jl.getJobs().get(0).setStatus("busy");
                     }
                 }
             }
@@ -67,34 +70,12 @@ public class JobListService {
     }
 
     public Boolean dispatch2Drone(long idJob, long idStart, long idEnd, long idVehicle) {
-        String temp = "http://146.175.140.38:8082/executeJob/";
-        //temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-        temp=temp+("911/78/0/2");
-        System.out.println(temp);
-        try {
-            URL url = new URL(temp);
-            HttpURLConnection conn = null;
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
-           // conn.setRequestProperty("Content-Type", "application/json");
-           // OutputStream os = conn.getOutputStream();
-           // os.write(temp.getBytes());
-            //os.flush();
-            conn.getResponseMessage();
-            conn.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-
-    public boolean dispatch2Car(long idJob, long idStart, long idEnd, long idVehicle) {
         boolean status = true;
-        String temp = "http://143.129.39.151:8081/carmanager/executeJob/";
-        //temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-        temp=temp+("0/0/9/10");
+        String temp = "http://146.175.140.38:8082/executeJob/";
+        //temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        temp=temp+("911/78/0/2");
+        System.out.println("DroneDispatch");
+        System.out.println(temp);
         try {
             URL url = new URL(temp);
             HttpURLConnection conn = null;
@@ -105,14 +86,83 @@ public class JobListService {
             if (conn.getResponseCode() == 200) {
                 String msgresponse = conn.getResponseMessage();
                 if (msgresponse == "ACK") {
-                    conn.disconnect();
-                    status = true;
+                    //TODO: doet iets met de ACK code
+                    System.out.println(msgresponse);
                 }
+                conn.disconnect();
+                status = true;
             }
             // an error has occured
             else{
+                String msgresponse = conn.getResponseMessage();
+                if (msgresponse == "idVehicleError") {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse == "idVehicleError"){
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse == "idVehicleError") {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
                 conn.disconnect();
-                //TODO juist code schrijven om dit af te handelen.
+                status = false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
+
+    public boolean dispatch2Car(long idJob, long idStart, long idEnd, long idVehicle) {
+        boolean status = true;
+        String temp = "http://143.129.39.151:8081/carmanager/executeJob/";
+        //temp=temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        temp=temp+("0/0/9/10");
+        System.out.println(temp);
+        try {
+            URL url = new URL(temp);
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            //an error has occured
+            if (conn.getResponseCode() == 200) {
+                String msgresponse = conn.getResponseMessage();
+                if (msgresponse == "ACK") {
+                    //TODO: doet iets met de ACK code
+                    System.out.println(msgresponse);
+                }
+                conn.disconnect();
+                status = true;
+            }
+            // an error has occured
+            else{
+                String msgresponse = conn.getResponseMessage();
+                if (msgresponse == "idVehicleError") {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse == "idVehicleError"){
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse == "idVehicleError") {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                conn.disconnect();
                 status = false;
             }
         } catch (IOException e) {
@@ -123,20 +173,53 @@ public class JobListService {
 
 
     public boolean dispatch2Robot(long idJob, long idStart, long idEnd, long idVehicle) {
+        boolean status = true;
         //String temp = "143.129.39.112:1949/executeJob/";
         String temp = "http://146.175.140.154:1949/executeJob/";
-        temp.concat(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        temp = temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        System.out.println("RobotDispatch");
+        System.out.println(temp);
         try {
             URL url = new URL(temp);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("GET");
-            conn.getResponseMessage();
-            conn.disconnect();
+            //an error has occured
+            if (conn.getResponseCode() == 200) {
+                String msgresponse = conn.getResponseMessage();
+                if (msgresponse == "ACK") {
+                    //TODO: doet iets met de ACK code
+                    System.out.println(msgresponse);
+                }
+                conn.disconnect();
+                status = true;
+            }
+            // an error has occured
+            else{
+                String msgresponse = conn.getResponseMessage();
+                if (msgresponse == "idVehicleError") {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse == "idVehicleError"){
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse == "idVehicleError") {
+                    //TODO: doet iets met de error code
+                }
+                else {
+                    //TODO: doet iets met de error code
+                    System.out.println(msgresponse);
+                }
+                conn.disconnect();
+                status = false;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
+        return status;
     }
 
     public boolean isEmpty(long id) {
