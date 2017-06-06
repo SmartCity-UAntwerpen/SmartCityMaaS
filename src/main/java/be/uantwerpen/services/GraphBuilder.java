@@ -39,8 +39,6 @@ public class GraphBuilder {
 
     private Link[] linkList = new Link[60];
     private Point[] pointList = new Point[18];
-    //ArrayList<Cost> bestCostList = new ArrayList<>();
-    private ArrayList<Link> walkLinks = new ArrayList<>();
 
     //request the map from the core
     public void getMap()
@@ -58,18 +56,9 @@ public class GraphBuilder {
         String linkUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/links";
         responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
-        for(Link link: linkList)
-        {
-            if(link.getVehicle().equals("wait"))
-            {
-                link.setWeight((long)(0));
-                walkLinks.add(link);
-            }
-        }
-
     }
 
-    //request the cost from all vehicle cores.
+    //request the cost from all vehicle cores and fill in the least costly vehicle
     public void getLinkCost()
     {
         for(Link link: linkList)
@@ -96,8 +85,8 @@ public class GraphBuilder {
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
                 Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
-                //Long vehicleID = costs[0].getIdVehicle();
                 Cost bestCost = costs[0];
+                //run over all the answers to find the most cost effective vehicle
                 for (Cost cost : costs) {
                     if(cost.getWeightToStart()+cost.getWeight() < lowestCost)
                     {
@@ -105,16 +94,17 @@ public class GraphBuilder {
                         bestCost = cost;
                     }
                 }
-                for(Link walkLink : walkLinks)
+
+                //run over all the links to look for the wait-links that are connected to the current link
+                for(Link link1: linkList)
                 {
-                    if(walkLink.getStopPoint().getId().equals(endPoint))
+                    if(link1.getVehicle().equals("wait") && link1.getStopPoint().getId().equals(startPoint))
                     {
-                        walkLink.setWeight(bestCost.getWeightToStart());
+                        link1.setWeight(bestCost.getWeightToStart());
                     }
                 }
                 link.setWeight(bestCost.getWeight());
                 link.setVehicleID(bestCost.getIdVehicle());
-                //bestCostList.add(bestCost);
             }
         }
     }
