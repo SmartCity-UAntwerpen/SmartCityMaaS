@@ -83,7 +83,11 @@ public class BackendRestemplate {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://143.129.39.151:10000/map/stringmapjson/top")
                 .queryParam("pointList", pointList);
 */
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://146.175.140.44:1994/map/stringmapjson/visual")
+
+
+
+
+       /* UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://146.175.140.44:1994/map/stringmapjson/visual")
                 .queryParam("pointList", pointList);
         System.out.println("Make builder to Quentin " );
 
@@ -185,12 +189,13 @@ public class BackendRestemplate {
         try {
 
 
-            BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentin.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));
             //BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
 
             String line;
             while ((line = br.readLine()) != null) {
-                obj = parser.parse(listOfCore);
+               // obj = parser.parse(listOfCore);
+                obj = parser.parse(line);
                 JSONObject jsonObject = (JSONObject) obj;
                 JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
                 System.out.println("Whole list:  "+pointsList.toString());
