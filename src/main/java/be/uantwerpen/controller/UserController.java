@@ -77,25 +77,13 @@ public class UserController {
         return "users-manage";
     }
 
-    /*@RequestMapping(value="/addUser", method=RequestMethod.POST)
-    public String addRealUser(@Valid User user, BindingResult result final ModelMap model) {
-        if(userService.findByUserName(user.getUserName()).equals(null)) {
-            List<Role> roles = new ArrayList<>();
-            roles.add(roleService.findRole("user"));
-            user.setRoles(roles);
-            userService.saveSomeAttributes(user);
-            return "redirect:/login";
-        } else {
-            return "error";
-        }
-    }*/
-
     @RequestMapping(value="/users/{id}", method= RequestMethod.GET)
     public String viewEditUser(@PathVariable Long id, final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",userService.findOne(id));
         return "users-manage";
     }
+
 
     @RequestMapping(value={"/users/"}, method= RequestMethod.POST)
     public String addUser(@Valid User user, BindingResult result, final ModelMap model){
@@ -131,19 +119,14 @@ public class UserController {
 
     @RequestMapping(value="/deliveries", method= RequestMethod.GET)
     public String viewOrders(final ModelMap model){
-        model.addAttribute("allDeliveries", deliveryService.findAll());
+        MongoDBMethods monogDBClient = new MongoDBMethods();
+        Iterable<Delivery> deliveries = monogDBClient.getAllDeliveries();
+        model.addAttribute("allDeliveries", monogDBClient.getAllDeliveries());
         return "delivery-list";
     }
 
     @RequestMapping(value="/deliveries/put", method= RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model){
-        /*model.addAttribute("allSegments", segmentService.findAll());
-        model.addAttribute("allPassengers", passengerService.findAll());
-        Delivery del = new Delivery("","","");
-        model.addAttribute("delivery",del);
-        World world = new World(300,300);*/
-
-
         Delivery del = new Delivery("","","");
         model.addAttribute("delivery",del);
         model.addAttribute("allPassengers", passengerService.findAll());
@@ -153,6 +136,17 @@ public class UserController {
         System.out.println("User logged in: "+loginUser.getUserName());
         return "delivery-manage-user";
     }
+
+
+    @RequestMapping(value="/deliveries/{idDelivery}/delete", method= RequestMethod.GET)
+    public String viewCreateDelivery(@PathVariable String idDelivery){
+
+        MongoDBMethods monogDBClient = new MongoDBMethods();
+        monogDBClient.deleteDelivery(idDelivery);
+        System.out.println("ID of the DELIVERY "+idDelivery);
+        return "redirect:/deliveries" ;
+    }
+
 
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
     public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
@@ -180,7 +174,7 @@ public class UserController {
         {
             System.out.println("-- Retrieve last delivery from MongoDB service --");
             delivery_return.print();
-            deliveryService.saveSomeAttributes(delivery_return);
+//            deliveryService.saveSomeAttributes(delivery_return);
         }
 
         /*

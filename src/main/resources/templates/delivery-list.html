@@ -34,8 +34,7 @@
                     <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
                     <td class="passengers" th:value="${passengers}" th:text="${delivery.passengers }">Passengers</td>
                     <td>
-                        <a th:href="@{/orders/{id}/(id=${delivery.id})}"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
-                        <a th:href="@{/orders/{id}/delete(id=${delivery.id})}"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a th:href="@{/deliveries/{id}/delete(id=${delivery.idDelivery})}"><span class="glyphicon glyphicon-trash"></span></a>
                     </td>
                 </tr>
                 </tbody>

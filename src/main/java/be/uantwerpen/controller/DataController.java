@@ -179,17 +179,10 @@ public class DataController {
             currentListofJobs.add(id_end);
         }
 
-
-
-
-
-
-
-
         int[] coordinatesVehicle = new int[2];
         if(vehicle_start == true)
         {
-            //System.out.println("Progress request for delivery: "+id + " progress "+progress);
+           //System.out.println("Progress request for delivery: "+id + " progress "+progress);
            // System.out.println("World: "+world.getDimensionY());
 
             List<CellLink> cellLInks = world.getCellLinks();
@@ -205,45 +198,4 @@ public class DataController {
         }
         return coordinatesVehicle;
     }
-
-
-
-   /* @RequestMapping(value="/retrieveData")
-    public String getMapBackend(){
-        System.out.println("### Retrieve map from backend ###");
-
-
-
-        World world = new World(200,200);
-
-
-
-
-        world.parseMap();
-        return world;
-    }*/
-
-
-/*
-
-    @RequestMapping(value={"/RESTfulExample/json/product/post"}, method= RequestMethod.POST)
-    public String addTimeSample(@RequestBody Product result){
-        System.out.println(result);
-        if(result.getRfid_reader() != null && result.getRfid_tag() != null && result.getFlag() != null)
-        {
-            TrackSample trackSample = new TrackSample(null,result.getRfid_tag(),result.getRfid_reader(),result.getFlag(),null);
-            List<TrackSample> trackSamples = new ArrayList<TrackSample>();
-            trackSamples.add(trackSample);
-            BrokerRestTemplateClient_TrackSample.putTimeSample(trackSamples);
-        }
-        return "received";
-    }*/
-
-
-
-
-
-
-
-
 }

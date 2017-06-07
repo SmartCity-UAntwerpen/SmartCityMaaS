@@ -94,7 +94,7 @@ public class World {
 
             //cells.get(y_coor).getCellList().get(x_coor).setType(2);
             surroundPoint(y_coor, x_coor, point.getType(), point.getPointName(),point.getPointCharacteristic());
-            System.out.println("set road point on column " + x_coor + " and row " + y_coor);
+            // System.out.println("set road point on column " + x_coor + " and row " + y_coor);
             for (int n = 0; n < point.getNeighbours().size(); n++) {
                 CellLink cellLink = new CellLink();
                 cellLink.setStartCell(startPoint);
@@ -108,12 +108,11 @@ public class World {
                 endPoint.setSpotID(pointsList.get(neighbourPoint).getPointName());
                 cellLink.setEndCell(endPoint);
 
-                System.out.println("Check " + neighbourPoint + " real name " + pointsList.get(neighbourPoint).getPointName());
+                // System.out.println("Check " + neighbourPoint + " real name " + pointsList.get(neighbourPoint).getPointName());
                 if (cells.get(y_coor).getCellList().get(x_coor).getType().equals("spot") == false) {
                     cells.get(y_coor_neighbour).getCellList().get(x_coor_neighbour).setType("spot");
                     cells.get(y_coor_neighbour).getCellList().get(x_coor_neighbour).setSpecific(specific);
                     cells.get(y_coor_neighbour).getCellList().get(x_coor_neighbour).setSpotID(point.getPointName());
-                    System.out.println(" kuuukelkekuu : " + cells.get(y_coor_neighbour).getCellList().get(x_coor_neighbour).getSpotID());
                 }
                 double tempPow_x = Math.pow(Math.abs(x_coor - x_coor_neighbour), 2);
                 double tempPow_y = Math.pow(Math.abs(y_coor - y_coor_neighbour), 2);
@@ -234,7 +233,7 @@ public class World {
                         }
                     } else if (y_coor_neighbour == y_coor) {
                         // This point has itself as neighbour, this is not allowed.
-                        System.out.println("!! Cell has itselfs as neighbour, adjust map so avoid this instance !!");
+                        //System.out.println("!! Cell has itselfs as neighbour, adjust map so avoid this instance !!");
 
                     } else {
                         for (int c = y_coor_neighbour; c > y_coor; c = c - unitWorld) {
@@ -351,13 +350,16 @@ public class World {
                 cellLinks.add(cellLink);
             }
         }
+        /*
         System.out.println("---- Print cellLinks ----");
+
         for(int i = 0;i < cellLinks.size(); i++)
+
         {
             System.out.println("Cell index is "+i);
             cellLinks.get(i).print();
         }
-        System.out.println("Life is a bitch");
+        */
     }
 
     /**
@@ -444,82 +446,22 @@ public class World {
     public int[] getDistancePoints(List<Integer> jobs, int progress)
     {
         int distance = 0;
-        /*
-        int x_1 = startCell.getX();
-        int y_1 =  startCell.getY();
-        int x_2 =  endCell.getX();
-        int y_2 = endCell.getY();
-        double tempPow_x = Math.pow(Math.abs(x_1 - x_2), 2);
-        double tempPow_y = Math.pow(Math.abs(y_1 - y_2), 2);
-        Double temp_interpolate = Math.sqrt(tempPow_x + tempPow_y);
-        distance = temp_interpolate.intValue();*/
-
-        // Mock object jobList
-        //List<Job> jobs = new ArrayList<Job>();
-        /*
-
-        Job job1 = new Job();
-        job1.setIdStart(0);
-        job1.setIdEnd(1);
-        Job job2 = new Job();
-        job2.setIdStart(1);
-        job2.setIdEnd(4);
-        Job job3 = new Job();
-        job3.setIdStart(4);
-        job3.setIdEnd(9);
-        Job job4 = new Job();
-        job4.setIdStart(9);
-        job4.setIdEnd(28);
-        Job job5 = new Job();
-        job5.setIdStart(28);
-        job5.setIdEnd(26);
-
-
-        */
-        /*Job job1 = new Job();
-        job1.setIdStart(0);
-        job1.setIdEnd(1);
-        Job job2 = new Job();
-        job2.setIdStart(1);
-        job2.setIdEnd(2);
-        Job job3 = new Job();
-        job3.setIdStart(2);
-        job3.setIdEnd(8);
-        Job job4 = new Job();
-        job4.setIdStart(8);
-        job4.setIdEnd(9);
-        Job job5 = new Job();
-        job5.setIdStart(9);
-        job5.setIdEnd(10);
-
-
-
-
-        JobList jobList = new JobList();
-        jobList.addJob(job1);
-        jobList.addJob(job2);
-        jobList.addJob(job3);
-        jobList.addJob(job4);
-        jobList.addJob(job5);*/
 
         // List<Integer> listLinkIDs = getLinkList(jobList);
         List<Integer> listLinkIDs = new ArrayList<Integer>();
         for(int i = 0; i < jobs.size(); i = i+2)
         {
-            System.out.println("getLinkIDofStartEnd start "+jobs.get(i) +" end "+jobs.get(i+1) );
+           // System.out.println("getLinkIDofStartEnd start "+jobs.get(i) +" end "+jobs.get(i+1) );
 
             listLinkIDs.add(getLinkIDofStartEnd(jobs.get(i), jobs.get(i+1)));
         }
 
+        /*
         for(int i = 0; i < listLinkIDs.size(); i++)
         {
              System.out.println("ID of link list "+listLinkIDs.get(i));
         }
-
-
-
-
-
+        */
 
         // For the total distance there should be one extra point added for endpoint.
         // One because the startpoint is also seen as one distance.
@@ -530,7 +472,7 @@ public class World {
         }
         // Current distance progress (remeber progress = 100,0%)
         distance = totalDistance*progress/100;
-        System.out.println("Total distance "+totalDistance + " current distance "+distance);
+        // System.out.println("Total distance "+totalDistance + " current distance "+distance);
 
         // Remove the endpoints' size of the distance
         int intermediateDistance = distance;// - listLinkIDs.size();
@@ -547,7 +489,7 @@ public class World {
             // Add the the total distance of a link to temp_distance
             // Plus one for the last endPoint
             distance_temp = distance_temp + cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells()+1;
-            System.out.println("Cell link start "+ cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID() + "size intermediate "+ cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells() +" end "+cellLinks.get(listLinkIDs.get(l)).getEndCell().getSpotID() +" progress "+progress +" distance_temp "+distance_temp);
+            // System.out.println("Cell link start "+ cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID() + "size intermediate "+ cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells() +" end "+cellLinks.get(listLinkIDs.get(l)).getEndCell().getSpotID() +" progress "+progress +" distance_temp "+distance_temp);
             // If intermediate distance is lower than distance_temp than this is current x and y are set in this link.
             if(intermediateDistance <= distance_temp)
             {
@@ -557,7 +499,7 @@ public class World {
                 int cellIndexOfLink = intermediateDistance - distance_start;
 
 
-                System.out.println("listLinkIDs " + listLinkIDs.get(l)+ " cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start);
+                // System.out.println("listLinkIDs " + listLinkIDs.get(l)+ " cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start);
                 // If the index is equal to the size of intermediate cells, then the endpoint is reached of
                 // of this link
                 if((cellIndexOfLink == 0))
@@ -565,18 +507,18 @@ public class World {
                     currentCell = cellLinks.get(listLinkIDs.get(l)).getLinkCells().get(0);
                 }else if(cellIndexOfLink == cellLinks.get(listLinkIDs.get(l)).getLinkCells().size())
                 {
-                    System.out.println(" Size of links "+cellLinks.get(listLinkIDs.get(l)).getLinkCells().size());
+                    // System.out.println(" Size of links "+cellLinks.get(listLinkIDs.get(l)).getLinkCells().size());
                     currentCell = cellLinks.get(listLinkIDs.get(l)).getEndCell();
                 }else if(cellIndexOfLink < 0)
                 {
-                    System.out.println(" A cellLink smaller the 0 has been calculated. Value is adjusted to start cell.");
+                    // System.out.println(" A cellLink smaller the 0 has been calculated. Value is adjusted to start cell.");
                     currentCell = cellLinks.get(listLinkIDs.get(l)).getStartCell();
                 }else
                 {
                     if(listLinkIDs.get(l) == 3)
                     {
                         Cell testcell = cellLinks.get(listLinkIDs.get(l)).getLinkCells().get(cellIndexOfLink);
-                        System.out.println("Test cell  x "+testcell.getX() + " y "+testcell.getY());
+                        // System.out.println("Test cell  x "+testcell.getX() + " y "+testcell.getY());
 
                     }
                     currentCell = cellLinks.get(listLinkIDs.get(l)).getLinkCells().get(cellIndexOfLink);
@@ -638,42 +580,6 @@ public class World {
         return listLinkIds;
     }
 
-    public void getCoordinatesDistance(int total_distance,int distance, Cell cell1, Cell cell2)
-    {
-        int x = 0;
-        int y = 0;
-        int x_high = 0;
-        int x_low = 0;
-        int y_high = 0;
-        int y_low = 0;
-
-        if(cell1.getX()<cell2.getX())
-        {
-            x_high = cell2.getX();
-            x_low = cell1.getX();
-        }else
-        {
-            x_high = cell1.getX();
-            x_low = cell2.getX();
-        }
-        if(cell1.getY()<cell2.getY())
-        {
-            y_high = cell2.getY();
-            y_low = cell1.getY();
-        }else
-        {
-            y_high = cell1.getY();
-            y_low = cell2.getY();
-        }
-
-        for(int i = 0 ; i < total_distance;i++)
-        {
-           // if()
-
-        }
-
-        //return
-    }
 
     /**
      * Controls if the cells of a link are in the right order.
@@ -684,7 +590,7 @@ public class World {
     public CellLink cotrolOrderLink(CellLink cellLink)
     {
 
-        System.out.println("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
+        // System.out.println("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
         int x_start = cellLink.getStartCell().getX();
         int y_start = cellLink.getStartCell().getY();
         int x_end = cellLink.getEndCell().getX();
@@ -704,10 +610,6 @@ public class World {
             cellLink.setLinkCells(intermediate_temp);
 
         }
-
-
-
-
         return cellLink;
     }
 
@@ -716,7 +618,7 @@ public class World {
         {
             if(cellLinks.get(i).getStartCell().getSpotID() == startID &&  cellLinks.get(i).getEndCell().getSpotID() ==  endID)
             {
-                System.out.println("Retrieve id "+i+" of link with start "+ startID +" and end "+endID);
+                // System.out.println("Retrieve id "+i+" of link with start "+ startID +" and end "+endID);
                 return i;
             }
         }

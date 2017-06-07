@@ -200,17 +200,17 @@ public class BackendRestemplate {
                     int point_ID = ((Long)point_jsonObject.get("id")).intValue();
                     if(pointTransition.containsKey(point_ID) == false)
                     {
-                        System.out.println("Point ID is null for "+point_ID+ " index counter "+index_counter);
+                        // System.out.println("Point ID is null for "+point_ID+ " index counter "+index_counter);
                         pointTransition.put(point_ID,index_counter);
                         point_ID = pointTransition.get(point_ID);
                         index_counter++;
                     }else
                     {
-                        System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
+                        // System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
 
                         point_ID = pointTransition.get(point_ID);
                     }
-                    System.out.println(" index "+counter + " value of point_ID "+point_ID);
+                    // System.out.println(" index "+counter + " value of point_ID "+point_ID);
                     int x = ((Long)point_jsonObject.get("x")).intValue();
                     int y = ((Long)point_jsonObject.get("y")).intValue();
 
@@ -222,7 +222,7 @@ public class BackendRestemplate {
                         characteristic = "inbetween";
                     }
                     JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
-                    System.out.println("neighbourS " + neighbours.toString());
+                    //System.out.println("neighbourS " + neighbours.toString());
                     point.setPointName(point_ID);
                     point.setPhysicalPoisionX(x);
                     point.setPhysicalPoisionY(y);
@@ -234,22 +234,7 @@ public class BackendRestemplate {
                         neighbourObject = iter.next();
                         JSONObject neigbourJSON = (JSONObject) neighbourObject;
                         int neighbour = ((Long)neigbourJSON.get("neighbour")).intValue();
-                        /*
-                        if(pointTransition.containsKey(p.getNeighbours().get(i)) == true)
-                        {
-                            //System.out.println("Neighbour point ID is null for "+neighbour + " index counter "+index_counter);
-                            p.set
-                            pointTransition.put(neighbour,index_counter);
-                            neighbour = pointTransition.get(neighbour);
-                            index_counter++;
-                        }else
-                        {
-                            // Retrieve tis world id.
-                            System.out.println("Neighbour point ID is NOT null for "+neighbour+ " index counter "+index_counter);
-
-                            neighbour = pointTransition.get(neighbour);
-                        }*/
-                        System.out.println("neighbour " + neighbour);
+                       // System.out.println("neighbour " + neighbour);
                         point.addNeighbour(neighbour);
                     }
                     points.add(point);
@@ -300,7 +285,6 @@ public class BackendRestemplate {
         for(int i = 0 ; i <points.size(); i++)
         {
             points.get(i).print();
-            //System.out.println(" tttttttttttttttttttttttttttttt "+ pointTransition.get(1000));
         }
 
         return points; //new MessageWrapper<>(tracksamples, "server called using eureka with rest template");
