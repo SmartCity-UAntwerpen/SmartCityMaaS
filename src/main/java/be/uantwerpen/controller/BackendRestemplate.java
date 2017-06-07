@@ -60,7 +60,7 @@ public class BackendRestemplate {
 /*
         URL url = null;
         try {
-            url = new URL("http://143.129.39.151:10000/map/stringmapjson/top");
+            url = new URL("http://146.175.140.44:1994/map/stringmapjson/top");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("GET");
@@ -77,9 +77,13 @@ public class BackendRestemplate {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
+*/
+        //146.175.140.44:1994
+        /*
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://143.129.39.151:10000/map/stringmapjson/top")
+                .queryParam("pointList", pointList);
+*/
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://146.175.140.44:1994/map/stringmapjson/visual")
                 .queryParam("pointList", pointList);
         System.out.println("Make builder to Quentin " );
 
@@ -94,10 +98,10 @@ public class BackendRestemplate {
                 String.class);
 
         System.out.println("Performed exchange to Quentin" );
-
-        System.out.println("Response core : "+httpResponse.toString());
+       // System.out.println("Response core : "+httpResponse.toString());
+        System.out.println("Response core : "+httpResponse.getBody());
         System.out.println("Response body core : "+ httpResponse.hasBody());
-*/
+        String listOfCore = httpResponse.getBody();
 
         new JSONObject();
         //JSONObject obj = new JSONObject();
@@ -179,12 +183,14 @@ public class BackendRestemplate {
         List<DummyPoint> points = new ArrayList<DummyPoint>();
 
         try {
+
+
             BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentin.txt"));
             //BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
 
             String line;
             while ((line = br.readLine()) != null) {
-                obj = parser.parse(line);
+                obj = parser.parse(listOfCore);
                 JSONObject jsonObject = (JSONObject) obj;
                 JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
                 System.out.println("Whole list:  "+pointsList.toString());
