@@ -87,17 +87,18 @@ public class JobController {
 
     @RequestMapping(value="/completeJob/{idJob}", method= RequestMethod.GET)
     public String completeJob (@PathVariable Long idJob) {
-        jobService.delete(idJob);
+
         for (JobList jl: jobListService.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob) == true) {
                 jl.getJobs().remove(0);
-                if (jl.getJobs().isEmpty() == true) {
-                    //TODO need to test to see if this works
-                    jobListService.deleteOrder(jl.getId());
-                }
+                jobService.delete(idJob);
             }
             else {
                 // do nothing for now
+            }
+            if (jl.getJobs().isEmpty() == true) {
+                //TODO need to test to see if this works
+                jobListService.deleteOrder(jl.getId());
             }
         }
 

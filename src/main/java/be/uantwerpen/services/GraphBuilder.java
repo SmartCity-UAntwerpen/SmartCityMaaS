@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 @Service
 public class GraphBuilder {
-    @Value("${sc.core.ip:localhost}")
+    @Value("${core.ip:localhost}")
     private String serverCoreIP;
 
     @Value("#{new Integer(${core.port}) ?: 1994}")

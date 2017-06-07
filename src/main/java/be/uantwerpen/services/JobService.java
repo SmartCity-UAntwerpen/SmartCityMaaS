@@ -42,6 +42,8 @@ public class JobService {
             tempJob.setIdStart(job.getIdStart());
             tempJob.setIdEnd(job.getIdEnd());
             tempJob.setIdVehicle(job.getIdVehicle());
+            tempJob.setTypeVehicle(job.getTypeVehicle());
+            tempJob.setStatus(job.getStatus());
             jobRepository.save(tempJob);
         }
         else{

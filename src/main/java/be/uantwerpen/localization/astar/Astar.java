@@ -49,9 +49,9 @@ public class Astar {
         this.jobService = jobService;
         this.jobListService = jobListService;
         this.graph = new SingleGraph("SmartCityGraph");
-        graphBuilder.setUpTest();
+        //graphBuilder.setUpTest();
         //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
-        //graphBuilder.getMap();
+        graphBuilder.getMap();
     }
 
      public Graph getGraph(){
@@ -77,8 +77,8 @@ public class Astar {
         //testDeterminePath(graph, "1002", "1015");
         //testDeterminePath(graph, "1014", "1002");
         //testDeterminePath(graph, "1004", "1015");
-        testDeterminePath(graph, "1004", "1016");
-
+        //testDeterminePath(graph, "1015", "1010");
+        testDeterminePath(graph, "45", "43");
     }
 
     /**

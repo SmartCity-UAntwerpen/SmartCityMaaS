@@ -21,6 +21,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/completeJob/{idJob}").permitAll();
         http.authorizeRequests().antMatchers("/users/").permitAll();
         http.authorizeRequests().antMatchers("/login").permitAll()
                 .and().authorizeRequests().antMatchers("/console/**").permitAll()
