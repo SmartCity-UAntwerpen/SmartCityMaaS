@@ -37,7 +37,7 @@ public class DatabaseLoader {
 
     @PostConstruct
     private void initDatabase() {
-        Permission p1 = new Permission("logon");
+        /*Permission p1 = new Permission("logon");
         permissionRepository.save(p1);
         Permission p2 = new Permission("secret-message");
         permissionRepository.save(p2);
@@ -64,9 +64,9 @@ public class DatabaseLoader {
         roles = new ArrayList<>();
         roles.add(User);
         u2.setRoles(roles);
-        userRepository.save(u2);
+        userRepository.save(u2);*/
 
-        Delivery delivery = new Delivery("Lorance", "Malfait","Seg 9", "Seg 10",2);
+        /*Delivery delivery = new Delivery("Lorance", "Malfait","Seg 9", "Seg 10",2);
         deliveryRepository.save(delivery);
 
         Segment segment1 = new Segment("Seg 1");
@@ -90,7 +90,7 @@ public class DatabaseLoader {
         segmentRepository.save(segment8);
         segmentRepository.save(segment9);
         segmentRepository.save(segment10);
-        segmentRepository.save(segment11);
+        segmentRepository.save(segment11);*/
     }
 }
 
