@@ -1,14 +1,12 @@
-package be.uantwerpen.Controller;
+package be.uantwerpen.controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
-import be.uantwerpen.model.Role;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.World;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -83,7 +81,7 @@ public class UserController {
 
     @RequestMapping(value={"/users/"}, method= RequestMethod.POST)
     public String addUser(@Valid User user, BindingResult result, final ModelMap model){
-        System.out.println(result.getModel());
+        //System.out.println(result.getModel());
         if(userService.findByUserName(user.getUserName()) == null) {
             List<Role> roles = new ArrayList<>();
             roles.add(roleService.findRole("user"));
@@ -97,7 +95,7 @@ public class UserController {
 
     @RequestMapping(value={"/users/{id}"}, method= RequestMethod.POST)
     public String editUser(@Valid User user, BindingResult result, final ModelMap model){
-        System.out.println(result.getModel());
+        //System.out.println(result.getModel());
         if(result.hasErrors()){
             model.addAttribute("allRoles", roleService.findAll());
             return "users-manage";
