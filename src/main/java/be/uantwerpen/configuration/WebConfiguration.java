@@ -29,7 +29,7 @@ public class WebConfiguration {
     public MongoDbFactory mongoDbFactory() throws Exception {
 
         // Set credentials
-        MongoClient mongoClient = new MongoClient( "192.168.10.2" , 27017 );
+        MongoClient mongoClient = new MongoClient( "143.129.39.151" , 27017 );
 
         // Mongo DB Factory
         SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(
