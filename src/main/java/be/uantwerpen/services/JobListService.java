@@ -71,7 +71,7 @@ public class JobListService {
             // iterate over all orders
             if (jl.getJobs().get(0).getStatus().equals("ready")) {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
-                if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
+                if (jl.getJobs().get(0).getTypeVehicle().equals("drone")){
                     if (dispatch2Drone(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
                         jl.getJobs().get(0).setStatus("busy");
                     }
@@ -80,7 +80,7 @@ public class JobListService {
                     }
                 }
                 // communication needed with car core
-                else if (jl.getJobs().get(0).getTypeVehicle() == "car") {
+                else if (jl.getJobs().get(0).getTypeVehicle().equals("car")) {
                     if (dispatch2Car(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
                         jl.getJobs().get(0).setStatus("busy");
                     }
