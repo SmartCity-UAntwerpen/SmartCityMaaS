@@ -85,6 +85,7 @@ public class JobDispatching {
                             job.setIdVehicle(previous.getVehicleID());
                         }
                         else {
+                            System.out.println("Vehicle ID =" + listOfEdges[j].getVehicleID());
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
                         // Add it to the joblist (all jobs within 1 delivery) and then to the jobservice (list of all jobs, regardless of to which delivery it belongs)

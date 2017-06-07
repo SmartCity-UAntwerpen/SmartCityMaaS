@@ -52,6 +52,7 @@ public class Astar {
         //graphBuilder.setUpTest();
         //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
         graphBuilder.getMap();
+        System.out.println("Ik heb de map opgevraagd");
     }
 
      public Graph getGraph(){
@@ -74,11 +75,12 @@ public class Astar {
         //Testfiles met correcte graaf
         makeNode();
         makeEdge();
+        graphBuilder.getLinkCost();
         //testDeterminePath(graph, "1002", "1015");
         //testDeterminePath(graph, "1014", "1002");
         //testDeterminePath(graph, "1004", "1015");
         //testDeterminePath(graph, "1015", "1010");
-        testDeterminePath(graph, "45", "43");
+        testDeterminePath(graph, "46", "47");
     }
 
     /**
@@ -159,6 +161,7 @@ public class Astar {
         destroyNodes();
         destroyEdges();
         this.graphBuilder.getMap();
+        graphBuilder.getLinkCost();
         makeNode();
         makeEdge();
     }

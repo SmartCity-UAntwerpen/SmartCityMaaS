@@ -80,8 +80,9 @@ public class JobListService {
                     System.out.println(url);
                 } else if(jl.getJobs().get(0).getTypeVehicle().equals("car")) {
                     url = "http://" + carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
-                    //temp=temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-                    url+=("0/0/9/10");
+                    //=temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+                    //url+=("0/0/9/10");
+                    System.out.println("CarDispatch");
                     System.out.println(url);
                 } else if(jl.getJobs().get(0).getTypeVehicle().equals("robot")) {
                     //String temp = "143.129.39.112:1949/executeJob/";
