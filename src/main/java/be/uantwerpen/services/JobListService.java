@@ -69,7 +69,7 @@ public class JobListService {
     public void dispatch2Core() {
         for (JobList jl : this.jobListRepository.findAll()) {
             // iterate over all orders
-            if (jl.getJobs().get(0).getStatus() == "ready") {
+            if (jl.getJobs().get(0).getStatus().equals("ready")) {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
                 if (jl.getJobs().get(0).getTypeVehicle() == "drone") {
                     if (dispatch2Drone(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle()) == true){
@@ -117,7 +117,7 @@ public class JobListService {
             //an error has occured
             if (conn.getResponseCode() == 200) {
                 String msgresponse = conn.getResponseMessage();
-                if (msgresponse == "ACK") {
+                if (msgresponse.equals("ACK")) {
                     //TODO: doet iets met de ACK code
                     System.out.println(msgresponse);
                 }
@@ -127,15 +127,17 @@ public class JobListService {
             // an error has occured
             else{
                 String msgresponse = conn.getResponseMessage();
-                if (msgresponse == "idVehicleError") {
+                System.out.println(msgresponse);
+                if (msgresponse.equals("idVehicleError")) {
+                    //TODO: doet iets met de error code
+
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse.equals("idVehicleError")){
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
                 }
-                else if (msgresponse == "idVehicleError"){
-                    //TODO: doet iets met de error code
-                    System.out.println(msgresponse);
-                }
-                else if (msgresponse == "idVehicleError") {
+                else if (msgresponse.equals("idVehicleError")) {
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
                 }
@@ -222,7 +224,7 @@ public class JobListService {
             //an error has occured
             if (conn.getResponseCode() == 200) {
                 String msgresponse = conn.getResponseMessage();
-                if (msgresponse == "ACK") {
+                if (msgresponse.equals("ACK")) {
                     //TODO: doet iets met de ACK code
                     System.out.println(msgresponse);
                 }
@@ -233,16 +235,18 @@ public class JobListService {
             else{
                 String msgresponse = conn.getResponseMessage();
                 System.out.println(msgresponse);
-                if (msgresponse == "idVehicleError") {
+                if (msgresponse.equals("idVehicleError")) {
+                    //TODO: doet iets met de error code
+
+                    System.out.println(msgresponse);
+                }
+                else if (msgresponse.equals("idVehicleError")){
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
                 }
-                else if (msgresponse == "idVehicleError"){
+                else if (msgresponse.equals("idVehicleError")) {
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
-                }
-                else if (msgresponse == "idVehicleError") {
-                    //TODO: doet iets met de error code
                 }
                 else {
                     //TODO: doet iets met de error code
