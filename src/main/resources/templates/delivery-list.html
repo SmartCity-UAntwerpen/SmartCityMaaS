@@ -15,6 +15,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th th:text="#{userName}">User Name</th>
                     <th th:text="#{lastName}">Last Name</th>
                     <th th:text="#{firstName}">First Name</th>
                     <th th:text="#{start}">Start</th>
@@ -26,6 +27,7 @@
                 <!-- IMPORTANT, class="list" have to be at tbody -->
                 <tbody class="list">
                 <tr th:each="delivery : ${allDeliveries}">
+                    <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
                     <td class="lastName" th:value="${lastName}" th:text="${delivery.lastName }">Last Name</td>
                     <td class="firstName" th:value="${firstName}" th:text="${delivery.firstName }">First Name</td>
                     <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>

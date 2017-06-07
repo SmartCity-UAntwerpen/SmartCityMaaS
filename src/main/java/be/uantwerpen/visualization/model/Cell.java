@@ -6,30 +6,46 @@ package be.uantwerpen.visualization.model;
 public class Cell {
     private int x;
     private int y;
-    private int type;
+    private String type;
+    private String specific;
+    private String characteristic;
+
     private int sur_x;
     private int sur_y;
+    private int spotID;
     /*
      * Type defenition
      * type: 1 = background
-     * type: 2 = spot
-     * type: 3 = surrounding point
-     * type: 4 = road
+     * type: 2 = spot_robot
+     * type: 3 = surrounding_point
+     * type: 4 = road_robot
+     * type: 5 = spot_drone
+     * type: 6 = road_drone
      */
-    public Cell(int x, int y, int type) {
+    public Cell(int x, int y, String type) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.sur_x = 0;
         this.sur_y = 0;
+        this.spotID = -1;
     }
-
+    public Cell() {
+        this.x = 0;
+        this.y = 0;
+        this.type = "unknown";
+        this.sur_x = 0;
+        this.sur_y = 0;
+        this.spotID = -1;
+    }
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        type = 1;
+        type = "background";
+        specific = "robot";
         this.sur_x = 0;
         this.sur_y = 0;
+        this.spotID = -1;
     }
 
     public int getX() {
@@ -48,11 +64,11 @@ public class Cell {
         this.y = y;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -70,5 +86,29 @@ public class Cell {
 
     public void setSur_y(int sur_y) {
         this.sur_y = sur_y;
+    }
+
+    public String getSpecific() {
+        return specific;
+    }
+
+    public void setSpecific(String specific) {
+        this.specific = specific;
+    }
+
+    public int getSpotID() {
+        return spotID;
+    }
+
+    public void setSpotID(int spotID) {
+        this.spotID = spotID;
+    }
+
+    public String getCharacteristic() {
+        return characteristic;
+    }
+
+    public void setCharacteristic(String characteristic) {
+        this.characteristic = characteristic;
     }
 }

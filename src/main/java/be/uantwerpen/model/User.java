@@ -70,6 +70,7 @@ public class User extends MyAbstractPersistable<Long> {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
     public String getUserName() {
         return userName;
     }

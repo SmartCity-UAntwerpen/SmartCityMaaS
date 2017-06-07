@@ -1,11 +1,13 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
+import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.World;
+import org.graphstream.graph.Graph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,6 +38,23 @@ public class UserController {
     @Autowired
     private PassengerService passengerService;
 
+    @Autowired
+    public BackendRestemplate backendRestemplate;
+    @Autowired
+    public Astar astarService;
+
+
+
+    @Autowired
+    private JobService jobService;
+    @Autowired
+    private JobListService jobListService;
+
+
+
+
+
+
     @ModelAttribute("user")
     private User getUser(){ return new User();}
 
@@ -49,7 +68,6 @@ public class UserController {
     public String showMap(final ModelMap model){
         return "map";
     }
-
 
     @RequestMapping(value="/users/put", method= RequestMethod.GET)
     //@PreAuthorize("hasRole('admin') and hasRole('logon')")
@@ -119,27 +137,82 @@ public class UserController {
 
     @RequestMapping(value="/deliveries/put", method= RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model){
-        model.addAttribute("allSegments", segmentService.findAll());
+        /*model.addAttribute("allSegments", segmentService.findAll());
         model.addAttribute("allPassengers", passengerService.findAll());
-        Delivery del = new Delivery("","");
+        Delivery del = new Delivery("","","");
         model.addAttribute("delivery",del);
-        World world = new World(300,300);
-        return "delivery-manage2";
+        World world = new World(300,300);*/
+
+
+        Delivery del = new Delivery("","","");
+        model.addAttribute("delivery",del);
+        model.addAttribute("allPassengers", passengerService.findAll());
+
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
+        System.out.println("User logged in: "+loginUser.getUserName());
+        return "delivery-manage-user";
     }
 
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
     public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
         System.out.println(result.getModel());
+        System.out.println("--- Delivery point A "+ delivery.getPointA() + " point B "+ delivery.getPointB()+" ---");
+
         if(result.hasErrors()){
-            model.addAttribute("allSegments", segmentService.findAll());
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage2";
         }
         delivery.setType("HumanTransport");
+
+
+
+        delivery.setPointA(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
+        delivery.setPointB(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.putStatement(delivery);
-        deliveryService.saveSomeAttributes(delivery);
-        return "redirect:/deliveries";
+        Delivery delivery_return = monogDBClient.getLastDelivery();
+        if(delivery_return.getFirstName() == null)
+        {
+            System.out.println("-- !! Could not retrieve last delivery from MongoDB service !! --");
+
+        }else
+        {
+            System.out.println("-- Retrieve last delivery from MongoDB service --");
+            delivery_return.print();
+            deliveryService.saveSomeAttributes(delivery_return);
+        }
+
+        /*
+            ASTAR gedeelte
+         */
+
+        // TODO delivery ID koppelen aan Astarr
+        //Astar astar = new Astar();
+/*
+        astarService.init(jobService, jobListService);
+        astarService.determinePath(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
+*/
+
+
+        System.out.println("REDIRECT IS PERFORMED");
+        User loginUser = userService.getPrincipalUser();
+        System.out.println("User logged in: "+loginUser.getUserName());
+        model.addAttribute("currentUser", loginUser);
+        model.addAttribute("delivery", delivery_return);
+        return "delivery-navigate-user";
+        // return "redirect:/deliveries";
+    }
+    @RequestMapping(value="/simulation",method= RequestMethod.GET)
+    public String getSimulation(final ModelMap model){
+
+
+        model.addAttribute("allSegments", segmentService.findAll());
+        model.addAttribute("allPassengers", passengerService.findAll());
+        Delivery del = new Delivery("","","");
+        model.addAttribute("delivery",del);
+        World world = new World(300,300);
+        return "simulation";
     }
 }
 
