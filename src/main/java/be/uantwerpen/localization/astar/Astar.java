@@ -109,9 +109,9 @@ public class Astar {
         makeNode();
         makeEdge();
         //testDeterminePath(graph, "1002", "1015");
-        testDeterminePath(graph, "1014", "1002");
-        testDeterminePath(graph, "1004", "1015");
-
+        //testDeterminePath(graph, "1014", "1002");
+        //testDeterminePath(graph, "1004", "1015");
+        testDeterminePath(graph, "1004", "1016");
 
     }
 
@@ -193,6 +193,15 @@ public class Astar {
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
+    }
+
+    public void DeterminePath2(String startPos, String endPos, String idDelivery) {
+        AStar astar = new AStar(this.graph);
+        updateNaE();
+        astar.compute(startPos, endPos);
+        System.out.println(astar.getShortestPath());
+        Path path = astar.getShortestPath();
+        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
     }
 /*    public String determinePath(Graph graph, String startPos, String endPos) {
         AStar astar = new AStar(graph);

@@ -17,6 +17,8 @@ public class JobList extends MyAbstractPersistable<Long>{
     private long startPoint;
     @Column(name = "EP", unique = false, nullable = false)
     private long endPoint;
+    @Column(name = "idDelivery", unique = false, nullable = false)
+    private String idDelivery;
 
     public void addJob(Job job)
     {
@@ -67,5 +69,13 @@ public class JobList extends MyAbstractPersistable<Long>{
 
     public void setEndPoint(long endPoint) {
         this.endPoint = endPoint;
+    }
+
+    public String getIdDelivery() {
+        return idDelivery;
+    }
+
+    public void setIdDelivery(String idDelivery) {
+        this.idDelivery = idDelivery;
     }
 }

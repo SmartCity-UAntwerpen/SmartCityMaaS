@@ -30,10 +30,16 @@ public class JobDispatching {
     public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder) {
         this.jobService = jobService;
         this.jobListService = jobListService;
-        testdispatchOrders(path, graphBuilder);
+        dispatchOrders(path, graphBuilder);
     }
 
-    public void testdispatchOrders (String path, GraphBuilder graphBuilder ) {
+    public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder, String idDelivery) {
+        this.jobService = jobService;
+        this.jobListService = jobListService;
+        dispatchOrders2(path, graphBuilder, idDelivery);
+    }
+
+    public void dispatchOrders (String path, GraphBuilder graphBuilder ) {
         long k = 0;         //
         path = path.substring(1);           // eerste karakter weghalen
         path = path.substring(0,path.length()-1);       // laatste karakter weghalen
@@ -74,7 +80,7 @@ public class JobDispatching {
 
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
 
-                        if(previous.getStopPoint().getId().equals(job.getIdStart())){
+                        if(previous.getStopPoint().getId().equals(link.getStartPoint().getId())){
                             job.setIdVehicle(previous.getVehicleID());
                         }
                         else {
@@ -95,6 +101,75 @@ public class JobDispatching {
             }
         }
 
+        //joblist.setStartPoint(joblist.getJobs());
+        jobListService.saveOrder(joblist);
+        System.out.println("starting Order input");
+        printJobList();
+        jobListService.dispatch2Core();
+    }
+
+    public void dispatchOrders2 (String path, GraphBuilder graphBuilder, String idDelivery ) {
+        long k = 0;         //
+        path = path.substring(1);           // eerste karakter weghalen
+        path = path.substring(0,path.length()-1);       // laatste karakter weghalen
+        String[] pathSplit =  path.split(", ", -1);
+        Link[] listOfEdges = graphBuilder.getLinkList();
+        Link previous = listOfEdges[0];
+        // need to delete the first item since it was random generated
+        //jobService.delete(Long.valueOf(1));
+
+        // keep initeal Jobservice counter
+        //       long tempInitCount = jobService.getSize();
+        JobList joblist = new JobList();
+        for (int i = 0; i < pathSplit.length - 1; i++) {
+            for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
+                // TODO: als een link ID = -1 retourneert moet er een error volgen!
+                Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
+
+                if (listOfEdges[j].getId().equals(link.getId())) {
+                    //System.out.println("Path: " + path);
+                    System.out.println("Edge found: " + listOfEdges[j].getId());
+                    System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
+                    //System.out.println("Edge: " + listOfEdges[j]);
+                    if (listOfEdges[j].getVehicle().equals("wait")){
+                        //don't add job!
+                    }
+                    else {
+                        Job job = new Job();
+                        job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
+                        //System.out.println("path id: " + job.getIdStart());
+                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
+                        job.setTypeVehicle((listOfEdges[j].getVehicle()));
+                        job.setStatus("ready");
+
+                        if (joblist.isEmpty() == true) {
+                            joblist.setStartPoint(job.getIdStart());
+                        }
+
+
+                        // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
+
+                        if(previous.getStopPoint().getId().equals(link.getStartPoint().getId())){
+                            job.setIdVehicle(previous.getVehicleID());
+                        }
+                        else {
+                            job.setIdVehicle(listOfEdges[j].getVehicleID());
+                        }
+                        joblist.addJob(job);
+                        jobService.save(job);
+
+                        // update last endpoint of joblist to the last added endpoint
+                        joblist.setEndPoint(job.getIdEnd());
+
+                        previous = link;
+                    }
+                } else {
+                    // niets doen omdat de correcte edge niet gevonden is
+                    //System.out.println("failed to find link");
+                }
+            }
+        }
+        joblist.setIdDelivery(idDelivery);
         //joblist.setStartPoint(joblist.getJobs());
         jobListService.saveOrder(joblist);
         System.out.println("starting Order input");
