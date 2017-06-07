@@ -81,7 +81,7 @@ function drawMap() {
     console.log("y_size "+y_size);
     var cell;
     var redraw;
-    getProgress();
+    //getProgress();
     for(var i=0; i<world.dimensionY; i++){
         for(var j=0; j<world.dimensionX; j++){
             cell = world.cells[i].cellList[j];
@@ -497,7 +497,11 @@ function getWorld(){
     });
 }
 function getProgress(){
-    $.getJSON("/world1/progress/0", function(result){
+
+
+    var URL_Progress = "/world1/progress/"+id_delivery;
+    console.log("URL requested "+ URL_Progress)
+    $.getJSON(URL_Progress, function(result){
         progress = result;
         // console.log("Result: "+progress[0]+" - " + progress[1]);
         // Controls if x index of progress is an allowed value

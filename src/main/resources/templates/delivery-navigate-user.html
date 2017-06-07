@@ -38,18 +38,7 @@
                         <label id="deliveryIDLabel" th:text="#{idDelivery}">Passengers</label>
                         <label id="deliveryID" th:text="${delivery.idDelivery}">Subtitle</label>
                     </div>
-                    <!--<select th:field="*{pointA}">
-                        <option th:each="segment : ${allSegments}"
-                                th:value="${segment.name}"
-                                th:text="${segment.name}">Wireframe</option>
 
-                    </select> -->
-
-                        <!-- <select th:field="*{pointB}">
-                            <option th:each="segment : ${allSegments}"
-                                    th:value="${segment.name}"
-                                    th:text="${segment.name}">Wireframe</option>
-                        </select>-->
                     <script th:inline="javascript">
                         /*<![CDATA[*/
                         var cellImageBackGround = /*[[@{/images/map/test_lol.png}]]*/;
@@ -70,6 +59,9 @@
                         var cellImageSpotCar = /*[[@{/images/map/spot_car.png}]]*/;
 
                         var only_view = true;
+
+                        var id_delivery = [[${delivery.idDelivery}]];
+
                         /*]]>*/
                     </script>
 

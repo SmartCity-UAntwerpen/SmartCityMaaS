@@ -187,10 +187,12 @@ public class UserController {
         /*
             ASTAR gedeelte
          */
+
+        // TODO delivery ID koppelen aan Astarr
         //Astar astar = new Astar();
 /*
         astarService.init(jobService, jobListService);
-        astarService.determinePath(delivery.getPointA(), delivery.getPointB());
+        astarService.determinePath(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
 */
 
 

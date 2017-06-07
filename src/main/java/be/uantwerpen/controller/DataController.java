@@ -95,8 +95,12 @@ public class DataController {
     }
 
     @RequestMapping(value="/{worldid}/progress/{delivery_id}")
-    public int[] getProgress(@PathVariable String worldid,@PathVariable int delivery_id){
+    public int[] getProgress(@PathVariable String worldid, @PathVariable String delivery_id){
         int progress = vehicle.getValue();
+
+        System.out.println("Progress is asked for id delivery "+delivery_id);
+
+
        /* for(int i = 0 ; i < vehicles.size();i++)
         {
             if(id == vehicles.get(i).getID())
@@ -158,6 +162,10 @@ public class DataController {
         jobList.addJob(job5);
 
         List<Job> jobs = jobList.getJobs();
+
+        // TODO ask Oliver service for current job of this delivery with the DeliveryID
+        // it returns the value of
+        //
 
         List<Integer> currentListofJobs = new ArrayList<Integer>();
 
