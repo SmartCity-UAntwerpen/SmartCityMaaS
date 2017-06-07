@@ -72,28 +72,28 @@ public class JobListService {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
                 String url = "";
                 if (jl.getJobs().get(0).getTypeVehicle().equals("drone")){
-                    String temp = "http://" + droneCoreIP + ":" + droneCorePort + "/executeJob/";
+                    url = "http://" + droneCoreIP + ":" + droneCorePort + "/executeJob/";
                     //temp += (String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-                    temp += ("911/78/0/2");
+                    url += ("911/78/0/2");
                     System.out.println("DroneDispatch");
-                    System.out.println(temp);
+                    System.out.println(url);
                 } else if(jl.getJobs().get(0).getTypeVehicle().equals("car")) {
-                    String temp = "http://" + carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
+                    url = "http://" + carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
                     //temp=temp+(String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-                    temp=temp+("0/0/9/10");
-                    System.out.println(temp);
+                    url+=("0/0/9/10");
+                    System.out.println(url);
                 } else if(jl.getJobs().get(0).getTypeVehicle().equals("robot")) {
                     //String temp = "143.129.39.112:1949/executeJob/";
-                    String temp = "http://" + robotCoreIP + ":" + robotCorePort + "/executeJob/";
+                    url = "http://" + robotCoreIP + ":" + robotCorePort + "/executeJob/";
                     System.out.println("RobotDispatch");
-                    System.out.println(temp);
+                    System.out.println(url);
                 }
 
                 if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)){
                     jl.getJobs().get(0).setStatus("busy");
                 }
                 else {
-                    //recalculatePathAfterError(jl.getJobs().get(0).getId());
+                    recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
                 }
             }
         }
@@ -153,13 +153,13 @@ public class JobListService {
         this.jobListRepository.delete(id);
     }
 
-    public void recalculatePathAfterError (long idJob){
+    public void recalculatePathAfterError (long idJob, String idDelivery){
         for (JobList jl: this.jobListRepository.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob)) {
                 String sPos =  Long.toString(jl.getJobs().get(0).getIdStart());
                 String ePos =  Long.toString(jl.getEndPoint());
                 deleteOrder(jl.getId());
-                astar.DeterminePath(sPos,ePos);
+                astar.determinePath2(sPos,ePos,idDelivery);
             }
             else {
                 // do nothing for now
