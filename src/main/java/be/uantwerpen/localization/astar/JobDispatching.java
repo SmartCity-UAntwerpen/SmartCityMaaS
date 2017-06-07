@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
- * Created by Revil on 10/05/2017.
+ * A Star Class (will be used as a Service)
+ * This class will provide a path, while building up a graph in which the path will be calculated from input it gets from the Graphbuilder service.
+ *
+ * @version 4 7 jun 2017
+ * @author Oliver Nyssen
  */
 
 public class JobDispatching {
@@ -39,157 +43,140 @@ public class JobDispatching {
         dispatchOrders2(path, graphBuilder, idDelivery);
     }
 
+    /**
+     * Dispatch orders function will use a path as parameter and convert it into a JobList, which consists of Jobs containing all the information required to send to the cores.
+     * At the end of the function, there will be a call to the dispatch2core function, to start communication in the
+     * @param path  (String) path computed by Astar Algorithm
+     * @param graphBuilder  (Graphbuilder Service)
+     */
     public void dispatchOrders (String path, GraphBuilder graphBuilder ) {
         long k = 0;         //
-        path = path.substring(1);           // eerste karakter weghalen
-        path = path.substring(0,path.length()-1);       // laatste karakter weghalen
-        String[] pathSplit =  path.split(", ", -1);
+        path = path.substring(1);           // remove first character '['
+        path = path.substring(0,path.length()-1);       // remove last character ']'
+        String[] pathSplit =  path.split(", ", -1);        // Split string up into Edges
         Link[] listOfEdges = graphBuilder.getLinkList();
-        Link previous = listOfEdges[0];
-        // need to delete the first item since it was random generated
-        //jobService.delete(Long.valueOf(1));
-
-        // keep initeal Jobservice counter
- //       long tempInitCount = jobService.getSize();
+        Link previous = listOfEdges[0];         // will be needed later on to prevent simular vehicletype switching
         JobList joblist = new JobList();
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
-                // TODO: als een link ID = -1 retourneert moet er een error volgen!
                 Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
-
+                // If the Link has been found, start creating a job with all relevant information
                 if (listOfEdges[j].getId().equals(link.getId())) {
-                    //System.out.println("Path: " + path);
+                    //TODO remove PRINTS or put them in the debugging part?
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
-                    //System.out.println("Edge: " + listOfEdges[j]);
+                    // if we are changing vehicle types, then we will walk from 1 vehicle to another. No need to add a Job then
                     if (listOfEdges[j].getVehicle().equals("wait")){
                         //don't add job!
                     }
+                    // Transport in a vehicle --> new job needs to be added.
                     else {
                         Job job = new Job();
-                        job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
-                        //System.out.println("path id: " + job.getIdStart());
-                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
-                        job.setTypeVehicle((listOfEdges[j].getVehicle()));
-                        job.setStatus("ready");
-
+                        job.setIdStart(Long.valueOf(pathSplit[i]).longValue());             // set start ID from job
+                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());           // set stop ID from job
+                        job.setTypeVehicle((listOfEdges[j].getVehicle()));                  // set vehicle type
+                        job.setStatus("ready");                                             // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
+                        // for the joblist, we want to keep track of the starting ID!
                         if (joblist.isEmpty() == true) {
                             joblist.setStartPoint(job.getIdStart());
                         }
-
-
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
-
                         if(previous.getStopPoint().getId().equals(link.getStartPoint().getId())){
                             job.setIdVehicle(previous.getVehicleID());
                         }
                         else {
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
+                        // Add it to the joblist (all jobs within 1 delivery) and then to the jobservice (list of all jobs, regardless of to which delivery it belongs)
                         joblist.addJob(job);
                         jobService.save(job);
 
                         // update last endpoint of joblist to the last added endpoint
                         joblist.setEndPoint(job.getIdEnd());
-
+                        // previous needed to avoid needless changing of vehicles.
                         previous = link;
                     }
-                } else {
-                    // niets doen omdat de correcte edge niet gevonden is
-                    //System.out.println("failed to find link");
                 }
             }
         }
-
-        //joblist.setStartPoint(joblist.getJobs());
+        //add Order(=joblist) to all the other Orders that were placed
         jobListService.saveOrder(joblist);
+        //TODO remove print & print function OR put it in a DEBUG MODE
         System.out.println("starting Order input");
         printJobList();
         jobListService.dispatch2Core();
     }
 
+    /**
+     * Dispatch orders function will use a path as parameter and convert it into a JobList, which consists of Jobs containing all the information required to send to the cores.
+     * At the end of the function, there will be a call to the dispatch2core function, to start communication in the
+     * @param path  (String) path computed by Astar Algorithm
+     * @param graphBuilder  (Graphbuilder Service)
+     * @param idDelivery  (String) idDelivery waaraan het Order wordt vastgekoppeld
+     */
     public void dispatchOrders2 (String path, GraphBuilder graphBuilder, String idDelivery ) {
         long k = 0;         //
-        path = path.substring(1);           // eerste karakter weghalen
-        path = path.substring(0,path.length()-1);       // laatste karakter weghalen
-        String[] pathSplit =  path.split(", ", -1);
+        path = path.substring(1);           // remove first character '['
+        path = path.substring(0,path.length()-1);       // remove last character ']'
+        String[] pathSplit =  path.split(", ", -1);        // Split string up into Edges
         Link[] listOfEdges = graphBuilder.getLinkList();
-        Link previous = listOfEdges[0];
-        // need to delete the first item since it was random generated
-        //jobService.delete(Long.valueOf(1));
-
-        // keep initeal Jobservice counter
-        //       long tempInitCount = jobService.getSize();
+        Link previous = listOfEdges[0];         // will be needed later on to prevent simular vehicletype switching
         JobList joblist = new JobList();
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
-                // TODO: als een link ID = -1 retourneert moet er een error volgen!
                 Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
-
+                // If the Link has been found, start creating a job with all relevant information
                 if (listOfEdges[j].getId().equals(link.getId())) {
-                    //System.out.println("Path: " + path);
+                    //TODO remove PRINTS or put them in the debugging part?
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
-                    //System.out.println("Edge: " + listOfEdges[j]);
+                    // if we are changing vehicle types, then we will walk from 1 vehicle to another. No need to add a Job then
                     if (listOfEdges[j].getVehicle().equals("wait")){
                         //don't add job!
                     }
+                    // Transport in a vehicle --> new job needs to be added.
                     else {
                         Job job = new Job();
-                        job.setIdStart(Long.valueOf(pathSplit[i]).longValue());
-                        //System.out.println("path id: " + job.getIdStart());
-                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());
-                        job.setTypeVehicle((listOfEdges[j].getVehicle()));
-                        job.setStatus("ready");
-
+                        job.setIdStart(Long.valueOf(pathSplit[i]).longValue());             // set start ID from job
+                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());           // set stop ID from job
+                        job.setTypeVehicle((listOfEdges[j].getVehicle()));                  // set vehicle type
+                        job.setStatus("ready");                                             // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
+                        // for the joblist, we want to keep track of the starting ID!
                         if (joblist.isEmpty() == true) {
                             joblist.setStartPoint(job.getIdStart());
                         }
-
-
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
-
                         if(previous.getStopPoint().getId().equals(link.getStartPoint().getId())){
                             job.setIdVehicle(previous.getVehicleID());
                         }
                         else {
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
+                        // Add it to the joblist (all jobs within 1 delivery) and then to the jobservice (list of all jobs, regardless of to which delivery it belongs)
                         joblist.addJob(job);
                         jobService.save(job);
 
                         // update last endpoint of joblist to the last added endpoint
                         joblist.setEndPoint(job.getIdEnd());
-
+                        // previous needed to avoid needless changing of vehicles.
                         previous = link;
                     }
-                } else {
-                    // niets doen omdat de correcte edge niet gevonden is
-                    //System.out.println("failed to find link");
                 }
             }
         }
         joblist.setIdDelivery(idDelivery);
         //joblist.setStartPoint(joblist.getJobs());
         jobListService.saveOrder(joblist);
+        //TODO remove PRINT functions or move it to a DEBUG MODE
         System.out.println("starting Order input");
         printJobList();
         jobListService.dispatch2Core();
     }
 
-    /*public void printJobList() {
-        System.out.println("lijst van jobs afprinten");
-        for (int x = 0; x < jobService.findAll().size(); x++) {
-            System.out.println("jobID: " + jobService.findAll().get(x).getIdJob() + ";   startPos :" + jobService.findAll().get(x).getIdStart() + ";   endPos :" + jobService.findAll().get(x).getIdEnd() + ";   vehicleID :" + jobService.findAll().get(x).getIdVehicle());
-        }
-    }*/
+    /**
+     * Print function. Suited for debug purposes so that it's clear that is to be found in the orders and joblisservice etc.
+     */
     public void printJobList() {
- /*       System.out.println("lijst van jobs afprinten");
-        for (Job j: jobService.findAll()) {
-            System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
-        }
-*/
-
         System.out.println(" Lijst van Orders afdrukken");
         for (JobList jl: jobListService.findAll()) {
             System.out.println(" Order #" + jl.getId());
@@ -198,15 +185,4 @@ public class JobDispatching {
             }
         }
     }
-
-    // check to make sure you don't change from 1 drone to another drone the same platform
-    public void OptimiseVehicleUsage () {
-        for (Job j: jobService.findAll()){
-
-            //TODO zorg ervoor dat indien het eenzelfde vehicle is, dat je niet overstapt
-            System.out.println("jobID: " + j.getId() + ";   startPos :" + j.getIdStart() + ";   endPos :" + j.getIdEnd() + ";   vehicleID :" + j.getIdVehicle());
-        }
-    }
-
-
 }
