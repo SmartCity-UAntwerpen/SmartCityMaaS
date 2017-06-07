@@ -1,6 +1,7 @@
 package be.uantwerpen.services;
 
 import be.uantwerpen.localization.astar.Astar;
+import be.uantwerpen.model.Job;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.repositories.JobListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,7 +168,7 @@ public class JobListService {
             //an error has occured
             if (conn.getResponseCode() == 200) {
                 String msgresponse = conn.getResponseMessage();
-                if (msgresponse == "ACK") {
+                if (msgresponse.equals("ACK")) {
                     //TODO: doet iets met de ACK code
                     System.out.println(msgresponse);
                 }
@@ -178,16 +179,16 @@ public class JobListService {
             else{
                 String msgresponse = conn.getResponseMessage();
                 System.out.println(msgresponse);
-                if (msgresponse == "idVehicleError") {
+                if (msgresponse.equals("idVehicleError")) {
                     //TODO: doet iets met de error code
 
                     System.out.println(msgresponse);
                 }
-                else if (msgresponse == "idVehicleError"){
+                else if (msgresponse.equals("idVehicleError")){
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
                 }
-                else if (msgresponse == "idVehicleError") {
+                else if (msgresponse.equals("idVehicleError")) {
                     //TODO: doet iets met de error code
                     System.out.println(msgresponse);
                 }
@@ -280,6 +281,23 @@ public class JobListService {
             else {
                 // do nothing for now
             }
+        }
+    }
+
+    public Job findDelivery(String idDelivery) {
+        Job found = new Job();
+        boolean foundUpdated = false;
+        for (JobList jl: this.jobListRepository.findAll()){
+            if (idDelivery.equals(jl.getIdDelivery())) {
+                foundUpdated = true;
+                found = jl.getJobs().get(0);
+            }
+        }
+        if (foundUpdated = false) {
+            return null;
+        }
+        else {
+            return found;
         }
     }
 
