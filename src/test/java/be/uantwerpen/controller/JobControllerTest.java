@@ -1,14 +1,15 @@
-package be.uantwerpen.services.controller;
+package be.uantwerpen.controller;
 
-import be.uantwerpen.controller.JobController;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.services.JobService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -18,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by Kevin on 8/06/2017.
  */
+
+@RunWith(MockitoJUnitRunner.class)
 public class JobControllerTest {
 
     @InjectMocks
