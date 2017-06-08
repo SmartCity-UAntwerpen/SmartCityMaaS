@@ -87,24 +87,25 @@ public class GraphBuilder {
                 Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
                 Cost bestCost = costs[0];
                 //run over all the answers to find the most cost effective vehicle
-                for (Cost cost : costs) {
-                    if(cost.getWeightToStart()+cost.getWeight() < lowestCost)
-                    {
-                        lowestCost = cost.getWeightToStart()+cost.getWeight();
-                        bestCost = cost;
+                if(costs.length == 0) {
+                    link.setWeight((long)9999);
+                } else {
+                    for (Cost cost : costs) {
+                        if (cost.getWeightToStart() + cost.getWeight() < lowestCost) {
+                            lowestCost = cost.getWeightToStart() + cost.getWeight();
+                            bestCost = cost;
+                        }
                     }
-                }
 
-                //run over all the links to look for the wait-links that are connected to the current link
-                for(Link link1: linkList)
-                {
-                    if(link1.getVehicle().equals("wait") && link1.getStopPoint().getId().equals(startPoint))
-                    {
-                        link1.setWeight(bestCost.getWeightToStart());
+                    //run over all the links to look for the wait-links that are connected to the current link
+                    for (Link link1 : linkList) {
+                        if (link1.getVehicle().equals("wait") && link1.getStopPoint().getId().equals(startPoint)) {
+                            link1.setWeight(bestCost.getWeightToStart());
+                        }
                     }
+                    link.setWeight(bestCost.getWeight());
+                    link.setVehicleID(bestCost.getIdVehicle());
                 }
-                link.setWeight(bestCost.getWeight());
-                link.setVehicleID(bestCost.getIdVehicle());
             }
         }
     }
