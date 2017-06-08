@@ -17,6 +17,13 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * A Star Class (will be used as a Service)
+ * This class will provide a path, while building up a graph in which the path will be calculated from input it gets from the Graphbuilder service.
+ *
+ * @version 3 7 jun 2017
+ * @author Oliver Nyssen
+ */
 @Service
 public class Astar {
 
@@ -28,74 +35,37 @@ public class Astar {
     @Autowired
     private GraphBuilder graphBuilder;
 
-    //     B-(1)-C
-    //    /       \
-    //  (1)       (10)
-    //  /           \
-    // A             F
-    //  \           /
-    //  (1)       (1)
-    //    \       /
-    //     D-(1)-E
-    /*static String my_graph = 
-            "DGS004\n" 
-            + "my 0 0\n" 
-            + "an A xy: 0,1\n" 
-            + "an B xy: 1,2\n"
-            + "an C xy: 2,2\n"
-            + "an D xy: 1,0\n"
-            + "an E xy: 2,0\n"
-            + "an F xy: 3,1\n"
-            + "ae AB A B weight:1 \n"
-            + "ae AD A D weight:1 \n"
-            + "ae BC B C weight:1 \n"
-            + "ae CF C F weight:10 \n"
-            + "ae FC F C weight:1 \n"
-            + "ae ED E D weight:10 \n"
-            + "ae DE D E weight:1 \n"
-            + "ae EF E F weight:1 \n"
-            ;
-            
-                    public static void main(String[] args) throws IOException {
-                Graph graph = new DefaultGraph("A* Test");
-                StringReader reader = new StringReader(my_graph);
- 
-                FileSourceDGS source = new FileSourceDGS();
-                source.addSink(graph);
-                source.readAll(reader);
- 
-                AStar astar = new AStar(graph);
-                //astar.setCosts(new DistanceCosts());
-                astar.compute("C", "F");
- 
-                System.out.println(astar.getShortestPath());
-        }*/
-
-
     public Astar() {
 
-        /*graphBuilder = new GraphBuilder();
-        graphBuilder.setUpTest();
-        graphBuilder.setLinkCosts();*/
     }
 
+    /**
+     * Initialise function. this make sure all the information is passed on and all functions are correctly initilised.
+     * this function should only be once (when first referring to the Astar service)
+     * @param jobService:
+     * @param jobListService
+     */
     public void init(JobService jobService, JobListService jobListService) {
         this.jobService = jobService;
         this.jobListService = jobListService;
         this.graph = new SingleGraph("SmartCityGraph");
-       // graphBuilder = new GraphBuilder();
-        graphBuilder.setUpTest();
+        //graphBuilder.setUpTest();
         //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
-        //graphBuilder.getMap();
+        graphBuilder.getMap();
     }
 
-     /*   public static void main(String[] args) throws IOException {
-    }*/
+    public void setGraph(Graph graph) {
+        this.graph = graph;
+    }
 
      public Graph getGraph(){
          return graph;
      }
 
+    /**
+     * Start the Astar function, in which a Graph will be builded that consists of Edges and Nodes
+     *
+     */
     public void startAStar() {
 
         //TODO: deze methode uitcommenten in jobcontroller van zodra er het geintegreerd wordt in het gehele project
@@ -108,14 +78,18 @@ public class Astar {
         //Testfiles met correcte graaf
         makeNode();
         makeEdge();
+        graphBuilder.getLinkCost();
         //testDeterminePath(graph, "1002", "1015");
         //testDeterminePath(graph, "1014", "1002");
         //testDeterminePath(graph, "1004", "1015");
-        testDeterminePath(graph, "1004", "1016");
-
+        //testDeterminePath(graph, "1015", "1010");
+        testDeterminePath(graph, "46", "47");
     }
 
-
+    /**
+     * MakeNode function
+     * will make all the necessairy nodes in the Graph, using information provided by the Graphbuilder service.
+     */
     public void makeNode() {
         Point[] listOfPoints = this.graphBuilder.getPointList();
         List<Node> nodes = new ArrayList<Node>();
@@ -126,6 +100,10 @@ public class Astar {
         }
     }
 
+    /**
+     * Destroy nodes function
+     * Will remove all the nodes in the Graph. This is needed when you want to destroy an old graph.
+     */
     public void destroyNodes() {
         for (int i = this.graph.getNodeCount(); i > 0; i--) {
             this.graph.removeNode(i);
@@ -143,7 +121,10 @@ public class Astar {
         }
     }
 
-
+    /**
+     * Make Edge function
+     * will make all the necessairy edges in the Graph, using the information provided by the Graphbuilder
+     */
     public void makeEdge() {
         Link[] listOfEdges = this.graphBuilder.getLinkList();
         for (int i = 0; i < listOfEdges.length; i++){
@@ -153,6 +134,10 @@ public class Astar {
         }
     }
 
+    /**
+     * Destroy edges function
+     * Will remove all the edges in the Graph. This is needed when you want to destroy an old graph.
+     */
     public void destroyEdges() {
         for (int i = this.graph.getEdgeCount(); i > 0; i--) {
             this.graph.removeEdge(i);
@@ -170,10 +155,16 @@ public class Astar {
         }
     }
 
+    /**
+     * Update Nodes and Edges function
+     * this function will first destroy all the nodes and edges in a graph, request an update from the Graphbuilder service,
+     * before rebuilding the Graph, hence updating the Graph
+     */
     public void updateNaE () {
         destroyNodes();
         destroyEdges();
-       // this.graphBuilder.getMap();
+        this.graphBuilder.getMap();
+        graphBuilder.getLinkCost();
         makeNode();
         makeEdge();
     }
@@ -186,6 +177,11 @@ public class Astar {
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
+    /**
+     * Way to determine a Path in a Graph
+     * @param startPos (String) startingposition
+     * @param endPos (String) End position
+     */
     public void determinePath(String startPos, String endPos) {
         AStar astar = new AStar(this.graph);
         updateNaE();
@@ -195,7 +191,7 @@ public class Astar {
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
-    public void DeterminePath2(String startPos, String endPos, String idDelivery) {
+    public void determinePath2(String startPos, String endPos, String idDelivery) {
         AStar astar = new AStar(this.graph);
         updateNaE();
         astar.compute(startPos, endPos);
@@ -203,18 +199,6 @@ public class Astar {
         Path path = astar.getShortestPath();
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
     }
-/*    public String determinePath(Graph graph, String startPos, String endPos) {
-        AStar astar = new AStar(graph);
-        //astar.setCosts(new DistanceCosts());
-        astar.compute(startPos, endPos);
-        Path path = astar.getShortestPath();
-        return path.toString();
-    }*/
-
-    /* making test methodes that should later be taken over by code from Dries
-    methodes to be removed:
-    makeNodeList
-     */
 
     private List<Knoop> testMakeNodeList() {
         Knoop a = new Knoop("A", 4, 1);
