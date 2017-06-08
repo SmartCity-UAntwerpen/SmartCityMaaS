@@ -3,6 +3,16 @@ package be.uantwerpen.visualization.model;
 /**
  * Created by Frédéric Melaerts on 10/05/2017.
  */
+
+/**
+ * A cell is one unit element in the world which has a specific x- and y-coordinate in that world.
+ * Its type represents its function: road, surrounding, spot,...
+ * Specific specifies the specific vehicle type it belongs to: robot, car, drone, ...
+ * Characteristic represent the extra information of this cell: endpoint, light, intersection,...
+ * SpotID is only specified when a spot is situated in this cell or this cell is a surrounding cell of specific spot.
+ * If the cell is a surrounding cell, it has the coordinates of the spot'scell int the sur_x and sur_y parameter.
+ * a surrounding spot
+ */
 public class Cell {
     private int x;
     private int y;

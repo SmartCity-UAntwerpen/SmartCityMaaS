@@ -8,7 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.web.client.RestTemplate;
-
+/**
+ * Configuration of REST-bean and mongoDB connection.
+ */
 @Configuration
 public class WebConfiguration {
     @Bean

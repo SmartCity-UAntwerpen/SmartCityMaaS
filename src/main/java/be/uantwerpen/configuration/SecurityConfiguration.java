@@ -14,9 +14,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * Created by dries on 29/05/2017.
  */
 
+/**
+ * Configuration of security
+ */
 @Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
