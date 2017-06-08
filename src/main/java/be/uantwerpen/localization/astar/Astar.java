@@ -52,7 +52,6 @@ public class Astar {
         //graphBuilder.setUpTest();
         //TODO van zodra juiste data doorkomen: SetUpTest uitcommenten en onderstaande regel uncommenten
         graphBuilder.getMap();
-        System.out.println("Ik heb de map opgevraagd");
     }
 
      public Graph getGraph(){
