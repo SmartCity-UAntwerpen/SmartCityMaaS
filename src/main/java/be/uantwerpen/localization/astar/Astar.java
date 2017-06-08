@@ -54,6 +54,10 @@ public class Astar {
         graphBuilder.getMap();
     }
 
+    public void setGraph(Graph graph) {
+        this.graph = graph;
+    }
+
      public Graph getGraph(){
          return graph;
      }

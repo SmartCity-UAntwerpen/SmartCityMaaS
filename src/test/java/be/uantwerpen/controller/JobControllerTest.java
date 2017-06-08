@@ -1,6 +1,5 @@
-package be.uantwerpen.services.controller;
+package be.uantwerpen.controller;
 
-import be.uantwerpen.controller.JobController;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.services.JobService;
