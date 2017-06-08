@@ -66,9 +66,10 @@ public class testAstar {
         testAstar = new AStar(this.graph);
         testAstar.compute("1015", "1010");;
         Path path = testAstar.getShortestPath();
+        System.out.println(path);
         assertEquals(60, eigenAstar.getGraph().getEdgeCount());
         assertEquals(18, eigenAstar.getGraph().getNodeCount());
-        //assertEquals(,path);
+        assertEquals("[1015, 1012, 1010]",path.toString());
     }
 
 
