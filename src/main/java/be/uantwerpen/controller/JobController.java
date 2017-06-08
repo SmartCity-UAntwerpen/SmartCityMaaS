@@ -91,13 +91,14 @@ public class JobController {
         for (JobList jl: jobListService.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob) == true) {
                 jl.getJobs().remove(0);
-                if (jl.getJobs().isEmpty() == true) {
-                    //TODO need to test to see if this works
-                    jobListService.deleteOrder(jl.getId());
-                }
+
             }
             else {
                 // do nothing for now
+            }
+            if (jl.getJobs().isEmpty() == true) {
+                //TODO need to test to see if this works
+                jobListService.deleteOrder(jl.getId());
             }
         }
 
