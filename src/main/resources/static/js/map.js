@@ -195,14 +195,16 @@ function drawCell(j, i, cell) {
                     return true;
                 }
             }
-            /*console.log("-----------------------------------------------------------------");
+            console.log("-----------------------------------------------------------------");
             console.log("ROWS " + rows);
             console.log("COLUMNS " + columns);
             console.log("pointA_x " + pointA_x+" pointA_y " + pointA_y);
             console.log("pointA_x_cell " + pointA_x_cell + " pointA_y_cell "+pointA_y_cell);
             console.log("pointB_x " + pointB_x + " pointB_y " + pointB_y);
             console.log("pointB_x_cell " + pointB_x_cell + " pointB_y_cell "+pointB_y_cell)
-            console.log("-----------------------------------------------------------------");*/
+            console.log("pointA " + pointA_ID);
+
+             console.log("-----------------------------------------------------------------");
             mapCanvasContext.drawImage(cellPointA, columns, rows, x_size, y_size);
 
             // Make bigger square around A
@@ -242,7 +244,7 @@ function drawCell(j, i, cell) {
                     redraw_onPointB = true;
                     return true;
                 }
-            }/*
+            }
             console.log("-----------------------------------------------------------------");
             console.log("ROWS " + rows);
             console.log("COLUMNS " + columns);
@@ -250,7 +252,8 @@ function drawCell(j, i, cell) {
             console.log("pointA_x_cell " + pointA_x_cell + " pointA_y_cell "+pointA_y_cell);
             console.log("pointB_x " + pointB_x + " pointB_y " + pointB_y);
             console.log("pointB_x_cell " + pointB_x_cell + " pointB_y_cell "+pointB_y_cell);
-            console.log("-----------------------------------------------------------------");*/
+            console.log("pointB " + pointB_ID);
+            console.log("-----------------------------------------------------------------");
             mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
             document.getElementById('inputB').value = ""+world.cells[pointB_y_cell].cellList[pointB_x_cell].spotID;
         }else
@@ -305,21 +308,6 @@ function initdraw()
                 //console.log("Map info x " +cell.specific);
                 if (cell.characteristic.localeCompare("INTERSECTION") == 0 || cell.characteristic.localeCompare("LIGHT") == 0) {
                     mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-/*
-                    if (cell.type.localeCompare("spot") == 0)
-                    {
-                        mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-                    }else
-                    {
-                        if(cell.sur_x == cell.x || cell.sur_y == cell.y )
-                        {
-                            mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-
-                        }else
-                        {
-                            mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
-                        }
-                    }*/
                 }else {
                     if (cell.specific.localeCompare("drone") == 0) {
                         mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
@@ -353,130 +341,6 @@ function initdraw()
     map_ready = true;
 }
 
-
-/*
-function redrawCell(j, i, cell) {
-
-    var columns = x_size * j;
-    var rows = y_size * i;
-    var change_color = "null";
-    if(cell.type.localeCompare("background") != 0 && cell.type.localeCompare("road") != 0 ) {
-        if (pointA_set == true) {
-            if (columns <= pointA_x && pointA_x < columns + x_size && rows <= pointA_y && pointA_y < rows + y_size) {
-
-                if (cell.type.localeCompare("surrounding_point") == 0) {
-                    console.log("FUCK IT3é");
-                    pointA_x = cell.sur_x*x_size;
-                    pointA_y = cell.sur_y*y_size;
-                    mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
-                    return true;
-                }else
-                {
-                    pointA_x_cell = columns;
-                    pointA_y_cell = rows;
-                    pointA_x = cell.sur_x*x_size;
-                    pointA_y = cell.sur_y*y_size;
-                    change_color = "A";
-                }
-            } else {
-                if (pointB_set == true) {
-                    if (columns <= pointB_x && pointB_x < columns + x_size && rows <= pointB_y && pointB_y < rows + y_size) {
-                        if (cell.type.localeCompare("surrounding_point") == 0) {
-                            console.log("FUCK IT3é");
-                            if( cell.sur_x*x_size == pointB_x && cell.sur_y*y_size == pointB_y)
-                            {
-                                pointB_set = false;
-                                return true;
-                            }else
-                            {
-                                pointB_x = cell.sur_x*x_size;
-                                pointB_y = cell.sur_y*y_size;
-                                mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
-                                return true;
-                            }
-                        }else
-                        {
-                            pointB_x_cell = columns;
-                            pointB_y_cell = rows;
-                            pointB_x = cell.sur_x*x_size;
-                            pointB_y = cell.sur_y*y_size;
-                            change_color = "B";
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if(rows == pointA_y && columns == pointA_x)
-    {
-        if(change_color == "A") {
-            console.log("-----------------------------------------------------------------");
-            console.log("ROWS " + rows);
-            console.log("COLUMNS " + columns);
-            console.log("pointA_x " + pointA_x);
-            console.log("pointA_y " + pointA_y);
-            console.log("pointB_x " + pointB_x);
-            console.log("pointB_y " + pointB_y);
-            console.log("-----------------------------------------------------------------");
-            mapCanvasContext.drawImage(cellPointA, columns, rows, x_size, y_size);
-        }
-    }else if(rows == pointB_y && columns == pointB_x)
-    {
-        if(change_color == "B") {
-            console.log("-----------------------------------------------------------------");
-            console.log("ROWS " + rows);
-            console.log("COLUMNS " + columns);
-            console.log("pointA_x " + pointA_x);
-            console.log("pointA_y " + pointA_y);
-            console.log("pointB_x " + pointB_x);
-            console.log("pointB_y " + pointB_y);
-            console.log("-----------------------------------------------------------------");
-            mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
-        }
-
-    }else
-
-    /*
-     * Type defenition
-     * type: 1 = background
-     * type: 2 = spot_robot
-     * type: 3 = surrounding_point
-     * type: 4 = road_robot
-     */
-
-/*
-    {
-        if(cell.type.localeCompare("spot") == 0)
-        {
-            console.log("Map info x " +cell.specific);
-
-            if(cell.specific.localeCompare("drone") == 0)
-            {
-                mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
-            }else
-            {
-                mapCanvasContext.drawImage(spot_robot, columns, rows, x_size, y_size);
-            }
-        }else if(cell.type.localeCompare("surrounding_point") == 0) {
-
-            if (cell.specific.localeCompare("drone") == 0)
-            {
-                mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
-            }else
-            {
-                mapCanvasContext.drawImage(surrounding, columns, rows, x_size, y_size);
-            }
-        }else if (cell.type.localeCompare("road") == 0)
-        {
-            mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-        }else
-        {
-            mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
-        }
-    }
-    return false;
-}
-*/
 function loadImages() {
     cellBackground = new Image();
     cellBackground.src = cellImageBackGround;
@@ -645,8 +509,6 @@ function onClick(e) {
 
                         // Draw first init, so that the original B point is certainly cleared from the canvas.
                         initdraw();
-
-
                     }
                 } else {
                     pointB_x = x_click;

@@ -37,8 +37,8 @@ public class GraphBuilder {
     @Value("#{new Integer(${robot.port}) ?: 1994}")
     private String robotCorePort;
 
-    private Link[] linkList = new Link[60];
-    private Point[] pointList = new Point[18];
+    private Link[] linkList;//= new Link[60];
+    private Point[] pointList;//= new Point[18];
 
     //request the map from the core
     public void getMap()

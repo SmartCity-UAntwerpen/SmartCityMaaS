@@ -2,6 +2,7 @@ package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.JobList;
+import be.uantwerpen.services.JobListService;
 import be.uantwerpen.visualization.model.CellLink;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.DummyVehicle;
@@ -42,6 +43,9 @@ public class DataController {
 
     @Value("#{new Integer(${core.port}) ?: 1994}")
     private int serverCorePort;
+
+    @Autowired
+    private JobListService jobListService;
 
     DummyVehicle vehicle = new DummyVehicle(1);
 
@@ -231,10 +235,20 @@ public class DataController {
         String idVehicle = "request progress";
         String URL = "null";
         UriComponentsBuilder builder;
+        boolean jobListNull = false;
         // When delivery_id == null then the getprogress function is asked for the the visualization
         if(delivery_id.equals("null") == false)
         {
             //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicleID;
+
+            for (JobList jl2: jobListService.findAll()) {
+                if(jl2.getIdDelivery().equals(delivery_id) == true)
+                {
+                    vehicleID = Math.toIntExact(jl2.getJobs().get(0).getIdVehicle());
+                    jobListNull = true;
+                }
+            }
+
             URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+74;//vehicleID;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
@@ -245,62 +259,70 @@ public class DataController {
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
             System.out.println("ID device "+vehicle_id);
         }
+        int[] coordinatesVehicle = new int[3];
 
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        // Get response from the core
-        HttpEntity<String> httpResponse = restTemplate.exchange(
-                builder.build().encode().toUri(),
-                HttpMethod.GET,
-                entity,
-                String.class);
+        if((delivery_id.equals("null") == false && jobListNull == true) || delivery_id.equals("null") == true) {
+            // Get response from the core
+            HttpEntity<String> httpResponse = restTemplate.exchange(
+                    builder.build().encode().toUri(),
+                    HttpMethod.GET,
+                    entity,
+                    String.class);
 
-        //System.out.println("Performed exchange for bot vehicle" );
-        System.out.println("Response core : "+httpResponse.toString());
-        System.out.println("Response core : "+httpResponse.getBody());
-        System.out.println("Response body core : "+ httpResponse.hasBody());
-        String vehicleInfo = httpResponse.getBody();
-        JSONParser parser = new JSONParser();
-        Job job1 = new Job();
-        job1.setIdStart(1);
-        job1.setIdEnd(2);
-        job1.setTypeVehicle("car");
-        job1.setIdVehicle(1);
-        Object obj = null;
-        List<Integer> currentListofJobs = new ArrayList<Integer>();
+            //System.out.println("Performed exchange for bot vehicle" );
+            System.out.println("Response core : " + httpResponse.toString());
+            System.out.println("Response core : " + httpResponse.getBody());
+            System.out.println("Response body core : " + httpResponse.hasBody());
+            String vehicleInfo = httpResponse.getBody();
+            JSONParser parser = new JSONParser();
+            Job job1 = new Job();
+            job1.setIdStart(1);
+            job1.setIdEnd(2);
+            job1.setTypeVehicle("car");
+            job1.setIdVehicle(1);
+            Object obj = null;
+            List<Integer> currentListofJobs = new ArrayList<Integer>();
 
-        try {
-            obj = parser.parse(vehicleInfo);
+            try {
+                obj = parser.parse(vehicleInfo);
 
-            JSONObject jsonObject = (JSONObject) obj;
-            int idVeh = ((Long)jsonObject.get("idVehicle")).intValue();
-            int idStart = ((Long)jsonObject.get("idStart")).intValue();
-            int idEnd = ((Long)jsonObject.get("idEnd")).intValue();
-            int percentage = ((Long)jsonObject.get("percentage")).intValue();
+                JSONObject jsonObject = (JSONObject) obj;
+                int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
+                int idStart = ((Long) jsonObject.get("idStart")).intValue();
+                int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
+                int percentage = ((Long) jsonObject.get("percentage")).intValue();
 
-           // System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
-            int id_start = backendRestemplate.getValueofKeyHashMap(idStart);
-            int id_end = backendRestemplate.getValueofKeyHashMap(idEnd);
-            currentListofJobs.add(id_start);
-            currentListofJobs.add(id_end);
-            progress = percentage;
+                // System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
+                int id_start = backendRestemplate.getValueofKeyHashMap(idStart);
+                int id_end = backendRestemplate.getValueofKeyHashMap(idEnd);
+                currentListofJobs.add(id_start);
+                currentListofJobs.add(id_end);
+                progress = percentage;
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
+            coordinatesVehicle[0] = coordinatesVehicle_temp[0];
+            coordinatesVehicle[1] = coordinatesVehicle_temp[1];
+            if(delivery_id.equals("null") == false)
+            {
+                coordinatesVehicle[2] = vehicleID;
+            }else
+            {
+                coordinatesVehicle[2] = vehicle_id;
+            }
+        }else
+        {
+            coordinatesVehicle[0] = -1;
+            coordinatesVehicle[1] = -1;
+            coordinatesVehicle[2] = -1;
         }
-
-
-
-
-
-
-
-
-
-
 
 /*
         URL url = null;
@@ -332,23 +354,13 @@ public class DataController {
 
         }*/
 
-        int[] coordinatesVehicle = new int[3];
         /*if(progress == 0)
         {
             coordinatesVehicle[0] = -1;
             coordinatesVehicle[1] = -1;
         }else
         {*/
-        int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
-        coordinatesVehicle[0] = coordinatesVehicle_temp[0];
-        coordinatesVehicle[1] = coordinatesVehicle_temp[1];
-        if(delivery_id.equals("null") == false)
-        {
-            coordinatesVehicle[2] = vehicleID;
-        }else
-        {
-            coordinatesVehicle[2] = vehicle_id;
-        }
+
        // }
        /* if(vehicle_start == true)
         {

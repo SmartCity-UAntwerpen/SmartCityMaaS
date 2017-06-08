@@ -95,7 +95,7 @@ public class JobListService {
                     jl.getJobs().get(0).setStatus("busy");
                 }
                 else {
-                    //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
+                    recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
                     System.out.println(" Lijst van Orders afdrukken");
                     for (JobList jl2: jobListRepository.findAll()) {
                         System.out.println(" Order #" + jl2.getId());
