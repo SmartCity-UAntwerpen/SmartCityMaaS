@@ -15,6 +15,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th th:text="#{userName}">User Name</th>
                     <th th:text="#{lastName}">Last Name</th>
                     <th th:text="#{firstName}">First Name</th>
                     <th th:text="#{start}">Start</th>
@@ -26,14 +27,14 @@
                 <!-- IMPORTANT, class="list" have to be at tbody -->
                 <tbody class="list">
                 <tr th:each="delivery : ${allDeliveries}">
+                    <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
                     <td class="lastName" th:value="${lastName}" th:text="${delivery.lastName }">Last Name</td>
                     <td class="firstName" th:value="${firstName}" th:text="${delivery.firstName }">First Name</td>
                     <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
                     <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
                     <td class="passengers" th:value="${passengers}" th:text="${delivery.passengers }">Passengers</td>
                     <td>
-                        <a th:href="@{/orders/{id}/(id=${delivery.id})}"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
-                        <a th:href="@{/orders/{id}/delete(id=${delivery.id})}"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a th:href="@{/deliveries/{id}/delete(id=${delivery.idDelivery})}"><span class="glyphicon glyphicon-trash"></span></a>
                     </td>
                 </tr>
                 </tbody>

@@ -9,11 +9,14 @@ import java.util.List;
 public class DummyMap {
 
     private List<DummyPoint> dummyPoints;
-    private int unit;
+    private int unit = 3;
 
     public DummyMap() {
-        unit = 5; // 5 meter
-        dummyPoints = new ArrayList<DummyPoint>();
+        //Dries wereld is 4 meter
+        //Quentin wereld is 2 meter
+
+        unit = 2;
+        /*dummyPoints = new ArrayList<DummyPoint>();
         List<Integer> neighbourList = new ArrayList<Integer>();
         neighbourList.add(1);
         neighbourList.add(2);
@@ -39,9 +42,29 @@ public class DummyMap {
         neighbourList4.add(2);
         neighbourList4.add(3);
         DummyPoint E5  = new DummyPoint(4,neighbourList4,20,5);
-        dummyPoints.add(E5);
+        dummyPoints.add(E5);*/
     }
 
+    public void loadDummyMap2() {
+        unit = 3; // 5 meter
+        dummyPoints = null;
+        dummyPoints = new ArrayList<DummyPoint>();
+        List<Integer> neighbourList = new ArrayList<Integer>();
+        neighbourList.add(1);
+        neighbourList.add(2);
+        DummyPoint A0 = new DummyPoint(0,neighbourList,10,10);
+        dummyPoints.add(A0);
+        List<Integer> neighbourList1 = new ArrayList<Integer>();
+        neighbourList1.add(0);
+        neighbourList1.add(2);
+        DummyPoint B1 = new DummyPoint(1,neighbourList1,30,10);
+        dummyPoints.add(B1);
+        List<Integer> neighbourList2 = new ArrayList<Integer>();
+        neighbourList2.add(0);
+        neighbourList2.add(1);
+        DummyPoint C2 = new DummyPoint(2,neighbourList2,30,20);
+        dummyPoints.add(C2);
+    }
     public DummyMap(List<DummyPoint> dummyPoints, int unit) {
         this.dummyPoints = dummyPoints;
         this.unit = unit;

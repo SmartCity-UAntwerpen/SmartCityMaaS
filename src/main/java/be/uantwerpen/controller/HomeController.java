@@ -1,9 +1,11 @@
 package be.uantwerpen.controller;
 
+import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.Permission;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.UserRepository;
+import be.uantwerpen.services.PassengerService;
 import be.uantwerpen.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,9 +27,17 @@ public class HomeController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PassengerService passengerService;
 
     @RequestMapping({"/"})
-    public String showMap() {return "redirect:/home";}
+    public String showMap(Model model) {
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
+        System.out.println("User logged in: "+loginUser.getUserName());
+
+        return "home_user";
+    }
 
     @RequestMapping({"/login"})
     public String showLogIn(Model model) {

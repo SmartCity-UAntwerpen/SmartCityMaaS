@@ -9,21 +9,28 @@ import javax.persistence.Entity;
  */
 @Entity
 public class Delivery extends MyAbstractPersistable<Long> {
-    @NotBlank(message = "***")
+    private String userName;
+   // @NotBlank(message = "***")
     private String firstName;
-    @NotBlank(message = "***")
+  //  @NotBlank(message = "***")
     private String lastName;
+
+
+  //  @NotBlank(message = "***")
     private String pointA;
+   // @NotBlank(message = "***")
     private String pointB;
     private int passengers;
     private String type;
     private String date;
     private String idDelivery;
+    private boolean complete = false;
 
     public Delivery() {
     }
 
-    public Delivery(String firstName, String lastName) {
+    public Delivery(String userName, String firstName, String lastName) {
+        this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.pointA = "";
@@ -42,6 +49,17 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = date;
         this.type = type;
         this.idDelivery = idDelivery;
+    }
+    public Delivery(String userName, String firstName, String lastName, String pointA, String pointB, int passengers) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.pointA = pointA;
+        this.pointB = pointB;
+        this.passengers = passengers;
+        this.date = "0000-01-01 01:00:00.000 000";
+        this.type = "HumanTransport";
+        this.idDelivery = "0";
     }
     public Delivery(String firstName, String lastName, String pointA, String pointB, int passengers) {
         this.firstName = firstName;
@@ -120,7 +138,36 @@ public class Delivery extends MyAbstractPersistable<Long> {
         return date;
     }
 
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
+    public void print() {
+        System.out.print(" idDelivery: "+ idDelivery+ ", ");
+        System.out.print(" userName: "+ userName+ ", ");
+        System.out.print(" firstName: "+ firstName+ ", ");
+        System.out.print(" lastName: "+ lastName+ ", ");
+        System.out.print(" pointA: "+ pointA+ ", ");
+        System.out.print(" pointB: "+ pointB+ ", ");
+        System.out.print(" passengers: "+ passengers+ ", ");
+        System.out.print(" type: "+ type+ ", ");
+        System.out.println(" date: "+ date);
+    }
+
 }
