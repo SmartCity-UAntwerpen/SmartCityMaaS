@@ -86,7 +86,7 @@ public class BackendRestemplate {
 
 
 
-
+//
        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://"+serverCoreIP+":"+serverCorePort+"/map/stringmapjson/visual");
         System.out.println("Make builder to Quentin " +builder.build().encode().toUri());
 
