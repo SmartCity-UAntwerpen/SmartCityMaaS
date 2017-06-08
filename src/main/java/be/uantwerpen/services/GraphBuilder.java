@@ -65,7 +65,7 @@ public class GraphBuilder {
         {
             Long startPoint = link.getStartPoint().getId();
             Long endPoint = link.getStopPoint().getId();
-            String vehicle = link.getVehicle();
+            String vehicle = link.getVehicle().toUpperCase();
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<Cost[]> responseList;
             Cost[] costs;
@@ -73,38 +73,39 @@ public class GraphBuilder {
 
             switch (vehicle)
             {
-                case "robot": url += robotCoreIP + ":" + robotCorePort;
-                case "drone": url += droneCoreIP + ":" + droneCorePort;
-                case "car": url += carCoreIP + ":" + carCorePort + "/carmanager";
-                case "wait": link.setWeight((long)(0));
+                case "ROBOTTOP": url += robotCoreIP + ":" + robotCorePort; break;
+                case "DRONETOP": url += droneCoreIP + ":" + droneCorePort; break;
+                case "CARTOP": url += carCoreIP + ":" + carCorePort + "/carmanager"; break;
+                case "WAIT": link.setWeight((long)(0)); break;
                 default: System.out.println("no supported vehicle was given. See graphbuilder class");
             }
 
-            if(!vehicle.equals("wait")) {
+            if(!vehicle.equals("WAIT")) {
                 url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 responseList = restTemplate.getForEntity(url, Cost[].class);
                 costs = responseList.getBody();
                 Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
                 Cost bestCost = costs[0];
                 //run over all the answers to find the most cost effective vehicle
-                for (Cost cost : costs) {
-                    if(cost.getWeightToStart()+cost.getWeight() < lowestCost)
-                    {
-                        lowestCost = cost.getWeightToStart()+cost.getWeight();
-                        bestCost = cost;
+                if(costs.length == 0) {
+                    link.setWeight((long)9999);
+                } else {
+                    for (Cost cost : costs) {
+                        if (cost.getWeightToStart() + cost.getWeight() < lowestCost) {
+                            lowestCost = cost.getWeightToStart() + cost.getWeight();
+                            bestCost = cost;
+                        }
                     }
-                }
 
-                //run over all the links to look for the wait-links that are connected to the current link
-                for(Link link1: linkList)
-                {
-                    if(link1.getVehicle().equals("wait") && link1.getStopPoint().getId().equals(startPoint))
-                    {
-                        link1.setWeight(bestCost.getWeightToStart());
+                    //run over all the links to look for the wait-links that are connected to the current link
+                    for (Link link1 : linkList) {
+                        if (link1.getVehicle().equals("wait") && link1.getStopPoint().getId().equals(startPoint)) {
+                            link1.setWeight(bestCost.getWeightToStart());
+                        }
                     }
+                    link.setWeight(bestCost.getWeight());
+                    link.setVehicleID(bestCost.getIdVehicle());
                 }
-                link.setWeight(bestCost.getWeight());
-                link.setVehicleID(bestCost.getIdVehicle());
             }
         }
     }
