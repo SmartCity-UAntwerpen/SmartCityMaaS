@@ -294,6 +294,7 @@ function initdraw()
 {
     x_size = mapCanvas.width/world.dimensionY;
     y_size = mapCanvas.height/world.dimensionX;
+
     for(var i=0; i<world.dimensionY; i++) {
         for (var j = 0; j < world.dimensionX; j++) {
             var cell = world.cells[i].cellList[j];
@@ -347,6 +348,8 @@ function initdraw()
             }
         }
     }
+    mapCanvasContext.drawImage(legend, 0, mapCanvas.height - mapCanvas.height/4, 200, 200);
+
     map_ready = true;
 }
 
@@ -495,6 +498,8 @@ function loadImages() {
     vehicle.src = cellImageDrone;
     spot_car = new Image();
     spot_car.src = cellImageSpotCar;
+    legend = new Image();
+    legend.src = legendeWorld;
 
 }
 
@@ -508,22 +513,38 @@ function getProgress(){
     if( visualization == true)
     {
         var URL_Progress = "/world1/allVehicles";
-        console.log("URL requested "+ URL_Progress)
+        //console.log("URL requested "+ URL_Progress)
+
         $.getJSON(URL_Progress, function(result){
             var allVehicles = result;
 
             for(var j=0; j<allVehicles.length; j++) {
-
-                console.log("ID of device "+allVehicles[j] + "      "+ allVehicles.length);
+                ///progressVehicleID = allVehicles[j];
+                //console.log("ID of device "+allVehicles[j] + "      "+ allVehicles.length);
                 var URL_Progress = "/world1/progress/null/"+allVehicles[j];
-                console.log("URL requested "+ URL_Progress)
+                //console.log("URL requested "+ URL_Progress)
                 $.getJSON(URL_Progress, function(result){
                     progress = result;
                     // console.log("Result: "+progress[0]+" - " + progress[1]);
                     // Controls if x index of progress is an allowed value
                     if(progress[0] != -1)
                     {
-                        mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+                        if(currentVehicleID != -1)
+                        {
+                            if(currentVehicleID == progress[2])
+                            {
+                                mapCanvasContext.drawImage(cellPointB, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+                                console.log("Vehicle 1 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
+                            }else
+                            {
+                                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+                                console.log("Vehicle 2 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
+                            }
+                        }else
+                        {
+                            mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+
+                        }
                     }
                 });
             }
@@ -531,7 +552,7 @@ function getProgress(){
     }else
     {
         var URL_Progress = "/world1/progress/"+id_delivery+"/0";
-        console.log("URL requested "+ URL_Progress)
+        //console.log("URL requested "+ URL_Progress)
         $.getJSON(URL_Progress, function(result){
             progress = result;
             // console.log("Result: "+progress[0]+" - " + progress[1]);
@@ -543,7 +564,6 @@ function getProgress(){
             {
                 document.getElementById("deliveryDone").style.visibility = "visible";
                 document.getElementById("closeButton").style.visibility = "hidden";
-
             }
         });
     }
@@ -706,6 +726,8 @@ function showPage() {
             {
                 document.getElementById("closeButton").style.visibility = "hidden";
                 document.getElementById("myDiv").style.visibility = "hidden";
+                document.getElementById("reloadButton").style.visibility = "hidden";
+                document.getElementById("table_vehicles").style.visibility = "hidden";
             }
         }
     }else
@@ -737,6 +759,8 @@ function showPage() {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("closeButton").style.visibility = "visible";
                 document.getElementById("myDiv").style.visibility = "visible";
+                document.getElementById("reloadButton").style.visibility = "visible";
+                document.getElementById("table_vehicles").style.visibility = "visible";
             }
 
     }

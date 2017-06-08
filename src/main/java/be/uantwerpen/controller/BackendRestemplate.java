@@ -25,7 +25,7 @@ import java.util.*;
 @Component
 public class BackendRestemplate {
 
-    @Value("${sc.core.ip:localhost}")
+    @Value("${core.ip:localhost}")
     private String serverCoreIP;
 
     @Value("#{new Integer(${core.port}) ?: 1994}")
@@ -87,9 +87,8 @@ public class BackendRestemplate {
 
 
 
-       /* UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://146.175.140.44:1994/map/stringmapjson/visual")
-                .queryParam("pointList", pointList);
-        System.out.println("Make builder to Quentin " );
+       UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://"+serverCoreIP+":"+serverCorePort+"/map/stringmapjson/visual");
+        System.out.println("Make builder to Quentin " +builder.build().encode().toUri());
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
         System.out.println("Entity to Quentin" );
@@ -194,8 +193,8 @@ public class BackendRestemplate {
 
             String line;
             while ((line = br.readLine()) != null) {
-               // obj = parser.parse(listOfCore);
-                obj = parser.parse(line);
+                obj = parser.parse(listOfCore);
+               // obj = parser.parse(line);
                 JSONObject jsonObject = (JSONObject) obj;
                 JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
                 System.out.println("Whole list:  "+pointsList.toString());

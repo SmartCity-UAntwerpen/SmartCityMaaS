@@ -3,30 +3,18 @@ package be.uantwerpen.visualization.model;
 /**
  * Created by Frédéric Melaerts on 30/05/2017.
  */
-public class DummyVehicle implements Runnable {
+public class DummyVehicle {
         private volatile int distance;
         private int ID;
-        @Override
-        public void run() {
-            distance = 0;
-            // 1000 = 100,0%
-            while(distance < 100)
-            {
-                try {
-                    // every 50 millisecons, increase: 0.1%
-                    // or 1% every second
-                    Thread.sleep(100);
-                    //Thread.sleep(50);
-                    distance++;
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        private String type;
+        private int start;
+        private int end;
+        private int progress;
 
     public DummyVehicle(int ID) {
         this.ID = ID;
+    }
+    public DummyVehicle() {
     }
 
     public int getDistance() {
@@ -47,5 +35,37 @@ public class DummyVehicle implements Runnable {
 
     public int getValue() {
         return distance;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }

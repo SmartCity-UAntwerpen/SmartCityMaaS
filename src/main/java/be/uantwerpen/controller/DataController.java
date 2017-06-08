@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -36,7 +37,11 @@ import java.util.List;
 public class DataController {
 
 
+    @Value("${core.ip:localhost}")
+    private String serverCoreIP;
 
+    @Value("#{new Integer(${core.port}) ?: 1994}")
+    private int serverCorePort;
 
     DummyVehicle vehicle = new DummyVehicle(1);
 
@@ -116,30 +121,22 @@ public class DataController {
     public List<Integer> getAllVehicles(){
         List<Integer> idVehicles = new ArrayList<Integer>();
         String requestAll = "request all";
-        String URL = "http://localhost:9000/posAll";
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("requestAll", requestAll);
+        // String URL = "http://localhost:9000/posAll";
+        String URL = "http://"+serverCoreIP+":"+serverCorePort+"/posAll";
 
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("requestAll", requestAll);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-
         // Get response from the core
         HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
                 String.class);
-
-        //System.out.println("Performed exchange for bot vehicle" );
-        // System.out.println("Response core : "+httpResponse.toString());
-       // System.out.println("Response core : "+httpResponse.getBody());
-
         JSONParser parser = new JSONParser();
 
-
-
         Object obj = null;
-
         try {
             obj = parser.parse(httpResponse.getBody());
 
@@ -152,12 +149,9 @@ public class DataController {
                 int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
                 idVehicles.add(idVeh);
             }
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
         return idVehicles;
     }
 
@@ -237,14 +231,17 @@ public class DataController {
         String idVehicle = "request progress";
         String URL = "null";
         UriComponentsBuilder builder;
+        // When delivery_id == null then the getprogress function is asked for the the visualization
         if(delivery_id.equals("null") == false)
         {
-            URL = "http://localhost:9000/bot/getOneVehicle/"+vehicleID;
+            //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicleID;
+            URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+74;//vehicleID;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
         }else
         {
-            URL = "http://localhost:9000/bot/getOneVehicle/"+vehicle_id;
+            //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicle_id;
+            URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicle_id;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
             System.out.println("ID device "+vehicle_id);
         }
@@ -262,9 +259,9 @@ public class DataController {
                 String.class);
 
         //System.out.println("Performed exchange for bot vehicle" );
-       // System.out.println("Response core : "+httpResponse.toString());
-        //System.out.println("Response core : "+httpResponse.getBody());
-       // System.out.println("Response body core : "+ httpResponse.hasBody());
+        System.out.println("Response core : "+httpResponse.toString());
+        System.out.println("Response core : "+httpResponse.getBody());
+        System.out.println("Response body core : "+ httpResponse.hasBody());
         String vehicleInfo = httpResponse.getBody();
         JSONParser parser = new JSONParser();
         Job job1 = new Job();
@@ -335,14 +332,23 @@ public class DataController {
 
         }*/
 
-        int[] coordinatesVehicle = new int[2];
+        int[] coordinatesVehicle = new int[3];
         /*if(progress == 0)
         {
             coordinatesVehicle[0] = -1;
             coordinatesVehicle[1] = -1;
         }else
         {*/
-            coordinatesVehicle = world.getDistancePoints(currentListofJobs,progress);
+        int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
+        coordinatesVehicle[0] = coordinatesVehicle_temp[0];
+        coordinatesVehicle[1] = coordinatesVehicle_temp[1];
+        if(delivery_id.equals("null") == false)
+        {
+            coordinatesVehicle[2] = vehicleID;
+        }else
+        {
+            coordinatesVehicle[2] = vehicle_id;
+        }
        // }
        /* if(vehicle_start == true)
         {
