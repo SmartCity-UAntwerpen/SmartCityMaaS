@@ -59,13 +59,17 @@
                         var cellImageSpotCar = /*[[@{/images/map/spot_car.png}]]*/;
 
                         var only_view = true;
+                        var visualization = false;
+
 
                         var id_delivery = [[${delivery.idDelivery}]];
 
+
                         /*]]>*/
                     </script>
-
-
+                    <p>
+                     <a id="deliveryDone" href="/deliveries" th:text="#{deliveryDone}" class="button" >Close</a>
+                    </p>
                     <p>
                         <a id="closeButton" href="/deliveries" th:text="#{close}" class="button" >Close</a>
                     </p>

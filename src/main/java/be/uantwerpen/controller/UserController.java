@@ -197,16 +197,13 @@ public class UserController {
         return "delivery-navigate-user";
         // return "redirect:/deliveries";
     }
-    @RequestMapping(value="/simulation",method= RequestMethod.GET)
+    @RequestMapping(value="/visualization",method= RequestMethod.GET)
     public String getSimulation(final ModelMap model){
 
-
-        model.addAttribute("allSegments", segmentService.findAll());
-        model.addAttribute("allPassengers", passengerService.findAll());
-        Delivery del = new Delivery("","","");
-        model.addAttribute("delivery",del);
-        World world = new World(300,300);
-        return "simulation";
+        //model.addAttribute("allSegments", segmentService.findAll());
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
+        return "visualization_map";
     }
 }
 

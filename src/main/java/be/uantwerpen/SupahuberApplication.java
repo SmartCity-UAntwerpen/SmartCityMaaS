@@ -1,9 +1,6 @@
 package be.uantwerpen;
 
-import be.uantwerpen.localization.astar.Astar;
-import be.uantwerpen.model.Link;
-import be.uantwerpen.model.Point;
-import be.uantwerpen.services.GraphBuilder;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

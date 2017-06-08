@@ -51,7 +51,14 @@ function start() {
 
     }else
     {
-        setInterval(getProgress, 100);
+        if( visualization == true)
+        {
+            setInterval(getProgress, 250);
+            setInterval(initdraw, 500);
+        }else
+        {
+            setInterval(getProgress, 100);
+        }
     }
 
     // firstDraw()
@@ -295,7 +302,7 @@ function initdraw()
 
             if (cell.type.localeCompare("spot") == 0 || cell.type.localeCompare("surrounding_point") == 0) {
                 //console.log("Map info x " +cell.specific);
-                if (cell.characteristic.localeCompare("inbetween")== 0) {
+                if (cell.characteristic.localeCompare("INTERSECTION") == 0 || cell.characteristic.localeCompare("LIGHT") == 0) {
                     mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
 /*
                     if (cell.type.localeCompare("spot") == 0)
@@ -498,21 +505,50 @@ function getWorld(){
 }
 function getProgress(){
 
+    if( visualization == true)
+    {
+        var URL_Progress = "/world1/allVehicles";
+        console.log("URL requested "+ URL_Progress)
+        $.getJSON(URL_Progress, function(result){
+            var allVehicles = result;
 
-    var URL_Progress = "/world1/progress/"+id_delivery;
-    console.log("URL requested "+ URL_Progress)
-    $.getJSON(URL_Progress, function(result){
-        progress = result;
-        // console.log("Result: "+progress[0]+" - " + progress[1]);
-        // Controls if x index of progress is an allowed value
-        if(progress[0] != -1)
-        {
-            mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-        }
-    });
+            for(var j=0; j<allVehicles.length; j++) {
 
+                console.log("ID of device "+allVehicles[j] + "      "+ allVehicles.length);
+                var URL_Progress = "/world1/progress/null/"+allVehicles[j];
+                console.log("URL requested "+ URL_Progress)
+                $.getJSON(URL_Progress, function(result){
+                    progress = result;
+                    // console.log("Result: "+progress[0]+" - " + progress[1]);
+                    // Controls if x index of progress is an allowed value
+                    if(progress[0] != -1)
+                    {
+                        mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+                    }
+                });
+            }
+        });
+    }else
+    {
+        var URL_Progress = "/world1/progress/"+id_delivery+"/0";
+        console.log("URL requested "+ URL_Progress)
+        $.getJSON(URL_Progress, function(result){
+            progress = result;
+            // console.log("Result: "+progress[0]+" - " + progress[1]);
+            // Controls if x index of progress is an allowed value
+            if(progress[0] != -1)
+            {
+                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+            }else
+            {
+                document.getElementById("deliveryDone").style.visibility = "visible";
+                document.getElementById("closeButton").style.visibility = "hidden";
 
+            }
+        });
+    }
 }
+
 function legitArea(x, y)
 {
     var type;
@@ -529,7 +565,8 @@ function legitArea(x, y)
                  * type: 3 = surrounding_point
                  * type: 4 = road_robot
                  */
-                if (world.cells[i].cellList[j].type.localeCompare("background") == 0 || world.cells[i].cellList[j].type.localeCompare("road") == 0 || world.cells[i].cellList[j].characteristic.localeCompare("inbetween") == 0) {
+                if (world.cells[i].cellList[j].type.localeCompare("background") == 0 || world.cells[i].cellList[j].type.localeCompare("road") == 0
+                    || world.cells[i].cellList[j].characteristic.localeCompare("INTERSECTION") == 0 || world.cells[i].cellList[j].characteristic.localeCompare("LIGHT") == 0) {
                     return false;
                 } else {
                     return true;
@@ -651,19 +688,26 @@ function showPage() {
             document.getElementById("myDiv").style.visibility = "hidden";
         }else
         {
-            document.getElementById("content").style.visibility = "hidden";
-            document.getElementById("passengersLabel").style.visibility = "hidden";
-            document.getElementById("passengersNumber").style.visibility = "hidden";
-            document.getElementById("pointALabel").style.visibility = "hidden";
-            document.getElementById("pointAtext").style.visibility = "hidden";
-            document.getElementById("pointBLabel").style.visibility = "hidden";
-            document.getElementById("pointBtext").style.visibility = "hidden";
-            document.getElementById("closeButton").style.visibility = "hidden";
-            document.getElementById("myDiv").style.visibility = "hidden";
-            document.getElementById("deliveryIDLabel").style.visibility = "hidden";
-            document.getElementById("deliveryID").style.visibility = "hidden";
-        }
+            if(visualization == false) {
+                document.getElementById("content").style.visibility = "hidden";
+                document.getElementById("passengersLabel").style.visibility = "hidden";
+                document.getElementById("passengersNumber").style.visibility = "hidden";
+                document.getElementById("pointALabel").style.visibility = "hidden";
+                document.getElementById("pointAtext").style.visibility = "hidden";
+                document.getElementById("pointBLabel").style.visibility = "hidden";
+                document.getElementById("pointBtext").style.visibility = "hidden";
+                document.getElementById("closeButton").style.visibility = "hidden";
+                document.getElementById("myDiv").style.visibility = "hidden";
+                document.getElementById("deliveryIDLabel").style.visibility = "hidden";
+                document.getElementById("deliveryID").style.visibility = "hidden";
+                document.getElementById("deliveryDone").style.visibility = "hidden";
 
+            }else
+            {
+                document.getElementById("closeButton").style.visibility = "hidden";
+                document.getElementById("myDiv").style.visibility = "hidden";
+            }
+        }
     }else
     {
         if(only_view == false)
@@ -674,20 +718,28 @@ function showPage() {
             document.getElementById("passengersSelect").style.visibility = "visible";
             document.getElementById("closeButton").style.visibility = "visible";
             document.getElementById("myDiv").style.visibility = "visible";
-        }else {
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("content").style.visibility = "visible";
-            document.getElementById("passengersLabel").style.visibility = "visible";
-            document.getElementById("passengersNumber").style.visibility = "visible";
-            document.getElementById("pointALabel").style.visibility = "visible";
-            document.getElementById("pointAtext").style.visibility = "visible";
-            document.getElementById("pointBLabel").style.visibility = "visible";
-            document.getElementById("pointBtext").style.visibility = "visible";
-            document.getElementById("closeButton").style.visibility = "visible";
-            document.getElementById("myDiv").style.visibility = "visible";
-            document.getElementById("deliveryIDLabel").style.visibility = "visible";
-            document.getElementById("deliveryID").style.visibility = "visible";
-        }
+        }else
+            if(visualization == false) {
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("content").style.visibility = "visible";
+                document.getElementById("passengersLabel").style.visibility = "visible";
+                document.getElementById("passengersNumber").style.visibility = "visible";
+                document.getElementById("pointALabel").style.visibility = "visible";
+                document.getElementById("pointAtext").style.visibility = "visible";
+                document.getElementById("pointBLabel").style.visibility = "visible";
+                document.getElementById("pointBtext").style.visibility = "visible";
+                document.getElementById("closeButton").style.visibility = "visible";
+                document.getElementById("myDiv").style.visibility = "visible";
+                document.getElementById("deliveryIDLabel").style.visibility = "visible";
+                document.getElementById("deliveryID").style.visibility = "visible";
+            }else
+            {
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("closeButton").style.visibility = "visible";
+                document.getElementById("myDiv").style.visibility = "visible";
+            }
+
     }
+
 }
 
