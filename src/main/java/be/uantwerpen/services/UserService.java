@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Frédéric Melaerts on 26/04/2017.
  */
@@ -17,9 +19,25 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public void save(final User user){
+    public boolean save(final User user){
 
-        this.userRepository.save(user);
+        for(User u : findAll())
+        {
+            if(!checkUserName(u.getUserName()))
+            {
+                u.setFirstName(user.getFirstName());
+                u.setLastName(user.getLastName());
+                u.setUserName(user.getUserName());
+                u.setPassword(user.getPassword());
+                u.setRoles(user.getRoles());
+
+                if(userRepository.save(u) != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public User findOne(Long id) {
@@ -38,17 +56,33 @@ public class UserService {
         return userRepository.findByUserName(user.getUsername());
     }
 
-    public void saveSomeAttributes(User user) {
+    public boolean saveSomeAttributes(User user) {
         User tempUser = user.getId()==null?null:findOne(user.getId());
-        if (tempUser != null){
+        if (tempUser != null && !checkUserName(user.getUserName())){
             tempUser.setRoles(user.getRoles());
             tempUser.setLastName(user.getLastName());
             tempUser.setFirstName(user.getFirstName());
             userRepository.save(tempUser);
+            return false;
         }
-        else{
+        else {
             userRepository.save(user);
+            return true;
         }
+    }
+
+    public boolean checkUserName(String username) {
+        List<User> users = userRepository.findAll();
+
+        for(User userIt : users)
+        {
+            if(userIt.getUserName().equals(username))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
