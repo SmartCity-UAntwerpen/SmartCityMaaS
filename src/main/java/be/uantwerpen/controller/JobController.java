@@ -30,6 +30,8 @@ public class JobController {
     @Autowired
     private JobListService jobListService;
 
+    //for testing purposes
+    //zet alles op om route calculaties te testen
     @RequestMapping(value="/initAstar", method= RequestMethod.GET)
     public String initAstar(final ModelMap model){
         astar.init(jobService, jobListService);
@@ -37,6 +39,7 @@ public class JobController {
         return "jobs-list";
     }
 
+    //get a list for all the jobs
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
         model.addAttribute("allJobs", jobService.findAll());
@@ -45,20 +48,23 @@ public class JobController {
         return "jobs-list";
     }
 
+    //make a new job manually
     @RequestMapping(value="/jobs/put", method= RequestMethod.GET)
     public String viewCreateJob(final ModelMap model){
         model.addAttribute("job",new Job());
         return "jobs-manage";
     }
 
+    //get a specific job
     @RequestMapping(value="/jobs/{id}", method= RequestMethod.GET)
     public String viewEditJob(@PathVariable Long id, final ModelMap model){
         model.addAttribute("job",jobService.findOne(id));
         return "jobs-manage";
     }
 
+    //make a specific job
     @RequestMapping(value={"/jobs/", "/jobs/{id}"}, method= RequestMethod.POST)
-    public String addJob(@Valid Job job, BindingResult result, final ModelMap model) {
+    public String addJob(@PathVariable Long id, @Valid Job job, BindingResult result, final ModelMap model) {
         System.out.println(result.getModel());
         if (result.hasErrors()) {
             return "jobs-manage";
@@ -67,6 +73,7 @@ public class JobController {
         return "redirect:/jobs";
     }
 
+    //delete a specific job
     @RequestMapping(value="/jobs/{id}/delete")
     public String deleteJob(@PathVariable Long id, final ModelMap model){
         jobService.delete(id);
@@ -74,6 +81,7 @@ public class JobController {
         return "redirect:/jobs";
     }
 
+    //make an order
     @RequestMapping(value ="/createOrder/{Start}/{Stop}")
     public String createOrder(@PathVariable String Start, @PathVariable String Stop)
     {
@@ -89,22 +97,17 @@ public class JobController {
     public String completeJob (@PathVariable Long idJob) {
 
         for (JobList jl: jobListService.findAll()){
-            if (jl.getJobs().get(0).getId().equals(idJob) == true) {
+            if (jl.getJobs().get(0).getId().equals(idJob)) {
                 jl.getJobs().remove(0);
                 jobService.delete(idJob);
             }
-            else {
-                // do nothing for now
-            }
-            if (jl.getJobs().isEmpty() == true) {
+            if (jl.getJobs().isEmpty()) {
                 //TODO need to test to see if this works
                 jobListService.deleteOrder(jl.getId());
             }
         }
-
         // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
         jobListService.dispatch2Core();
-
 
         return "redirect:/jobs";
     }

@@ -30,6 +30,7 @@ public class HomeController {
     @Autowired
     private PassengerService passengerService;
 
+    //return the first page, to make a new delivery
     @RequestMapping({"/"})
     public String showMap(Model model) {
         User loginUser = userService.getPrincipalUser();
@@ -39,31 +40,10 @@ public class HomeController {
         return "home_user";
     }
 
+    //return the login page
     @RequestMapping({"/login"})
     public String showLogIn(Model model) {
         model.addAttribute("user", new User());
         return "login";
-    }
-
-    @RequestMapping({"/home"})
-    //@PreAuthorize("hasRole('admin')")
-    public String showHomepage(){
-
-        Iterable<User> users = userService.findAll();
-        for(User user:users)
-        {
-            System.out.println("Username : " +user.getUserName());
-            List<Role> roles = user.getRoles();
-            for(Role role : roles)
-            {
-                System.out.println("Role : " +role.getName());
-                List<Permission> permissions = role.getPermissions();
-                for(Permission permission : permissions)
-                {
-                    System.out.println("Permission : " +permission.getName());
-                }
-            }
-        }
-        return "homepage";
     }
 }

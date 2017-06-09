@@ -124,6 +124,7 @@ public class GraphBuilder {
 
     //public ArrayList<Cost> getBestCostList() {return bestCostList;}
 
+    //look for a certain link in the list
     public Link getCertainLink(Long startPoint, Long endPoint)
     {
         Link foundLink = new Link((long)(-1), pointList[0], pointList[1], "none");
