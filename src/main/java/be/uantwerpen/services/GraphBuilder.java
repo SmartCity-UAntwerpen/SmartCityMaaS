@@ -73,7 +73,7 @@ public class GraphBuilder {
 
             switch (vehicle)
             {
-                case "ROBOTTOP": url += robotCoreIP + ":" + robotCorePort; break;
+                case "ROBOTTOP": url += robotCoreIP + ":" + robotCorePort + "/cost"; break;
                 case "DRONETOP": url += droneCoreIP + ":" + droneCorePort; break;
                 case "CARTOP": url += carCoreIP + ":" + carCorePort + "/carmanager"; break;
                 case "WAIT": link.setWeight((long)(0)); break;
@@ -82,7 +82,9 @@ public class GraphBuilder {
 
             if(!vehicle.equals("WAIT")) {
                 url += "/calcWeight/" + startPoint+ "/" + endPoint;
+                System.out.println("url: " + url + ", id of link: " + link.getId());
                 responseList = restTemplate.getForEntity(url, Cost[].class);
+                //System.out.println("responseList: " + responseList);
                 costs = responseList.getBody();
                 Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
                 Cost bestCost = costs[0];

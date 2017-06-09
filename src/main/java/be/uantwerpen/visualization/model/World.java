@@ -471,10 +471,10 @@ public class World {
 
         // For the total distance there should be one extra point added for endpoint.
         // One because the startpoint is also seen as one distance.
-        int totalDistance = 1;
+        int totalDistance = cellLinks.get(listLinkIDs).sizeIntermediateCells();
         //for(int i = 0 ; i < listLinkIDs.size() ; i++)
         //{
-            totalDistance = totalDistance+cellLinks.get(listLinkIDs).sizeIntermediateCells();
+            // totalDistance = totalDistance+cellLinks.get(listLinkIDs).sizeIntermediateCells();
        // }
 
         // Current distance progress (remeber progress = 100,0%)
@@ -501,7 +501,7 @@ public class World {
             if(intermediateDistance <= distance_temp)
             {
                 // Distance from the start of this link
-                int distance_start = distance_temp-cellLinks.get(listLinkIDs).sizeIntermediateCells();
+                //    int distance_start = distance_temp-cellLinks.get(listLinkIDs).sizeIntermediateCells();
                 // Cell index
                 int cellIndexOfLink = intermediateDistance;// - distance_start;
 
@@ -590,7 +590,6 @@ public class World {
      */
     public CellLink cotrolOrderLink(CellLink cellLink)
     {
-
         // System.out.println("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
         int x_start = cellLink.getStartCell().getX();
         int y_start = cellLink.getStartCell().getY();

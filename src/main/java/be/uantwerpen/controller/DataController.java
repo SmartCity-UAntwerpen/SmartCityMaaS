@@ -138,7 +138,7 @@ public class DataController {
         List<Integer> idVehicles = new ArrayList<Integer>();
         String requestAll = "request all";
         // String URL = "http://localhost:9000/posAll";
-        String URL = "http://"+serverCoreIP+":"+serverCorePort+"/posAll";
+        String URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getAllVehicles";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("requestAll", requestAll);
         HttpHeaders headers = new HttpHeaders();

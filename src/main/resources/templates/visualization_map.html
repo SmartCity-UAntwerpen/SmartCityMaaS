@@ -21,50 +21,68 @@
                     <small th:text="${currentUser.firstName}">Subtitle</small>
                     <small th:text="${currentUser.lastName}">Subtitle</small>
                 </h1>
-                <table class="table table-hover" id = "table_vehicles">
-                    <thead>
-                <tr>
-                    <th th:text="#{idVehicle}">Vehicle ID</th>
-                    <th th:text="#{typeVehicle}">Vehicle Type</th>
-                    <th th:text="#{idStart}">Start</th>
-                    <th th:text="#{idEnd}">End</th>
-                    <th th:text="#{idProgress}">Progress</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <!-- IMPORTANT, class="list" have to be at tbody -->
-                <tbody class="list" >
-                <tr th:each="vehicle : ${vehiclesInfo}">
-                    <td class="idVehicle" th:value="${idVehicle}" th:text="${vehicle.ID }">Vehicle ID</td>
-                    <td class="typeVehicle" th:value="${typeVehicle}" th:text="${vehicle.type }">Vehicle Type</td>
-                    <td class="idStart" th:value="${idStart}" th:text="${vehicle.start }">Start</td>
-                    <td class="idEnd" th:value="${idEnd}" th:text="${vehicle.end }">End</td>
-                    <td class="idProgress" th:value="${idProgress}" th:text="${vehicle.progress }">Progress</td>
-                    <td><button class="button" th:text="#{show}" th:onclick="${'javascript:changeSelectVehicle(' + vehicle.ID + ')'}">edit</button></td>
-                    <script th:inline="javascript">
-                        /*<![CDATA[*/
-                        var currentVehicleID = -1;
-                        var progressVehicleID = -13;
+                <div class="scrollingtable">
+                    <div>
+                        <div>
+                        <table class="table table-hover" id = "table_vehicles">
+                            <thead>
+                            <tr>
+                                <!--
+                                <th th:text="#{idVehicle}">Vehicle ID</th>
+                                <th th:text="#{typeVehicle}">Vehicle Type</th>
+                                <th th:text="#{idStart}">Start</th>
+                                <th th:text="#{idEnd}">End</th>
+                                <th th:text="#{idProgress}">Progress</th>
+                                <th></th>
+                                <th th:text="#{idVehicle}"></th>
+                                <th th:text="#{typeVehicle}"></th>
+                                <th th:text="#{idStart}"></th>
+                                <th th:text="#{idEnd}"></th>
+                                <th th:text="#{idProgress}"></th>-->
+                                <th><div th:label="#{idVehicle}"></div></th>
+                                <th><div th:label="#{typeVehicle}"></div></th>
+                                <th><div th:label="#{idStart}"></div></th>
+                                <th><div th:label="#{idEnd}"></div></th>
+                                <th><div th:label="#{idProgress}"></div></th>
+                                <th><div th:label="#{show}"></div></th>
+                            </tr>
+                            </thead>
+                            <!-- IMPORTANT, class="list" have to be at tbody -->
+                            <tbody class="list" >
+                            <tr th:each="vehicle : ${vehiclesInfo}">
+                                <td class="idVehicle" th:value="${idVehicle}" th:text="${vehicle.ID }">Vehicle ID</td>
+                                <td class="typeVehicle" th:value="${typeVehicle}" th:text="${vehicle.type }">Vehicle Type</td>
+                                <td class="idStart" th:value="${idStart}" th:text="${vehicle.start }">Start</td>
+                                <td class="idEnd" th:value="${idEnd}" th:text="${vehicle.end }">End</td>
+                                <td class="idProgress" th:value="${idProgress}" th:text="${vehicle.progress }">Progress</td>
+                                <td><button class="button" th:text="#{show}" th:onclick="${'javascript:changeSelectVehicle(' + vehicle.ID + ')'}">edit</button></td>
+                                <th class="scrollbarhead"/> <!--ALWAYS ADD THIS EXTRA CELL AT END OF HEADER ROW-->
 
-                        function changeSelectVehicle(vehicleID) {
-                            if(currentVehicleID == vehicleID)
-                            {
-                                currentVehicleID = -1;
-                            }else{
-                                currentVehicleID = vehicleID;
-                            }
-                            console.log("Vehicle id clicked "+ currentVehicleID);
+                                <script th:inline="javascript">
+                                    /*<![CDATA[*/
+                                    var currentVehicleID = -1;
+                                    var progressVehicleID = -13;
 
-                            //var selected_Vehicle = [[${vehicle.ID}]];
+                                    function changeSelectVehicle(vehicleID) {
+                                        if(currentVehicleID == vehicleID)
+                                        {
+                                            currentVehicleID = -1;
+                                        }else{
+                                            currentVehicleID = vehicleID;
+                                        }
+                                        console.log("Vehicle id clicked "+ currentVehicleID);
 
-                        }
-                        /*]]>*/
-                    </script>
-                </tr>
-                </tbody>
-                </table>
+                                        //var selected_Vehicle = [[${vehicle.ID}]];
 
-
+                                    }
+                                    /*]]>*/
+                                </script>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
 
 
 

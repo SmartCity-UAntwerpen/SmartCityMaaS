@@ -53,11 +53,11 @@ function start() {
     {
         if( visualization == true)
         {
-            setInterval(getProgress, 250);
+            setInterval(getProgress, 2000);
             setInterval(initdraw, 500);
         }else
         {
-            setInterval(getProgress, 100);
+            setInterval(getProgress, 2000);
         }
     }
 
@@ -88,7 +88,6 @@ function drawMap() {
     console.log("y_size "+y_size);
     var cell;
     var redraw;
-    //getProgress();
     for(var i=0; i<world.dimensionY; i++){
         for(var j=0; j<world.dimensionX; j++){
             cell = world.cells[i].cellList[j];
@@ -545,11 +544,7 @@ function initFunction() {
     getWorld();
 
     // Execute getProgress every 250 milliseconds
-    if(only_view == true)
-    {
-
-       // setInterval(getProgress, 100);
-    }else
+    if(!only_view)
     {
         // Hide save button, this button will only be showed when both of the points are selected.
         document.getElementById('saveDelivery').style.visibility = 'hidden';
