@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Revil on 17/05/2017.
+ * Service for the Job class. All interactions will be defined here required to perform the methods for the Job class
+ * @version 2.2 17 may 2017
+ * @author Oliver Nyssen, Kevin Van Tendeloo
  */
 @Service
 public class JobService {
@@ -35,7 +37,10 @@ public class JobService {
         this.jobRepository.delete(id);
     }
 
-
+    /**
+     * Function to save all relevant information concernting the Job class. This is a standard function for service usage
+     * @param job   (Job) class of which all information needs to be saved
+     */
     public void saveSomeAttributes(Job job) {
         Job tempJob = (((Long)job.getId() == null) ? null : getJob(job.getId()));
         if (tempJob != null){
@@ -50,6 +55,4 @@ public class JobService {
             jobRepository.save(job);
         }
     }
-
-   //TODO stuur alle jobs door naar backbone
 }
