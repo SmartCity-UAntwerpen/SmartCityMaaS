@@ -6,8 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 /**
- * Created by Revil on 29/05/2017.
+ * Repository for JobList. This class was originally called Orders. However, after multiple errors, i discovered that
+ * order is a reserved word for sql functions, which ended up with the compiler giving a index out of bound exception
+ * for the orders (where no index was being used). Hence it was refactored to JobList, however, references to orders
+ * will still often be found
+ * @version 2 29 may 2017
+ * @author Oliver Nyssen
  */
 @Repository
 public interface JobListRepository extends CrudRepository<JobList, Long>

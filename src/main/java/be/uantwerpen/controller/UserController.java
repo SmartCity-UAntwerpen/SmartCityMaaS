@@ -206,7 +206,7 @@ public class UserController {
         // TODO delivery ID koppelen aan Astarr
         //Astar astar = new Astar();
 
-        astarService.init(jobService, jobListService);
+        astarService.init();
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
 
         System.out.println("REDIRECT IS PERFORMED");

@@ -12,9 +12,8 @@ import java.io.IOException;
 import java.net.*;
 
 
-
 /**
- * Created by Revil on 29/05/2017.
+ *
  */
 @Service
 public class JobListService {

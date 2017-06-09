@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by Revil on 17/05/2017.
+ * Repository for Job
+ * @version 1 17 may 2017
+ * @author Oliver Nyssen
  */
 @Repository
 public interface JobRepository extends CrudRepository <Job, Long>{
