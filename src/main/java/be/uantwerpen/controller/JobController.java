@@ -37,7 +37,7 @@ public class JobController {
     //zet alles op om route calculaties te testen
     @RequestMapping(value="/initAstar", method= RequestMethod.GET)
     public String initAstar(final ModelMap model){
-        astar.init(jobService, jobListService);
+        astar.init();
         astar.startAStar();
         return "jobs-list";
     }
@@ -88,7 +88,7 @@ public class JobController {
     @RequestMapping(value ="/createOrder/{Start}/{Stop}")
     public String createOrder(@PathVariable String Start, @PathVariable String Stop)
     {
-        astar.init(jobService, jobListService);
+        astar.init();
         astar.makeNode();
         astar.makeEdge();
 

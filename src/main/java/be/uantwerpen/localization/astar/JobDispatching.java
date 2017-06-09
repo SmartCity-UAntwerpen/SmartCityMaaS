@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * A Star Class (will be used as a Service)
  * This class will provide a path, while building up a graph in which the path will be calculated from input it gets from the Graphbuilder service.
  *
- * @version 4 7 jun 2017
+ * @version 4.1 7 jun 2017
  * @author Oliver Nyssen
  */
 
@@ -25,19 +25,19 @@ public class JobDispatching {
     private JobListService jobListService;
 
 
-    public JobDispatching (JobService jobService, JobListService jobListService) {
+    public JobDispatching () {
         this.jobService = jobService;
         this.jobListService = jobListService;
 
     }
 
-    public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder) {
+    public JobDispatching (String path, GraphBuilder graphBuilder) {
         this.jobService = jobService;
         this.jobListService = jobListService;
         dispatchOrders(path, graphBuilder);
     }
 
-    public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder, String idDelivery) {
+    public JobDispatching (String path, GraphBuilder graphBuilder, String idDelivery) {
         this.jobService = jobService;
         this.jobListService = jobListService;
         dispatchOrders2(path, graphBuilder, idDelivery);
@@ -100,7 +100,6 @@ public class JobDispatching {
                 }
             }
         }
-        //add Order(=joblist) to all the other Orders that were placed
         jobListService.saveOrder(joblist);
         //TODO remove print & print function OR put it in a DEBUG MODE
         System.out.println("starting Order input");

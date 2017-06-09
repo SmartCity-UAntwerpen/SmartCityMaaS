@@ -24,7 +24,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by Revil on 06/06/2017.
+ * Testclass for AStar
+ * @version 1 8 june 2017
+ * @author Oliver Nyssen
  */
 
 @RunWith(MockitoJUnitRunner.class)
