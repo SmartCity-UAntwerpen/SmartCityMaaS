@@ -101,7 +101,6 @@ public class JobController {
                 jobListService.deleteOrder(jl.getId());
             }
         }
-
         // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
         jobListService.dispatch2Core();
 
