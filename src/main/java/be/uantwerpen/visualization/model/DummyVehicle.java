@@ -2,6 +2,7 @@ package be.uantwerpen.visualization.model;
 
 /**
  * Created by Frédéric Melaerts on 30/05/2017.
+ *
  */
 public class DummyVehicle {
         private volatile int distance;

@@ -6,19 +6,18 @@ import javax.persistence.Entity;
 
 /**
  * Created by Frédéric Melaerts on 2/05/2017.
+ * The delivery is linked to a specific user.
+ * It contains all the information of the delivery that is required to perform the Astart algorithm.
+ * PointA is the start point of the delivery, while pointB is the end point of the delivery.
+ * Its ID is retrieved from the MongoDB database.
+ *
  */
 @Entity
 public class Delivery extends MyAbstractPersistable<Long> {
     private String userName;
-   // @NotBlank(message = "***")
     private String firstName;
-  //  @NotBlank(message = "***")
     private String lastName;
-
-
-  //  @NotBlank(message = "***")
     private String pointA;
-   // @NotBlank(message = "***")
     private String pointB;
     private int passengers;
     private String type;
@@ -158,6 +157,10 @@ public class Delivery extends MyAbstractPersistable<Long> {
     public void setDate(String date) {
         this.date = date;
     }
+
+    /**
+     * Print all the information of the delivery.
+     */
     public void print() {
         System.out.print(" idDelivery: "+ idDelivery+ ", ");
         System.out.print(" userName: "+ userName+ ", ");

@@ -5,6 +5,11 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 31/05/2017.
+ *
+ * Cell links are the connections between two spot cells.
+ * One cell link contains the start spot cell and end spot cell.
+ * The intermediate cells are the cells that connect these two points in the world.
+ *
  */
 public class CellLink {
     public Cell startCell;
