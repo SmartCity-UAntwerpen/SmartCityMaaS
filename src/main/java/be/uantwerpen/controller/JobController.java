@@ -3,6 +3,7 @@ package be.uantwerpen.controller;
 import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.JobList;
+import be.uantwerpen.repositories.JobListRepository;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class JobController {
     private JobService jobService;
     @Autowired
     private JobListService jobListService;
+    @Autowired
+    private JobListRepository jobListRepository;
 
     //for testing purposes
     //zet alles op om route calculaties te testen
@@ -107,7 +110,9 @@ public class JobController {
             }
         }
         // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
-        jobListService.dispatch2Core();
+        if(jobListRepository.findAll().size() != 0) {
+            jobListService.dispatch2Core();
+        }
 
         return "redirect:/jobs";
     }
