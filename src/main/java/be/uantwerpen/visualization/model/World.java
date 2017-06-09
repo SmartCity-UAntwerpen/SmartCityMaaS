@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 10/05/2017.
+ *
+ *
  */
 public class World {
     private String world_ID;
@@ -354,6 +356,7 @@ public class World {
                 cellLinks.add(cellLink);
             }
         }
+        System.out.println("---- World is ready ----");
         /*
         System.out.println("---- Print cellLinks ----");
 

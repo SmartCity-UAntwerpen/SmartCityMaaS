@@ -12,6 +12,11 @@
 <div class="login-wrap">
     <div class="login-html">
         <div class="login-form">
+            <h1 th:inline="text" >
+                [[${currentUser.userName}]]
+                <small th:text="${currentUser.firstName}">Subtitle</small>
+                <small th:text="${currentUser.lastName}">Subtitle</small>
+            </h1>
              <div class="group">
                  <a href="/deliveries/put" th:text="#{newDelivery}" id="startDelivery" class="button" />
              </div>

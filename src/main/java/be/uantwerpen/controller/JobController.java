@@ -99,19 +99,24 @@ public class JobController {
     @RequestMapping(value="/completeJob/{idJob}", method= RequestMethod.GET)
     public String completeJob (@PathVariable Long idJob) {
 
+        System.out.println("job Complete");
         for (JobList jl: jobListService.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob)) {
                 jl.getJobs().remove(0);
+                System.out.println("job deleted");
                 jobService.delete(idJob);
+                System.out.println("job deleted from joblist");
             }
             if (jl.getJobs().isEmpty()) {
                 //TODO need to test to see if this works
                 jobListService.deleteOrder(jl.getId());
+                System.out.println("delete order");
             }
         }
         // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
         if(jobListRepository.findAll().size() != 0) {
             jobListService.dispatch2Core();
+            System.out.println("dispatch next job");
         }
 
         return "redirect:/jobs";

@@ -133,75 +133,80 @@ public class BackendRestemplate {
             Parse the received string of JSON objects and transform it to a list of points that can be used for
             the map of the world.
          */
-        try {
+       /* try {
 
 
-            BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));*/
             //BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
             String line;
-            while ((line = br.readLine()) != null) {
-                obj = parser.parse(listOfCore);
-               // obj = parser.parse(line);
-                JSONObject jsonObject = (JSONObject) obj;
-                JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
-                System.out.println("Whole list:  "+pointsList.toString());
+           // while ((line = br.readLine()) != null) {
+        try {
+            obj = parser.parse(listOfCore);
+            JSONObject jsonObject = (JSONObject) obj;
+            JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
+            System.out.println("Whole list:  "+pointsList.toString());
 
-                int counter =0;
-                Iterator<String> iterator = pointsList.iterator();
-                int index_counter  = 0;
-                while (iterator.hasNext()) {
-                    DummyPoint point = new DummyPoint();
+            int counter =0;
+            Iterator<String> iterator = pointsList.iterator();
+            int index_counter  = 0;
+            while (iterator.hasNext()) {
+                DummyPoint point = new DummyPoint();
 
-                    pointObject = iterator.next();
-                    JSONObject point_jsonObject = (JSONObject) pointObject;
-                    int point_ID = ((Long)point_jsonObject.get("id")).intValue();
-                    if(pointTransition.containsKey(point_ID) == false)
-                    {
-                        // System.out.println("Point ID is null for "+point_ID+ " index counter "+index_counter);
-                        pointTransition.put(point_ID,index_counter);
-                        point_ID = pointTransition.get(point_ID);
-                        index_counter++;
-                    }else
-                    {
-                        // System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
-                        point_ID = pointTransition.get(point_ID);
-                    }
-                    // System.out.println(" index "+counter + " value of point_ID "+point_ID);
-                    int x = ((Long)point_jsonObject.get("x")).intValue();
-                    int y = ((Long)point_jsonObject.get("y")).intValue();
-
-                    String type = (String) point_jsonObject.get("access");
-                    String characteristic = "unknown";
-                    characteristic = (String) point_jsonObject.get("type");
-                    if(characteristic == null)
-                    {
-                        characteristic = "inbetween";
-                    }
-                    JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
-                    //System.out.println("neighbourS " + neighbours.toString());
-                    point.setPointName(point_ID);
-                    point.setPhysicalPoisionX(x);
-                    point.setPhysicalPoisionY(y);
-                    point.setType(type);
-                    point.setPointCharacteristic(characteristic);
-                    Iterator<String> iter = neighbours.iterator();
-                    while (iter.hasNext())
-                    {
-                        neighbourObject = iter.next();
-                        JSONObject neigbourJSON = (JSONObject) neighbourObject;
-                        int neighbour = ((Long)neigbourJSON.get("neighbour")).intValue();
-                       // System.out.println("neighbour " + neighbour);
-                        point.addNeighbour(neighbour);
-                    }
-                    points.add(point);
-                    counter++;
+                pointObject = iterator.next();
+                JSONObject point_jsonObject = (JSONObject) pointObject;
+                int point_ID = ((Long)point_jsonObject.get("id")).intValue();
+                if(pointTransition.containsKey(point_ID) == false)
+                {
+                    // System.out.println("Point ID is null for "+point_ID+ " index counter "+index_counter);
+                    pointTransition.put(point_ID,index_counter);
+                    point_ID = pointTransition.get(point_ID);
+                    index_counter++;
+                }else
+                {
+                    // System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
+                    point_ID = pointTransition.get(point_ID);
                 }
+                // System.out.println(" index "+counter + " value of point_ID "+point_ID);
+                int x = ((Long)point_jsonObject.get("x")).intValue();
+                int y = ((Long)point_jsonObject.get("y")).intValue();
+
+                String type = (String) point_jsonObject.get("access");
+                String characteristic = "unknown";
+                characteristic = (String) point_jsonObject.get("type");
+                if(characteristic == null)
+                {
+                    characteristic = "inbetween";
+                }
+                JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
+                //System.out.println("neighbourS " + neighbours.toString());
+                point.setPointName(point_ID);
+                point.setPhysicalPoisionX(x);
+                point.setPhysicalPoisionY(y);
+                point.setType(type);
+                point.setPointCharacteristic(characteristic);
+                Iterator<String> iter = neighbours.iterator();
+                while (iter.hasNext())
+                {
+                    neighbourObject = iter.next();
+                    JSONObject neigbourJSON = (JSONObject) neighbourObject;
+                    int neighbour = ((Long)neigbourJSON.get("neighbour")).intValue();
+                    // System.out.println("neighbour " + neighbour);
+                    point.addNeighbour(neighbour);
+                }
+                points.add(point);
+                counter++;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        // obj = parser.parse(line);
+
+          //  }
+       /* } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
 
 
         // Transform the id of the neigbours to the right one of the Hashmap

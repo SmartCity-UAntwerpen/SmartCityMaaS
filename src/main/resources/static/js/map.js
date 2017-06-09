@@ -30,6 +30,7 @@ var change_color = "null";
 var redraw_onPointA = false;
 var redraw_onPointB = false;
 var map_ready = false;
+var control_initDraw = false;
 
 
 
@@ -54,7 +55,7 @@ function start() {
         if( visualization == true)
         {
             setInterval(getProgress, 2000);
-            setInterval(initdraw, 500);
+            setInterval(initdraw, 3000);
         }else
         {
             setInterval(getProgress, 2000);
@@ -64,6 +65,7 @@ function start() {
     // firstDraw()
     //setInterval(loop, 15);
 }
+
 /*
 function drawMap() {
     x_size = mapCanvas.width/world.dimensionY;
@@ -296,7 +298,6 @@ function initdraw()
 {
     x_size = mapCanvas.width/world.dimensionY;
     y_size = mapCanvas.height/world.dimensionX;
-
     for(var i=0; i<world.dimensionY; i++) {
         for (var j = 0; j < world.dimensionX; j++) {
             var cell = world.cells[i].cellList[j];
@@ -426,7 +427,6 @@ function getProgress(){
             }else
             {
                 document.getElementById("deliveryDone").style.visibility = "visible";
-                document.getElementById("closeButton").style.visibility = "hidden";
             }
         });
     }
@@ -536,12 +536,11 @@ function onClick(e) {
 var myVar;
 
 function initFunction() {
-
-
     showPage();
+    getWorld();
     setInterval(showPage, 250);
     loadImages();
-    getWorld();
+    //getWorld();
 
     // Execute getProgress every 250 milliseconds
     if(!only_view)
@@ -550,7 +549,7 @@ function initFunction() {
         document.getElementById('saveDelivery').style.visibility = 'hidden';
     }
     // Execute start after 700 milliseconds
-    setTimeout(start, 1800)
+    setTimeout(start, 9000)
 
 }
 function showPage() {
@@ -619,7 +618,11 @@ function showPage() {
                 document.getElementById("reloadButton").style.visibility = "visible";
                 document.getElementById("table_vehicles").style.visibility = "visible";
             }
-
+            if(!control_initDraw)
+            {
+                control_initDraw = true;
+                initdraw();
+            }
     }
 
 }
