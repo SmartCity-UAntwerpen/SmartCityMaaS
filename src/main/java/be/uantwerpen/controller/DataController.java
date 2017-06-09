@@ -215,7 +215,7 @@ public class DataController {
                     jobListNull = true;
                 }
             }
-            URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+74;//vehicleID;
+            URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicleID;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
         }else

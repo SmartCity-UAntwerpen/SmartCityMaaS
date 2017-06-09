@@ -150,7 +150,7 @@ public class Astar {
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        JobDispatching jd = new JobDispatching(path.toString(), graphBuilder);
+        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
     /**
@@ -165,7 +165,7 @@ public class Astar {
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        JobDispatching jd = new JobDispatching(path.toString(), graphBuilder);
+        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
     /**
@@ -181,6 +181,6 @@ public class Astar {
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        JobDispatching jd = new JobDispatching(path.toString(), graphBuilder, idDelivery);
+        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
     }
 }

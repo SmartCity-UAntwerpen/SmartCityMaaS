@@ -80,17 +80,17 @@ public class JobListService {
             // iterate over all orders
             if (jl.getJobs().get(0).getStatus().equals("ready")) {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
-                String url = "";
-                if (jl.getJobs().get(0).getTypeVehicle().equals("drone")){
-                    url = "http://" + droneCoreIP + ":" + droneCorePort + "/executeJob/";
+                String url = "http://";
+                if (jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("DRONETOP")){
+                    url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
                     System.out.println("DroneDispatch");
                     System.out.println(url);
-                } else if(jl.getJobs().get(0).getTypeVehicle().equals("car")) {
-                    url = "http://" + carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
+                } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("CARTOP")) {
+                    url += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
                     System.out.println("CarDispatch");
                     System.out.println(url);
-                } else if(jl.getJobs().get(0).getTypeVehicle().equals("robot")) {
-                    url = "http://" + robotCoreIP + ":" + robotCorePort + "/executeJob/";
+                } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("ROBOTTOP")) {
+                    url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
                     System.out.println("RobotDispatch");
                     System.out.println(url);
                 }
@@ -127,6 +127,7 @@ public class JobListService {
     {
         boolean status = true;
         temp += (String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
+        System.out.println("the url is: " + temp);
         try {
             URL url = new URL(temp);
             HttpURLConnection conn;
@@ -139,17 +140,17 @@ public class JobListService {
             //succesfull transmission
              if (conn.getResponseCode() == 200) {
                 System.out.println(conn.getResponseCode());
-                String msgresponse = conn.getResponseMessage();
-                if (msgresponse.equals("ACK")) {
+                /*String msgresponse = conn.getResponseMessage();
+                /*if (msgresponse.equals("ACK")) {
                     //TODO: doet iets met de ACK code
                     System.out.println(msgresponse);
-                }
+                }*/
                 conn.disconnect();
                 status = true;
             }
             // an error has occured
             else{
-                String msgresponse = conn.getResponseMessage();
+                /*String msgresponse = conn.getResponseMessage();
                 System.out.println(msgresponse);
                 switch (msgresponse) {
                     case "idVehicleError":
@@ -157,7 +158,7 @@ public class JobListService {
                         System.out.println(msgresponse);
                         break;
                     default: System.out.println(msgresponse);
-                }
+                }*/
                 conn.disconnect();
                 status = false;
             }

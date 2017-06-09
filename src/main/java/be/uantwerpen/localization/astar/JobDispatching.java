@@ -25,19 +25,19 @@ public class JobDispatching {
     private JobListService jobListService;
 
 
-    public JobDispatching () {
+    public JobDispatching (JobService jobService, JobListService jobListService) {
         this.jobService = jobService;
         this.jobListService = jobListService;
 
     }
 
-    public JobDispatching (String path, GraphBuilder graphBuilder) {
+    public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder) {
         this.jobService = jobService;
         this.jobListService = jobListService;
         dispatchOrders(path, graphBuilder);
     }
 
-    public JobDispatching (String path, GraphBuilder graphBuilder, String idDelivery) {
+    public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder, String idDelivery) {
         this.jobService = jobService;
         this.jobListService = jobListService;
         dispatchOrders2(path, graphBuilder, idDelivery);
@@ -137,8 +137,11 @@ public class JobDispatching {
                     // Transport in a vehicle --> new job needs to be added.
                     else {
                         Job job = new Job();
+                        //System.out.println("voertuig startlocatie = " + Long.valueOf(pathSplit[i]).longValue());
                         job.setIdStart(Long.valueOf(pathSplit[i]).longValue());             // set start ID from job
+                        //System.out.println("voertuig eindlocatie = " + Long.valueOf(pathSplit[i+1]).longValue());
                         job.setIdEnd(Long.valueOf(pathSplit[i + 1]).longValue());           // set stop ID from job
+                        //System.out.println("Type voertuig = " + listOfEdges[j].getVehicle());
                         job.setTypeVehicle((listOfEdges[j].getVehicle()));                  // set vehicle type
                         job.setStatus("ready");                                             // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
                         // for the joblist, we want to keep track of the starting ID!
@@ -147,9 +150,11 @@ public class JobDispatching {
                         }
                         // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
                         if(previous.getStopPoint().getId().equals(link.getStartPoint().getId())){
+                            System.out.println("voertuig ID previous nemen = " + previous.getVehicleID());
                             job.setIdVehicle(previous.getVehicleID());
                         }
                         else {
+                            System.out.println("voertuig ID overstap nemen = " + listOfEdges[j].getVehicleID());
                             job.setIdVehicle(listOfEdges[j].getVehicleID());
                         }
                         // Add it to the joblist (all jobs within 1 delivery) and then to the jobservice (list of all jobs, regardless of to which delivery it belongs)

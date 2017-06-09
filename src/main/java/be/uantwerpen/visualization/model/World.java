@@ -498,8 +498,8 @@ public class World {
             distance_temp = distance_temp + cellLinks.get(listLinkIDs).sizeIntermediateCells()+1;
             // System.out.println("Cell link start "+ cellLinks.get(listLinkIDs.get(l)).getStartCell().getSpotID() + "size intermediate "+ cellLinks.get(listLinkIDs.get(l)).sizeIntermediateCells() +" end "+cellLinks.get(listLinkIDs.get(l)).getEndCell().getSpotID() +" progress "+progress +" distance_temp "+distance_temp);
             // If intermediate distance is lower than distance_temp than this is current x and y are set in this link.
-            if(intermediateDistance <= distance_temp)
-            {
+           // if(intermediateDistance <= distance_temp)
+           // {
                 // Distance from the start of this link
                 //    int distance_start = distance_temp-cellLinks.get(listLinkIDs).sizeIntermediateCells();
                 // Cell index
@@ -509,26 +509,27 @@ public class World {
                 // System.out.println("listLinkIDs " + listLinkIDs.get(l)+ " cellIndexOfLink " + cellIndexOfLink +" intermediateDistance " +intermediateDistance+" distance_start "+distance_start);
                 // If the index is equal to the size of intermediate cells, then the endpoint is reached of
                 // of this link
-                if((cellIndexOfLink == 0))
+                if(progress == 100)
                 {
-                    currentCell = cellLinks.get(listLinkIDs).getLinkCells().get(0);
-                }else if(cellIndexOfLink >= cellLinks.get(listLinkIDs).getLinkCells().size())
-                {
-                    // System.out.println(" Size of links "+cellLinks.get(listLinkIDs.get(l)).getLinkCells().size());
                     currentCell = cellLinks.get(listLinkIDs).getEndCell();
-                }else if(cellIndexOfLink < 0)
-                {
-                    // System.out.println(" A cellLink smaller the 0 has been calculated. Value is adjusted to start cell.");
-                    currentCell = cellLinks.get(listLinkIDs).getStartCell();
-                }else
-                {
-                    currentCell = cellLinks.get(listLinkIDs).getLinkCells().get(cellIndexOfLink);
+                }else {
+                    if ((cellIndexOfLink == 0)) {
+                        currentCell = cellLinks.get(listLinkIDs).getLinkCells().get(0);
+                    } else if (cellIndexOfLink >= cellLinks.get(listLinkIDs).getLinkCells().size()) {
+                        // System.out.println(" Size of links "+cellLinks.get(listLinkIDs.get(l)).getLinkCells().size());
+                        currentCell = cellLinks.get(listLinkIDs).getEndCell();
+                    } else if (cellIndexOfLink < 0) {
+                        // System.out.println(" A cellLink smaller the 0 has been calculated. Value is adjusted to start cell.");
+                        currentCell = cellLinks.get(listLinkIDs).getStartCell();
+                    } else {
+                        currentCell = cellLinks.get(listLinkIDs).getLinkCells().get(cellIndexOfLink);
+                    }
                 }
                 x = currentCell.getX();
                 y = currentCell.getY();
                 // Leave the loop if the x and y values are set for the current progress
                 //l = listLinkIDs.size();
-            }
+           // }
        // }
         int[] coordinates = new int[2];
         coordinates[0] = x;

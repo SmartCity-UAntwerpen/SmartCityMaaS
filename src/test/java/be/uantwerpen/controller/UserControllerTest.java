@@ -3,6 +3,10 @@ package be.uantwerpen.controller;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,10 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -40,6 +50,14 @@ public class UserControllerTest {
     @Mock
     private RoleService roleService;
 
+
+
+    @Mock
+    private JSONParser parser;
+
+    @Mock
+    private HttpEntity<String> httpResponse;
+
     @Mock
     private JobService jobService;
     @Mock
@@ -52,6 +70,25 @@ public class UserControllerTest {
     {
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders.standaloneSetup(userController).build();
+
+
+        String URL = "http://143.129.39.151:10000/bot/getAllVehicles";
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL);//.queryParam("requestAll", requestAll);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        // Get response from the core
+        httpResponse = restTemplate.exchange(
+                builder.build().encode().toUri(),
+                HttpMethod.GET,
+                entity,
+                String.class);
+
+        parser = new JSONParser();
+
+
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -96,16 +133,17 @@ public class UserControllerTest {
 
     @Test
     public void testDeleteDelivery() throws Exception {
-        mvc.perform(get("/deliveries/1/delete")).andExpect(view().name("delivery-list"));
+        mvc.perform(get("/deliveries/593aa88a33e0432bbc1433b4/delete")).andExpect(view().name("redirect:/deliveries"));
     }
 
     @Test
-    public void testAddDelive() throws Exception {
-        mvc.perform(post("/deliveries/1")).andExpect(view().name("delivery-navigate-user"));
+    public void testAddDelivery() throws Exception {
+        mvc.perform(post("/deliveries/593aa88a33e0432bbc1433b4")).andExpect(view().name("delivery-navigate-user"));
     }
 
     @Test
     public void testGetSimulation() throws Exception {
+        when(parser.parse(httpResponse.getBody())).thenReturn("List");
         mvc.perform(get("/visualization")).andExpect(view().name("visualization_map"));
     }
 
