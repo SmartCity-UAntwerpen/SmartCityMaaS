@@ -18,13 +18,6 @@ public class MongoDBMethods {
     protected MongoClient mongo;
 
     protected MongoDatabase db;
-    protected BasicDBObject searchQuery = null;
-    protected Query query = null;
-    protected String specificQueryInfo = null;
-
-    public enum Query{
-        SELECT_ALL, SELECT_OBJECT_ID, SELECT_PUT_DELIVERY, SELECT_DELIVERYTYPE, SELECT_USERNAME, SELECT_FIRSTNAME, SELECT_LASTNAME,SELECT_POINTA,SELECT_POINTB, SELECT_PASSENGERS, SELECT_TIME, SELECT_LAST
-    }
 
     /**
      * Initialize the parameters fot the MongoDB client connection.

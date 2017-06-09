@@ -63,6 +63,10 @@ public class DataController {
     @Autowired
     public BackendRestemplate backendRestemplate;
 
+    /**
+     * Return the world with the current map of the smartcity.
+     * @return
+     */
     @RequestMapping(value="/retrieveWorld")
     public World getWorld(){
         System.out.println("### Retrieve world callled ###");
@@ -84,13 +88,10 @@ public class DataController {
         worlds.add(world);
         return world;
     }
-    // http://146.175.140.44:1994/map/stringmapjson/top
-
-
 
 
     /**
-     * Retrieve the real name a point as it is defined in the received map.
+     * Retrieve the real name of a point as it is defined in the received map.
      * @param valuePoint
      * @return
      */
@@ -107,6 +108,10 @@ public class DataController {
         return keyPoint;
     }
 
+    /**
+     * Get the map data from the backend after it is transformed to the right List of Dummypoints.
+     * @return
+     */
     @RequestMapping(value="/dataCore")
     public List<DummyPoint> getMapDataBackend(){
         System.out.println("### Retrieve map from backend ###");
@@ -114,13 +119,20 @@ public class DataController {
         return listofPoints;
     }
 
-
+    /**
+     * Return the current vehicle ID.
+     * @param id
+     */
     @RequestMapping(value="/vehicle/{id}")
     public void changeVehicleID(@PathVariable int id){
         vehicleID = id;
         return;
     }
 
+    /**
+     * Return a list with the all vehicle IDs that are present in the smartcity that is received from the core.
+     * @return
+     */
     @RequestMapping(value="/world1/allVehicles")
     public List<Integer> getAllVehicles(){
         List<Integer> idVehicles = new ArrayList<Integer>();
@@ -160,23 +172,18 @@ public class DataController {
     }
 
 
-
+    /**
+     * Return the x and y coordinates of a current used vehicle that is assigned for a specified delivery.
+     * Als its ID is returned as third value in the returned int array.
+     * @param worldid
+     * @param delivery_id
+     * @param vehicle_id
+     * @return
+     */
     @RequestMapping(value="/{worldid}/progress/{delivery_id}/{vehicle_id}")
     public int[] getProgress(@PathVariable String worldid, @PathVariable String delivery_id, @PathVariable int vehicle_id){
         int progress = 0;//vehicle.getValue();
-
         System.out.println("Progress is asked for id delivery "+delivery_id + " vehicle_id "+vehicle_id );
-
-       /* for(int i = 0 ; i < vehicles.size();i++)
-        {
-            if(id == vehicles.get(i).getID())
-            {
-                progress = vehicles.get(i).getValue();
-                i = vehicles.size()+1;
-            }
-        }*/
-        //world.startDelivery(progress);
-        // System.out.println("World id " + worldid);
         World world = new World();
         for(int i = 0; i < worlds.size();i++)
         {
@@ -186,49 +193,6 @@ public class DataController {
                 i = worlds.size()+1;
             }
         }
-        // TODO op basis van de deliveryID wordt de juist joblistopgehaald
-
-/*
-        Job job1 = new Job();
-        job1.setIdStart(1);
-        job1.setIdEnd(2);
-        job1.setTypeVehicle("car");
-        job1.setIdVehicle(1);
-
-        Job job2 = new Job();
-        job2.setIdStart(2);
-        job2.setIdEnd(3);
-        job2.setTypeVehicle("car");
-        job2.setIdVehicle(1);
-
-        Job job3 = new Job();
-        job3.setIdStart(3);
-        job3.setIdEnd(7);
-        job3.setTypeVehicle("robot");
-        job3.setIdVehicle(1);
-
-        Job job4 = new Job();
-        job4.setIdStart(7);
-        job4.setIdEnd(8);
-        job4.setTypeVehicle("robot");
-        job4.setIdVehicle(1);
-
-        Job job5 = new Job();
-        job5.setIdStart(8);
-        job5.setIdEnd(2);
-        job5.setTypeVehicle("drone");
-        job5.setIdVehicle(1);
-
-        JobList jobList = new JobList();
-        jobList.addJob(job1);
-        jobList.addJob(job2);
-
-        jobList.addJob(job3);
-        jobList.addJob(job4);
-        jobList.addJob(job5);
-
-        List<Job> jobs = jobList.getJobs();
-*/
         // TODO ask Oliver service for current job of this delivery with the DeliveryID
         // it returns the value of
         //
@@ -237,10 +201,13 @@ public class DataController {
         UriComponentsBuilder builder;
         boolean jobListNull = false;
         // When delivery_id == null then the getprogress function is asked for the the visualization
+
+        // When delivery is null, then the information of the progress is a request from the visualization.
         if(delivery_id.equals("null") == false)
         {
             //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicleID;
 
+            // Get the ID of the current used vehicle of this delivery.
             for (JobList jl2: jobListService.findAll()) {
                 if(jl2.getIdDelivery().equals(delivery_id) == true)
                 {
@@ -248,7 +215,6 @@ public class DataController {
                     jobListNull = true;
                 }
             }
-
             URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+74;//vehicleID;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
@@ -323,62 +289,6 @@ public class DataController {
             coordinatesVehicle[1] = -1;
             coordinatesVehicle[2] = -1;
         }
-
-/*
-        URL url = null;
-        try {
-            url = new URL("http://localhost:9000/bot/getOneVehicle/0");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json");
-
-            //String input = "{\"qty\":100,\"name\":\"iPad 4\"}";µ
-            String response =  conn.getResponseMessage();
-            System.out.println("Response of core " + response);
-
-            System.out.println("Response of core " + response);
-            conn.disconnect();
-        } catch (MalformedURLException | ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
-
-       /* for(int i = 0; i < jobs.size();i++)
-        {
-            int id_start = Math.toIntExact(jobs.get(i).getIdStart());
-            int id_end = Math.toIntExact(jobs.get(i).getIdEnd());
-
-        }*/
-
-        /*if(progress == 0)
-        {
-            coordinatesVehicle[0] = -1;
-            coordinatesVehicle[1] = -1;
-        }else
-        {*/
-
-       // }
-       /* if(vehicle_start == true)
-        {
-           //System.out.println("Progress request for delivery: "+id + " progress "+progress);
-           // System.out.println("World: "+world.getDimensionY());
-
-            List<CellLink> cellLInks = world.getCellLinks();
-            /*for(CellLink cl :  cellLInks)
-            {
-                System.out.println("CellLInk " + cl.getStartCell());
-            }*/
-       /*
-            coordinatesVehicle = world.getDistancePoints(currentListofJobs,progress);
-        }else
-        {
-            coordinatesVehicle[0] = -1;
-            coordinatesVehicle[1] = -1;
-        }*/
         return coordinatesVehicle;
     }
 }

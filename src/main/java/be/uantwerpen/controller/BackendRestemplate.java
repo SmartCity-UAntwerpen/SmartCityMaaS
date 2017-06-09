@@ -39,6 +39,7 @@ public class BackendRestemplate {
 
     /**
      * Retrieves the map information from the backend and stores it in DummyPoints that are used in the world-map.
+     * The received point ID are the keys in a HashMap with the associated key's value equal to map point ID.
      * @return
      */
     public List<DummyPoint> getdataBackend() {
@@ -47,46 +48,7 @@ public class BackendRestemplate {
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         List<String> pointList = new ArrayList<String>();
-        // Set destination of the core for retrieving information.
 
-        // Quentin
-
-        /*
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://" + serverCoreIP+":"serverCorePort+"/map/stringmapjson/top")
-                .queryParam("pointList", pointList);
-
-        */
-/*
-        URL url = null;
-        try {
-            url = new URL("http://146.175.140.44:1994/map/stringmapjson/top");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json");
-
-            //String input = "{\"qty\":100,\"name\":\"iPad 4\"}";µ
-            String response =  conn.getResponseMessage();
-            System.out.println("Response of core " + response);
-            conn.disconnect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
-        //146.175.140.44:1994
-        /*
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://143.129.39.151:10000/map/stringmapjson/top")
-                .queryParam("pointList", pointList);
-*/
-
-
-
-//
        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://"+serverCoreIP+":"+serverCorePort+"/map/stringmapjson/visual");
         System.out.println("Make builder to Quentin " +builder.build().encode().toUri());
 
@@ -159,24 +121,6 @@ public class BackendRestemplate {
         }
         */
 
-/*
-        int n = geodata.length();
-        for (int i = 0; i < n; ++i) {
-            final JSONObject person = geodata.getJSONObject(i);
-            System.out.println(person.getInt("id"));
-            System.out.println(person.getString("name"));
-            System.out.println(person.getString("gender"));
-            System.out.println(person.getDouble("latitude"));
-            System.out.println(person.getDouble("longitude"));
-        }
-
-*/
-
-
-
-
-
-
         pointTransition = new HashMap<Integer,Integer>();
         JSONParser parser = new JSONParser();
 
@@ -185,12 +129,15 @@ public class BackendRestemplate {
         Object neighbourObject = null;
         List<DummyPoint> points = new ArrayList<DummyPoint>();
 
+        /*
+            Parse the received string of JSON objects and transform it to a list of points that can be used for
+            the map of the world.
+         */
         try {
 
 
             BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));
             //BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
-
             String line;
             while ((line = br.readLine()) != null) {
                 obj = parser.parse(listOfCore);
@@ -217,7 +164,6 @@ public class BackendRestemplate {
                     }else
                     {
                         // System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
-
                         point_ID = pointTransition.get(point_ID);
                     }
                     // System.out.println(" index "+counter + " value of point_ID "+point_ID);
@@ -317,6 +263,12 @@ public class BackendRestemplate {
         }
         return -1;
     }
+
+    /**
+     * Get the value or map point ID from a key or received point ID.
+     * @param key
+     * @return
+     */
     public Integer getValueofKeyHashMap(Integer key)
     {
         return pointTransition.get(key);

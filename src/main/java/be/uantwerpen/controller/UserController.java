@@ -80,25 +80,35 @@ public class UserController {
     @ModelAttribute("user")
     private User getUser(){ return new User();}
 
+    /**
+     * Return all the users of the webapp.
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/users", method= RequestMethod.GET)
-    //@PreAuthorize("hasRole('admin')")
     public String showUsers(final ModelMap model){
         model.addAttribute("allUsers", userService.findAll());
         return "users-list";
     }
-    @RequestMapping(value="/map", method= RequestMethod.GET)
-    public String showMap(final ModelMap model){
-        return "map";
-    }
 
+    /**
+     * Return the page where a new user can be created.
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/users/put", method= RequestMethod.GET)
-    //@PreAuthorize("hasRole('admin') and hasRole('logon')")
     public String viewCreateUser(final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",new User("",""));
         return "users-manage";
     }
 
+    /**
+     * Return page to edit a created user.
+     * @param id
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/users/{id}", method= RequestMethod.GET)
     public String viewEditUser(@PathVariable Long id, final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
@@ -106,10 +116,16 @@ public class UserController {
         return "users-manage";
     }
 
-
+    /**
+     * Add a user to the list of users on the SQL database.
+     * Redirect to the list of all the users.
+     * @param user
+     * @param result
+     * @param model
+     * @return
+     */
     @RequestMapping(value={"/users/"}, method= RequestMethod.POST)
     public String addUser(@Valid User user, BindingResult result, final ModelMap model){
-        //System.out.println(result.getModel());
         if(userService.findByUserName(user.getUserName()) == null) {
             List<Role> roles = new ArrayList<>();
             roles.add(roleService.findRole("user"));
@@ -121,9 +137,16 @@ public class UserController {
         }
     }
 
+    /**
+     * Save a user ot the list of users on the database.
+     * Redirect to the list of all the users.
+     * @param user
+     * @param result
+     * @param model
+     * @return
+     */
     @RequestMapping(value={"/users/{id}"}, method= RequestMethod.POST)
     public String editUser(@Valid User user, BindingResult result, final ModelMap model){
-        //System.out.println(result.getModel());
         if(result.hasErrors()){
             model.addAttribute("allRoles", roleService.findAll());
             return "users-manage";
@@ -132,6 +155,12 @@ public class UserController {
         return "redirect:/users";
     }
 
+    /**
+     * Delete user from database.
+     * @param id
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/users/{id}/delete")
     public String deleteUser(@PathVariable Long id, final ModelMap model){
         userService.delete(id);
@@ -139,14 +168,24 @@ public class UserController {
         return "redirect:/users";
     }
 
+    /**
+     * Return page with all the deliveries save in the mongoDB database.
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/deliveries", method= RequestMethod.GET)
-    public String viewOrders(final ModelMap model){
+    public String viewDeliveries(final ModelMap model){
         MongoDBMethods monogDBClient = new MongoDBMethods();
         Iterable<Delivery> deliveries = monogDBClient.getAllDeliveries();
         model.addAttribute("allDeliveries", monogDBClient.getAllDeliveries());
         return "delivery-list";
     }
 
+    /**
+     * Return the page where a new delivery can be created.
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/deliveries/put", method= RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model){
         Delivery del = new Delivery("","","");
@@ -159,17 +198,27 @@ public class UserController {
         return "delivery-manage-user";
     }
 
-
+    /**
+     * Delete a specified id from the mongoDB database.
+     * @param idDelivery
+     * @return
+     */
     @RequestMapping(value="/deliveries/{idDelivery}/delete", method= RequestMethod.GET)
-    public String viewCreateDelivery(@PathVariable String idDelivery){
+    public String deleteDelivery(@PathVariable String idDelivery){
 
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.deleteDelivery(idDelivery);
-        System.out.println("ID of the DELIVERY "+idDelivery);
+        //System.out.println("ID of the DELIVERY "+idDelivery);
         return "redirect:/deliveries" ;
     }
 
-
+    /**
+     * Add a delivery to deliveries in the mongoDB database.
+     * @param delivery
+     * @param result
+     * @param model
+     * @return
+     */
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
     public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
         System.out.println(result.getModel());
@@ -219,7 +268,11 @@ public class UserController {
     }
 
 
-
+    /**
+     * Return the page with th visualization of the smartcity vehicles on the map.
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/visualization",method= RequestMethod.GET)
     public String getSimulation(final ModelMap model){
 
@@ -238,6 +291,10 @@ public class UserController {
         return "visualization_map";
     }
 
+    /**
+     * Retrieve all the vehicle data from the core.
+     * @return
+     */
     public List<DummyVehicle> getAllSimData() {
         List<DummyVehicle> vehicles = new ArrayList<DummyVehicle>();
         String requestAll = "request all";
@@ -258,6 +315,7 @@ public class UserController {
         JSONParser parser = new JSONParser();
 
         Object obj = null;
+        // Parse JSON data from the core.
         try {
             obj = parser.parse(httpResponse.getBody());
 
