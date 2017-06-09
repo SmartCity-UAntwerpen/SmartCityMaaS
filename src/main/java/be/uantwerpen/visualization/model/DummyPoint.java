@@ -5,6 +5,14 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 11/05/2017.
+ *
+ * DummyPoint is a point af the map stored on a cell in the world.
+ * Its cell coordinates are stored in this class, together with all the neighbour points of this point.
+ * The type specifies the specific vehicle type of this point: robot, car, drone, ...
+ * Characteristic represent the extra information of this point: endpoint, light, intersection,...
+ * SpotName is the ID if the point.
+ * Neighbours contains all the ID's  of the point's neighbours.
+ *
  */
 public class DummyPoint {
 

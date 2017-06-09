@@ -5,6 +5,9 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 10/05/2017.
+ *
+ * A CellRow is a row with aal its cells in the world.
+ * This class is necessary to create a matrix in the world on a dynamic manner.
  */
 public class CellRow {
 

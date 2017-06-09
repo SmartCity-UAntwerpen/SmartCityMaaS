@@ -12,15 +12,9 @@ import java.util.List;
  *
  */
 public class CellLink {
-    public Cell startCell;
-    public Cell endCell;
-    public List<Cell> intermediateCells;
-
-    public CellLink(Cell startCell, Cell endCell, List<Cell> intermediateCells) {
-        this.startCell = startCell;
-        this.endCell = endCell;
-        this.intermediateCells = intermediateCells;
-    }
+    private Cell startCell;
+    private Cell endCell;
+    private List<Cell> intermediateCells;
 
     /**
      * Print cellLink information.
@@ -72,7 +66,6 @@ public class CellLink {
 
     public int sizeIntermediateCells()
     {
-
         return intermediateCells.size();
     }
 }

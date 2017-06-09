@@ -109,5 +109,4 @@ public class UserControllerTest {
         mvc.perform(get("/visualization")).andExpect(view().name("visualization_map"));
     }
 
-
 }

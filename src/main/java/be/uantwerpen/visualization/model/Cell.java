@@ -2,16 +2,13 @@ package be.uantwerpen.visualization.model;
 
 /**
  * Created by Frédéric Melaerts on 10/05/2017.
- */
-
-/**
+ *
  * A cell is one unit element in the world which has a specific x- and y-coordinate in that world.
  * Its type represents its function: road, surrounding, spot,...
  * Specific specifies the specific vehicle type it belongs to: robot, car, drone, ...
  * Characteristic represent the extra information of this cell: endpoint, light, intersection,...
  * SpotID is only specified when a spot is situated in this cell or this cell is a surrounding cell of specific spot.
- * If the cell is a surrounding cell, it has the coordinates of the spot'scell int the sur_x and sur_y parameter.
- * a surrounding spot
+ * If the cell is a surrounding cell, it has the coordinates of the spot'scell in the sur_x and sur_y parameter.
  */
 public class Cell {
     private int x;
@@ -19,7 +16,6 @@ public class Cell {
     private String type;
     private String specific;
     private String characteristic;
-
     private int sur_x;
     private int sur_y;
     private int spotID;
@@ -32,14 +28,6 @@ public class Cell {
      * type: 5 = spot_drone
      * type: 6 = road_drone
      */
-    public Cell(int x, int y, String type) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.sur_x = 0;
-        this.sur_y = 0;
-        this.spotID = -1;
-    }
     public Cell() {
         this.x = 0;
         this.y = 0;

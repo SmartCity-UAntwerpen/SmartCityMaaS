@@ -5,16 +5,21 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 11/05/2017.
+ *
+ * Class for testpurpose:
+ * This class represent a dummy map that is used as a hardcoded map to test the world class.
  */
 public class DummyMap {
 
     private List<DummyPoint> dummyPoints;
     private int unit = 3;
 
+    /**
+     * This constructor contains a map with hardcoded 5 dummyPoints.
+     */
     public DummyMap() {
         //Dries wereld is 4 meter
         //Quentin wereld is 2 meter
-
         unit = 2;
         /*dummyPoints = new ArrayList<DummyPoint>();
         List<Integer> neighbourList = new ArrayList<Integer>();
@@ -45,8 +50,16 @@ public class DummyMap {
         dummyPoints.add(E5);*/
     }
 
+    public DummyMap(List<DummyPoint> dummyPoints, int unit) {
+        this.dummyPoints = dummyPoints;
+        this.unit = unit;
+    }
+
+    /**
+     * This function creates a dummy map with the neighbours extension with 3 points.
+     */
     public void loadDummyMap2() {
-        unit = 3; // 5 meter
+        unit = 3;
         dummyPoints = null;
         dummyPoints = new ArrayList<DummyPoint>();
         List<Integer> neighbourList = new ArrayList<Integer>();
@@ -65,23 +78,17 @@ public class DummyMap {
         DummyPoint C2 = new DummyPoint(2,neighbourList2,30,20);
         dummyPoints.add(C2);
     }
-    public DummyMap(List<DummyPoint> dummyPoints, int unit) {
-        this.dummyPoints = dummyPoints;
-        this.unit = unit;
-    }
+
 
     public List<DummyPoint> getDummyPoints() {
         return dummyPoints;
     }
-
     public void setDummyPoints(List<DummyPoint> dummyPoints) {
         this.dummyPoints = dummyPoints;
     }
-
     public int getUnit() {
         return unit;
     }
-
     public void setUnit(int unit) {
         this.unit = unit;
     }

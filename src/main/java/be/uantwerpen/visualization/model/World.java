@@ -16,6 +16,7 @@ public class World {
     private int dimensionX;
     private int dimensionY;
     private int unitWorld;
+    private int unitMap;
     private List<CellLink> cellLinks;
     // Defines the diameter around a location point.
     private int surround_layer = 1;
@@ -24,6 +25,7 @@ public class World {
         this.dimensionX = dimensionX;
         this.dimensionY = dimensionY;
         this.unitWorld = 1; //1 meter
+        this.unitMap = 2;
         cells = new ArrayList<CellRow>();
         for (int i = 0; i < dimensionX; i++) {
             CellRow cellRow = new CellRow();
@@ -75,7 +77,9 @@ public class World {
     }
 
     public void parseMap(List<DummyPoint> dummyList) {
-        DummyMap dummyMap = new DummyMap();
+        //DummyMap dummyMap = new DummyMap();
+
+
         int x_coor = 0;
         int y_coor = 0;
         String specific = "drone";
@@ -85,8 +89,8 @@ public class World {
         cellLinks = new ArrayList<CellLink>();
         for (int m = 0; m < pointsList.size(); m++) {
             DummyPoint point = pointsList.get(m);
-            x_coor = point.getPhysicalPoisionX() * dummyMap.getUnit();
-            y_coor = point.getPhysicalPoisionY() * dummyMap.getUnit();
+            x_coor = point.getPhysicalPoisionX() * unitMap;
+            y_coor = point.getPhysicalPoisionY() * unitMap;
 
             // Start point for the link
             Cell startPoint = new Cell(x_coor,y_coor);
@@ -101,8 +105,8 @@ public class World {
 
 
                 int neighbourPoint = point.getNeighbours().get(n);
-                int x_coor_neighbour = pointsList.get(neighbourPoint).getPhysicalPoisionX() * dummyMap.getUnit();
-                int y_coor_neighbour = pointsList.get(neighbourPoint).getPhysicalPoisionY() * dummyMap.getUnit();
+                int x_coor_neighbour = pointsList.get(neighbourPoint).getPhysicalPoisionX() * unitMap;
+                int y_coor_neighbour = pointsList.get(neighbourPoint).getPhysicalPoisionY() * unitMap;
                 // End point for the link
                 Cell endPoint = new Cell(x_coor_neighbour,y_coor_neighbour);
                 endPoint.setSpotID(pointsList.get(neighbourPoint).getPointName());
