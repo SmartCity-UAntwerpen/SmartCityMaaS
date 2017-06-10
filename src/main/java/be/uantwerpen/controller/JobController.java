@@ -84,6 +84,17 @@ public class JobController {
         return "redirect:/jobs";
     }
 
+    @RequestMapping(value = "/removeOrders")
+    public String removeOrders()
+    {
+        jobListRepository.deleteAll();
+        if(jobListRepository.findAll().size() == 0)
+        {
+            System.out.println("all orders have been cleared");
+        }
+        return "redirect:/";
+    }
+
     //make an order
     @RequestMapping(value ="/createOrder/{Start}/{Stop}")
     public String createOrder(@PathVariable String Start, @PathVariable String Stop)
