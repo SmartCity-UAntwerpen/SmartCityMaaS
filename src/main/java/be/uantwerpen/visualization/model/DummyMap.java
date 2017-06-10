@@ -79,7 +79,6 @@ public class DummyMap {
         dummyPoints.add(C2);
     }
 
-
     public List<DummyPoint> getDummyPoints() {
         return dummyPoints;
     }

@@ -23,11 +23,9 @@ public class CellRow {
     public CellRow(List<Cell> cellList) {
         this.cellList = cellList;
     }
-
     public List<Cell> getCellList() {
         return cellList;
     }
-
     public void setCellList(List<Cell> cellList) {
         this.cellList = cellList;
     }

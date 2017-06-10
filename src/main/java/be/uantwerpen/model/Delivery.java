@@ -84,76 +84,60 @@ public class Delivery extends MyAbstractPersistable<Long> {
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
     public String getLastName() {
         return lastName;
     }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
     public String getPointA() {
         return pointA;
     }
-
     public void setPointA(String pointA) {
         this.pointA = pointA;
     }
-
     public String getPointB() {
         return pointB;
     }
-
     public void setPointB(String pointB) {
         this.pointB = pointB;
     }
     public int getPassengers() {
         return passengers;
     }
-
     public void setPassengers(int passengers) {
         this.passengers = passengers;
     }
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
     public String getIdDelivery() {
         return idDelivery;
     }
-
     public void setIdDelivery(String idDelivery) {
         this.idDelivery = idDelivery;
     }
     public String getDate() {
         return date;
     }
-
-
     public String getUserName() {
         return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
     public boolean isComplete() {
         return complete;
     }
-
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
@@ -172,5 +156,4 @@ public class Delivery extends MyAbstractPersistable<Long> {
         System.out.print(" type: "+ type+ ", ");
         System.out.println(" date: "+ date);
     }
-
 }

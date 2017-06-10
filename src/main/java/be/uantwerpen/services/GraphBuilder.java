@@ -74,7 +74,7 @@ public class GraphBuilder {
             switch (vehicle)
             {
                 case "ROBOTTOP": url += robotCoreIP + ":" + robotCorePort + "/cost"; break;
-                case "DRONETOP": url += droneCoreIP + ":" + droneCorePort; break;
+                case "DRONETOP": url += droneCoreIP + ":" + droneCorePort;break;
                 case "CARTOP": url += carCoreIP + ":" + carCorePort + "/carmanager"; break;
                 case "WAIT": link.setWeight((long)(0)); break;
                 default: System.out.println("no supported vehicle was given. See graphbuilder class " + link.getVehicle());

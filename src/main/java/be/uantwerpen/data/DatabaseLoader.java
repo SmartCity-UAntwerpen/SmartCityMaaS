@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 26/04/2017.
- * used to fill in the database
+ * Databaseloader is used to store information in the database.
  */
 @Service
 @Profile("default")
@@ -21,17 +21,15 @@ public class DatabaseLoader {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final DeliveryRepository deliveryRepository;
-    private final SegmentRepository segmentRepository;
     private final JobRepository jobRepository;
     private final JobListRepository jobListRepository;
 
     @Autowired
-    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, SegmentRepository segmentRepository, JobRepository jobRepository, JobListRepository jobListRepository) {
+    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, JobRepository jobRepository, JobListRepository jobListRepository) {
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.deliveryRepository = deliveryRepository;
-        this.segmentRepository = segmentRepository;
         this.jobRepository = jobRepository;
         this.jobListRepository = jobListRepository;
     }
@@ -69,29 +67,7 @@ public class DatabaseLoader {
 
         /*Delivery delivery = new Delivery("Lorance", "Malfait","Seg 9", "Seg 10",2);
         deliveryRepository.save(delivery);
-
-        Segment segment1 = new Segment("Seg 1");
-        Segment segment2 = new Segment("Seg 2");
-        Segment segment3 = new Segment("Seg 3");
-        Segment segment4 = new Segment("Seg 4");
-        Segment segment5 = new Segment("Seg 5");
-        Segment segment6 = new Segment("Seg 6");
-        Segment segment7 = new Segment("Seg 7");
-        Segment segment8 = new Segment("Seg 8");
-        Segment segment9 = new Segment("Seg 9");
-        Segment segment10 = new Segment("Seg 10");
-        Segment segment11 = new Segment("Seg 11");
-        segmentRepository.save(segment1);
-        segmentRepository.save(segment2);
-        segmentRepository.save(segment3);
-        segmentRepository.save(segment4);
-        segmentRepository.save(segment5);
-        segmentRepository.save(segment6);
-        segmentRepository.save(segment7);
-        segmentRepository.save(segment8);
-        segmentRepository.save(segment9);
-        segmentRepository.save(segment10);
-        segmentRepository.save(segment11);*/
+        */
     }
 }
 

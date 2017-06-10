@@ -7,8 +7,6 @@ import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.DummyVehicle;
-import be.uantwerpen.visualization.model.World;
-import org.graphstream.graph.Graph;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -36,6 +34,8 @@ import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 27/04/2017.
+ *
+ * This controller handles the user specific request mappings.
  */
 
 @Controller
@@ -52,30 +52,13 @@ public class UserController {
     @Autowired
     private RoleService roleService;
     @Autowired
-    private DeliveryService deliveryService;
-    @Autowired
-    private SegmentService segmentService;
-    @Autowired
     private PassengerService passengerService;
-
     @Autowired
     public BackendRestemplate backendRestemplate;
     @Autowired
     public Astar astarService;
-
     @Autowired
     private RestTemplate restTemplate;
-
-
-    @Autowired
-    private JobService jobService;
-    @Autowired
-    private JobListService jobListService;
-
-
-
-
-
 
     @ModelAttribute("user")
     private User getUser(){ return new User();}
@@ -230,8 +213,6 @@ public class UserController {
         }
         delivery.setType("HumanTransport");
 
-
-
         delivery.setPointA(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
         delivery.setPointB(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods monogDBClient = new MongoDBMethods();
@@ -245,23 +226,21 @@ public class UserController {
         {
             System.out.println("-- Retrieve last delivery from MongoDB service --");
             delivery_return.print();
-//            deliveryService.saveSomeAttributes(delivery_return);
+        //  deliveryService.saveSomeAttributes(delivery_return);
         }
-
         /*
             ASTAR gedeelte
          */
 
         // TODO delivery ID koppelen aan Astarr
-        //Astar astar = new Astar();
-
         astarService.init();
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
-
         System.out.println("REDIRECT IS PERFORMED");
         User loginUser = userService.getPrincipalUser();
         System.out.println("User logged in: "+loginUser.getUserName());
         model.addAttribute("currentUser", loginUser);
+        delivery_return.setPointA(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
+        delivery_return.setPointB(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
         model.addAttribute("delivery", delivery_return);
         return "delivery-navigate-user";
         // return "redirect:/deliveries";
@@ -293,6 +272,7 @@ public class UserController {
 
     /**
      * Retrieve all the vehicle data from the core.
+     * This includes their identifier, type, start point, end point, and the %-progress between these two points.
      * @return
      */
     public List<DummyVehicle> getAllSimData() {
@@ -318,7 +298,6 @@ public class UserController {
         // Parse JSON data from the core.
         try {
             obj = parser.parse(httpResponse.getBody());
-
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray virDevices = (JSONArray) jsonObject.get("vehicles");
             Iterator<String> iterator = virDevices.iterator();
@@ -346,9 +325,7 @@ public class UserController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         return vehicles;
     }
-
 }
 

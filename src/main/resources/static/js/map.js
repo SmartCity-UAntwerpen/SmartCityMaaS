@@ -6,6 +6,7 @@ var mapCanvas;
 var mapCanvasContext;
 var world = [];
 
+// A point index in the html page
 var pointA_x = -1;
 var pointA_y = -1;
 // A point index in the world
@@ -13,7 +14,7 @@ var pointA_x_cell = 0;
 var pointA_y_cell = 0;
 var pointA_ID = -100;
 
-
+// B point index in the html page
 var pointB_x = -1;
 var pointB_y = -1;
 // B point index in the world
@@ -27,21 +28,18 @@ var x_size;
 var y_size;
 
 var change_color = "null";
+// Redraw the corresponding point or the whole map
 var redraw_onPointA = false;
 var redraw_onPointB = false;
 var map_ready = false;
 var control_initDraw = false;
-
-
-
 var progress;
 
-
-
-// 146.175.140.44
-
+/**
+ * The start function to allow drawing on th mapCanvas of the html.
+ * Set the right intervals drawing and progress control.
+ */
 function start() {
-
     mapCanvas = document.getElementById("mapCanvas");
     mapCanvasContext = mapCanvas.getContext("2d");
     initdraw();
@@ -49,7 +47,6 @@ function start() {
     if(only_view == false)
     {
         mapCanvas.addEventListener("click", onClick, false);
-
     }else
     {
         if( visualization == true)
@@ -61,23 +58,11 @@ function start() {
             setInterval(getProgress, 2000);
         }
     }
-
-    // firstDraw()
-    //setInterval(loop, 15);
 }
 
-/*
-function drawMap() {
-    x_size = mapCanvas.width/world.dimensionY;
-    y_size = mapCanvas.height/world.dimensionX;
-    var cell;
-    for(var i=0; i<world.dimensionY; i++){
-        for(var j=0; j<world.dimensionX; j++){
-            cell = world.cells[i].cellList[j];
-
-        }
-    }
-}*/
+/**
+ * Iterate over the world's cells to perform the drawCell function on each of them.
+ */
 function drawMap() {
     // x_size and y_size resemble the amoutn of pixels needed to draw one unit of the respective dimension in the
     // canvas.
@@ -106,21 +91,14 @@ function drawMap() {
  //   console.log("inputA "+world.cells[pointA_y/5].cellList[pointA_x/5].spotID);
   //  console.log("inputB "+world.cells[pointB_y/5].cellList[pointB_x/5].spotID);
 }
-/*
-function loop()
-{
-    //console.log("loop is on going");
-    clear();
-    drawMap();
-}
-*/
-function clear() {/*
-    mapCanvasContext.fillStyle="#ffffff";
-    mapCanvasContext.fillRect(0,0,mapCanvas.width,mapCanvas.height);*/
-    /*canvas.fillStyle="#888888";
-    canvas.strokeRect(0,0,width,height);*/
-}
 
+/**
+ * Controls if a cell is part of point A or B and draw this cell as the right type on the map.
+ * @param j
+ * @param i
+ * @param cell
+ * @returns {boolean}
+ */
 function drawCell(j, i, cell) {
 
     var columns = x_size * j;
@@ -283,17 +261,12 @@ function drawCell(j, i, cell) {
         }
 
     }
-    /*
-     * Type defenition
-     * type: 1 = background
-     * type: 2 = spot_robot
-     * type: 3 = surrounding_point
-     * type: 4 = road_robot
-     */
-
     return false;
 }
 
+/**
+ * Initial draw of the map, where no vehicles are included.
+ */
 function initdraw()
 {
     x_size = mapCanvas.width/world.dimensionY;
@@ -334,13 +307,25 @@ function initdraw()
             } else {
                 mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
             }
+            if(only_view && !visualization)
+            {
+                if (cell.spotID == pointA_Value) {
+                    mapCanvasContext.drawImage(cellPointA, columns, rows, x_size, y_size);
+                }
+                if(cell.spotID == pointB_Value)
+                {
+                    mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
+                }
+            }
         }
     }
     mapCanvasContext.drawImage(legend, 0, mapCanvas.height - mapCanvas.height/4, 200, 200);
 
     map_ready = true;
 }
-
+/**
+ * Load all the images from the html.
+ */
 function loadImages() {
     cellBackground = new Image();
     cellBackground.src = cellImageBackGround;
@@ -367,11 +352,19 @@ function loadImages() {
 
 }
 
+/**
+ * Retrieve the physical world from the MaaS.
+ */
 function getWorld(){
     $.getJSON("/retrieveWorld", function(result){
         world = result;
     });
 }
+
+/**
+ * JQuery that retrieves the progress for a vehicle of a specific delivery.
+ * All vehicles progress is requested when visualisation is true.
+ */
 function getProgress(){
 
     if( visualization == true)
@@ -431,7 +424,15 @@ function getProgress(){
         });
     }
 }
-
+/**
+ * Controls if the x-and y-coordinates of a mouse click are situated in a legitimate area.
+ * Such an area is a spot or surrounding point.
+ * The return is important for the onClic, so that this function knows which drawing function /no drawing
+ * function needs to be performed.
+ * @param x
+ * @param y
+ * @returns {boolean}
+ */
 function legitArea(x, y)
 {
     var type;
@@ -440,14 +441,6 @@ function legitArea(x, y)
             var column = x_size * j;
             var row = y_size * i;
             if (column <= x && x < column + x_size && row <= y && y < row + y_size) {
-
-                /*
-                 * Type defenition
-                 * type: 1 = background
-                 * type: 2 = spot_robot
-                 * type: 3 = surrounding_point
-                 * type: 4 = road_robot
-                 */
                 if (world.cells[i].cellList[j].type.localeCompare("background") == 0 || world.cells[i].cellList[j].type.localeCompare("road") == 0
                     || world.cells[i].cellList[j].characteristic.localeCompare("INTERSECTION") == 0 || world.cells[i].cellList[j].characteristic.localeCompare("LIGHT") == 0) {
                     return false;
@@ -458,14 +451,18 @@ function legitArea(x, y)
         }
     }
 }
+
+/**
+ * This function is performed on every mouse click
+ * It controls the if the position of the mouse click is set on a spot/surrouding point and if a point A or B is
+ * activated or deactivated
+ * @param e
+ */
 function onClick(e) {
     console.log("MOUSE CLICK x "+ e.pageX + " en y " +e.pageY);
     var map = document.getElementById('myMapCanvas');
     console.log("Map offset x "+ map.offsetLeft + " en y " +map.offsetTop);
-
     console.log("DELIVERY FROM THYMLEAF " +pointA);
-
-
      var x_click = e.pageX-map.offsetLeft ;
    // var x_click = e.pageX;
     var y_click = e.pageY-map.offsetTop;
@@ -475,11 +472,9 @@ function onClick(e) {
     if(legitArea(x_click, y_click) == true) {
         var midpointA_X = pointA_x+(x_size/2);
         var midpointA_Y = pointA_y+(y_size/2);
-
         if (pointA_set == true) {
             if (midpointA_X - sideVariation_X < x_click && x_click < midpointA_X + sideVariation_X && midpointA_Y-sideVariation_Y < y_click && y_click < midpointA_Y + sideVariation_Y) {
                 console.log(":'(");
-
                 pointA_x = x_click;
                 pointA_y = y_click;
                 pointA_ID = -100;
@@ -505,7 +500,6 @@ function onClick(e) {
                         pointB_ID = -100;
                         redraw_onPointB = false;
                         document.getElementById('saveDelivery').style.visibility = 'hidden';
-
                         // Draw first init, so that the original B point is certainly cleared from the canvas.
                         initdraw();
                     }
@@ -514,7 +508,6 @@ function onClick(e) {
                     pointB_y = y_click;
                     pointB_set = true;
                     document.getElementById('saveDelivery').style.visibility = 'visible';
-
                 }
                 drawMap();
             }
@@ -523,18 +516,16 @@ function onClick(e) {
             pointA_y = y_click;
             pointA_set = true;
             document.getElementById('saveDelivery').style.visibility = 'hidden';
-
             drawMap();
         }
-
     }
     console.log("current user "+document.getElementById("userName").value)
 }
 
 
-
-var myVar;
-
+/**
+ * The initialize function of the html page.
+ */
 function initFunction() {
     showPage();
     getWorld();
@@ -552,6 +543,12 @@ function initFunction() {
     setTimeout(start, 9000)
 
 }
+
+/**
+ * Shows a loading animation when data is loaded.
+ * When all information is tranferred to the html page, the functional elements are shown while to loading animation
+ * is hidden.
+ */
 function showPage() {
     if(map_ready == false) {
         if(only_view == false)
@@ -624,6 +621,5 @@ function showPage() {
                 initdraw();
             }
     }
-
 }
 

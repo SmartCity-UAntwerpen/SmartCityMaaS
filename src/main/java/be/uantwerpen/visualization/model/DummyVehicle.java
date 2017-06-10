@@ -3,28 +3,20 @@ package be.uantwerpen.visualization.model;
 /**
  * Created by Frédéric Melaerts on 30/05/2017.
  *
- *
+ * This class is used to store the vehicle information received from the backbone core.
+ * This class contains the vehicle's ID, tupe, start point, end point and progress.
  */
 public class DummyVehicle {
-        private volatile int distance;
-        private int ID;
-        private String type;
-        private int start;
-        private int end;
-        private int progress;
+    private int ID;
+    private String type;
+    private int start;
+    private int end;
+    private int progress;
 
     public DummyVehicle(int ID) {
         this.ID = ID;
     }
     public DummyVehicle() {
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
     }
 
     public int getID() {
@@ -33,10 +25,6 @@ public class DummyVehicle {
 
     public void setID(int ID) {
         this.ID = ID;
-    }
-
-    public int getValue() {
-        return distance;
     }
 
     public String getType() {

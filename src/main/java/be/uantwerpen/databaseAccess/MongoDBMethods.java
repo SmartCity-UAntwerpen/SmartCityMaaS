@@ -33,7 +33,6 @@ public class MongoDBMethods {
         db = mongo.getDatabase("local");
     }
 
-
     /**
      * Put a specific delivery on the database.
      * @param delivery
@@ -64,7 +63,6 @@ public class MongoDBMethods {
     {
         System.out.println("----- Get all deliveries data of MongoDB -----");
         List<Delivery> deliveries = new ArrayList<Delivery>();
-
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find();
         if(cursor != null) {
@@ -72,7 +70,6 @@ public class MongoDBMethods {
             {
                 Document doc = it;
                 Delivery delivery = new Delivery();
-
                 ObjectId object_id = doc.getObjectId("_id");
                 String typeDelivery = doc.getString("typeDelivery");
                 String username = doc.getString("username");
@@ -94,11 +91,9 @@ public class MongoDBMethods {
                 delivery.setDate(timestamp);
                 deliveries.add(delivery);
             }
-
         }
         return deliveries;
     }
-
 
     /**
      * Return the last added delivery from the database.
@@ -107,7 +102,6 @@ public class MongoDBMethods {
     public Delivery getLastDelivery()
     {
         System.out.println("----- Get last data of MongoDB -----");
-
         Delivery lastDelivery = new Delivery();
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find().sort(new Document("_id", -1)).limit(1);
@@ -143,15 +137,11 @@ public class MongoDBMethods {
     public void deleteDelivery(String deliveryID)
     {
         System.out.println("----- Delete delivery "+deliveryID+" data of MongoDB -----");
-
         MongoCollection<Document> collection = db.getCollection("deliveries");
-
         //collection.deleteOne(new Document("_id", new ObjectId("57a49c6c33b10927ff09623e")));
-
         BasicDBObject query = new BasicDBObject();
         query.append("_id", new ObjectId(deliveryID));
         collection.deleteOne(query);//.remove(query);
-
         return;
     }
 }

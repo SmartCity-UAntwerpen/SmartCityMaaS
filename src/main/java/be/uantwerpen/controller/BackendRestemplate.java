@@ -63,63 +63,11 @@ public class BackendRestemplate {
                 String.class);
 
         System.out.println("Performed exchange to Quentin" );
-       // System.out.println("Response core : "+httpResponse.toString());
         System.out.println("Response core : "+httpResponse.getBody());
         System.out.println("Response body core : "+ httpResponse.hasBody());
         String listOfCore = httpResponse.getBody();
 
         new JSONObject();
-        //JSONObject obj = new JSONObject();
-       // JSONArray geodata = obj.getJSONArray("geodata");
-        /*Object obj = null;
-        org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
-        List<DummyPoint> points = new ArrayList<DummyPoint>();
-
-        try {
-            obj = parser.parse(new FileReader("mapCore.txt"));
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
-            Object entryList = null;
-            int counter = 0;
-            Iterator<String> iterator = pointsList.iterator();
-
-
-            while (iterator.hasNext()) {
-                entryList = iterator.next();
-                JSONObject par_jsonObject = (JSONObject) entryList;
-
-
-                int point_ID = ((Long)jsonObject.get("id")).intValue();
-
-                System.out.println(" index "+counter + " value of point_ID "+point_ID);
-                int x = ((Long)jsonObject.get("x")).intValue();
-                int y = ((Long)jsonObject.get("y")).intValue();
-                DummyPoint point = new DummyPoint(point_ID, x,y);
-                points.add(point);
-                counter++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        for(int i = 0; i<points.size();i++)
-            points.get(i).print();
-
-        */
-        /*
-        for(int i = 0; i<propertiesList.size();i++)
-            System.out.println(" "+propertiesList.get(i));
-        /*
-
-        VAN RESPONS QUENTIN:
-        !!!!!
-        try {
-            obj = parser.parse(httpResponse.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        */
 
         pointTransition = new HashMap<Integer,Integer>();
         JSONParser parser = new JSONParser();
@@ -130,16 +78,17 @@ public class BackendRestemplate {
         List<DummyPoint> points = new ArrayList<DummyPoint>();
 
         /*
+        Code for test purposes:
+        This code in comments is used to read JSON data from a txt-file instead of the HTTP-response.
+        BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));
+        String line;
+        while ((line = br.readLine()) != null)
+            obj = parser.parse(line);
+        */
+        /*
             Parse the received string of JSON objects and transform it to a list of points that can be used for
             the map of the world.
          */
-       /* try {
-
-
-            BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));*/
-            //BufferedReader br = new BufferedReader(new FileReader("mapCore.txt"));
-            String line;
-           // while ((line = br.readLine()) != null) {
         try {
             obj = parser.parse(listOfCore);
             JSONObject jsonObject = (JSONObject) obj;
@@ -199,42 +148,28 @@ public class BackendRestemplate {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        // obj = parser.parse(line);
-
-          //  }
-       /* } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
-
 
         // Transform the id of the neigbours to the right one of the Hashmap
         for(int p =0 ; p < points.size(); p++)
         {
-
             DummyPoint point = points.get(p);
             List<Integer> neighbours = point.getNeighbours();
-
             for(int i =0 ; i < neighbours.size(); i++)
             {
                 if(pointTransition.containsKey(neighbours.get(i)) == true)
                 {
                     //System.out.println("Neighbour point ID is null for "+neighbour + " index counter "+index_counter);
-
                     int temp_neig = pointTransition.get(neighbours.get(i));
                     neighbours.set(i,temp_neig);
                 }else
                 {
-                    // Retrieve tis world id.
+                    // Retrieve this world id.
                     System.out.println("Neighbour not found in point hashmap");
-
                 }
             }
             point.setNeighbours(neighbours);
             points.set(p,point);
         }
-
 
         Iterator it = pointTransition.entrySet().iterator();
         while (it.hasNext()) {
@@ -247,7 +182,6 @@ public class BackendRestemplate {
         {
             points.get(i).print();
         }
-
         return points; //new MessageWrapper<>(tracksamples, "server called using eureka with rest template");
     }
 
