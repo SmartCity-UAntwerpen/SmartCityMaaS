@@ -6,8 +6,10 @@ import be.uantwerpen.model.Point;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 
@@ -83,15 +85,20 @@ public class GraphBuilder {
             if(!vehicle.equals("WAIT")) {
                 url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 System.out.println("url: " + url + ", id of link: " + link.getId());
-                responseList = restTemplate.getForEntity(url, Cost[].class);
-                //System.out.println("responseList: " + responseList);
-                costs = responseList.getBody();
-                Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
-                Cost bestCost = costs[0];
+                try {
+                    responseList = restTemplate.getForEntity(url, Cost[].class);
+                    //System.out.println("responseList: " + responseList);
+                    costs = responseList.getBody();
+                } catch(HttpClientErrorException e) {
+                    System.out.println("Http error: " + e);
+                    costs = null;
+                }
                 //run over all the answers to find the most cost effective vehicle
-                if(costs.length == 0) {
-                    link.setWeight((long)9999);
+                if(costs == null || costs.length == 0) {
+                    link.setWeight((long)99999);
                 } else {
+                    Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
+                    Cost bestCost = costs[0];
                     for (Cost cost : costs) {
                         if (cost.getWeightToStart() + cost.getWeight() < lowestCost) {
                             lowestCost = cost.getWeightToStart() + cost.getWeight();
