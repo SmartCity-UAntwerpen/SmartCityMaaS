@@ -33,10 +33,10 @@ import java.util.List;
 public class DataController {
 
 
-    @Value("${core.ip:localhost}")
-    private String serverCoreIP;
+    @Value("${core.ip:localhost}") // Localhost is default value
+    private String serverCoreIP; // Insert value
 
-    @Value("#{new Integer(${core.port}) ?: 1994}")
+    @Value("#{new Integer(${core.port}) ?: 1994}") // 1994 default value with bitwise operations (#)
     private int serverCorePort;
 
     @Autowired
@@ -59,7 +59,7 @@ public class DataController {
      * Return the world with the current map of the smartcity.
      * @return
      */
-    @RequestMapping(value="/retrieveWorld")
+    @RequestMapping(value="/retrieveWorld") // Request from http
     public World getWorld(){
         System.out.println("### Retrieve world callled ###");
 
@@ -126,7 +126,7 @@ public class DataController {
      * Return a list with the all vehicle IDs that are present in the smartcity that is received from the core.
      * @return
      */
-    @RequestMapping(value="/world1/allVehicles")
+    @RequestMapping(value="/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
     public List<Integer> getAllVehicles(){
         List<Integer> idVehicles = new ArrayList<Integer>();
         String requestAll = "request all";
@@ -140,7 +140,7 @@ public class DataController {
         // Get response from the core
         HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
-                HttpMethod.GET,
+                HttpMethod.GET, // Make post
                 entity,
                 String.class);
         JSONParser parser = new JSONParser();
@@ -183,7 +183,7 @@ public class DataController {
             if(worlds.get(i).getWorld_ID().equals(worldid) == true)
             {
                 world = worlds.get(i);
-                i = worlds.size()+1;
+                i = worlds.size()+1; //TODO Change to BREAK
             }
         }
         // TODO ask Oliver service for current job of this delivery with the DeliveryID

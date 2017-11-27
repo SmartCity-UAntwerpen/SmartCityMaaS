@@ -34,7 +34,8 @@ public class SecurityService implements UserDetailsService {
                     .map(perm -> new SimpleGrantedAuthority(perm.getName())).collect(Collectors.toList()));
 
 
-            ud = new org.springframework.security.core.userdetails.User(userName, user.getPassword(), true, true, true, true,authorities);
+            ud = new org.springframework.security.core.userdetails.User(userName, user.getPassword(), true,
+                    true, true, true,authorities);
 
         }
         else throw new UsernameNotFoundException("No user with username '" + userName + "' found!");

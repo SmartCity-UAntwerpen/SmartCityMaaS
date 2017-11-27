@@ -19,7 +19,7 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public boolean save(final User user){
+    public boolean save(final User user){ //TODO is goe nakijken want hier klopt iet ni
 
         for(User u : findAll())
         {
@@ -37,6 +37,20 @@ public class UserService {
                 }
             }
         }
+        return false;
+    }
+
+    public boolean checkUserName(String username) {
+        List<User> users = userRepository.findAll();
+
+        for(User userIt : users)
+        {
+            if(userIt.getUserName().equals(username))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -71,18 +85,6 @@ public class UserService {
         }
     }
 
-    public boolean checkUserName(String username) {
-        List<User> users = userRepository.findAll();
 
-        for(User userIt : users)
-        {
-            if(userIt.getUserName().equals(username))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
 }
