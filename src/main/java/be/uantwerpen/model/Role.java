@@ -1,9 +1,6 @@
 package be.uantwerpen.model;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -14,7 +11,7 @@ import java.util.List;
 public class Role extends MyAbstractPersistable<Long> {
     @Size(min=2, max=60)
     private String name;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="ROLE_PERM",
             joinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")},

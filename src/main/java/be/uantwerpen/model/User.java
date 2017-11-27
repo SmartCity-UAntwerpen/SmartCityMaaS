@@ -2,10 +2,7 @@ package be.uantwerpen.model;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class User extends MyAbstractPersistable<Long> {
     @NotBlank(message = "***")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="USER_ROLE",
             joinColumns={@JoinColumn(name="USER_ID",
