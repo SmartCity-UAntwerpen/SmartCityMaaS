@@ -27,7 +27,7 @@ public class MongoDBMethods {
         // IP address public centos VM : 143.129.39.159
         // IP address for proxy server : 172.10.0.8
         // Windows VM on own PC : 192.168.10.2
-        mongo =  new MongoClient( "143.129.39.155" , 27017 );
+        mongo =  new MongoClient( "143.129.39.151" , 27017 );
         /**** Get database ****/
         // if database doesn't exists, MongoDB will create it for you
         db = mongo.getDatabase("local");

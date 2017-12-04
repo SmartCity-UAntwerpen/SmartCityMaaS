@@ -82,7 +82,7 @@ public class GraphBuilder {
                 default: System.out.println("no supported vehicle was given. See graphbuilder class " + link.getVehicle());
             }
 
-            if(!vehicle.equals("WAIT")) {
+            if(!vehicle.equals("WAIT") && !vehicle.equals("ROBOTTOP")) {
                 url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 System.out.println("url: " + url + ", id of link: " + link.getId());
                 try {

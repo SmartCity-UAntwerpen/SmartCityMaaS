@@ -5,6 +5,7 @@
 var mapCanvas;
 var mapCanvasContext;
 var world = [];
+var worldLoaded = false;
 
 // A point index in the html page
 var pointA_x = -1;
@@ -358,6 +359,9 @@ function loadImages() {
 function getWorld(){
     $.getJSON("/retrieveWorld", function(result){
         world = result;
+        worldLoaded = true;
+        console.log("JSON WORLD");
+        start();
     });
 }
 
@@ -528,9 +532,11 @@ function onClick(e) {
  */
 function initFunction() {
     showPage();
-    getWorld();
-    setInterval(showPage, 250);
     loadImages();
+    getWorld();
+    //while(!worldLoaded) { /* Wait for the map to load */}
+    //start(); MOVED START TO GETWORLD
+    setInterval(showPage, 250);
     //getWorld();
 
     // Execute getProgress every 250 milliseconds
@@ -540,7 +546,7 @@ function initFunction() {
         document.getElementById('saveDelivery').style.visibility = 'hidden';
     }
     // Execute start after 700 milliseconds
-    setTimeout(start, 9000)
+    //setTimeout(start, 1000)
 
 }
 
@@ -617,8 +623,10 @@ function showPage() {
             }
             if(!control_initDraw)
             {
+                console.log("Start drawing map");
                 control_initDraw = true;
                 initdraw();
+                console.log("Drawing complete");
             }
     }
 }

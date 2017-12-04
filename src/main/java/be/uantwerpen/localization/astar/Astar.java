@@ -181,6 +181,7 @@ public class Astar {
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
+        System.out.println("DEBUG: let's dispatch the jobbb");
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
     }
 }

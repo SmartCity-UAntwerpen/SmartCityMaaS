@@ -221,6 +221,7 @@ public class UserController {
         if(delivery_return.getFirstName() == null)
         {
             System.out.println("-- !! Could not retrieve last delivery from MongoDB service !! --");
+            return "home_user";
 
         }else
         {
@@ -234,6 +235,7 @@ public class UserController {
 
         // TODO delivery ID koppelen aan Astarr
         astarService.init();
+        System.out.println("DEBUG: passed astar init");
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
         System.out.println("REDIRECT IS PERFORMED");
         User loginUser = userService.getPrincipalUser();
