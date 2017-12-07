@@ -23,7 +23,14 @@ public class JobDispatching {
     private JobService jobService;
     @Autowired
     private JobListService jobListService;
+    //@Autowired
+    private GraphBuilder graphBuilder;
 
+
+    public JobDispatching( String path, String idDelivery, GraphBuilder gb ) {
+        //dispatchOrders2( path, idDelivery );
+        this.graphBuilder = gb;
+    }
 
     public JobDispatching (JobService jobService, JobListService jobListService) {
         this.jobService = jobService;
@@ -40,7 +47,7 @@ public class JobDispatching {
     public JobDispatching (JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder, String idDelivery) {
         this.jobService = jobService;
         this.jobListService = jobListService;
-        dispatchOrders2(path, graphBuilder, idDelivery);
+        //dispatchOrders2(path, graphBuilder, idDelivery);
     }
 
     /**
@@ -111,16 +118,19 @@ public class JobDispatching {
      * Dispatch orders function will use a path as parameter and convert it into a JobList, which consists of Jobs containing all the information required to send to the cores.
      * At the end of the function, there will be a call to the dispatch2core function, to start communication in the
      * @param path  (String) path computed by Astar Algorithm
-     * @param graphBuilder  (Graphbuilder Service)
+     * @param //graphBuilder  (Graphbuilder Service)
      * @param idDelivery  (String) idDelivery waaraan het Order wordt vastgekoppeld
      */
-    public void dispatchOrders2 (String path, GraphBuilder graphBuilder, String idDelivery ) {
+    public void dispatchOrders2 (String path, String idDelivery ) {
         long k = 0;         //
-        path = path.substring(1);           // remove first character '['
-        path = path.substring(0,path.length()-1);       // remove last character ']'
-        String[] pathSplit =  path.split(", ", -1);        // Split string up into Edges
+        path = path.substring(1); // remove first character '['
+        path = path.substring(0,path.length()-1); // remove last character ']'
+        String[] pathSplit =  path.split(", ", -1); // Split string up into Edges
+        if(graphBuilder == null) System.out.println("graphbuilder is null");
         Link[] listOfEdges = graphBuilder.getLinkList();
+        System.out.println("LIST OF EDGES: " + listOfEdges);
         Link previous = listOfEdges[0];         // will be needed later on to prevent simular vehicletype switching
+        System.out.println( "Previous link: "+previous );
         JobList joblist = new JobList();
         for (int i = 0; i < pathSplit.length - 1; i++) {
             for (int j = 0; j < graphBuilder.getLinkList().length; j++) {

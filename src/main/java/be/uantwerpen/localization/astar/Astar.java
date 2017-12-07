@@ -46,8 +46,6 @@ public class Astar {
      * this function should only be once (when first referring to the Astar service)
      */
     public void init() {
-        this.jobService = jobService;
-        this.jobListService = jobListService;
         this.graph = new SingleGraph("SmartCityGraph");
         graphBuilder.getMap();
     }
@@ -181,7 +179,9 @@ public class Astar {
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        System.out.println("DEBUG: let's dispatch the jobbb");
-        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
+        System.out.println("Shortest Path: " + path.toString());
+        //JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
+        JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
+        jd.dispatchOrders2( path.toString(), idDelivery );
     }
 }

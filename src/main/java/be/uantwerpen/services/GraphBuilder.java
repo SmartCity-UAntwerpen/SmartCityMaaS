@@ -58,6 +58,7 @@ public class GraphBuilder {
         String linkUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/links";
         responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
+        System.out.println("moatjeuh: "+linkList);
     }
 
     //request the cost from all vehicle cores and fill in the least costly vehicle
@@ -82,13 +83,14 @@ public class GraphBuilder {
                 default: System.out.println("no supported vehicle was given. See graphbuilder class " + link.getVehicle());
             }
 
-            if(!vehicle.equals("WAIT") && !vehicle.equals("ROBOTTOP")) {
+            if(!vehicle.equals("WAIT") && !vehicle.equals("ROBOTTOP") && !vehicle.equals("DRONETOP")) {
                 url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 System.out.println("url: " + url + ", id of link: " + link.getId());
                 try {
                     responseList = restTemplate.getForEntity(url, Cost[].class);
                     //System.out.println("responseList: " + responseList);
                     costs = responseList.getBody();
+                    System.out.println("Received costs: " + costs);
                 } catch(HttpClientErrorException e) {
                     System.out.println("Http error: " + e);
                     costs = null;
