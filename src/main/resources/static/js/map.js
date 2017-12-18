@@ -140,6 +140,17 @@ function initdraw()
 /**
  * Load all the images from the html.
  */
+
+var droneDefault;
+var dronePointA;
+var dronePointB;
+var carDefault;
+var carPointA;
+var carPointB;
+var robotDefault;
+var robotPointA;
+var robotPointB;
+
 function loadImages() {
     /*cellBackground = new Image();
     cellBackground.src = cellImageBackGround;
@@ -164,6 +175,27 @@ function loadImages() {
     legend = new Image();
     legend.src = legendeWorld;*/
 
+
+
+    droneDefault = new Image();
+    droneDefault.src = "../images/map/drone_h.png";
+    dronePointA = new Image();
+    dronePointA.src = "../images/map/drone_h_pointA.png";
+    dronePointB = new Image();
+    dronePointB.src = "../images/map/drone_h_pointB.png";
+    carDefault = new Image();
+    carDefault.src = "../images/map/car_gas.png";
+    carPointA = new Image();
+    carPointA.src = "../images/map/car_gas_pointB.png";
+    carPointB = new Image();
+    carPointB.src = "../images/map/car_gas_pointB.png";
+    robotDefault = new Image();
+    robotDefault.src = "../images/map/robot_charge.png";
+    robotPointA = new Image();
+    robotPointA.src = "../images/map/robot_charge_pointA.png";
+    robotPointB = new Image();
+    robotPointB.src = "../images/map/robot_charge_pointB.png";
+
 }
 
 /**
@@ -177,11 +209,19 @@ function getWorld(){
         //start();
         console.log("allo" + world.points[1].type);
         console.log("world x = " + world.dimensionX + " world y = " + world.dimensionY );
+
+
+        var ratio = world.dimensionX/world.dimensionY;
+        $("#mapCanvas").width($("#myMapCanvas").width()).height( $("#myMapCanvas").width()/ratio ).attr("width", $("#mapCanvas").width()).attr("height", $("#mapCanvas").height());
+
+
+
         console.log("mapX = " + document.getElementById("mapCanvas").offsetWidth + " mapY = " + document.getElementById("mapCanvas").offsetHeight);
         xSize = (document.getElementById("mapCanvas").offsetWidth/world.dimensionX);
         ySize = (document.getElementById("mapCanvas").offsetHeight/world.dimensionY);
         console.log(" x size = " + xSize + " y size = " + ySize);
         drawWorldNC();
+        showPage();
     });
 }
 
@@ -195,7 +235,8 @@ function drawWorldNC(){
     for(var i=0; i<world.points.length; i++){
         var point = world.points[i];
         console.log("point " + i + " x = " +  point.physicalPoisionX + " y = "+point.physicalPoisionY + " charachterestic = " + point.pointCharacteristic + " name = " + point.pointName);
-        ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize); // fill in the pixel at (10,10)
+
+        //ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize); // fill in the pixel at (10,10)
         for(var j=0; j < point.neighbours.length; j++){
             var neigbourID = point.neighbours[j];
             var neigbour = world.points[neigbourID];
@@ -230,10 +271,33 @@ function drawWorldNC(){
                 ctx.stroke();
             }
         }
+
+    }
+
+
+
+    for(var i=0; i<world.points.length; i++) {
+        var point = world.points[i];
+        switch (point.type) {
+            case "robot":
+                if( ! point.pointCharacteristic == "INTERSECTION" )
+                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                else {
+                    ctx.strokeStyle = "#95A6A6";
+                    ctx.fillRect((point.physicalPoisionX * xSize)- xSize/2, (point.physicalPoisionY * ySize)- ySize/2, xSize, ySize); // fill in the pixel at (10,10)
+                }
+                break;
+            case "car":
+                ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                break;
+            case "drone":
+                ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                break;
+        }
+
     }
 
     map_ready = true;
-
 
 }
 /**
