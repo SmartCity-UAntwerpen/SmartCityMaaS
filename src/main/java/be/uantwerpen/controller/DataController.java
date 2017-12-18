@@ -42,7 +42,7 @@ public class DataController {
     @Autowired
     private JobListService jobListService;
 
-    public World world  = new World(200,200);
+    //public World world  = new World(200,200);
 
     List<World> worlds = new ArrayList<World>();
     int vehicleID = 1;
@@ -55,6 +55,9 @@ public class DataController {
     @Autowired
     public BackendRestemplate backendRestemplate;
 
+
+    private World myWorld = null;
+
     /**
      * Return the world with the current map of the smartcity.
      * @return
@@ -62,10 +65,11 @@ public class DataController {
     @RequestMapping(value="/retrieveWorld") // Request from http
     public World getWorld(){
         System.out.println("### Retrieve world callled ###");
+        if( myWorld == null ) {
 
-        List<DummyPoint> listPoints = getMapDataBackend();
-        // Core world or mapCoreQuentinFinal.txt = new world (300,300)
-        // Test world or mapCore.txt = new World(250,250);
+            List<DummyPoint> listPoints = getMapDataBackend();
+            // Core world or mapCoreQuentinFinal.txt = new world (300,300)
+            // Test world or mapCore.txt = new World(250,250);
 
         /*
             !!! The dimensions of the world must in the right ration with the Mapcanvas from the  html file !!!
@@ -73,13 +77,15 @@ public class DataController {
             Example: html : width : 1000 height : 1000 ==> world : 250,250
             Example: html : width : 900 height : 900 ==> world : 900,900
          */
-        World world  = new World(300,300);
-        System.out.println("### CELLIS POINTS SIZE ###"+listPoints.size());
-        world.parseMap(listPoints);
-        world.setWorld_ID("world1");
-        //this.world.parseMap(listPoints);
-        worlds.add(world);
-        return world;
+            myWorld = new World(300, 300);
+            System.out.println("### CELLIS POINTS SIZE ###" + listPoints.size());
+            myWorld.parseMap(listPoints);
+            myWorld.setWorld_ID("world1");
+            //this.world.parseMap(listPoints);
+            worlds.add(myWorld);
+            myWorld.setPoints(listPoints);
+        }
+        return myWorld;
     }
 
 
@@ -183,7 +189,7 @@ public class DataController {
             if(worlds.get(i).getWorld_ID().equals(worldid) == true)
             {
                 world = worlds.get(i);
-                i = worlds.size()+1; //TODO Change to BREAK
+                break;
             }
         }
         // TODO ask Oliver service for current job of this delivery with the DeliveryID
@@ -209,8 +215,7 @@ public class DataController {
             URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicleID;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
-        }else
-        {
+        } else {
             //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicle_id;
             URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicle_id;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
@@ -236,9 +241,9 @@ public class DataController {
                     String.class);
 
             //System.out.println("Performed exchange for bot vehicle" );
-            System.out.println("Response core : " + httpResponse.toString());
-            System.out.println("Response core : " + httpResponse.getBody());
-            System.out.println("Response body core : " + httpResponse.hasBody());
+            System.out.println("Response backbone : " + httpResponse.toString());
+            System.out.println("Response backbone : " + httpResponse.getBody());
+            System.out.println("Response body backbone : " + httpResponse.hasBody());
             String vehicleInfo = httpResponse.getBody();
             JSONParser parser = new JSONParser();
             Job job1 = new Job();
@@ -258,8 +263,10 @@ public class DataController {
                 int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
                 int percentage = ((Long) jsonObject.get("percentage")).intValue();
 
-                // System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
-                int id_start = backendRestemplate.getValueofKeyHashMap(idStart);
+
+                System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
+                if(backendRestemplate == null)System.out.println("BackendRestTemplate is null.");
+                int id_start = backendRestemplate.getValueofKeyHashMap( idStart );
                 int id_end = backendRestemplate.getValueofKeyHashMap(idEnd);
                 currentListofJobs.add(id_start);
                 currentListofJobs.add(id_end);

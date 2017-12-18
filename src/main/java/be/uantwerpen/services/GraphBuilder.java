@@ -59,6 +59,8 @@ public class GraphBuilder {
         responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
         System.out.println("moatjeuh: "+linkList);
+
+        //linkList = new Link[2] {"48", "49"}
     }
 
     //request the cost from all vehicle cores and fill in the least costly vehicle
@@ -83,7 +85,7 @@ public class GraphBuilder {
                 default: System.out.println("no supported vehicle was given. See graphbuilder class " + link.getVehicle());
             }
 
-            if(!vehicle.equals("WAIT") && !vehicle.equals("ROBOTTOP") && !vehicle.equals("DRONETOP")) {
+            if(!vehicle.equals("WAIT") && vehicle.equals("CARTOP")/*&& !vehicle.equals("ROBOTTOP") && !vehicle.equals("DRONETOP")*/) {
                 url += "/calcWeight/" + startPoint+ "/" + endPoint;
                 System.out.println("url: " + url + ", id of link: " + link.getId());
                 try {
@@ -116,7 +118,13 @@ public class GraphBuilder {
                     }
                     link.setWeight(bestCost.getWeight());
                     link.setVehicleID(bestCost.getIdVehicle());
+                    System.out.println("WEIGHT: Link id " + link.getId() + " - Weight for this link: " + link.getWeight());
                 }
+                link.setWeight((long)4);
+                link.setVehicleID((long)1);
+            } else {
+                link.setWeight((long) 900);
+                link.setVehicleID((long) 5000);
             }
         }
     }

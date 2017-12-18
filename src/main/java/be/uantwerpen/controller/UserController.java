@@ -236,6 +236,7 @@ public class UserController {
         // TODO delivery ID koppelen aan Astarr
         astarService.init();
         System.out.println("DEBUG: passed astar init");
+        //astarService.testDeterminePath(astarService.getGraph(), delivery.getPointA(),delivery.getPointB());
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
         System.out.println("REDIRECT IS PERFORMED");
         User loginUser = userService.getPrincipalUser();

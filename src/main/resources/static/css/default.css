@@ -1,0 +1,294 @@
+html, body {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #F3F3F4;
+    color: #676a6c;
+    height: 100%;
+    width: 100%;
+}
+
+.box {
+    border: 1px red dotted;
+}
+
+#side-menu {
+    background: #EFEFEF;
+    /*background-color: #003399;*/
+    padding: 0;
+    border-right: 1px solid #E3E3E3;
+    overflow: hidden;
+}
+
+#side-menu h1 {
+    color: #2b669a;
+    text-align: center;
+    font-size: 25px;
+    margin: 10px 0 3px 0;
+}
+
+#side-menu p {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+#side-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#side-menu a {
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #9FB1C2;
+    font-weight: bold;
+    font-size: 13px;
+    display: block;
+}
+
+#side-menu .glyphicon {
+    margin-right: 6px;
+}
+
+#side-menu a:hover {
+    background-color: #009fdf;
+    color: white;
+    display: block;
+}
+
+#side-menu li .active {
+    color: white;
+    background-color: #009fdf;
+}
+
+#side-menu .collapseable li {
+    padding-left: 20px;
+    padding-top: 5px;
+}
+
+#side-menu .collapseable a {
+    color: #9FB1C2;
+    font-size: 12px;
+    padding: 2px 10px;
+    text-decoration: none;
+    display: block;
+}
+
+#side-menu .collapseable a:hover {
+    color: white;
+    background-color: #009fdf;
+    display: block;
+}
+
+#side-menu .collapseable {
+    border-left: 4px solid #009fdf;
+    background-color: #dedede;
+}
+
+#side-menu .link > ul > li {
+    padding-bottom: 10px;
+}
+
+.display-table {
+    display: table;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.display-table-row {
+    display: table-row;
+    height: 100%;
+}
+
+.display-table-cell {
+    display: table-cell;
+    float: none;
+
+}
+
+.valign-top {
+    vertical-align: top;
+}
+
+/*********** HEADER **********/
+#nav-header {
+    background-color: #fff;
+    border-bottom:  1px solid #e7eaec;
+}
+
+#nav-header #header-title {
+    padding-top: 17px;
+    vertical-align: center;
+    border: none;
+}
+
+#nav-header ul.navbar-ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #676a6c;
+}
+
+#nav-header ul.navbar-ul li {
+    float: left;
+    margin-left: 15px;
+    padding: 17px 0;
+}
+
+#nav-header ul.navbar-ul .glyphicon {
+    color: #676a6c;
+}
+
+.label-warning {
+    background-color: #cc0099;
+}
+
+#nav-header ul.navbar-ul a {
+    text-decoration: none;
+}
+
+#nav-header .logout {
+    color: #676a6C;
+}
+
+#nav-header .logout:hover {
+    color: #676a6C;
+}
+
+#nav-header #campus {
+    margin-right: 20px;
+}
+
+#nav-header ul.navbar-ul .label {
+    position: absolute;
+    margin-top: -10px;
+    margin-left: -5px;
+}
+
+#nav-header .fixed-width {
+    width: 35px;
+}
+
+#footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background-color: white;
+    padding: 10px;
+    font-size: 12px;
+    color: #676a6c;
+    margin-top: 10px;
+}
+
+.navbar-default{
+    background-color: white;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #009fdf;
+    background-color: #009fdf;
+}
+
+.navbar-default .icon-bar {
+    border: 1px solid white;
+}
+
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #009fdf;
+}
+
+.navbar-default .navbar-toggle:hover > .icon-bar,.navbar-default .navbar-toggle:focus > .icon-bar  {
+    border-color:white;
+}
+
+
+img.logo {
+    width: 75px;
+    display:block;
+    margin: 10px auto;
+    height: auto;
+}
+
+
+
+
+/******* SOME STUFF ****/
+
+#leegmaken, #reset {
+    margin-right: 5px;
+}
+
+a {
+    cursor: pointer;
+}
+
+.show-on-hover:hover > ul.dropdown-menu {
+    display: block;
+}
+
+.padding-bottom {
+    padding-bottom: 30px;
+}
+
+
+.row-campus-list {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+
+.glyphicon-medium {
+    font-size: 2em;
+}
+
+.verslagen-container span {
+    padding: 5px 1px 5px 5px;
+    border-radius: 5px;
+    background-color: #EEE;
+    color: #009fdf;
+    margin: 3px;
+}
+
+#add-file {
+    color: #cc0099;
+    line-height: 100%;
+}
+
+.glyphicon-big {
+    font-size: 5em;
+    color: #009fdf;
+}
+
+.verslagen-container span:hover {
+    color: white;
+    background-color: #009fdf;
+}
+
+.verslagen-container #add-file:hover {
+    background-color: #cc0099;
+    color: white;
+}
+
+button.fileicon {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: rgba(255,255,255,0);
+}
+
+button.fileicon:focus {
+    outline: none;
+}
+
+label.no-bold {
+    font-weight: normal;
+}
+
+span.pink-letter {
+    color: #cc0099;
+}
+
+div.noti-jap-gpp {
+    cursor: pointer;
+}

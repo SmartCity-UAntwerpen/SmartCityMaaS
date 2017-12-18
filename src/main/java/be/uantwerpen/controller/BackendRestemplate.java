@@ -210,6 +210,10 @@ public class BackendRestemplate {
      */
     public Integer getValueofKeyHashMap(Integer key)
     {
+        System.out.println("Kjell gay");
+        if(key == null ) System.out.println("Kjell is super gay");
+        System.out.println("kjell zijn gay point: "+pointTransition.get(key));
+        System.out.println("Hashmapke: " + pointTransition );
         return pointTransition.get(key);
     }
 }

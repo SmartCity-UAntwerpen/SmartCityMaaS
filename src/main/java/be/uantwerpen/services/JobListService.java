@@ -114,6 +114,41 @@ public class JobListService {
         }
     }
 
+
+    public void dispatchToCore( JobList jl ) {
+        //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
+        String url = "http://";
+        if (jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("DRONETOP")){
+            url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
+            System.out.println("DroneDispatch");
+            System.out.println(url);
+        } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("CARTOP")) {
+            url += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
+            System.out.println("CarDispatch");
+            System.out.println(url);
+        } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("ROBOTTOP")) {
+            url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
+            System.out.println("RobotDispatch");
+            System.out.println(url);
+        }
+        // if succesfully dispatched, update status of the job
+        if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)){
+            jl.getJobs().get(0).setStatus("busy");
+        }
+        // an error has occured. Rerun the calculations for paths.
+        else {
+            recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
+            // for debug purposes
+                    /* System.out.println(" Lijst van Orders afdrukken");
+                    for (JobList jl2: jobListRepository.findAll()) {
+                        System.out.println(" Order #" + jl2.getId());
+                        for(int x = 0; x<jl2.getJobs().size(); x++) {
+                            System.out.println("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
+                        }
+                    }*/
+        }
+    }
+
     /**
      * communication to the cores
      * @param idJob             (long) Id from the job that is being dispatched

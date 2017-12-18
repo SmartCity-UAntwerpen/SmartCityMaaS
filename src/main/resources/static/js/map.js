@@ -36,6 +36,19 @@ var map_ready = false;
 var control_initDraw = false;
 var progress;
 
+
+
+
+
+
+var xSize = 0;
+var ySize = 0;
+var pointAset = false;
+var pointBset = false;
+
+var pointAId = -10;
+var pointBId = -10;
+
 /**
  * The start function to allow drawing on th mapCanvas of the html.
  * Set the right intervals drawing and progress control.
@@ -47,7 +60,7 @@ function start() {
     //drawMap();
     if(only_view == false)
     {
-        mapCanvas.addEventListener("click", onClick, false);
+
     }else
     {
         if( visualization == true)
@@ -61,209 +74,6 @@ function start() {
     }
 }
 
-/**
- * Iterate over the world's cells to perform the drawCell function on each of them.
- */
-function drawMap() {
-    // x_size and y_size resemble the amoutn of pixels needed to draw one unit of the respective dimension in the
-    // canvas.
-    x_size = mapCanvas.width/world.dimensionY;
-    y_size = mapCanvas.height/world.dimensionX;
-    console.log("--- Information ---");
-    console.log("ROWS "+world.dimensionY);
-    console.log("COLUMNS "+world.dimensionX);
-    console.log("x_size "+x_size);
-    console.log("y_size "+y_size);
-    var cell;
-    var redraw;
-    for(var i=0; i<world.dimensionY; i++){
-        for(var j=0; j<world.dimensionX; j++){
-            cell = world.cells[i].cellList[j];
-            redraw = drawCell( j, i,cell);
-            if(redraw == true)
-            {
-                i = -1;
-                j = world.dimensionX;
-            }
-        }
-    }
-  //  document.getElementById('inputA').value = ""+world.cells[pointA_y/5].cellList[pointA_x/5].spotID;//pointA_x+pointA_y;
-  //  document.getElementById('inputB').value = ""+world.cells[pointB_y/5].cellList[pointB_x/5].spotID;//pointB_x+pointB_y;
- //   console.log("inputA "+world.cells[pointA_y/5].cellList[pointA_x/5].spotID);
-  //  console.log("inputB "+world.cells[pointB_y/5].cellList[pointB_x/5].spotID);
-}
-
-/**
- * Controls if a cell is part of point A or B and draw this cell as the right type on the map.
- * @param j
- * @param i
- * @param cell
- * @returns {boolean}
- */
-function drawCell(j, i, cell) {
-
-    var columns = x_size * j;
-    var rows = y_size * i;
-
-    if(cell.type.localeCompare("background") != 0 && cell.type.localeCompare("road") != 0 ) {
-        if (pointA_set == true) {
-            if (columns <= pointA_x && pointA_x < columns + x_size && rows <= pointA_y && pointA_y < rows + y_size) {
-
-                if (cell.type.localeCompare("surrounding_point") == 0) {
-                    // Set point A's index to a not allowed value
-                    pointA_x_cell = -1;
-                    pointA_y_cell = -1;
-                    pointA_x = cell.sur_x*x_size;
-                    pointA_y = cell.sur_y*y_size;
-                    pointA_ID = cell.spotID;
-                    //mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
-                    return true;
-                }else
-                {
-                    pointA_x_cell = j;
-                    pointA_y_cell = i;
-                    pointA_x = cell.sur_x*x_size;
-                    pointA_y = cell.sur_y*y_size;
-                    pointA_ID = cell.spotID;
-                    change_color = "A";
-                }
-            } else {
-                if (pointB_set == true) {
-                    if (columns <= pointB_x && pointB_x < columns + x_size && rows <= pointB_y && pointB_y < rows + y_size) {
-                        if (cell.type.localeCompare("surrounding_point") == 0) {
-                            if( cell.sur_x*x_size == pointB_x && cell.sur_y*y_size == pointB_y)
-                            {
-                                // Set point B's index to a not allowed value
-                                pointB_x_cell = -1;
-                                pointB_y_cell = -1;
-                                pointB_set = false;
-                                pointB_ID = -100;
-                                redraw_onPointB = false;
-                                return true;
-                            }else
-                            {
-                                pointB_x = cell.sur_x*x_size;
-                                pointB_y = cell.sur_y*y_size;
-                                //mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
-                                pointB_ID = cell.spotID;
-                                return true;
-                            }
-                        }else
-                        {
-                            pointB_x_cell = j;
-                            pointB_y_cell = i;
-                            pointB_x = cell.sur_x*x_size;
-                            pointB_y = cell.sur_y*y_size;
-                            pointB_ID = cell.spotID;
-                            change_color = "B";
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // Draw point A on this cell if it has the point A ID
-    if(cell.spotID == pointA_ID)//(rows == pointA_y && columns == pointA_x) || (cell.type.localeCompare("surrounding_point") == 0 && cell.spotID == pointA_ID))
-    {
-        if(pointA_set == true) {
-            if(rows == pointA_y && columns == pointA_x)
-            {
-                if(redraw_onPointA == false)
-                {
-                    redraw_onPointA = true;
-                    return true;
-                }
-            }
-            console.log("-----------------------------------------------------------------");
-            console.log("ROWS " + rows);
-            console.log("COLUMNS " + columns);
-            console.log("pointA_x " + pointA_x+" pointA_y " + pointA_y);
-            console.log("pointA_x_cell " + pointA_x_cell + " pointA_y_cell "+pointA_y_cell);
-            console.log("pointB_x " + pointB_x + " pointB_y " + pointB_y);
-            console.log("pointB_x_cell " + pointB_x_cell + " pointB_y_cell "+pointB_y_cell)
-            console.log("pointA " + pointA_ID);
-
-             console.log("-----------------------------------------------------------------");
-            mapCanvasContext.drawImage(cellPointA, columns, rows, x_size, y_size);
-
-            // Make bigger square around A
-            document.getElementById('inputA').value = ""+world.cells[cell.sur_y].cellList[cell.sur_x].spotID;
-        }else
-        {
-            if(cell.type.localeCompare("spot") == 0 || cell.type.localeCompare("surrounding_point") == 0)
-            {
-                //console.log("Map info x " +cell.specific);
-
-                if (cell.specific.localeCompare("drone") == 0)
-                {
-                    mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
-                }else if(cell.specific.localeCompare("car") == 0)
-                {
-                    mapCanvasContext.drawImage(spot_car, columns, rows, x_size, y_size);
-                }else
-                {
-                    mapCanvasContext.drawImage(spot_robot, columns, rows, x_size, y_size);
-                }
-            }else if (cell.type.localeCompare("road") == 0)
-            {
-                mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-            }else
-            {
-                mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
-            }
-        }
-    }else if(cell.spotID == pointB_ID) // Draw point B on this cell if it has the point B ID
-    {
-        if(pointB_set == true) {
-
-            if(rows == pointB_y && columns == pointB_x)
-            {
-                if(redraw_onPointB == false)
-                {
-                    redraw_onPointB = true;
-                    return true;
-                }
-            }
-            console.log("-----------------------------------------------------------------");
-            console.log("ROWS " + rows);
-            console.log("COLUMNS " + columns);
-            console.log("pointA_x " + pointA_x+" pointA_y " + pointA_y);
-            console.log("pointA_x_cell " + pointA_x_cell + " pointA_y_cell "+pointA_y_cell);
-            console.log("pointB_x " + pointB_x + " pointB_y " + pointB_y);
-            console.log("pointB_x_cell " + pointB_x_cell + " pointB_y_cell "+pointB_y_cell);
-            console.log("pointB " + pointB_ID);
-            console.log("-----------------------------------------------------------------");
-            mapCanvasContext.drawImage(cellPointB, columns, rows, x_size, y_size);
-            document.getElementById('inputB').value = ""+world.cells[pointB_y_cell].cellList[pointB_x_cell].spotID;
-        }else
-        {
-            if(cell.type.localeCompare("spot") == 0 || cell.type.localeCompare("surrounding_point") == 0)
-            {
-                //console.log("Map info x " +cell.specific);
-
-                if (cell.specific.localeCompare("drone") == 0)
-                {
-                    mapCanvasContext.drawImage(spot_drone, columns, rows, x_size, y_size);
-                }else if(cell.specific.localeCompare("car") == 0)
-                {
-                    mapCanvasContext.drawImage(spot_car, columns, rows, x_size, y_size);
-                }else
-                {
-                    mapCanvasContext.drawImage(spot_robot, columns, rows, x_size, y_size);
-                }
-            }else if (cell.type.localeCompare("road") == 0)
-            {
-                mapCanvasContext.drawImage(cellRoad, columns, rows, x_size, y_size);
-            }else
-            {
-                mapCanvasContext.drawImage(cellBackground, columns, rows, x_size, y_size);
-            }
-        }
-
-    }
-    return false;
-}
 
 /**
  * Initial draw of the map, where no vehicles are included.
@@ -272,6 +82,9 @@ function initdraw()
 {
     x_size = mapCanvas.width/world.dimensionY;
     y_size = mapCanvas.height/world.dimensionX;
+
+
+    console.log("x size = " + x_size);
     for(var i=0; i<world.dimensionY; i++) {
         for (var j = 0; j < world.dimensionX; j++) {
             var cell = world.cells[i].cellList[j];
@@ -328,7 +141,7 @@ function initdraw()
  * Load all the images from the html.
  */
 function loadImages() {
-    cellBackground = new Image();
+    /*cellBackground = new Image();
     cellBackground.src = cellImageBackGround;
     cellRoad = new Image();
     cellRoad.src = cellImageRoad;
@@ -349,7 +162,7 @@ function loadImages() {
     spot_car = new Image();
     spot_car.src = cellImageSpotCar;
     legend = new Image();
-    legend.src = legendeWorld;
+    legend.src = legendeWorld;*/
 
 }
 
@@ -361,100 +174,73 @@ function getWorld(){
         world = result;
         worldLoaded = true;
         console.log("JSON WORLD");
-        start();
+        //start();
+        console.log("allo" + world.points[1].type);
+        console.log("world x = " + world.dimensionX + " world y = " + world.dimensionY );
+        console.log("mapX = " + document.getElementById("mapCanvas").offsetWidth + " mapY = " + document.getElementById("mapCanvas").offsetHeight);
+        xSize = (document.getElementById("mapCanvas").offsetWidth/world.dimensionX);
+        ySize = (document.getElementById("mapCanvas").offsetHeight/world.dimensionY);
+        console.log(" x size = " + xSize + " y size = " + ySize);
+        drawWorldNC();
     });
 }
 
+
+function drawWorldNC(){
+    console.log("world point size = " + world.points.length);
+    mapCanvas = document.getElementById("mapCanvas");
+    mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);
+    var ctx = mapCanvas.getContext("2d");
+
+    for(var i=0; i<world.points.length; i++){
+        var point = world.points[i];
+        console.log("point " + i + " x = " +  point.physicalPoisionX + " y = "+point.physicalPoisionY + " charachterestic = " + point.pointCharacteristic + " name = " + point.pointName);
+        ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize); // fill in the pixel at (10,10)
+        for(var j=0; j < point.neighbours.length; j++){
+            var neigbourID = point.neighbours[j];
+            var neigbour = world.points[neigbourID];
+            if(true){
+                ctx.beginPath();
+                if(point.physicalPoisionX < neigbour.physicalPoisionX){
+                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
+                    var middle = ((neigbour.physicalPoisionX - point.physicalPoisionX)/2) + point.physicalPoisionX;
+                    ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
+                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
+                } else if(point.physicalPoisionX > neigbour.physicalPoisionX ){
+                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
+                    var middle = ((point.physicalPoisionX - neigbour.physicalPoisionX )/2) + neigbour.physicalPoisionX;
+                    ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
+                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
+
+
+                } else{
+                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
+                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
+                }
+                switch (point.type) {
+                    case "robot":
+                        ctx.strokeStyle = '#e74c3c';
+                        break;
+                    case "car":
+                        ctx.strokeStyle = '#2980b9';
+                        break;
+                    case "drone":
+                        ctx.strokeStyle = '#27ae60';
+                }
+                ctx.stroke();
+            }
+        }
+    }
+
+    map_ready = true;
+
+
+}
 /**
  * JQuery that retrieves the progress for a vehicle of a specific delivery.
  * All vehicles progress is requested when visualisation is true.
  */
-function getProgress(){
 
-    if( visualization == true)
-    {
-        var URL_Progress = "/world1/allVehicles";
-        //console.log("URL requested "+ URL_Progress)
-
-        $.getJSON(URL_Progress, function(result){
-            var allVehicles = result;
-
-            for(var j=0; j<allVehicles.length; j++) {
-                ///progressVehicleID = allVehicles[j];
-                //console.log("ID of device "+allVehicles[j] + "      "+ allVehicles.length);
-                var URL_Progress = "/world1/progress/null/"+allVehicles[j];
-                //console.log("URL requested "+ URL_Progress)
-                $.getJSON(URL_Progress, function(result){
-                    progress = result;
-                    // console.log("Result: "+progress[0]+" - " + progress[1]);
-                    // Controls if x index of progress is an allowed value
-                    if(progress[0] != -1)
-                    {
-                        if(currentVehicleID != -1)
-                        {
-                            if(currentVehicleID == progress[2])
-                            {
-                                mapCanvasContext.drawImage(cellPointB, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-                                console.log("Vehicle 1 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
-                            }else
-                            {
-                                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-                                console.log("Vehicle 2 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
-                            }
-                        }else
-                        {
-                            mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-
-                        }
-                    }
-                });
-            }
-        });
-    }else
-    {
-        var URL_Progress = "/world1/progress/"+id_delivery+"/0";
-        //console.log("URL requested "+ URL_Progress)
-        $.getJSON(URL_Progress, function(result){
-            progress = result;
-            // console.log("Result: "+progress[0]+" - " + progress[1]);
-            // Controls if x index of progress is an allowed value
-            if(progress[0] != -1)
-            {
-                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-            }else
-            {
-                document.getElementById("deliveryDone").style.visibility = "visible";
-            }
-        });
-    }
-}
-/**
- * Controls if the x-and y-coordinates of a mouse click are situated in a legitimate area.
- * Such an area is a spot or surrounding point.
- * The return is important for the onClic, so that this function knows which drawing function /no drawing
- * function needs to be performed.
- * @param x
- * @param y
- * @returns {boolean}
- */
-function legitArea(x, y)
-{
-    var type;
-    for(var i=0; i<world.dimensionY; i++){
-        for(var j=0; j<world.dimensionX; j++){
-            var column = x_size * j;
-            var row = y_size * i;
-            if (column <= x && x < column + x_size && row <= y && y < row + y_size) {
-                if (world.cells[i].cellList[j].type.localeCompare("background") == 0 || world.cells[i].cellList[j].type.localeCompare("road") == 0
-                    || world.cells[i].cellList[j].characteristic.localeCompare("INTERSECTION") == 0 || world.cells[i].cellList[j].characteristic.localeCompare("LIGHT") == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-}
 
 /**
  * This function is performed on every mouse click
@@ -462,6 +248,71 @@ function legitArea(x, y)
  * activated or deactivated
  * @param e
  */
+
+$('#myMapCanvas').onmousedown( clickedOnCanvas(event) );
+//$('#myMapCanvas').click( function(){ alert("test"); } );
+
+function clickedOnCanvas(event){
+    var mapCanvas = document.getElementById("mapCanvas");
+    var ctx = mapCanvas.getContext("2d");
+    var rect = mapCanvas.getBoundingClientRect();
+    var canvasX = event.clientX - rect.left;
+    var canvasY = event.clientY - rect.top;
+    console.log("Point clicked x = " + canvasX + "y = " + canvasY);
+    if(pointAset){
+        var point = world.points[pointAId];
+        if(canvasX >= point.physicalPoisionX*xSize && canvasX <= point.physicalPoisionX*xSize + xSize && canvasY >= point.physicalPoisionY*ySize && canvasY <= point.physicalPoisionY*ySize + ySize){
+            console.log("turning off point A");
+            pointAset = false;
+            pointAId = -10;
+            ctx.fillStyle="#000000";
+            ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize);
+            document.getElementById('saveDelivery').style.visibility = 'hidden';
+            return;
+        }
+    }
+    if(pointBset){
+        var point = world.points[pointBId];
+        if(canvasX >= point.physicalPoisionX*xSize && canvasX <= point.physicalPoisionX*xSize + xSize && canvasY >= point.physicalPoisionY*ySize && canvasY <= point.physicalPoisionY*ySize + ySize){
+            console.log("turning off point B");
+            pointBset = false;
+            pointBId = -10;
+            ctx.fillStyle="#000000";
+            ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize);
+            document.getElementById('saveDelivery').style.visibility = 'hidden';
+            return;
+        }
+    }
+    if(!pointAset || !pointBset){
+        for(var i=0; i<world.points.length; i++) {
+            var point = world.points[i];
+            if(canvasX >= point.physicalPoisionX*xSize && canvasX <= point.physicalPoisionX*xSize + xSize && canvasY >= point.physicalPoisionY*ySize && canvasY <= point.physicalPoisionY*ySize + ySize){
+                if(!pointAset){
+                    console.log("Point A id = " + i);
+                    ctx.fillStyle="#FF0000";
+                    pointAId = i;
+                    pointAset = true;
+                    document.getElementById("inputA").value = point.pointName;
+                    if(pointBset){
+                        document.getElementById('saveDelivery').style.visibility = 'visible';
+                    }
+                }
+                else{
+                    console.log("Point B id = " + i);
+                    ctx.fillStyle="#0000FF";
+                    pointBId = i;
+                    pointBset = true;
+                    document.getElementById("inputB").value = point.pointName;
+                    document.getElementById('saveDelivery').style.visibility = 'visible';
+
+                }
+                ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize);
+                return;
+           }
+        }
+    }
+}
+
 function onClick(e) {
     console.log("MOUSE CLICK x "+ e.pageX + " en y " +e.pageY);
     var map = document.getElementById('myMapCanvas');
@@ -534,12 +385,11 @@ function initFunction() {
     showPage();
     loadImages();
     getWorld();
-    //while(!worldLoaded) { /* Wait for the map to load */}
-    //start(); MOVED START TO GETWORLD
-    setInterval(showPage, 250);
-    //getWorld();
 
-    // Execute getProgress every 250 milliseconds
+    if(visualization){
+        setInterval(getVehiclesVN, 250);
+    }
+
     if(!only_view)
     {
         // Hide save button, this button will only be showed when both of the points are selected.
@@ -564,7 +414,6 @@ function showPage() {
             document.getElementById("passengersLabel").style.visibility = "hidden";
             document.getElementById("passengersSelect").style.visibility = "hidden";
             document.getElementById("closeButton").style.visibility = "hidden";
-            document.getElementById("myDiv").style.visibility = "hidden";
         }else
         {
             if(visualization == false) {
@@ -576,7 +425,6 @@ function showPage() {
                 document.getElementById("pointBLabel").style.visibility = "hidden";
                 document.getElementById("pointBtext").style.visibility = "hidden";
                 document.getElementById("closeButton").style.visibility = "hidden";
-                document.getElementById("myDiv").style.visibility = "hidden";
                 document.getElementById("deliveryIDLabel").style.visibility = "hidden";
                 document.getElementById("deliveryID").style.visibility = "hidden";
                 document.getElementById("deliveryDone").style.visibility = "hidden";
@@ -584,7 +432,6 @@ function showPage() {
             }else
             {
                 document.getElementById("closeButton").style.visibility = "hidden";
-                document.getElementById("myDiv").style.visibility = "hidden";
                 document.getElementById("reloadButton").style.visibility = "hidden";
                 document.getElementById("table_vehicles").style.visibility = "hidden";
             }
@@ -598,7 +445,6 @@ function showPage() {
             document.getElementById("passengersLabel").style.visibility = "visible";
             document.getElementById("passengersSelect").style.visibility = "visible";
             document.getElementById("closeButton").style.visibility = "visible";
-            document.getElementById("myDiv").style.visibility = "visible";
         }else
             if(visualization == false) {
                 document.getElementById("loader").style.display = "none";
@@ -610,14 +456,12 @@ function showPage() {
                 document.getElementById("pointBLabel").style.visibility = "visible";
                 document.getElementById("pointBtext").style.visibility = "visible";
                 document.getElementById("closeButton").style.visibility = "visible";
-                document.getElementById("myDiv").style.visibility = "visible";
                 document.getElementById("deliveryIDLabel").style.visibility = "visible";
                 document.getElementById("deliveryID").style.visibility = "visible";
             }else
             {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("closeButton").style.visibility = "visible";
-                document.getElementById("myDiv").style.visibility = "visible";
                 document.getElementById("reloadButton").style.visibility = "visible";
                 document.getElementById("table_vehicles").style.visibility = "visible";
             }
@@ -625,9 +469,86 @@ function showPage() {
             {
                 console.log("Start drawing map");
                 control_initDraw = true;
-                initdraw();
+                //initdraw();
                 console.log("Drawing complete");
             }
     }
 }
+
+/*function getProgress(){
+
+    if( visualization == true)
+    {
+
+        //console.log("URL requested "+ URL_Progress)
+
+
+
+
+    }else
+    {
+        var URL_Progress = "/world1/progress/"+id_delivery+"/0";
+        //console.log("URL requested "+ URL_Progress)
+        $.getJSON(URL_Progress, function(result){
+            progress = result;
+            // console.log("Result: "+progress[0]+" - " + progress[1]);
+            // Controls if x index of progress is an allowed value
+            if(progress[0] != -1)
+            {
+                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+            }else
+            {
+                document.getElementById("deliveryDone").style.visibility = "visible";
+            }
+        });
+    }
+}*/
+
+
+
+function getVehiclesVN(){
+    var mapCanvas = document.getElementById("mapCanvas");
+    var ctx = mapCanvas.getContext("2d");
+    var URL_Progress = "/world1/allVehicles";
+    $.getJSON(URL_Progress, function(result){
+        var allVehicles = result;
+        for(var j=0; j<allVehicles.length; j++) {
+            var URL_Progress = "/world1/progress/null/"+allVehicles[j];
+            console.log("progress of vehicle " + j );
+            $.getJSON(URL_Progress, function(result){
+                //progress values = x,y,vehicleID
+                progress = result;
+                console.log("Result: "+progress[0]+" - " + progress[1]);
+                // Controls if x index of progress is an allowed value
+                if(progress[0] != -1)
+                {
+                    if(currentVehicleID != -1)
+                    {
+
+                        if(currentVehicleID == progress[2])
+                        {
+                            ctx.fillStyle="#9b59b6";
+                            ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
+                            console.log("Vehicle 1 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
+                        }else
+                        {
+                            ctx.fillStyle="#95a5a6";
+                            ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
+                            console.log("Vehicle 2 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
+                        }
+                    }else
+                    {
+                        console.log("no vehicle clicked");
+                        ctx.fillStyle="#ffffff";
+                        ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
+
+                    }
+                }
+            });
+        }
+    });
+
+
+}
+
 

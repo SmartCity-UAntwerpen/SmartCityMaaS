@@ -32,14 +32,16 @@ public class World {
     // Defines the diameter of cells around a location point.
     private int surround_layer = 1;
 
+    private List<DummyPoint> points;
+
     /**
      * Constructor of the world with specified world dimensions.
      * @param dimensionX
      * @param dimensionY
      */
     public World(int dimensionX, int dimensionY) {
-        this.dimensionX = dimensionX;
-        this.dimensionY = dimensionY;
+        this.dimensionX = 0;
+        this.dimensionY = 0;
         this.unitWorld = 1; //1 meter
         this.unitMap = 2;
         cells = new ArrayList<CellRow>();
@@ -647,5 +649,23 @@ public class World {
     }
     public void setWorld_ID(String world_ID) {
         this.world_ID = world_ID;
+    }
+
+    public void setPoints(List<DummyPoint> points){
+        for(int i= 0; i < points.size(); i++){
+            if(points.get(i).getPhysicalPoisionX() > this.dimensionX){
+                this.dimensionX = points.get(i).getPhysicalPoisionX(); 
+            }
+            if(points.get(i).getPhysicalPoisionY() > this.dimensionY){
+                this.dimensionY = points.get(i).getPhysicalPoisionY();
+            }
+        }
+        this.dimensionY += 6;
+        this.dimensionX += 6;
+        this.points = points;
+    }
+
+    public List<DummyPoint> getPoints(){
+        return this.points;
     }
 }

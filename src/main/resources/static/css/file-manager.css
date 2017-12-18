@@ -1,0 +1,104 @@
+.file-container .glyphicon-big {
+    font-size: 5em;
+    color: #009fdf;
+}
+
+.file-nav {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: white;
+    color: grey;
+    font-weight: bold;
+}
+
+.file-nav .file-nav-title {
+    cursor: pointer;
+}
+
+.file-nav .file-nav-title:hover {
+    color: #009fdf;
+}
+
+.file {
+    padding:10px;
+}
+
+.file-content {
+    padding: 10px;
+    margin: 4px;
+    color: grey;
+    background-color: #EEE;
+    border-radius: 5px;
+    vertical-align: text-top;
+    cursor: pointer;
+}
+
+.file-content span {
+    line-height: 100%;
+    vertical-align: middle;
+}
+
+.file-content span.file-name {
+    margin-left: 25px;
+}
+
+.file-content:hover {
+    background-color: #009fdf;
+    color:white;
+    /*box-shadow: 5px 5px 2px #888888;*/
+}
+
+.file-content:hover .glyphicon {
+    color: #EEE;
+}
+
+
+.glyphicon-huge {
+    font-size: 10em;
+}
+
+div.no-file-notice {
+    text-align: center;
+    opacity: 0.6;
+}
+
+div.no-file {
+    margin-top: 100px;
+}
+
+.files {
+    display: none;
+}
+
+.pink-icon {
+    color: #cc0099;
+    font-size: 1.5em;
+}
+
+.file-content:hover .pink-icon {
+    color: #cc0099;
+}
+
+#add-file {
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #EEE;
+}
+
+#add-file:hover {
+    background-color: #cc0099;
+    color: white;
+}
+
+.files a {
+    /*text-decoration: none;*/
+    cursor: pointer ;
+}
+
+/*.delete-file {
+    position: absolute;
+    z-index: 9000;
+    margin-right: 5px;
+}
+*/
