@@ -208,9 +208,7 @@ public class BackendRestemplate {
      * @param key
      * @return
      */
-    public Integer getValueofKeyHashMap(Integer key)
-    {
-        System.out.println("Hashmapke: " + pointTransition );
+    public Integer getValueofKeyHashMap(Integer key) {
         return pointTransition.get(key);
     }
 }
