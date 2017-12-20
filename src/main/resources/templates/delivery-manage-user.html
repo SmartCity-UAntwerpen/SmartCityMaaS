@@ -65,7 +65,7 @@
                     <div class="row">
                         <div class="col-sm-12 content" id="content" ><!--style="width:100%">-->
                                 <div id="myMapCanvas" >
-                                    <canvas id="mapCanvas" style="border:1px solid #000000; width: 1100px; height: 600px;"></canvas>
+                                    <canvas id="mapCanvas"></canvas>
                                 </div>
                         </div>
                     </div>
@@ -134,32 +134,8 @@
                                         </div>
 
                                         <script th:inline="javascript">
-                                            /*<![CDATA[*/
-                                            var cellImageBackGround = /*[[@{/images/map/test_lol.png}]]*/;
-
-                                            var cellImageRoad = /*[[@{/images/map/road.png}]]*/;
-                                            var pointAImage = /*[[@{/images/map/pointA.png}]]*/;
-                                            var pointBImage = /*[[@{/images/map/pointB.png}]]*/;
-                                            var spotImage = /*[[@{/images/map/spot.png}]]*/;
-
-                                            var surroundImage = /*[[@{/images/map/surrounding.png}]]*/;
-
-                                            var pointA =  /*[[*{pointA}]]*/
-
-                                            var cellImageSpotDrone = /*[[@{/images/map/road_drone.png}]]*/;
-                                            var cellImageRoadDrone = /*[[@{/images/map/spot_drone.png}]]*/;
-                                            var cellImageDrone = /*[[@{/images/map/drone.png}]]*/;
-
-                                            var legendeWorld = /*[[@{/images/map/legende_user.png}]]*/;
-
-
-                                            var cellImageSpotCar = /*[[@{/images/map/spot_car.png}]]*/;
-                                            // The user can also interact with the map
                                             var only_view = false;
                                             var visualization = false;
-
-
-                                            /*]]>*/
                                         </script>
 
 
