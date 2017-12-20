@@ -54,7 +54,7 @@
                         <div class="row">
                             <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->
                             <div class="col-md-12 alert alert-info" id="info-bar">
-                                ERROR FEEDBACK
+                                <span th:text="${error}" ></span>
                             </div>
                         </div>
                         <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
@@ -145,5 +145,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
         <script src="./js/tabs.js"></script>
+
+
+        <script>
+            if( $("#info-bar span").text() !== "Enjoy your stay, at the MaaS milkyway :)" )
+                $("#info-bar").addClass("alert-danger").removeClass("alert-info");
+        </script>
     </body>
 </html>
