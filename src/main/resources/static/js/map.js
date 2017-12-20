@@ -384,7 +384,6 @@ function showPage() {
             document.getElementById("content").style.visibility = "hidden";
             document.getElementById("passengersLabel").style.visibility = "hidden";
             document.getElementById("passengersSelect").style.visibility = "hidden";
-            document.getElementById("closeButton").style.visibility = "hidden";
         }else
         {
             if(visualization == false) {
@@ -395,15 +394,12 @@ function showPage() {
                 document.getElementById("pointAtext").style.visibility = "hidden";
                 document.getElementById("pointBLabel").style.visibility = "hidden";
                 document.getElementById("pointBtext").style.visibility = "hidden";
-                document.getElementById("closeButton").style.visibility = "hidden";
                 document.getElementById("deliveryIDLabel").style.visibility = "hidden";
                 document.getElementById("deliveryID").style.visibility = "hidden";
                 document.getElementById("deliveryDone").style.visibility = "hidden";
 
             }else
             {
-                document.getElementById("closeButton").style.visibility = "hidden";
-                document.getElementById("reloadButton").style.visibility = "hidden";
                 document.getElementById("table_vehicles").style.visibility = "hidden";
             }
         }
@@ -415,7 +411,6 @@ function showPage() {
             document.getElementById("content").style.visibility = "visible";
             document.getElementById("passengersLabel").style.visibility = "visible";
             document.getElementById("passengersSelect").style.visibility = "visible";
-            document.getElementById("closeButton").style.visibility = "visible";
         }else
             if(visualization == false) {
                 document.getElementById("loader").style.display = "none";
@@ -426,14 +421,11 @@ function showPage() {
                 document.getElementById("pointAtext").style.visibility = "visible";
                 document.getElementById("pointBLabel").style.visibility = "visible";
                 document.getElementById("pointBtext").style.visibility = "visible";
-                document.getElementById("closeButton").style.visibility = "visible";
                 document.getElementById("deliveryIDLabel").style.visibility = "visible";
                 document.getElementById("deliveryID").style.visibility = "visible";
             }else
             {
                 document.getElementById("loader").style.display = "none";
-                document.getElementById("closeButton").style.visibility = "visible";
-                document.getElementById("reloadButton").style.visibility = "visible";
                 document.getElementById("table_vehicles").style.visibility = "visible";
             }
             if(!control_initDraw)
