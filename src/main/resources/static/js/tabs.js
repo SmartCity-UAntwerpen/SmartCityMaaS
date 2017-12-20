@@ -29,6 +29,10 @@ $(document).ready(function() {
     $("ul#side-nav li ul li a").click(function(e) {
         if( $(this).hasClass("delivery-link")) window.location.href='/deliveries/put';
         else if( $(this).hasClass("visualisation-link") ) window.location.href='/visualization';
+        else if( $(this).hasClass("all-users-link") ) window.location.href='/users';
+        else if( $(this).hasClass("create-user-link") ) window.location.href='/users/put';
+        else if( $(this).hasClass("manage-delivery-link") ) window.location.href='/jobs';
+        else if( $(this).hasClass("create-delivery-link") ) window.location.href='/jobs/put';
     });
     $("ul#side-nav li a.nav-ch").click(function(e) {
         if(!$(this).hasClass("active")) {

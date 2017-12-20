@@ -78,7 +78,6 @@
                                     <form action="#" th:action="@{/deliveries/{id}(id=${delivery})}" th:object="${delivery}"  method="post">
                                         <input th:type="hidden" th:field="*{id}"/>
 
-
                                         <h1 th:inline="text" >
                                             [[${currentUser.userName}]]
                                             <small th:text="${currentUser.firstName}">Subtitle</small>

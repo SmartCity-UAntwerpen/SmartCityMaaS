@@ -10,11 +10,11 @@
 	<body>
 	  <div class="login-page">
 		  <div class="form">
-			  <p th:if="${param.logout}" class="alert">You have been logged out</p>
-			  <p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
 
 			  <form class="register-form" name="addUser" th:action="@{/users/}" method="POST" th:object="${user}">
                   <h1>Register</h1>
+				  <p th:if="${param.logout}" class="alert">You have been logged out</p>
+				  <p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
                   <input th:field="*{userName}" id="userName" placeholder="username" type="text"/>
                   <input th:field="*{password}" id="password" type="password" placeholder="password" data-type="password"/>
                   <input th:field="*{firstName}" id="firstName" type="text" placeholder="firstname"/>
@@ -25,6 +25,8 @@
 
 			  <form class="login-form" name="f" th:action="@{/login}" method="POST">
                   <h1>Login</h1>
+				  <p th:if="${param.logout}" class="alert">You have been logged out</p>
+				  <p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
 				  <input type="text" name="username" value="" placeholder="name"/>
 				  <input type="password" name="password" placeholder="password"/>
 				  <input type="submit" value="Login"/>

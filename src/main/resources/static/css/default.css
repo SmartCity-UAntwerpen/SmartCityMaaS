@@ -19,7 +19,7 @@ html, body {
 }
 
 #side-menu h1 {
-    color: #2b669a;
+    color: #3498db;
     text-align: center;
     font-size: 25px;
     margin: 10px 0 3px 0;
@@ -50,14 +50,14 @@ html, body {
 }
 
 #side-menu a:hover {
-    background-color: #009fdf;
+    background-color: #3498db;
     color: white;
     display: block;
 }
 
 #side-menu li .active {
     color: white;
-    background-color: #009fdf;
+    background-color: #3498db;
 }
 
 #side-menu .collapseable li {
@@ -75,12 +75,12 @@ html, body {
 
 #side-menu .collapseable a:hover {
     color: white;
-    background-color: #009fdf;
+    background-color: #3498db;
     display: block;
 }
 
 #side-menu .collapseable {
-    border-left: 4px solid #009fdf;
+    border-left: 4px solid #3498db;
     background-color: #dedede;
 }
 
@@ -185,8 +185,8 @@ html, body {
 }
 
 .navbar-default .navbar-toggle {
-    border-color: #009fdf;
-    background-color: #009fdf;
+    border-color: #3498db;
+    background-color: #3498db;
 }
 
 .navbar-default .icon-bar {
@@ -195,7 +195,7 @@ html, body {
 
 
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-    background-color: #009fdf;
+    background-color: #3498db;
 }
 
 .navbar-default .navbar-toggle:hover > .icon-bar,.navbar-default .navbar-toggle:focus > .icon-bar  {

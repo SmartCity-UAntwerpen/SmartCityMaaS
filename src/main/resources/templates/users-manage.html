@@ -13,7 +13,6 @@
     }
 </script>
 <div class="container">
-
     <!-- Import menu bar -->
     <div th:replace="layout :: navbar"></div>
     <form action="#" th:action="@{/users/{id}(id=${user})}" th:object="${user}" method="post">

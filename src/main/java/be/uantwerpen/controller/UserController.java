@@ -71,6 +71,8 @@ public class UserController {
     @RequestMapping(value="/users", method= RequestMethod.GET)
     public String showUsers(final ModelMap model){
         model.addAttribute("allUsers", userService.findAll());
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         return "users-list";
     }
 
@@ -83,6 +85,8 @@ public class UserController {
     public String viewCreateUser(final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",new User("",""));
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         return "users-manage";
     }
 

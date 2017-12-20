@@ -23,7 +23,7 @@
             <li class="link">
                 <a id="dashboard-show-1" class="active nav-ch" href="/">
                     <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
-                    <span class="hidden-xs hidden-sm">Overzicht</span>
+                    <span class="hidden-xs hidden-sm">OVERVIEW</span>
                 </a>
             </li>
             <!-- DELIVERIES -->
@@ -33,7 +33,9 @@
                     <span class="hidden-xs hidden-sm">DELIVERY</span>
                 </a>
                 <ul class="collapse collapseable" id="collapse-keco">
-                    <li><a id="keco-show" class="delivery-link">NEW DELIVERY</a></li>
+                    <li><a class="delivery-link">NEW DELIVERY</a></li>
+                    <li><a class="manage-delivery-link">MANAGE JOBS</a></li>
+                    <li><a class="create-delivery-link">CREATE JOB</a></li>
                 </ul>
             </li>
             <!-- VISUALISATIE -->
@@ -50,11 +52,11 @@
             <li class="link">
                 <a id="dashboard-show-6" href="#collapse-ap" data-toggle="collapse" aria-controls="collapse-post" class="nav-ch">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                    <span class="hidden-xs hidden-sm">Admin Panel</span>
+                    <span class="hidden-xs hidden-sm">ADMIN PANEL</span>
                 </a>
                 <ul class="collapse collapseable" id="collapse-ap">
-                    <li><a id="admin-settings">Settings</a></li>
-                    <li><a id="admin-gebruikers">Gebruikers</a></li>
+                    <li><a id="admin-settings" class="all-users-link">MANAGE USERS</a></li>
+                    <li><a id="admin-gebruikers" class="create-user-link">CREATE USER</a></li>
                 </ul>
             </li>
         </ul>

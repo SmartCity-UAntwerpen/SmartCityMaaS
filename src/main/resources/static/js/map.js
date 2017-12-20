@@ -7,39 +7,9 @@ var mapCanvasContext;
 var world = [];
 var worldLoaded = false;
 
-// A point index in the html page
-var pointA_x = -1;
-var pointA_y = -1;
-// A point index in the world
-var pointA_x_cell = 0;
-var pointA_y_cell = 0;
-var pointA_ID = -100;
-
-// B point index in the html page
-var pointB_x = -1;
-var pointB_y = -1;
-// B point index in the world
-var pointB_x_cell = 0;
-var pointB_y_cell = 0;
-var pointB_ID = -100;
-
-var pointA_set = false;
-var pointB_set = false;
-var x_size;
-var y_size;
-
-var change_color = "null";
-// Redraw the corresponding point or the whole map
-var redraw_onPointA = false;
-var redraw_onPointB = false;
 var map_ready = false;
 var control_initDraw = false;
 var progress;
-
-
-
-
-
 
 var xSize = 0;
 var ySize = 0;
@@ -51,30 +21,6 @@ var pointBId = -10;
 
 var linksDrawn = [];
 
-/**
- * The start function to allow drawing on th mapCanvas of the html.
- * Set the right intervals drawing and progress control.
- */
-function start() {
-    mapCanvas = document.getElementById("mapCanvas");
-    mapCanvasContext = mapCanvas.getContext("2d");
-    initdraw();
-    //drawMap();
-    if(only_view == false)
-    {
-
-    }else
-    {
-        if( visualization == true)
-        {
-            setInterval(getProgress, 2000);
-            setInterval(initdraw, 3000);
-        }else
-        {
-            setInterval(getProgress, 2000);
-        }
-    }
-}
 
 /**
  * Load all the images from the html.
@@ -144,7 +90,15 @@ function getWorld(){
 function drawWorld(){
     console.log("world point size = " + world.points.length);
     mapCanvas = document.getElementById("mapCanvas");
-    mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);
+
+
+    if(!visualization && !only_view){
+        mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);
+    }
+
+
+
+
     var ctx = mapCanvas.getContext("2d");
 
     for(var i=world.points.length-1; i>=0; i--){
@@ -233,8 +187,6 @@ function drawWorld(){
  * @param e
  */
 
-$('#myMapCanvas').onmousedown( clickedOnCanvas(event) );
-//$('#myMapCanvas').click( function(){ alert("test"); } );
 
 function clickedOnCanvas(event){
     var mapCanvas = document.getElementById("mapCanvas");
@@ -366,9 +318,6 @@ function initFunction() {
         // Hide save button, this button will only be showed when both of the points are selected.
         document.getElementById('saveDelivery').style.visibility = 'hidden';
     }
-    // Execute start after 700 milliseconds
-    //setTimeout(start, 1000)
-
 }
 
 /**
@@ -437,37 +386,6 @@ function showPage() {
             }
     }
 }
-
-/*function getProgress(){
-
-    if( visualization == true)
-    {
-
-        //console.log("URL requested "+ URL_Progress)
-
-
-
-
-    }else
-    {
-        var URL_Progress = "/world1/progress/"+id_delivery+"/0";
-        //console.log("URL requested "+ URL_Progress)
-        $.getJSON(URL_Progress, function(result){
-            progress = result;
-            // console.log("Result: "+progress[0]+" - " + progress[1]);
-            // Controls if x index of progress is an allowed value
-            if(progress[0] != -1)
-            {
-                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-            }else
-            {
-                document.getElementById("deliveryDone").style.visibility = "visible";
-            }
-        });
-    }
-}*/
-
-
 
 function getVehiclesVN(){
     var mapCanvas = document.getElementById("mapCanvas");

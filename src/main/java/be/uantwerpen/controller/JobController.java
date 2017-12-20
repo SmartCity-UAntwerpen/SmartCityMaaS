@@ -3,9 +3,11 @@ package be.uantwerpen.controller;
 import be.uantwerpen.model.Job;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.JobList;
+import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.JobListRepository;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
+import be.uantwerpen.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -33,6 +35,9 @@ public class JobController {
     @Autowired
     private JobListRepository jobListRepository;
 
+    @Autowired
+    private UserService userService;
+
     //for testing purposes
     //zet alles op om route calculaties te testen
     @RequestMapping(value="/initAstar", method= RequestMethod.GET)
@@ -45,6 +50,8 @@ public class JobController {
     //get a list for all the jobs
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         model.addAttribute("allJobs", jobService.findAll());
         model.addAttribute("allJobList", jobListService.findAll());
         jobListService.printJobList();
@@ -54,6 +61,8 @@ public class JobController {
     //make a new job manually
     @RequestMapping(value="/jobs/put", method= RequestMethod.GET)
     public String viewCreateJob(final ModelMap model){
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         model.addAttribute("job",new Job());
         return "jobs-manage";
     }
