@@ -49,7 +49,7 @@ public class BackendRestemplate {
 
         List<String> pointList = new ArrayList<String>();
 
-       UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://"+serverCoreIP+":"+serverCorePort+"/map/stringmapjson/visual");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://"+serverCoreIP+":"+serverCorePort+"/map/stringmapjson/visual");
         System.out.println("Make builder to Quentin " +builder.build().encode().toUri());
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -210,9 +210,6 @@ public class BackendRestemplate {
      */
     public Integer getValueofKeyHashMap(Integer key)
     {
-        System.out.println("Kjell gay");
-        if(key == null ) System.out.println("Kjell is super gay");
-        System.out.println("kjell zijn gay point: "+pointTransition.get(key));
         System.out.println("Hashmapke: " + pointTransition );
         return pointTransition.get(key);
     }

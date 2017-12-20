@@ -48,7 +48,8 @@ public class MyErrorController implements ErrorController {
 
         //TODO: make redirect to /home with paramets, set parameters required = false, if parameters are given, show the error
 
-        return new ModelAndView("redirect:/?test=false");
+        return new ModelAndView("redirect:/?code=" + getErrorAttributes( request, false ).get("status")
+        + "?message=" + getErrorAttributes( request, false ).get("error"));
         //return new ModelAndView();
     }
 

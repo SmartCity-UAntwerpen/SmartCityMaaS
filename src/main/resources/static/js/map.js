@@ -134,14 +134,14 @@ function getWorld(){
         xSize = (document.getElementById("mapCanvas").offsetWidth/world.dimensionX);
         ySize = (document.getElementById("mapCanvas").offsetHeight/world.dimensionY);
         console.log(" x size = " + xSize + " y size = " + ySize);
-        drawWorldNC();
+        drawWorld();
         showPage();
         console.log("values"+ linksDrawn);
     });
 }
 
 
-function drawWorldNC(){
+function drawWorld(){
     console.log("world point size = " + world.points.length);
     mapCanvas = document.getElementById("mapCanvas");
     mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);

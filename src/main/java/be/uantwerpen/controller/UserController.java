@@ -328,6 +328,7 @@ public class UserController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        System.out.println("Vehicle count: " + vehicles.size());
         return vehicles;
     }
 }

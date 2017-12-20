@@ -79,7 +79,7 @@ public class DataController {
          */
             myWorld = new World(300, 300);
             System.out.println("### CELLIS POINTS SIZE ###" + listPoints.size());
-            myWorld.parseMap(listPoints);
+            //myWorld.parseMap(listPoints);
             myWorld.setWorld_ID("world1");
             //this.world.parseMap(listPoints);
             worlds.add(myWorld);
@@ -276,6 +276,7 @@ public class DataController {
                 e.printStackTrace();
             }
             int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
+            System.out.println("We zijn al tot hier geraakt");
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];
             coordinatesVehicle[1] = coordinatesVehicle_temp[1];
             if(delivery_id.equals("null") == false)
