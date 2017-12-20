@@ -32,7 +32,7 @@ public class HomeController {
 
     //return the first page, to make a new delivery
     @RequestMapping({"/"})
-    public String showMap(Model model) {
+    public String showMap(Model model, @RequestParam(required = false) boolean test) {
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         System.out.println("User logged in: "+loginUser.getUserName());
