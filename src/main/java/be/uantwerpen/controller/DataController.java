@@ -276,7 +276,6 @@ public class DataController {
                 e.printStackTrace();
             }
             int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
-            System.out.println("We zijn al tot hier geraakt");
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];
             coordinatesVehicle[1] = coordinatesVehicle_temp[1];
             if(delivery_id.equals("null") == false)
