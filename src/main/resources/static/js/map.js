@@ -141,43 +141,43 @@ function getWorld(){
 }
 
 
-function drawWorldNC(){
+function drawWorldNC() {
     console.log("world point size = " + world.points.length);
     mapCanvas = document.getElementById("mapCanvas");
     mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);
     var ctx = mapCanvas.getContext("2d");
 
-    for(var i=world.points.length-1; i>=0; i--){
+    for (var i = world.points.length - 1; i >= 0; i--) {
         var point = world.points[i];
-        console.log("point " + i + " x = " +  point.physicalPoisionX + " y = "+point.physicalPoisionY + " charachterestic = " + point.pointCharacteristic + " name = " + point.pointName);
+        console.log("point " + i + " x = " + point.physicalPoisionX + " y = " + point.physicalPoisionY + " charachterestic = " + point.pointCharacteristic + " name = " + point.pointName);
 
         //ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize); // fill in the pixel at (10,10)
-        for(var j=0; j < point.neighbours.length; j++){
+        for (var j = 0; j < point.neighbours.length; j++) {
             var neigbourID = point.neighbours[j];
             var neigbour = world.points[neigbourID];
             var linkAlreadyDrawn = false;
-            for(var k=0; k < linksDrawn.length; k++){
-                if(linksDrawn[k].end == i && linksDrawn[k].start == neigbourID){
+            for (var k = 0; k < linksDrawn.length; k++) {
+                if (linksDrawn[k].end == i && linksDrawn[k].start == neigbourID) {
                     linkAlreadyDrawn = true;
                 }
             }
-            if(!linkAlreadyDrawn){
+            if (!linkAlreadyDrawn) {
                 ctx.beginPath();
-                if(point.physicalPoisionX < neigbour.physicalPoisionX){
-                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-                    var middle = ((neigbour.physicalPoisionX - point.physicalPoisionX)/2) + point.physicalPoisionX;
+                if (point.physicalPoisionX < neigbour.physicalPoisionX) {
+                    ctx.moveTo(point.physicalPoisionX * xSize, point.physicalPoisionY * ySize);
+                    var middle = ((neigbour.physicalPoisionX - point.physicalPoisionX) / 2) + point.physicalPoisionX;
                     //ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
-                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
-                } else if(point.physicalPoisionX > neigbour.physicalPoisionX ){
-                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-                    var middle = ((point.physicalPoisionX - neigbour.physicalPoisionX )/2) + neigbour.physicalPoisionX;
+                    ctx.lineTo(neigbour.physicalPoisionX * xSize, neigbour.physicalPoisionY * ySize);
+                } else if (point.physicalPoisionX > neigbour.physicalPoisionX) {
+                    ctx.moveTo(point.physicalPoisionX * xSize, point.physicalPoisionY * ySize);
+                    var middle = ((point.physicalPoisionX - neigbour.physicalPoisionX ) / 2) + neigbour.physicalPoisionX;
                     //ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
-                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
+                    ctx.lineTo(neigbour.physicalPoisionX * xSize, neigbour.physicalPoisionY * ySize);
 
 
-                } else{
-                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
+                } else {
+                    ctx.moveTo(point.physicalPoisionX * xSize, point.physicalPoisionY * ySize);
+                    ctx.lineTo(neigbour.physicalPoisionX * xSize, neigbour.physicalPoisionY * ySize);
                 }
                 switch (point.type) {
                     case "robot":
@@ -190,33 +190,33 @@ function drawWorldNC(){
                         ctx.setLineDash([5, 15]);
                         ctx.strokeStyle = '#2980b9';
                 }
-                ctx.lineWidth=5;
+                ctx.lineWidth = 5;
                 ctx.stroke();
-                linksDrawn.push({start:i,end: neigbourID});
+                linksDrawn.push({start: i, end: neigbourID});
             }
         }
 
     }
 
-    for(var i=0; i<world.points.length; i++) {
+    for (var i = 0; i < world.points.length; i++) {
         var point = world.points[i];
         switch (point.type) {
             case "robot":
-                if( point.pointCharacteristic == "INTERSECTION"){
+                if (point.pointCharacteristic == "INTERSECTION") {
                     ctx.strokeStyle = "#95A6A6";
-                    ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
-                }else if( point.pointCharacteristic == "LIGHT" ){
+                    ctx.fillRect((point.physicalPoisionX * xSize) - xSize * 1.5 / 2, (point.physicalPoisionY * ySize) - ySize * 1.5 / 2, xSize * 1.5, ySize * 1.5); // fill in the pixel at (10,10)
+                } else if (point.pointCharacteristic == "LIGHT") {
                     ctx.strokeStyle = "";
-                    ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
+                    ctx.fillRect((point.physicalPoisionX * xSize) - xSize * 1.5 / 2, (point.physicalPoisionY * ySize) - ySize * 1.5 / 2, xSize * 1.5, ySize * 1.5); // fill in the pixel at (10,10)
                 } else {
-                ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                    ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                 }
                 break;
             case "car":
-                ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                 break;
             case "drone":
-                ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                 break;
         }
 
@@ -225,199 +225,192 @@ function drawWorldNC(){
     map_ready = true;
 
 
+    /**
+     * This function is performed on every mouse click
+     * It controls the if the position of the mouse click is set on a spot/surrouding point and if a point A or B is
+     * activated or deactivated
+     * @param e
+     */
 
-/**
- * This function is performed on every mouse click
- * It controls the if the position of the mouse click is set on a spot/surrouding point and if a point A or B is
- * activated or deactivated
- * @param e
- */
+    $('#myMapCanvas').onmousedown(clickedOnCanvas(event));
 
-$('#myMapCanvas').onmousedown( clickedOnCanvas(event) );
 //$('#myMapCanvas').click( function(){ alert("test"); } );
 
-function clickedOnCanvas(event){
-    var mapCanvas = document.getElementById("mapCanvas");
-    var ctx = mapCanvas.getContext("2d");
-    var rect = mapCanvas.getBoundingClientRect();
-    var canvasX = event.clientX - rect.left;
-    var canvasY = event.clientY - rect.top;
-    console.log("Point clicked x = " + canvasX + "y = " + canvasY);
-    if(pointAset){
-        var point = world.points[pointAId];
-        if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
-            switch (point.type) {
-                case "robot":
-                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                        return;
-                    }
-                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-                case "car":
-                    ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-                case "drone":
-                    ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-            }
-            document.getElementById('saveDelivery').style.visibility = 'hidden';
-            console.log("turning off point A");
-            pointAset = false;
-            pointAId = -10;
-            return;
-        }
-    }
-    if(pointBset){
-        var point = world.points[pointBId];
-        if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
-            switch (point.type) {
-                case "robot":
-                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT"){
-                        return;
-                    }
-                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-                case "car":
-                    ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-                case "drone":
-                    ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-            }
-            console.log("turning off point B");
-            pointBset = false;
-            pointBId = -10;
-            document.getElementById('saveDelivery').style.visibility = 'hidden';
-            return;
-        }
-    }
-    if(!pointAset || !pointBset){
-        for(var i=0; i<world.points.length; i++) {
-            var point = world.points[i];
-            if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
-                if(!pointAset){
-                    console.log("Point A id = " + i);
-                    switch (point.type) {
-                        case "robot":
-                            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                                return;
-                            }
-                            ctx.drawImage(robotPointA, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                        case "car":
-                            ctx.drawImage(carPointA,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                        case "drone":
-                            ctx.drawImage(dronePointA,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                    }
-                    pointAId = i;
-                    pointAset = true;
-                    document.getElementById("inputA").value = point.pointName;
-                    if(pointBset){
-                        document.getElementById('saveDelivery').style.visibility = 'visible';
-                    }
+    function clickedOnCanvas(event) {
+        var mapCanvas = document.getElementById("mapCanvas");
+        var ctx = mapCanvas.getContext("2d");
+        var rect = mapCanvas.getBoundingClientRect();
+        var canvasX = event.clientX - rect.left;
+        var canvasY = event.clientY - rect.top;
+        console.log("Point clicked x = " + canvasX + "y = " + canvasY);
+        if (pointAset) {
+            var point = world.points[pointAId];
+            if (canvasX >= point.physicalPoisionX * xSize - xSize * 3 / 2 && canvasX <= point.physicalPoisionX * xSize + xSize * 3 / 2 && canvasY >= point.physicalPoisionY * ySize - ySize * 3 / 2 && canvasY <= point.physicalPoisionY * ySize + ySize * 3 / 2) {
+                switch (point.type) {
+                    case "robot":
+                        if (point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT") {
+                            return;
+                        }
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "car":
+                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "drone":
+                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
                 }
-                else{
-                    switch (point.type) {
-                        case "robot":
-                            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                                return;
-                            }
-                            ctx.drawImage(robotPointB, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                        case "car":
-                            ctx.drawImage(carPointB,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                        case "drone":
-                            ctx.drawImage(dronePointB,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                    }
-                    console.log("Point B id = " + i);
-                    ctx.fillStyle="#0000FF";
-                    pointBId = i;
-                    pointBset = true;
-                    document.getElementById("inputB").value = point.pointName;
-                    document.getElementById('saveDelivery').style.visibility = 'visible';
-
-                }
+                document.getElementById('saveDelivery').style.visibility = 'hidden';
+                console.log("turning off point A");
+                pointAset = false;
+                pointAId = -10;
                 return;
-           }
+            }
+        }
+        if (pointBset) {
+            var point = world.points[pointBId];
+            if (canvasX >= point.physicalPoisionX * xSize - xSize * 3 / 2 && canvasX <= point.physicalPoisionX * xSize + xSize * 3 / 2 && canvasY >= point.physicalPoisionY * ySize - ySize * 3 / 2 && canvasY <= point.physicalPoisionY * ySize + ySize * 3 / 2) {
+                switch (point.type) {
+                    case "robot":
+                        if (point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT") {
+                            return;
+                        }
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "car":
+                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "drone":
+                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                }
+                console.log("turning off point B");
+                pointBset = false;
+                pointBId = -10;
+                document.getElementById('saveDelivery').style.visibility = 'hidden';
+                return;
+            }
+        }
+        if (!pointAset || !pointBset) {
+            for (var i = 0; i < world.points.length; i++) {
+                var point = world.points[i];
+                if (canvasX >= point.physicalPoisionX * xSize - xSize * 3 / 2 && canvasX <= point.physicalPoisionX * xSize + xSize * 3 / 2 && canvasY >= point.physicalPoisionY * ySize - ySize * 3 / 2 && canvasY <= point.physicalPoisionY * ySize + ySize * 3 / 2) {
+                    if (!pointAset) {
+                        console.log("Point A id = " + i);
+                        switch (point.type) {
+                            case "robot":
+                                if (point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT") {
+                                    return;
+                                }
+                                ctx.drawImage(robotPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                            case "car":
+                                ctx.drawImage(carPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                            case "drone":
+                                ctx.drawImage(dronePointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                        }
+                        pointAId = i;
+                        pointAset = true;
+                        document.getElementById("inputA").value = point.pointName;
+                        if (pointBset) {
+                            document.getElementById('saveDelivery').style.visibility = 'visible';
+                        }
+                    }
+                    else {
+                        switch (point.type) {
+                            case "robot":
+                                if (point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT") {
+                                    return;
+                                }
+                                ctx.drawImage(robotPointB, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                            case "car":
+                                ctx.drawImage(carPointB, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                            case "drone":
+                                ctx.drawImage(dronePointB, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                        }
+                        console.log("Point B id = " + i);
+                        ctx.fillStyle = "#0000FF";
+                        pointBId = i;
+                        pointBset = true;
+                        document.getElementById("inputB").value = point.pointName;
+                        document.getElementById('saveDelivery').style.visibility = 'visible';
+
+                    }
+                    return;
+                }
+            }
         }
     }
-}
 
 
-/**
- * The initialize function of the html page.
- */
-function initFunction() {
-    showPage();
-    loadImages();
-    getWorld();
+    /**
+     * The initialize function of the html page.
+     */
+    function initFunction() {
+        showPage();
+        loadImages();
+        getWorld();
 
 
-    if(visualization){
-        setInterval(getVehiclesVN, 250);
+        if (visualization) {
+            setInterval(getVehiclesVN, 250);
+        }
+
+        if (!only_view) {
+            // Hide save button, this button will only be showed when both of the points are selected.
+            document.getElementById('saveDelivery').style.visibility = 'hidden';
+        }
+        // Execute start after 700 milliseconds
+        //setTimeout(start, 1000)
+
     }
 
-    if(!only_view)
-    {
-        // Hide save button, this button will only be showed when both of the points are selected.
-        document.getElementById('saveDelivery').style.visibility = 'hidden';
-    }
-    // Execute start after 700 milliseconds
-    //setTimeout(start, 1000)
-
-}
-
-/**
- * Shows a loading animation when data is loaded.
- * When all information is tranferred to the html page, the functional elements are shown while to loading animation
- * is hidden.
- */
-function showPage() {
-    if(map_ready == false) {
-        if(only_view == false)
-        {
-            // Hide the devices,labels,... and show them when the that og the map is loaded.
-            document.getElementById("content").style.visibility = "hidden";
-            document.getElementById("passengersLabel").style.visibility = "hidden";
-            document.getElementById("passengersSelect").style.visibility = "hidden";
-            document.getElementById("closeButton").style.visibility = "hidden";
-        }else
-        {
-            if(visualization == false) {
+    /**
+     * Shows a loading animation when data is loaded.
+     * When all information is tranferred to the html page, the functional elements are shown while to loading animation
+     * is hidden.
+     */
+    function showPage() {
+        if (map_ready == false) {
+            if (only_view == false) {
+                // Hide the devices,labels,... and show them when the that og the map is loaded.
                 document.getElementById("content").style.visibility = "hidden";
                 document.getElementById("passengersLabel").style.visibility = "hidden";
-                document.getElementById("passengersNumber").style.visibility = "hidden";
-                document.getElementById("pointALabel").style.visibility = "hidden";
-                document.getElementById("pointAtext").style.visibility = "hidden";
-                document.getElementById("pointBLabel").style.visibility = "hidden";
-                document.getElementById("pointBtext").style.visibility = "hidden";
+                document.getElementById("passengersSelect").style.visibility = "hidden";
                 document.getElementById("closeButton").style.visibility = "hidden";
-                document.getElementById("deliveryIDLabel").style.visibility = "hidden";
-                document.getElementById("deliveryID").style.visibility = "hidden";
-                document.getElementById("deliveryDone").style.visibility = "hidden";
+            } else {
+                if (visualization == false) {
+                    document.getElementById("content").style.visibility = "hidden";
+                    document.getElementById("passengersLabel").style.visibility = "hidden";
+                    document.getElementById("passengersNumber").style.visibility = "hidden";
+                    document.getElementById("pointALabel").style.visibility = "hidden";
+                    document.getElementById("pointAtext").style.visibility = "hidden";
+                    document.getElementById("pointBLabel").style.visibility = "hidden";
+                    document.getElementById("pointBtext").style.visibility = "hidden";
+                    document.getElementById("closeButton").style.visibility = "hidden";
+                    document.getElementById("deliveryIDLabel").style.visibility = "hidden";
+                    document.getElementById("deliveryID").style.visibility = "hidden";
+                    document.getElementById("deliveryDone").style.visibility = "hidden";
 
-            }else
-            {
-                document.getElementById("closeButton").style.visibility = "hidden";
-                document.getElementById("reloadButton").style.visibility = "hidden";
-                document.getElementById("table_vehicles").style.visibility = "hidden";
+                } else {
+                    document.getElementById("closeButton").style.visibility = "hidden";
+                    document.getElementById("reloadButton").style.visibility = "hidden";
+                    document.getElementById("table_vehicles").style.visibility = "hidden";
+                }
             }
-        }
-    }else
-    {
-        if(only_view == false)
-        {
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("content").style.visibility = "visible";
-            document.getElementById("passengersLabel").style.visibility = "visible";
-            document.getElementById("passengersSelect").style.visibility = "visible";
-            document.getElementById("closeButton").style.visibility = "visible";
-        }else
-            if(visualization == false) {
+        } else {
+            if (only_view == false) {
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("content").style.visibility = "visible";
+                document.getElementById("passengersLabel").style.visibility = "visible";
+                document.getElementById("passengersSelect").style.visibility = "visible";
+                document.getElementById("closeButton").style.visibility = "visible";
+            } else if (visualization == false) {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("content").style.visibility = "visible";
                 document.getElementById("passengersLabel").style.visibility = "visible";
@@ -429,96 +422,89 @@ function showPage() {
                 document.getElementById("closeButton").style.visibility = "visible";
                 document.getElementById("deliveryIDLabel").style.visibility = "visible";
                 document.getElementById("deliveryID").style.visibility = "visible";
-            }else
-            {
+            } else {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("closeButton").style.visibility = "visible";
                 document.getElementById("reloadButton").style.visibility = "visible";
                 document.getElementById("table_vehicles").style.visibility = "visible";
             }
-            if(!control_initDraw)
-            {
+            if (!control_initDraw) {
                 console.log("Start drawing map");
                 control_initDraw = true;
                 //initdraw();
                 console.log("Drawing complete");
             }
+        }
     }
-}
 
-/*function getProgress(){
+    /*function getProgress(){
 
-    if( visualization == true)
-    {
+        if( visualization == true)
+        {
 
-        //console.log("URL requested "+ URL_Progress)
-
+            //console.log("URL requested "+ URL_Progress)
 
 
 
-    }else
-    {
-        var URL_Progress = "/world1/progress/"+id_delivery+"/0";
-        //console.log("URL requested "+ URL_Progress)
-        $.getJSON(URL_Progress, function(result){
-            progress = result;
-            // console.log("Result: "+progress[0]+" - " + progress[1]);
-            // Controls if x index of progress is an allowed value
-            if(progress[0] != -1)
-            {
-                mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
-            }else
-            {
-                document.getElementById("deliveryDone").style.visibility = "visible";
-            }
-        });
-    }
-}*/
 
-
-
-function getVehiclesVN(){
-    var mapCanvas = document.getElementById("mapCanvas");
-    var ctx = mapCanvas.getContext("2d");
-    var URL_Progress = "/world1/allVehicles";
-    $.getJSON(URL_Progress, function(result){
-        var allVehicles = result;
-        for(var j=0; j<allVehicles.length; j++) {
-            var URL_Progress = "/world1/progress/null/"+allVehicles[j];
-            console.log("progress of vehicle " + j );
+        }else
+        {
+            var URL_Progress = "/world1/progress/"+id_delivery+"/0";
+            //console.log("URL requested "+ URL_Progress)
             $.getJSON(URL_Progress, function(result){
-                //progress values = x,y,vehicleID
                 progress = result;
-                console.log("Result: "+progress[0]+" - " + progress[1]);
+                // console.log("Result: "+progress[0]+" - " + progress[1]);
                 // Controls if x index of progress is an allowed value
                 if(progress[0] != -1)
                 {
-                    if(currentVehicleID != -1)
-                    {
-
-                        if(currentVehicleID == progress[2])
-                        {
-                            ctx.fillStyle="#9b59b6";
-                            ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
-                            console.log("Vehicle 1 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
-                        }else
-                        {
-                            ctx.fillStyle="#95a5a6";
-                            ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
-                            console.log("Vehicle 2 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
-                        }
-                    }else
-                    {
-                        console.log("no vehicle clicked");
-                        ctx.fillStyle="#ffffff";
-                        ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
-                    }
+                    mapCanvasContext.drawImage(vehicle, progress[0]*x_size, progress[1]*y_size, x_size, y_size);
+                }else
+                {
+                    document.getElementById("deliveryDone").style.visibility = "visible";
                 }
             });
         }
-    });
+    }*/
 
 
+    function getVehiclesVN() {
+        var mapCanvas = document.getElementById("mapCanvas");
+        var ctx = mapCanvas.getContext("2d");
+        var URL_Progress = "/world1/allVehicles";
+        $.getJSON(URL_Progress, function (result) {
+            var allVehicles = result;
+            for (var j = 0; j < allVehicles.length; j++) {
+                var URL_Progress = "/world1/progress/null/" + allVehicles[j];
+                console.log("progress of vehicle " + j);
+                $.getJSON(URL_Progress, function (result) {
+                    //progress values = x,y,vehicleID
+                    progress = result;
+                    console.log("Result: " + progress[0] + " - " + progress[1]);
+                    // Controls if x index of progress is an allowed value
+                    if (progress[0] != -1) {
+                        if (currentVehicleID != -1) {
+
+                            if (currentVehicleID == progress[2]) {
+                                ctx.fillStyle = "#9b59b6";
+                                ctx.fillRect(progress[0] * xSize, progress[1] * ySize, xSize, ySize);
+                                console.log("Vehicle 1 " + currentVehicleID + " allVehicles[j] " + progressVehicleID);
+                            } else {
+                                ctx.fillStyle = "#95a5a6";
+                                ctx.fillRect(progress[0] * xSize, progress[1] * ySize, xSize, ySize);
+                                console.log("Vehicle 2 " + currentVehicleID + " allVehicles[j] " + progressVehicleID);
+                            }
+                        } else {
+                            console.log("no vehicle clicked");
+                            ctx.fillStyle = "#ffffff";
+                            ctx.fillRect(progress[0] * xSize, progress[1] * ySize, xSize, ySize);
+                        }
+                    }
+                });
+            }
+        });
+
+
+    }
 }
 
 
