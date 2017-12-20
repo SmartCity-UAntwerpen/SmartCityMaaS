@@ -37,8 +37,8 @@ public class HomeController {
         model.addAttribute("currentUser", loginUser);
         System.out.println("User logged in: "+loginUser.getUserName());
 
-        String error = "";
-        if( code != null ) error = " ;-( Something went horribly wrong, contact the devs... (" + code + " - " + error + ")";
+        String error = "Enjoy your stay, at the MaaS milkyway :)";
+        if( code != null ) error = " ;-( Something went horribly wrong, contact the devs... (" + code + " - " + message + ")";
         model.addAttribute("error", error);
 
         return "home_user";
