@@ -424,16 +424,17 @@ function getVehiclesVN(){
     $.getJSON(URL_Progress, function(result){
         var allVehicles = result;
         for(var j=0; j<allVehicles.length; j++) {
-            var URL_Progress = "/world1/progress/null/"+allVehicles[j];
+            var URL_Progress1 = "/world1/progress/null/"+allVehicles[j];
             console.log("progress of vehicle " + j );
-            $.getJSON(URL_Progress, function(result){
+            $.getJSON(URL_Progress1, function(result){
                 //progress values = x,y,vehicleID
                 progress = result;
                 console.log("Result: "+progress[0]+" - " + progress[1]);
 
-                var URL_Progress = "/vehicletype/"+allVehicles[j];
-                $.getJSON(URL_Progress, function(result){
-                    var type = result;console.log("type of vehicle " + j + " = " + type );
+                var URL_Progress2 = "/vehicletype/"+allVehicles[j];
+                $.getJSON(URL_Progress2, function(result1){
+                    var type = result1;
+                    console.log("type of vehicle " + j + " = " + type );
 
                     if(progress[0] != -1)
                     {
