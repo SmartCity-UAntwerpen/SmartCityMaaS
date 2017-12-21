@@ -163,7 +163,6 @@ public class DataController {
                 obj = iterator.next();
                 JSONObject par_jsonObject = (JSONObject) obj;
                 int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
-                String type = (String)par_jsonObject.get("type");
                 idVehicles.add(idVeh);
             }
         } catch (ParseException e) {
@@ -174,13 +173,14 @@ public class DataController {
 
 
     @RequestMapping(value="/vehicletype/{id}")
-    public String getVehicleType( @PathVariable long vehicleID ){
+    public String getVehicleType( @PathVariable String id ){
+        System.out.println("Asking for vehicletype for " + id);
         Iterator<String> iterator = virDevices.iterator();
         while (iterator.hasNext()) {
             Object obj = iterator.next();
             JSONObject par_jsonObject = (JSONObject) obj;
             int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
-            if(idVeh == vehicleID)
+            if(idVeh == new Long(id))
                 return (String)par_jsonObject.get("type");
         }
         return "unknown";
