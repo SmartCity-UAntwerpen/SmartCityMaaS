@@ -57,6 +57,7 @@ public class DataController {
 
 
     private World myWorld = null;
+    JSONArray virDevices;
 
     /**
      * Return the world with the current map of the smartcity.
@@ -156,18 +157,33 @@ public class DataController {
             obj = parser.parse(httpResponse.getBody());
 
             JSONObject jsonObject = (JSONObject) obj;
-            JSONArray virDevices = (JSONArray) jsonObject.get("vehicles");
+            virDevices = (JSONArray) jsonObject.get("vehicles");
             Iterator<String> iterator = virDevices.iterator();
             while (iterator.hasNext()) {
                 obj = iterator.next();
                 JSONObject par_jsonObject = (JSONObject) obj;
                 int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
+                String type = (String)par_jsonObject.get("type");
                 idVehicles.add(idVeh);
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return idVehicles;
+    }
+
+
+    @RequestMapping(value="/vehicletype/{id}")
+    public String getVehicleType( @PathVariable long vehicleID ){
+        Iterator<String> iterator = virDevices.iterator();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            JSONObject par_jsonObject = (JSONObject) obj;
+            int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
+            if(idVeh == vehicleID)
+                return (String)par_jsonObject.get("type");
+        }
+        return "unknown";
     }
 
 
