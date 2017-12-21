@@ -430,8 +430,8 @@ function getVehiclesVN(){
                 //progress values = x,y,vehicleID
                 progress = result;
                 console.log("Result: "+progress[0]+" - " + progress[1]);
-
                 var URL_Progress2 = "/vehicletype/"+allVehicles[j];
+                console.log("URL for vehicle type: " + URL_Progress2);
                 $.getJSON(URL_Progress2, function(result1){
                     var type = result1;
                     console.log("type of vehicle " + j + " = " + type );
