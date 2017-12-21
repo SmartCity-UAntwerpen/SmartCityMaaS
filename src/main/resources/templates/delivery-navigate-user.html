@@ -2,85 +2,222 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Delivery</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home</title>
     <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
-    <link rel="stylesheet" href="/css/style.css"/>
-    <script src="http://cdn.jsdelivr.net/webjars/jquery/2.1.4/jquery.min.js"
-            th:src="@{/webjars/jquery/2.1.4/jquery.min.js}" type="text/javascript"></script>
-    <script  th:inline="javascript" type="text/javascript" th:src="@{/js/map.js}"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/default.css" rel="stylesheet" />
+    <link href="../css/cards.css" rel="stylesheet" />
+    <link href="../css/dashboard.css" rel="stylesheet" />
+    <link href="../css/adminp.css" rel="stylesheet" />
+
+    <!--<link rel="stylesheet" href="/css/style.css"/>-->
 </head>
 
-<body onload="initFunction()" style="margin:0;">
-<div id="loader"></div>
-<div class="login-wrap">
-    <div class="login-html">
-        <div class="login-form">
-            <div class="group">
-                <h1 th:inline="text" >
-                    [[${currentUser.userName}]]
-                    <small th:text="${currentUser.firstName}">Subtitle</small>
-                    <small th:text="${currentUser.lastName}">Subtitle</small>
-                </h1>
+<body>
+<div class="container-fluid display-table">
+    <div class="row display-table-row">
+        <div th:replace="layout :: side-menu"></div>
 
-                <div>
-                    <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
-                    <label id="passengersNumber" th:text="${delivery.passengers}">Subtitle</label>
-                </div>
-                <div>
-                    <label id="pointALabel" th:text="#{segments.pointA}">Passengers</label>
-                    <label id="pointAtext" th:text="${delivery.pointA}">Subtitle</label>
-                </div>
-                <div>
-                    <label id="pointBLabel" th:text="#{segments.pointB}">Passengers</label>
-                    <label id="pointBtext" th:text="${delivery.pointB}">Subtitle</label>
-                </div>
-                <div>
-                    <label id="deliveryIDLabel" th:text="#{idDelivery}">Passengers</label>
-                    <label id="deliveryID" th:text="${delivery.idDelivery}">Subtitle</label>
-                </div>
+        <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+            <div class="row">
+                <header id="nav-header" class="clearfix">
+                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                        <nav class="navbar-default pull-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                        <ul class="navbar-ul pull-right">
+                            <li>
+                                <a href="/logout" class="logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            </div>
 
-                <script th:inline="javascript">
-                    /*<![CDATA[*/
-                    var cellImageBackGround = /*[[@{/images/map/test_lol.png}]]*/;
-                    var cellImageRoad = /*[[@{/images/map/road.png}]]*/;
-                    var pointAImage = /*[[@{/images/map/pointA.png}]]*/;
-                    var pointBImage = /*[[@{/images/map/pointB.png}]]*/;
-                    var spotImage = /*[[@{/images/map/spot.png}]]*/;
-                    var surroundImage = /*[[@{/images/map/surrounding.png}]]*/;
-                    var pointA =  /*[[*{pointA}]]*/
-                    var cellImageSpotDrone = /*[[@{/images/map/road_drone.png}]]*/;
-                    var cellImageRoadDrone = /*[[@{/images/map/spot_drone.png}]]*/;
-                    var cellImageDrone = /*[[@{/images/map/drone.png}]]*/;
-                    var cellImageSpotCar = /*[[@{/images/map/spot_car.png}]]*/;
-                    var legendeWorld = /*[[@{/images/map/legende_user.png}]]*/;
-                    var only_view = true;
-                    var visualization = false;
-                    var id_delivery = [[${delivery.idDelivery}]];
-                    var pointA_Value = [[${delivery.pointA}]];
-                    var pointB_Value = [[${delivery.pointB}]];
-                    /*]]>*/
-                </script>
-                <p>
-                    <a id="deliveryDone" href="/deliveries" th:text="#{deliveryDone}" class="button" >Close</a>
-                </p>
-                <p>
-                    <a id="closeButton" href="/deliveries" th:text="#{close}" class="button" >Close</a>
-                </p>
+            <div class="dashboard-con">
+                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+                <div class="inside-con">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
+                            <div class="card-container card-fixed-height">
+                                <div class="card"> <div class="front face">
+                                    <div class="card-top text-center cyan">
+                                        <h3><span class="hidden-xs hidden-sm hidden-md">JOB HAS BEEN CREATED</span><span class="hidden-lg">DELIV.</span></h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <h3>job info:</h3>
+                                        <div class="group">
+                                            <div>
+                                                <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
+                                                <label id="passengersNumber" th:text="${delivery.passengers}">Subtitle</label>
+                                            </div>
+                                            <div>
+                                                <label id="pointALabel" th:text="#{segments.pointA}">Passengers</label>
+                                                <label id="pointAtext" th:text="${delivery.pointA}">Subtitle</label>
+                                            </div>
+                                            <div>
+                                                <label id="pointBLabel" th:text="#{segments.pointB}">Passengers</label>
+                                                <label id="pointBtext" th:text="${delivery.pointB}">Subtitle</label>
+                                            </div>
+                                            <div>
+                                                <label id="deliveryIDLabel" th:text="#{idDelivery}">Passengers</label>
+                                                <label id="deliveryID" th:text="${delivery.idDelivery}">Subtitle</label>
+                                            </div>
+
+                                            <script th:inline="javascript">
+                                                /*<![CDATA[*/
+                                                var cellImageBackGround = /*[[@{/images/map/test_lol.png}]]*/;
+                                                var cellImageRoad = /*[[@{/images/map/road.png}]]*/;
+                                                var pointAImage = /*[[@{/images/map/pointA.png}]]*/;
+                                                var pointBImage = /*[[@{/images/map/pointB.png}]]*/;
+                                                var spotImage = /*[[@{/images/map/spot.png}]]*/;
+                                                var surroundImage = /*[[@{/images/map/surrounding.png}]]*/;
+                                                var pointA =  /*[[*{pointA}]]*/
+                                                var cellImageSpotDrone = /*[[@{/images/map/road_drone.png}]]*/;
+                                                var cellImageRoadDrone = /*[[@{/images/map/spot_drone.png}]]*/;
+                                                var cellImageDrone = /*[[@{/images/map/drone.png}]]*/;
+                                                var cellImageSpotCar = /*[[@{/images/map/spot_car.png}]]*/;
+                                                var legendeWorld = /*[[@{/images/map/legende_user.png}]]*/;
+                                                var only_view = true;
+                                                var visualization = false;
+                                                var id_delivery = [[${delivery.idDelivery}]];
+                                                var pointA_Value = [[${delivery.pointA}]];
+                                                var pointB_Value = [[${delivery.pointB}]];
+                                                /*]]>*/
+                                            </script>
+                                        </div>
+
+
+                                        <div class="row dashboard-buttons">
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <a href="/deliveries" id="startDelivery" class="button">
+                                                    <button type="button" id="dashboard-show-2_:_keco-add" class="btn btn-default shortcut-btn"><span  th:text="#{close}"></span></button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="face back"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
+
+
     </div>
 </div>
-<div class="content" id="content" ><!--style="width:100%">-->
-    <div id="myDiv">   <!-- style="width:100%"> -->
-        <!-- Quentin wereld
-        <div id="myMapCanvas" width="1500" height="1500">
-            <canvas id="mapCanvas" width="1500" height="1500" style="border:1px solid #000000"></canvas>
-        </div>
-        -->
-        <div id="myMapCanvas" width="900" height="900" >
-            <canvas id="mapCanvas" width="900" height="900" style="border:1px solid #000000"></canvas>
+
+
+
+
+
+<!--<div class="login-wrap">
+    <div class="login-html">
+        <div class="login-form">
+            <h1 th:inline="text" >
+                [[${currentUser.userName}]]
+                <small th:text="${currentUser.firstName}">Subtitle</small>
+                <small th:text="${currentUser.lastName}">Subtitle</small>
+            </h1>
+             <div class="group">
+                 <a href="/deliveries/put" th:text="#{newDelivery}" id="startDelivery" class="button" />
+             </div>
+            <div class="group">
+                 <a href="/visualization" th:text="#{visual}" id="visualization" class="button" />
+            </div>
+
         </div>
     </div>
-</div>
+</div>-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="../js/tabs.js"></script>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

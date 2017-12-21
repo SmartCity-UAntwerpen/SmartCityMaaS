@@ -239,12 +239,10 @@ public class UserController {
 
         // TODO delivery ID koppelen aan Astarr
         astarService.init();
-        System.out.println("DEBUG: passed astar init");
         //astarService.testDeterminePath(astarService.getGraph(), delivery.getPointA(),delivery.getPointB());
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
-        System.out.println("REDIRECT IS PERFORMED");
+        System.out.println("JOB HAS BEEN CREATED");
         User loginUser = userService.getPrincipalUser();
-        System.out.println("User logged in: "+loginUser.getUserName());
         model.addAttribute("currentUser", loginUser);
         delivery_return.setPointA(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
         delivery_return.setPointB(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));

@@ -35,6 +35,12 @@ var carPointB;
 var robotDefault;
 var robotPointA;
 var robotPointB;
+var robotIcon;
+var robotIconTarget;
+var droneIcon;
+var droneIconTarget;
+var racecarIcon;
+var racecarIconTarget;
 
 function loadImages() {
     droneDefault = new Image();
@@ -55,6 +61,19 @@ function loadImages() {
     robotPointA.src = "../images/map/robot_charge_pointA.png";
     robotPointB = new Image();
     robotPointB.src = "../images/map/robot_charge_pointB.png";
+
+    robotIcon = new Image();
+    robotIcon.src = "../images/map/robotIcon.png";
+    robotIconTarget = new Image();
+    robotIconTarget.src = "../images/map/robotTargetted.png";
+    droneIcon = new Image();
+    droneIcon.src = "../images/map/droneIcon.png";
+    droneIconTarget = new Image();
+    droneIconTarget.src = "../images/map/droneTargetted.png";
+    racecarIcon = new Image();
+    racecarIcon.src = "../images/map/racecarIcon.png";
+    racecarIconTarget = new Image();
+    racecarIconTarget.src = "../images/map/raceCarTargetted.png";
 
 }
 
@@ -411,35 +430,64 @@ function getVehiclesVN(){
                 //progress values = x,y,vehicleID
                 progress = result;
                 console.log("Result: "+progress[0]+" - " + progress[1]);
-                // Controls if x index of progress is an allowed value
-                if(progress[0] != -1)
-                {
-                    if(currentVehicleID != -1)
-                    {
 
-                        if(currentVehicleID == progress[2])
+                var URL_Progress = "/vehicletype/"+allVehicles[j];
+                $.getJSON(URL_Progress, function(result){
+                    var type = result;console.log("type of vehicle " + j + " = " + type );
+
+                    if(progress[0] != -1)
+                    {
+                        if(currentVehicleID != -1)
                         {
-                            ctx.fillStyle="#9b59b6";
-                            ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
-                            console.log("Vehicle 1 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
+
+                            if(currentVehicleID == progress[2])
+                            {
+                                drawVehicle(type,progress[0],progress[1],true);
+                            }else
+                            {
+                                drawVehicle(type,progress[0],progress[1],false);
+                            }
                         }else
                         {
-                            ctx.fillStyle="#95a5a6";
-                            ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
-                            console.log("Vehicle 2 "+ currentVehicleID +" allVehicles[j] "+ progressVehicleID);
-                        }
-                    }else
-                    {
-                        console.log("no vehicle clicked");
-                        ctx.fillStyle="#ffffff";
-                        ctx.fillRect(progress[0]*xSize,progress[1]*ySize,xSize,ySize);
+                            console.log("no vehicle clicked");
+                            drawVehicle(type,progress[0],progress[1],false);
 
+                        }
                     }
-                }
+                });
+
             });
         }
     });
 
+
+}
+
+
+function drawVehicle(type, x, y,selected){
+    switch (type) {
+        case "robot":
+            if(selected){
+                ctx.drawImage(robotIconTarget, (x*xSize) - xSize*3/2,(y*ySize) - ySize*3/2,xSize*3,ySize*3);
+            }else {
+                ctx.drawImage(robotIcon, (x*xSize) - xSize*3/2,(y*ySize) - ySize*3/2,xSize*3,ySize*3);
+            }
+            break;
+        case "car":
+            if(selected){
+                ctx.drawImage(racecarIconTarget,((x*xSize) - (xSize*3/2)),((y*ySize) - (ySize*3/2)),xSize*3,ySize*3);
+            }else {
+                ctx.drawImage(racecarIcon,((x*xSize) - (xSize*3/2)),((y*ySize) - (ySize*3/2)),xSize*3,ySize*3);
+            }
+            break;
+        case "drone":
+            if(selected){
+                ctx.drawImage(droneIconTarget,((x*xSize) + xSize*3/2),(y*ySize) - ySize*3/2,xSize*3,ySize*3);
+            }else {
+                ctx.drawImage(droneIcon,((x*xSize) + xSize*3/2),(y*ySize) - ySize*3/2,xSize*3,ySize*3);
+            }
+            break;
+    }
 
 }
 
