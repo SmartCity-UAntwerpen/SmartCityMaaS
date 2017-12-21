@@ -421,17 +421,19 @@ function getVehiclesVN(){
     var mapCanvas = document.getElementById("mapCanvas");
     var ctx = mapCanvas.getContext("2d");
     var URL_Progress = "/world1/allVehicles";
+    var vehicleID = -10;
     $.getJSON(URL_Progress, function(result){
         var allVehicles = result;
         for(var j=0; j<allVehicles.length; j++) {
-            var URL_Progress1 = "/world1/progress/null/"+allVehicles[j];
+            vehicleID = allVehicles[j];
+            var URL_Progress1 = "/world1/progress/null/"+vehicleID;
             console.log("progress of vehicle " + j );
             $.getJSON(URL_Progress1, function(result){
                 //progress values = x,y,vehicleID
                 progress = result;
                 console.log("Result: "+progress[0]+" - " + progress[1]);
-
-                var URL_Progress2 = "/vehicletype/"+allVehicles[j];
+                var URL_Progress2 = "/vehicletype/"+vehicleID;
+                console.log("UR: = " + URL_Progress2 );
                 $.getJSON(URL_Progress2, function(result1){
                     var type = result1;
                     console.log("type of vehicle " + j + " = " + type );
