@@ -145,10 +145,11 @@ public class JobDispatching {
                         //don't add job! We're waaaaaalking on water
                     } else { // We DO need a vehicle so let's make a job
                         Job job = new Job();
-                        job.setIdStart( Long.valueOf(pathSplit[i]) ); // set start ID from job
-                        job.setIdEnd( Long.valueOf(pathSplit[i + 1]) ); // set stop ID from job
-                        job.setTypeVehicle( listOfEdges[j].getVehicle() );// set vehicle type
+                        job.setIdStart( Long.valueOf( link.getStartPoint().getId() )); // set start ID from job
+                        job.setIdEnd( Long.valueOf( link.getStopPoint().getId() )); // set stop ID from job
+                        job.setTypeVehicle( link.getVehicle() );// set vehicle type
                         job.setStatus("ready"); // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
+                        job.setIdVehicle( link.getVehicleID() );
                         System.out.println( "Job initialized: \n\tStart: " + job.getIdStart() + "\n\tEnd: " + job.getIdEnd() + "\n\tVehicle: " + job.getTypeVehicle() );
 
                         // for the joblist, we want to keep track of the starting ID!
