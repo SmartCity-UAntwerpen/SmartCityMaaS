@@ -35,7 +35,7 @@
                         </nav>
                     </div>
                     <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
-                        <b><span class="webapp-name">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
                     </div>
                     <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
                         <ul class="navbar-ul pull-right">
@@ -77,13 +77,13 @@
                                 <div>
                                     <table class="table table-hover" id = "table_vehicles">
                                         <thead>
-                                        <tr>
-                                            <th><div th:label="#{idVehicle}"></div></th>
-                                            <th><div th:label="#{typeVehicle}"></div></th>
-                                            <th><div th:label="#{idStart}"></div></th>
-                                            <th><div th:label="#{idEnd}"></div></th>
-                                            <th><div th:label="#{idProgress}"></div></th>
-                                            <th><div th:label="#{show}"></div></th>
+                                        <tr class="bg-primary">
+                                            <th><span th:label="#{idVehicle}">ID_VEHICLE</span></th>
+                                            <th><span th:label="#{typeVehicle}">TYPE</span></th>
+                                            <th><span th:label="#{idStart}">START</span></th>
+                                            <th><span th:label="#{idEnd}">END</span></th>
+                                            <th><span th:label="#{idProgress}">PROGRESS</span></th>
+                                            <th><span th:label="#{show}">SHOW</span></th>
                                         </tr>
                                         </thead>
                                         <!-- IMPORTANT, class="list" have to be at tbody -->

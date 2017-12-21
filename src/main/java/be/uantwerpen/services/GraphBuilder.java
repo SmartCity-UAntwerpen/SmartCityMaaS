@@ -99,6 +99,7 @@ public class GraphBuilder {
                 }
                 //run over all the answers to find the most cost effective vehicle
                 if(costs == null || costs.length == 0) {
+                    System.out.println("Cost is NULL");
                     link.setWeight((long)99999);
                 } else {
                     Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
@@ -120,8 +121,6 @@ public class GraphBuilder {
                     link.setVehicleID(bestCost.getIdVehicle());
                     System.out.println("WEIGHT: Link id " + link.getId() + " - Weight for this link: " + link.getWeight());
                 }
-                link.setWeight((long)4);
-                link.setVehicleID((long)1);
             } else {
                 link.setWeight((long) 900);
                 link.setVehicleID((long) 5000);

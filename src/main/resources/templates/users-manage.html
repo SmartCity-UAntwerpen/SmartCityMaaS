@@ -1,9 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<!-- Import header -->
-<head th:replace="layout :: head (title='#{user.management}')"></head>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manage Users</title>
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/default.css" rel="stylesheet" />
+    <link href="../css/dashboard.css" rel="stylesheet" />
+    <link href="../css/adminp.css" rel="stylesheet" />
+</head>
 
 <body onload="initPage()">
+
+
+
+
+<div class="container-fluid display-table">
+    <div class="row display-table-row">
+        <div th:replace="layout :: side-menu"></div>
+
+        <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+            <div class="row">
+                <header id="nav-header" class="clearfix">
+                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                        <nav class="navbar-default pull-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                        <ul class="navbar-ul pull-right">
+                            <li>
+                                <a href="/logout" class="logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            </div>
+
+            <div class="dashboard-con">
+                <div class="row">
+                    <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->
+                    <div class="col-md-12 alert alert-info" id="info-bar">
+                        ERROR FEEDBACK
+                    </div>
+                </div>
+                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+                <div class="inside-con">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form action="#" th:action="@{/users/{id}(id=${user})}" th:object="${user}" method="post">
+                                <input th:type="hidden" th:field="*{id}"/>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('lastName')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{lastName}">Name</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Lastname Error</span>
+                                    <input class="form-control" type="text" th:field="*{lastName}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{firstName}">Name</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName Error</span>
+                                    <input class="form-control" type="text" th:field="*{firstName}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('userName')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{userName}">Username</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">userName Error</span>
+                                    <input class="form-control" type="text" th:field="*{userName}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('password')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{password}">Password</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</span>
+                                    <input class="form-control" type="password" th:field="*{password}" />
+                                </div>
+
+
+                                <p> <label th:text="#{roles}">Roles</label>
+                                    <select th:field="*{roles}" multiple="multiple">
+                                        <option th:each="role : ${allRoles}"
+                                                th:value="${{role}}"
+                                                th:text="${role.name}">Wireframe</option>
+                                    </select>
+                                </p>
+                                <p>
+                                    <a href="/users" th:text="#{close}" class="btn btn-primary">Close</a>
+                                    <button type="submit" th:text="#{save}" class="btn btn-primary">Save</button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="../js/tabs.js"></script>
+
+
+
 <script type="text/javascript">
     function initPage(){
         $('#roles').multiSelect({
@@ -12,49 +124,6 @@
         });
     }
 </script>
-<div class="container">
-    <!-- Import menu bar -->
-    <div th:replace="layout :: navbar"></div>
-    <form action="#" th:action="@{/users/{id}(id=${user})}" th:object="${user}" method="post">
-        <input th:type="hidden" th:field="*{id}"/>
-        <div class="form-group" th:classappend="${#fields.hasErrors('lastName')}?'has-error': ''">
-            <label class="control-label" th:text="#{lastName}">Name</label>
-            <span class="control-label" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Lastname Error</span>
-            <input class="form-control" type="text" th:field="*{lastName}" />
-        </div>
-
-        <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}?'has-error': ''">
-            <label class="control-label" th:text="#{firstName}">Name</label>
-            <span class="control-label" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName Error</span>
-            <input class="form-control" type="text" th:field="*{firstName}" />
-        </div>
-
-        <div class="form-group" th:classappend="${#fields.hasErrors('userName')}?'has-error': ''">
-            <!--<label class="control-label" th:text="#{userName}">Name</label>-->
-            <span class="control-label" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">userName Error</span>
-            <input class="form-control" type="hidden" th:field="*{userName}" />
-        </div>
-
-        <div class="form-group" th:classappend="${#fields.hasErrors('password')}?'has-error': ''">
-            <!--<label class="control-label" th:text="#{password}">Name</label>-->
-            <span class="control-label" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</span>
-            <input class="form-control" type="hidden" th:field="*{password}" />
-        </div>
-
-
-        <p> <label th:text="#{roles}">Roles</label>
-            <select th:field="*{roles}" multiple="multiple">
-                <option th:each="role : ${allRoles}"
-                        th:value="${{role}}"
-                        th:text="${role.name}">Wireframe</option>
-            </select>
-        </p>
-        <p>
-            <a href="/users" th:text="#{close}" class="btn btn-primary">Close</a>
-            <button type="submit" th:text="#{save}" class="btn btn-primary">Save</button>
-        </p>
-    </form>
-</div>
 </body>
 </html>
 

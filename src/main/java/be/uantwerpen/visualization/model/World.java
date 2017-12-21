@@ -68,7 +68,7 @@ public class World {
 
     public int[] getDistancePoints(List<Integer> jobs, int progress)
     {
-        return getDistance(jobs.get(0),jobs.get(1),66.0/100.0);
+        return getDistance(jobs.get(0),jobs.get(1),(double)(progress)/100.0);
     }
 
     public int[] getDistance(int startID, int endID, double progress){

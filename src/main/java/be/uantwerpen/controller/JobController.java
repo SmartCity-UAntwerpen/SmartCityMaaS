@@ -70,6 +70,8 @@ public class JobController {
     //get a specific job
     @RequestMapping(value="/jobs/{id}", method= RequestMethod.GET)
     public String viewEditJob(@PathVariable Long id, final ModelMap model){
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         model.addAttribute("job",jobService.findOne(id));
         return "jobs-manage";
     }
@@ -78,6 +80,8 @@ public class JobController {
     @RequestMapping(value={"/jobs/", "/jobs/{id}"}, method= RequestMethod.POST)
     public String addJob(@PathVariable Long id, @Valid Job job, BindingResult result, final ModelMap model) {
         System.out.println(result.getModel());
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         if (result.hasErrors()) {
             return "jobs-manage";
         }

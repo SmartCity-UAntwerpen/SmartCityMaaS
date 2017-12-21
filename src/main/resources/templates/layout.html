@@ -13,7 +13,7 @@
 
     <div th:fragment="side-menu" class="col-md-2 col-sm-1 hidden-xs display-table-cell valign-top" id="side-menu">
         <img class="hidden-sm hidden-xs logo" src="../images/logo2.png" alt="logo" />
-        <h1 class="webapp-name hidden-sm hidden-xs">MaaS</h1>
+        <h1 class="webapp-name hidden-sm hidden-xs" th:text="#{appname}">MaaS</h1>
         <p id="voornaamSession" class="hidden-sm hidden-xs" th:text="${currentUser.firstName}"></p>
         <p id="vzwSession" class="hidden-sm hidden-xs" th:text="${currentUser.lastName}"></p>
         <p id="ondTypeSession" class="hidden-sm hidden-xs" th:text="${currentUser.userName}"></p>
@@ -34,8 +34,6 @@
                 </a>
                 <ul class="collapse collapseable" id="collapse-keco">
                     <li><a class="delivery-link">NEW DELIVERY</a></li>
-                    <li><a class="manage-delivery-link">MANAGE JOBS</a></li>
-                    <li><a class="create-delivery-link">CREATE JOB</a></li>
                 </ul>
             </li>
             <!-- VISUALISATIE -->
@@ -55,6 +53,8 @@
                     <span class="hidden-xs hidden-sm">ADMIN PANEL</span>
                 </a>
                 <ul class="collapse collapseable" id="collapse-ap">
+                    <li><a class="manage-delivery-link">MANAGE JOBS</a></li>
+                    <li><a class="create-delivery-link">CREATE JOB</a></li>
                     <li><a id="admin-settings" class="all-users-link">MANAGE USERS</a></li>
                     <li><a id="admin-gebruikers" class="create-user-link">CREATE USER</a></li>
                 </ul>

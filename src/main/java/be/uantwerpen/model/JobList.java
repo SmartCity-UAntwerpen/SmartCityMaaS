@@ -29,6 +29,7 @@ public class JobList extends MyAbstractPersistable<Long>{
         this.jobs = new ArrayList<Job>();
         this.startPoint = -1;
         this.endPoint = -1;
+        this.idDelivery = "-1";
     }
 
     public JobList(List<Job> jobs) {
@@ -78,4 +79,5 @@ public class JobList extends MyAbstractPersistable<Long>{
     public void setIdDelivery(String idDelivery) {
         this.idDelivery = idDelivery;
     }
+
 }
