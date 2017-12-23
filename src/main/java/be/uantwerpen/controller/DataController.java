@@ -173,17 +173,22 @@ public class DataController {
 
 
     @RequestMapping(value="/vehicletype/{id}")
-    public String getVehicleType( @PathVariable String id ){
+    public List<String> getVehicleType( @PathVariable String id ){
         System.out.println("Asking for vehicletype for " + id);
+        List<String> result = new ArrayList<String>();
         Iterator<String> iterator = virDevices.iterator();
         while (iterator.hasNext()) {
             Object obj = iterator.next();
             JSONObject par_jsonObject = (JSONObject) obj;
             int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
-            if(idVeh == new Long(id))
-                return (String)par_jsonObject.get("type");
+            if(idVeh == new Long(id)) {
+                result.add( (String) par_jsonObject.get("type") );
+                System.out.println("Vehicle type found: " + result);
+                return result;
+            }
         }
-        return "unknown";
+        result.add("uknown");
+        return result;
     }
 
 
