@@ -37,6 +37,8 @@ public class JobService {
         this.jobRepository.delete(id);
     }
 
+    public void deleteAll() { this.jobRepository.deleteAll(); }
+
     /**
      * Function to save all relevant information concernting the Job class. This is a standard function for service usage
      * @param job   (Job) class of which all information needs to be saved

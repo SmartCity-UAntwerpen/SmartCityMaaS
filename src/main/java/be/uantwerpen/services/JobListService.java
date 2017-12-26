@@ -225,6 +225,8 @@ public class JobListService {
         this.jobListRepository.delete(id);
     }
 
+    public void deleteAll() { this.jobListRepository.deleteAll(); }
+
     /**
      * recalculate the order for which an error occured during the dispatch2core
      * @param idJob             (long) id from the job in which an error occured

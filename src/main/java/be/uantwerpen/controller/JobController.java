@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.net.URL;
 import java.util.*;
@@ -94,6 +95,15 @@ public class JobController {
     public String deleteJob(@PathVariable Long id, final ModelMap model){
         jobService.delete(id);
         model.clear();
+        return "redirect:/jobs";
+    }
+
+
+    @RequestMapping(value="/jobs/deleteAll")
+    public String deleteAllJobs( final ModelMap model ) {
+        // Delete all jobs and joblists
+        jobService.deleteAll();
+        jobListService.deleteAll();
         return "redirect:/jobs";
     }
 

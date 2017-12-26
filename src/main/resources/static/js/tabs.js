@@ -34,10 +34,11 @@ $(document).ready(function() {
         else if( $(this).hasClass("manage-delivery-link") ) window.location.href='/jobs';
         else if( $(this).hasClass("create-delivery-link") ) window.location.href='/jobs/put';
     });
+
     $("ul#side-nav li a.nav-ch").click(function(e) {
         if(!$(this).hasClass("active")) {
             var tabNum = $(this).index();
-            $("ul#side-nav li a.active").trigger("click").removeClass("active");
+            //$("ul#side-nav li a.active").trigger("click").removeClass("active");
             $(this).addClass("active");
 
         } else {
@@ -57,32 +58,6 @@ $(document).ready(function() {
 
 
     /*********** ADMIN PANEL ***********/
-    $("#admin-settings").click(function(e) {
-        // Load the settings part
-        // Extra informatie over welk deel getoond wordt
-        $("#top-title").html("AP - settings");
-
-        // Inhoud van webapplicatie laden
-    });
-
-    $("#admin-vzw").click(function(e) {
-        // Load the settings part
-        // Extra informatie over huidig deel van webapplicatie
-        $("#top-title").html("AP - VZW's beheren");
-
-        // Inhoud van de webapplicatie laden
-    });
-
-    $("#admin-onderwijs").click(function(e) {
-        //Load the settings part
-        $("#top-title").html("AP - Onderwijsniveau's");
-    });
-
-    $("#admin-campus").click(function(e) {
-        //Load the settings part
-        $("#top-title").html("AP - Campus");
-    });
-
     $("#admin-register").click(function(e) {
         $("#top-title").html("AP - Gebruiker registreren");
     });
@@ -93,68 +68,27 @@ $(document).ready(function() {
     });
 
 
-    /**** SNELTOETSEN ****/
-    $(document).on("click tab", ".shortcut-btn", function(e) {
-        var thisID = $(this).attr("id");
-        var thisTabInfo = thisID.split("_:_");
-        $("#"+thisTabInfo[0]).click();
-        $("#"+thisTabInfo[1]).click();
-    });
 
 
     $("#dashboard-show-1").click(function(e) {
         $("#top-title").html("Dashboard");
     });
 
-    /********** VERSLAGEN **********/
-    var path = "";
-    $("#dashboard-show-5").click(function(e) {
-        $("#top-title").html("Verlsagen");
-    });
 
 
     /********** KECO *********/
-    $("#keco-show").click(function(e) {
+    $("#new-deliv").click(function(e) {
         //Hier ajax request functie maken
         $("#top-title").html("RaKeCo weergeven");
     });
 
-    $("#keco-add").click(function(e) {
-        $("#top-title").html("RaKeCo toeveogen");
-    });
 
-    $("#keco-noti").click(function(e) {
-        $("#top-title").html("RaKeCo notificaties")
-    });
-
-
-    /********* JAP *********/
-    $("#jap-show").click(function(e) {
+    /********* VISUALISATION *********/
+    $("#vis-show").click(function(e) {
         $("#top-title").html("JAP");
 
     });
 
-    $("#jap-av").click(function(e) {
-        $("#top-title").html("JAP - Aandacht vereist");
-    });
-
-    $("#jap-ow").click(function(e) {
-        $("#top-title").html("JAP - Open wijzigingen");
-    });
-
-
-    /******* GPP *******/
-    $("#gpp-av").click(function(e) {
-        $("#top-title").html("GPP - Aandacht vereist");
-    });
-
-    $("#gpp-ow").click(function(e) {
-        $("#top-title").html("GPP - Open wijzigingen");
-    });
-
-    $("#gpp-show").click(function(e) {
-        $("#top-title").html("GPP");
-    });
 
 
 
