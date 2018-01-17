@@ -85,14 +85,11 @@ function getWorld(){
         world = result;
         worldLoaded = true;
         console.log("JSON WORLD");
-        //start();
-        console.log("allo" + world.points[1].type);
         console.log("world x = " + world.dimensionX + " world y = " + world.dimensionY );
 
 
         var ratio = world.dimensionX/world.dimensionY;
         $("#mapCanvas").width($("#myMapCanvas").width()).height( $("#myMapCanvas").width()/ratio ).attr("width", $("#mapCanvas").width()).attr("height", $("#mapCanvas").height());
-
 
 
         console.log("mapX = " + document.getElementById("mapCanvas").offsetWidth + " mapY = " + document.getElementById("mapCanvas").offsetHeight);
@@ -115,16 +112,12 @@ function drawWorld(){
         mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);
     }
 
-
-
-
     var ctx = mapCanvas.getContext("2d");
 
     for(var i=world.points.length-1; i>=0; i--){
         var point = world.points[i];
         console.log("point " + i + " x = " +  point.physicalPoisionX + " y = "+point.physicalPoisionY + " charachterestic = " + point.pointCharacteristic + " name = " + point.pointName);
 
-        //ctx.fillRect(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize,xSize,ySize); // fill in the pixel at (10,10)
         for(var j=0; j < point.neighbours.length; j++){
             var neigbourID = point.neighbours[j];
             var neigbour = world.points[neigbourID];
@@ -138,6 +131,8 @@ function drawWorld(){
                 ctx.beginPath();
                 if(point.physicalPoisionX < neigbour.physicalPoisionX){
                     ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
+                    // hiermee tekenen we bochten van 90 graden -> niet geimplementeerd in final build omdat het moeilijk is
+                    // om de progress te visualiseren dan
                     var middle = ((neigbour.physicalPoisionX - point.physicalPoisionX)/2) + point.physicalPoisionX;
                     //ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
                     ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
@@ -407,13 +402,13 @@ function showPage() {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("table_vehicles").style.visibility = "visible";
             }
-            if(!control_initDraw)
+            /*if(!control_initDraw)
             {
                 console.log("Start drawing map");
                 control_initDraw = true;
                 //initdraw();
                 console.log("Drawing complete");
-            }
+            }*/
     }
 }
 
@@ -475,34 +470,6 @@ function getVehiclesVN(){
 
 
     }
-
-
-    /* var URL_Vehicless = "/world1/allVehicles";
-     var vehicleID = -10;
-     var allVehicles = null;
-     $.getJSON(URL_Vehicless, function(result){
-         console.log("GOT THE VEHICLES BITCH");
-         allVehicles = result;
-
-         for(var j=0; j<allVehicles.length; j++) {
-             var vehicleID = allVehicles[j];
-             var URL_Progress = "/world1/progress/null/"+vehicleID;
-             console.log("progress of vehicle " + vehicleID );
-             $.getJSON( URL_Progress, function( progress ) {
-
-                 console.log("Result: "+progress[0]+" - " + progress[1]);
-                 var URL_VehicleType = "/vehicletype/" + vehicleID;
-                 console.log("UR: = " + URL_VehicleType );
-                 $.getJSON(URL_VehicleType, function( type ){
-                     console.log( "type of vehicle " + vehicleID + " = " + type[0] );
-                 });
-
-             });
-
-         }
-
-
-     });*/
 
 }
 

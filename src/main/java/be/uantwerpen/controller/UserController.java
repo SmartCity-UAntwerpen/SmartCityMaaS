@@ -165,6 +165,8 @@ public class UserController {
         MongoDBMethods monogDBClient = new MongoDBMethods();
         Iterable<Delivery> deliveries = monogDBClient.getAllDeliveries();
         model.addAttribute("allDeliveries", monogDBClient.getAllDeliveries());
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         return "delivery-list";
     }
 
@@ -181,7 +183,6 @@ public class UserController {
 
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
-        System.out.println("User logged in: "+loginUser.getUserName());
         return "delivery-manage-user";
     }
 

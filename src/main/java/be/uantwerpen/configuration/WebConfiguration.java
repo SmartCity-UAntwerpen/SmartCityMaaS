@@ -24,9 +24,7 @@ public class WebConfiguration {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    // IP address public centos VM : 143.129.39.159
-    // IP address for proxy server : 172.10.0.8
-    // Windows VM on own PC : 192.168.10.2
+
     @Bean
     public MongoDbFactory mongoDbFactory() throws Exception {
 

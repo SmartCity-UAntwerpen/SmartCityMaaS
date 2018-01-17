@@ -58,9 +58,6 @@ public class GraphBuilder {
         String linkUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/links";
         responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
-        System.out.println("moatjeuh: "+linkList);
-
-        //linkList = new Link[2] {"48", "49"}
     }
 
     //request the cost from all vehicle cores and fill in the least costly vehicle

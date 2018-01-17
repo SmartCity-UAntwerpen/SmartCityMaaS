@@ -33,6 +33,7 @@ $(document).ready(function() {
         else if( $(this).hasClass("create-user-link") ) window.location.href='/users/put';
         else if( $(this).hasClass("manage-delivery-link") ) window.location.href='/jobs';
         else if( $(this).hasClass("create-delivery-link") ) window.location.href='/jobs/put';
+        else if( $(this).hasClass("delivery-history-link") ) window.location.href='/deliveries';
     });
 
     $("ul#side-nav li a.nav-ch").click(function(e) {

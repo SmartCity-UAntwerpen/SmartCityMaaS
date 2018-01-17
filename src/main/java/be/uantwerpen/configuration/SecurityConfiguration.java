@@ -10,12 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-
-
-/**
- * Created by dries on 29/05/2017.
- */
-
 /**
  * Configuration of security
  */
@@ -36,35 +30,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.headers().frameOptions().disable();
     }
-
-/*
-    @Override
-    protected void configure(HttpSecurity http) throws Exception
-    {
-        //Permit access to H2 console --Development only (Order of defining is important!)
-        http.authorizeRequests().antMatchers("/h2console/**")
-                .permitAll();
-
-        http.authorizeRequests().antMatchers("/webjars/**")
-                .permitAll();
-
-        http.authorizeRequests().antMatchers("/login")
-                .permitAll()
-                .anyRequest()
-                .fullyAuthenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/login?error")
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/Access?accessdenied");
-
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
-    }*/
 
 }
