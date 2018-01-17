@@ -3,13 +3,10 @@
  */
 
 var mapCanvas;
-var mapCanvasContext;
 var world = [];
 var worldLoaded = false;
 
 var map_ready = false;
-var control_initDraw = false;
-var progress;
 
 var xSize = 0;
 var ySize = 0;
@@ -20,11 +17,6 @@ var pointAId = -10;
 var pointBId = -10;
 
 var linksDrawn = [];
-
-
-/**
- * Load all the images from the html.
- */
 
 var droneDefault;
 var dronePointA;
@@ -41,6 +33,10 @@ var droneIcon;
 var droneIconTarget;
 var racecarIcon;
 var racecarIconTarget;
+
+/**
+ * Load all the images from the html.
+ */
 
 function loadImages() {
     droneDefault = new Image();
@@ -189,7 +185,7 @@ function drawWorld(){
         }
 
     }
-
+    document.getElementById("loader").style.display = "none";
     map_ready = true;
 
 }
@@ -329,6 +325,7 @@ function clickedOnCanvas(event){
  * The initialize function of the html page.
  */
 function initFunction() {
+    document.getElementById("loader").style.display = "block";
     showPage();
     loadImages();
     getWorld();
@@ -381,13 +378,11 @@ function showPage() {
     {
         if(only_view == false)
         {
-            document.getElementById("loader").style.display = "none";
             document.getElementById("content").style.visibility = "visible";
             document.getElementById("passengersLabel").style.visibility = "visible";
             document.getElementById("passengersSelect").style.visibility = "visible";
         }else
             if(visualization == false) {
-                document.getElementById("loader").style.display = "none";
                 document.getElementById("content").style.visibility = "visible";
                 document.getElementById("passengersLabel").style.visibility = "visible";
                 document.getElementById("passengersNumber").style.visibility = "visible";
@@ -399,16 +394,8 @@ function showPage() {
                 document.getElementById("deliveryID").style.visibility = "visible";
             }else
             {
-                document.getElementById("loader").style.display = "none";
                 document.getElementById("table_vehicles").style.visibility = "visible";
             }
-            /*if(!control_initDraw)
-            {
-                console.log("Start drawing map");
-                control_initDraw = true;
-                //initdraw();
-                console.log("Drawing complete");
-            }*/
     }
 }
 
