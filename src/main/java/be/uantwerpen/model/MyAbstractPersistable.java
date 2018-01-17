@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import java.io.Serializable;
 
 /**
- * Created by Edwin on 28/10/2015.
+ * NV 2018
  */
 public class MyAbstractPersistable<Long extends Serializable> extends AbstractPersistable<Long>{
     @Override

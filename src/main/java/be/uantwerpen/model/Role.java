@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
- * Created by Frédéric Melaerts on 26/04/2017.
+ * NV 2018
  */
 @Entity
 public class Role extends MyAbstractPersistable<Long> {

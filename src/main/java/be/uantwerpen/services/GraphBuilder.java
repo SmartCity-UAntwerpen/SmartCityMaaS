@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 
 /**
- * Created by dries on 10/05/2017.
+ * NV 2018
  * Made for getting all the information for the A* algorithm.
  */
 @Service
@@ -39,22 +39,20 @@ public class GraphBuilder {
     @Value("#{new Integer(${robot.port}) ?: 1994}")
     private String robotCorePort;
 
-    private Link[] linkList;//= new Link[60];
-    private Point[] pointList;//= new Point[18];
+    private Link[] linkList;
+    private Point[] pointList;
 
     //request the map from the core
     public void getMap()
     {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Point[]> responseList;
-        //String pointUrl = "http://146.175.140.44:1994/map/topmapjson/points";
         String pointUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/points";
         responseList = restTemplate.getForEntity(pointUrl, Point[].class);
         pointList = responseList.getBody();
 
         restTemplate = new RestTemplate();
         ResponseEntity<Link[]> responseList2;
-        //String linkUrl = "http://146.175.140.44:1994/map/topmapjson/links";
         String linkUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/map/topmapjson/links";
         responseList2 = restTemplate.getForEntity(linkUrl, Link[].class);
         linkList = responseList2.getBody();
@@ -87,7 +85,6 @@ public class GraphBuilder {
                 System.out.println("url: " + url + ", id of link: " + link.getId());
                 try {
                     responseList = restTemplate.getForEntity(url, Cost[].class);
-                    //System.out.println("responseList: " + responseList);
                     costs = responseList.getBody();
                     System.out.println("Received costs: " + costs);
                 } catch(HttpClientErrorException e) {
@@ -96,7 +93,7 @@ public class GraphBuilder {
                 }
                 //run over all the answers to find the most cost effective vehicle
                 if(costs == null || costs.length == 0) {
-                    System.out.println("Cost is NULL");
+                    System.out.println("FAULTHY anwser from "+ vehicle +" cost is NULL, weigth set to 999999!");
                     link.setWeight((long)99999);
                 } else {
                     Long lowestCost = (costs[0].getWeight() + costs[0].getWeightToStart());
@@ -137,7 +134,6 @@ public class GraphBuilder {
             return pointList;
     }
 
-    //public ArrayList<Cost> getBestCostList() {return bestCostList;}
 
     //look for a certain link in the list
     public Link getCertainLink(Long startPoint, Long endPoint)

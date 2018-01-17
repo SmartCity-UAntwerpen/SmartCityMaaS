@@ -3,7 +3,7 @@ package be.uantwerpen.model;
 import javax.persistence.*;
 
 /**
- * Created by Niels on 24/03/2016.
+ * NV 2018
  */
 @Entity
 //@Table(name = "point", schema = "", catalog = "smartcitydb")

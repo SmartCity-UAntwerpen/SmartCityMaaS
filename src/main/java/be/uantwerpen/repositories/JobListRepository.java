@@ -12,8 +12,7 @@ import java.util.List;
  * order is a reserved word for sql functions, which ended up with the compiler giving a index out of bound exception
  * for the orders (where no index was being used). Hence it was refactored to JobList, however, references to orders
  * will still often be found
- * @version 2 29 may 2017
- * @author Oliver Nyssen
+ * NV 2018
  */
 @Repository
 public interface JobListRepository extends CrudRepository<JobList, Long>

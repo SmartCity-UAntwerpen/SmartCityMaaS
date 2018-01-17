@@ -1,7 +1,7 @@
 package be.uantwerpen.model;
 
 /**
- * Created by dries on 10/05/2017.
+ * Created by NV 2018
  */
 public class Cost {
     private boolean status;

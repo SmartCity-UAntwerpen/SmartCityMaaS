@@ -5,9 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by Frédéric Melaerts on 2/05/2017.
+ * NV 2018
  */
 @Repository
 public interface DeliveryRepository extends CrudRepository<Delivery, Long> {
-    //List<Delivery> findAll();
 }

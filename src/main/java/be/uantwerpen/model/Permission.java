@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 
 
 /**
- * Created by Frédéric Melaerts on 26/04/2017.
+ * NV 2018
  */
 @Entity
 public class Permission extends MyAbstractPersistable<Long> {

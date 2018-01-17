@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Iterator;
 
 /**
- * Created by Frédéric Melaerts on 26/04/2017.
+ * NV 2018
  */
 @Repository
 public interface PermissionRepository extends CrudRepository<Permission, Long> {

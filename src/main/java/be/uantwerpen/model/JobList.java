@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Revil on 29/05/2017.
+ * NV 2018
  */
 @Entity
 public class JobList extends MyAbstractPersistable<Long>{

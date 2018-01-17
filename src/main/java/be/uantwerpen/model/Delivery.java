@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.Entity;
 
 /**
- * Created by Frédéric Melaerts on 2/05/2017.
+ * Created by NV 2018
  * The delivery is linked to a specific user.
  * It contains all the information of the delivery that is required to perform the Astart algorithm.
  * PointA is the start point of the delivery, while pointB is the end point of the delivery.
