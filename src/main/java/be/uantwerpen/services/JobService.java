@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service for the Job class. All interactions will be defined here required to perform the methods for the Job class
- * @version 2.2 17 may 2017
- * @author Oliver Nyssen, Kevin Van Tendeloo
+ * NV 2018
  */
 @Service
 public class JobService {

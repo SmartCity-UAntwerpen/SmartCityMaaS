@@ -157,21 +157,6 @@ public class Astar {
      *
      * @param startPos (String) startingposition
      * @param endPos   (String) End position
-     */
-    public void determinePath(String startPos, String endPos) {
-        AStar astar = new AStar(this.graph);
-        updateNaE();
-        astar.compute(startPos, endPos);
-        System.out.println(astar.getShortestPath());
-        Path path = astar.getShortestPath();
-        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
-    }
-
-    /**
-     * Way to determine a Path in a Graph
-     *
-     * @param startPos (String) startingposition
-     * @param endPos   (String) End position
      * @param idDelivery    (String) parameter to link an order to a Delivery.
      */
     public void determinePath2(String startPos, String endPos, String idDelivery) {

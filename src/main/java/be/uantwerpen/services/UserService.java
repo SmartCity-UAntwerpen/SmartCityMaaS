@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by Frédéric Melaerts on 26/04/2017.
+ *  NV 2018
  */
 @Service
 public class UserService {
@@ -19,7 +19,7 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public boolean save(final User user){ //TODO is goe nakijken want hier klopt iet ni
+    public boolean save(final User user){
 
         for(User u : findAll())
         {

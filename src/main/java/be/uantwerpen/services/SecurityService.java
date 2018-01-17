@@ -17,6 +17,10 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ *  NV 2018
+ */
+
 @Service
 public class SecurityService implements UserDetailsService {
 

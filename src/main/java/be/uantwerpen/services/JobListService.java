@@ -15,8 +15,7 @@ import java.net.*;
 /**
  * Service based off the JobListRepository (formerly known as OrderRepository) in which JobList (Orders) will be saved
  * aswell as all functions needed to dispatch jobs to the cores will be forseen.
- * @version 7.2 29 may 2017
- * @author Oliver Nyssen
+ *  NV 2018
  */
 @Service
 public class JobListService {
@@ -189,11 +188,11 @@ public class JobListService {
                 System.out.println(msgresponse);
                 switch (msgresponse) {
                     case "idVehicleError":
-                        //TODO: doet iets met de error code
                         System.out.println(msgresponse);
                         break;
                     default: System.out.println(msgresponse);
                 }*/
+                System.out.println("ERROR WHILE DISPATCHING JOB, job ID: " + idJob + " for vehicle " + idVehicle);
                 conn.disconnect();
                 status = false;
             }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Iterator;
 
 /**
- * Created by Frédéric Melaerts on 26/04/2017.
+ *  NV 2018
  */
 @Service
 public class PermissionService {
