@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
  * it gets from the Graphbuilder service. Due to last minute additions, there are 2 determinePath method,s of
  * one was a quickfix to add a Delivery paramter so that the code could be integrated in the entire project
  *
- * @version 3.3 7 jun 2017
- * @author Oliver Nyssen
+ * VN 2018
  */
 @Service
 public class Astar {
@@ -67,6 +66,7 @@ public class Astar {
         makeNode();
         makeEdge();
         graphBuilder.getLinkCost();
+        //Debuggen met test map
         //testDeterminePath(graph, "1002", "1015");
         //testDeterminePath(graph, "1014", "1002");
         //testDeterminePath(graph, "1004", "1015");
@@ -165,7 +165,7 @@ public class Astar {
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        System.out.println("Shortest Path: " + path.toString());
+        System.out.println("Shortest Path for "+ idDelivery +": " + path.toString());
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );

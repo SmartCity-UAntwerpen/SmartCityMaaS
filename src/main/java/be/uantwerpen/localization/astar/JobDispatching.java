@@ -12,14 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * A Star Class (will be used as a Service)
  * This class will provide a path, while building up a graph in which the path will be calculated from input it gets from the Graphbuilder service.
- *
- * @version 4.1 7 jun 2017
- * @author Oliver Nyssen
+ * VN 2018
  */
 
 public class JobDispatching {
-
-
     private JobService jobService;
 
     private JobListService jobListService;
@@ -51,6 +47,7 @@ public class JobDispatching {
     }
 
     /**
+     * USED FOR DEBUGGING
      * Dispatch orders function will use a path as parameter and convert it into a JobList, which consists of Jobs containing all the information required to send to the cores.
      * At the end of the function, there will be a call to the dispatch2core function, to start communication in the
      * @param path  (String) path computed by Astar Algorithm
@@ -69,7 +66,6 @@ public class JobDispatching {
                 Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
                 // If the Link has been found, start creating a job with all relevant information
                 if (listOfEdges[j].getId().equals(link.getId())) {
-                    //TODO remove PRINTS or put them in the debugging part?
                     System.out.println("Edge found: " + listOfEdges[j].getId());
                     System.out.println(" cost of edge: " + listOfEdges[j].getWeight());
                     // if we are changing vehicle types, then we will walk from 1 vehicle to another. No need to add a Job then
@@ -108,7 +104,6 @@ public class JobDispatching {
             }
         }
         jobListService.saveOrder(joblist);
-        //TODO remove print & print function OR put it in a DEBUG MODE
         System.out.println("starting Order input");
         printJobList();
         jobListService.dispatch2Core();
