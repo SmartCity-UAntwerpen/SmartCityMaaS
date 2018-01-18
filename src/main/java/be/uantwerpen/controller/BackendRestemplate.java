@@ -93,7 +93,7 @@ public class BackendRestemplate {
             obj = parser.parse(listOfCore);
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
-            System.out.println("Whole list:  "+pointsList.toString());
+            System.out.println("Whole list of points:  "+pointsList.toString());
 
             int counter =0;
             Iterator<String> iterator = pointsList.iterator();
@@ -104,42 +104,33 @@ public class BackendRestemplate {
                 pointObject = iterator.next();
                 JSONObject point_jsonObject = (JSONObject) pointObject;
                 int point_ID = ((Long)point_jsonObject.get("id")).intValue();
-                if(pointTransition.containsKey(point_ID) == false)
-                {
-                    // System.out.println("Point ID is null for "+point_ID+ " index counter "+index_counter);
+                if(pointTransition.containsKey(point_ID) == false) {
                     pointTransition.put(point_ID,index_counter);
                     point_ID = pointTransition.get(point_ID);
                     index_counter++;
-                }else
-                {
-                    // System.out.println("Point ID is NOT null for "+point_ID+ " index counter "+index_counter);
+                } else {
                     point_ID = pointTransition.get(point_ID);
                 }
-                // System.out.println(" index "+counter + " value of point_ID "+point_ID);
                 int x = ((Long)point_jsonObject.get("x")).intValue();
                 int y = ((Long)point_jsonObject.get("y")).intValue();
 
                 String type = (String) point_jsonObject.get("access");
                 String characteristic = "unknown";
                 characteristic = (String) point_jsonObject.get("type");
-                if(characteristic == null)
-                {
+                if(characteristic == null) {
                     characteristic = "inbetween";
                 }
                 JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
-                //System.out.println("neighbourS " + neighbours.toString());
                 point.setPointName(point_ID);
                 point.setPhysicalPoisionX(x);
                 point.setPhysicalPoisionY(y);
                 point.setType(type);
                 point.setPointCharacteristic(characteristic);
                 Iterator<String> iter = neighbours.iterator();
-                while (iter.hasNext())
-                {
+                while (iter.hasNext()) {
                     neighbourObject = iter.next();
                     JSONObject neigbourJSON = (JSONObject) neighbourObject;
                     int neighbour = ((Long)neigbourJSON.get("neighbour")).intValue();
-                    // System.out.println("neighbour " + neighbour);
                     point.addNeighbour(neighbour);
                 }
                 points.add(point);
@@ -150,19 +141,14 @@ public class BackendRestemplate {
         }
 
         // Transform the id of the neigbours to the right one of the Hashmap
-        for(int p =0 ; p < points.size(); p++)
-        {
+        for(int p =0 ; p < points.size(); p++) {
             DummyPoint point = points.get(p);
             List<Integer> neighbours = point.getNeighbours();
-            for(int i =0 ; i < neighbours.size(); i++)
-            {
-                if(pointTransition.containsKey(neighbours.get(i)) == true)
-                {
-                    //System.out.println("Neighbour point ID is null for "+neighbour + " index counter "+index_counter);
+            for(int i =0 ; i < neighbours.size(); i++) {
+                if(pointTransition.containsKey(neighbours.get(i)) == true) {
                     int temp_neig = pointTransition.get(neighbours.get(i));
                     neighbours.set(i,temp_neig);
-                }else
-                {
+                } else {
                     // Retrieve this world id.
                     System.out.println("Neighbour not found in point hashmap");
                 }
@@ -174,12 +160,9 @@ public class BackendRestemplate {
         Iterator it = pointTransition.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            System.out.println(pair.getKey() + " = " + pair.getValue());
-            //it.remove(); // avoids a ConcurrentModificationException
         }
         System.out.println("Print points");
-        for(int i = 0 ; i <points.size(); i++)
-        {
+        for(int i = 0 ; i <points.size(); i++) {
             points.get(i).print();
         }
         return points; //new MessageWrapper<>(tracksamples, "server called using eureka with rest template");
@@ -191,11 +174,8 @@ public class BackendRestemplate {
      * @param value
      * @return
      */
-    public Integer getKeyHashMap(Integer value)
-    {
-       // System.out.println("Key value request for "+value+"  fuck "+pointTransition.get(1000));
+    public Integer getKeyHashMap(Integer value) {
         for (Integer pointKey : pointTransition.keySet()) {
-          //  System.out.println("pointTransition.get(pointKey) key "+pointTransition.get(pointKey) + " value "+value);
             if (pointTransition.get(pointKey).equals(value) == true) {
                 return pointKey;
             }

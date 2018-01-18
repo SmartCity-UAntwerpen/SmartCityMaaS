@@ -21,10 +21,6 @@ import java.util.Map;
 @Controller
 public class MyErrorController implements ErrorController {
 
-
-    /**
-     *  Basic Attributes in the app
-     */
     private ErrorAttributes errorAttributes;
     private final static String ERROR_PATH = "/error";
 
@@ -37,28 +33,19 @@ public class MyErrorController implements ErrorController {
         this.errorAttributes = errorAttributes;
     }
 
-    /**
-     * Supports the HTML error view
-     */
     @RequestMapping( value= ERROR_PATH, produces = "txt/html" )
     public ModelAndView errorHtml( HttpServletRequest request ) {
         System.out.println("ERROR");
         System.out.println(getErrorAttributes( request, false ));
-        //return new ModelAndView("error-page", getErrorAttributes( request, false ) );
-
-        //TODO: make redirect to /home with paramets, set parameters required = false, if parameters are given, show the error
-
         return new ModelAndView("redirect:/?code=" + getErrorAttributes( request, false ).get("status")
         + "&message=" + getErrorAttributes( request, false ).get("error"));
-        //return new ModelAndView();
     }
 
 
 
 
     /**
-     * Returns the path of the error page.
-     *
+     * Returns the path of the error page
      * @return the error path
      */
     @Override
@@ -75,11 +62,9 @@ public class MyErrorController implements ErrorController {
         return !"false".equals(parameter.toLowerCase());
     }
 
-    private Map<String, Object> getErrorAttributes(HttpServletRequest request,
-                                                   boolean includeStackTrace) {
+    private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
         RequestAttributes requestAttributes = new ServletRequestAttributes(request);
-        return this.errorAttributes.getErrorAttributes(requestAttributes,
-                includeStackTrace);
+        return this.errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace);
     }
 
     private HttpStatus getStatus(HttpServletRequest request) {
@@ -94,72 +79,4 @@ public class MyErrorController implements ErrorController {
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
-
-    /*@RequestMapping("/error")
-    public String thisIsError(HttpServletRequest request, HttpServletResponse response, Model model) {
-        // retrieve some useful information from the request
-        Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
-        // String servletName = (String) request.getAttribute("javax.servlet.error.servlet_name");
-        String exceptionMessage = getExceptionMessage(throwable, statusCode);
-
-
-        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-        if (requestUri == null) {
-            requestUri = "Unknown";
-        }
-
-        String message = MessageFormat.format("{0} returned for {1} with message {3}",
-                statusCode, requestUri, exceptionMessage
-        );
-
-        model.addAttribute("errorMessage", message);
-        return "customError";
-    }
-
-    private String getExceptionMessage(Throwable throwable, Integer statusCode) {
-        if (throwable != null) {
-            //return Throwables.getRootCause(throwable).getMessage();
-            return "da weirkt nie";
-        }
-        HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
-        return httpStatus.getReasonPhrase();
-    }*/
-
-
-
-
-    /*@RequestMapping(value = "/errors", method = RequestMethod.POST)
-    public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
-
-        ModelAndView errorPage = new ModelAndView("error-page");
-        String errorMsg = "";
-        int httpErrorCode = getErrorCode(httpRequest);
-
-        switch (httpErrorCode) {
-            case 400: {
-                errorMsg = "Http Error Code: 400. Bad Request";
-                break;
-            }
-            case 401: {
-                errorMsg = "Http Error Code: 401. Unauthorized";
-                break;
-            }
-            case 404: {
-                errorMsg = "Http Error Code: 404. Resource not found";
-                break;
-            }
-            case 500: {
-                errorMsg = "Http Error Code: 500. Internal Server Error";
-                break;
-            }
-        }
-        errorPage.addObject("errorMsg", errorMsg);
-        return errorPage;
-    }
-
-    private int getErrorCode(HttpServletRequest httpRequest) {
-        return (Integer) httpRequest
-                .getAttribute("javax.servlet.error.status_code");
-    }*/
 }
