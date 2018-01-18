@@ -232,27 +232,8 @@ a {
 }
 
 
-.row-campus-list {
-    padding-left: 30px;
-    padding-right: 30px;
-}
-
-
 .glyphicon-medium {
     font-size: 2em;
-}
-
-.verslagen-container span {
-    padding: 5px 1px 5px 5px;
-    border-radius: 5px;
-    background-color: #EEE;
-    color: #009fdf;
-    margin: 3px;
-}
-
-#add-file {
-    color: #cc0099;
-    line-height: 100%;
 }
 
 .glyphicon-big {
@@ -260,15 +241,6 @@ a {
     color: #009fdf;
 }
 
-.verslagen-container span:hover {
-    color: white;
-    background-color: #009fdf;
-}
-
-.verslagen-container #add-file:hover {
-    background-color: #cc0099;
-    color: white;
-}
 
 button.fileicon {
     padding: 0;
@@ -287,8 +259,4 @@ label.no-bold {
 
 span.pink-letter {
     color: #cc0099;
-}
-
-div.noti-jap-gpp {
-    cursor: pointer;
 }
