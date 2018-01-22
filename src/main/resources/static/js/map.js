@@ -1,7 +1,8 @@
 /**
- * Created by Frédéric Melaerts on 11/05/2017.
  */
 
+
+var allBots = [];
 var mapCanvas;
 var world = [];
 var worldLoaded = false;
@@ -303,7 +304,7 @@ function clickedOnCanvas(event){
                             ctx.drawImage(carPointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),((point.physicalPoisionY*ySize) - (ySize*3/2)),(xSize*3),(ySize*3));
                             break;
                         case "drone":
-                            ctx.drawImage(dronePointB,((point.physicalPoisionX*xSize) + xSize*3/2),(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                            ctx.drawImage(dronePointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             break;
                     }
                     console.log("Point B id = " + i);
@@ -330,9 +331,11 @@ function initFunction() {
     loadImages();
     getWorld();
 
-
     if(visualization){
-        setInterval(getVehiclesVN, 250);
+        $.getJSON("/world1/allVehicles").done(function(allVehicles) {
+            allBots = allVehicles;
+        });
+        setInterval(getVehiclesVN, 1000);
     }
 
     if(!only_view)
@@ -400,92 +403,50 @@ function showPage() {
 }
 
 function getVehiclesVN(){
-
-    var vehicleID = -10;
-    var getVehiclesURL = "/world1/allVehicles";
-    var allVehiclesData = $.getJSON(getVehiclesURL);
-
-
-    $.when(allVehiclesData).then(function(allVehicles) {
-        for(var j=0; j<allVehicles.length; j++) {
-            vehicleID = allVehicles[j];
-
-            var progressVehicleURL = "/world1/progress/null/" + vehicleID;
-            console.log("progress of vehicle " + vehicleID);
-
-            var progressVehicle = $.getJSON(progressVehicleURL);
-            $.when(progressVehicle).then(function (progress) {
-                progress = result1;
-                console.log("Result: " + progress[0] + " - " + progress[1]);
-
-                var vehicleTypeURL = "/vehicletype/" + vehicleID;
-                console.log("URL: = " + vehicleTypeURL);
-
-                var vehicleType = $.getJSON(vehicleTypeURL);
-                $.when(vehicleType).then(function (type) {
-                    console.log("type of vehicle " + j + " = " + type);
-
-                    path.push(progress[0]);
-                    path.push(progress[1]);
-
-                    if (progress[0] != -1) {
-                        if (currentVehicleID == vehicleID) {
-                            drawVehicle(type, progress[0], progress[1], true);
-                        } else {
-                            drawVehicle(type, progress[0], progress[1], false);
-                        }
-                    }
-
-                });
-
-            });
-        }
-    });
-
-    /* DRAW PATH */
-    if( path.length > 2){
-        var mapCanvas = document.getElementById("mapCanvas");
-        var ctx = mapCanvas.getContext("2d");
-        ctx.moveTo(path[0]*xSize,path[1]*ySize);
-        for(var i = 2; i < path.length; i = i + 2)
-        {
-            ctx.lineTo(path[i]*xSize,path[i+1]*ySize);
-        }
-        ctx.strokeStyle = '#e74c3c';ß
-        ctx.lineWidth=5;
-        ctx.stroke();
-
-
+    var progression = [];
+    var vehicleType;
+    if(currentVehicleID != -1){
+        $.when(
+            $.getJSON("/world1/progress/null/" + currentVehicleID).done(function (progress) {
+                progression = progress;
+            }),
+            $.getJSON("/vehicletype/" + currentVehicleID).done(function (type) {
+                vehicleType = type;
+            })
+        ).then(function () {
+            if (progression[0] != -1) {
+                drawVehicle(vehicleType, progression[0], progression[1], true);
+            }
+        })
     }
-
 }
 
 
 function drawVehicle(type, x, y,selected){
+    console.log("draw vehicle x = " + x + " y = " + y + " type " + type);
     var mapCanvas = document.getElementById("mapCanvas");
     var ctx = mapCanvas.getContext("2d");
-    switch (type) {
-        case "robot":
-            if(selected){
-                ctx.drawImage(robotIconTarget, (x*xSize) - xSize*3/2,(y*ySize) - ySize*3/2,xSize*3,ySize*3);
-            }else {
-                ctx.drawImage(robotIcon, (x*xSize) - xSize*3/2,(y*ySize) - ySize*3/2,xSize*3,ySize*3);
-            }
-            break;
-        case "car":
-            if(selected){
-                ctx.drawImage(racecarIconTarget,((x*xSize) - (xSize*3/2)),((y*ySize) - (ySize*3/2)),xSize*3,ySize*3);
-            }else {
-                ctx.drawImage(racecarIcon,((x*xSize) - (xSize*3/2)),((y*ySize) - (ySize*3/2)),xSize*3,ySize*3);
-            }
-            break;
-        case "drone":
-            if(selected){
-                ctx.drawImage(droneIconTarget,((x*xSize) + xSize*3/2),(y*ySize) - ySize*3/2,xSize*3,ySize*3);
-            }else {
-                ctx.drawImage(droneIcon,((x*xSize) + xSize*3/2),(y*ySize) - ySize*3/2,xSize*3,ySize*3);
-            }
-            break;
+    if(type == "robot") {
+        if (selected) {
+            ctx.drawImage(robotIconTarget, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+        } else {
+            console.log(" Drawing robot icon ");
+            ctx.drawImage(robotIcon, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+        }
+    }else if(type == "car") {
+        if (selected) {
+            ctx.drawImage(racecarIconTarget, ((x * xSize) - (xSize * 3 / 2)), ((y * ySize) - (ySize * 3 / 2)), xSize * 3, ySize * 3);
+        } else {
+            ctx.drawImage(racecarIcon, ((x * xSize) - (xSize * 3 / 2)), ((y * ySize) - (ySize * 3 / 2)), xSize * 3, ySize * 3);
+        }
+    } else if(type == "drone") {
+        if (selected) {
+            ctx.drawImage(droneIconTarget, ((x * xSize) + xSize * 3 / 2), (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+        } else {
+            ctx.drawImage(droneIcon, ((x * xSize) + xSize * 3 / 2), (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+        }
+    }else{
+        console.log(" vehicle type not supported");
     }
 
 }
