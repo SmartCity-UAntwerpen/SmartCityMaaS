@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Frédéric Melaerts on 26/04/2017.
  * Databaseloader is used to store information in the database.
  */
 @Service

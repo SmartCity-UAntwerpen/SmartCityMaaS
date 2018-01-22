@@ -33,8 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Frédéric Melaerts on 27/04/2017.
- *
  * This controller handles the user specific request mappings.
  */
 
@@ -193,10 +191,8 @@ public class UserController {
      */
     @RequestMapping(value="/deliveries/{idDelivery}/delete", method= RequestMethod.GET)
     public String deleteDelivery(@PathVariable String idDelivery){
-
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.deleteDelivery(idDelivery);
-        //System.out.println("ID of the DELIVERY "+idDelivery);
         return "redirect:/deliveries" ;
     }
 
@@ -223,24 +219,16 @@ public class UserController {
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.putStatement(delivery);
         Delivery delivery_return = monogDBClient.getLastDelivery();
-        if(delivery_return.getFirstName() == null)
-        {
+        if(delivery_return.getFirstName() == null) {
             System.out.println("-- !! Could not retrieve last delivery from MongoDB service !! --");
             return "home_user";
 
-        }else
-        {
+        } else {
             System.out.println("-- Retrieve last delivery from MongoDB service --");
             delivery_return.print();
-        //  deliveryService.saveSomeAttributes(delivery_return);
         }
-        /*
-            ASTAR gedeelte
-         */
 
-        // TODO delivery ID koppelen aan Astarr
         astarService.init();
-        //astarService.testDeterminePath(astarService.getGraph(), delivery.getPointA(),delivery.getPointB());
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
         System.out.println("JOB HAS BEEN CREATED");
         User loginUser = userService.getPrincipalUser();
@@ -249,7 +237,6 @@ public class UserController {
         delivery_return.setPointB(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
         model.addAttribute("delivery", delivery_return);
         return "delivery-navigate-user";
-        // return "redirect:/deliveries";
     }
 
 
@@ -260,19 +247,14 @@ public class UserController {
      */
     @RequestMapping(value="/visualization",method= RequestMethod.GET)
     public String getSimulation(final ModelMap model){
-
-        //model.addAttribute("allSegments", segmentService.findAll());
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
 
         // The following code is equal to the function getAllVehicles from the datacontroller
         // with the exception that this functions returns more data of the vehicles.
-
         List<DummyVehicle> vehicles = getAllSimData();
-
         model.addAttribute("currentUser", loginUser);
         model.addAttribute("vehiclesInfo", vehicles);
-
         return "visualization_map";
     }
 
@@ -284,11 +266,9 @@ public class UserController {
     public List<DummyVehicle> getAllSimData() {
         List<DummyVehicle> vehicles = new ArrayList<DummyVehicle>();
         String requestAll = "request all";
-        // String URL = "http://localhost:9000/posAll";
-       //  String URL = "http://"+serverCoreIP+":"+serverCorePort+"/posAll";
         String URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getAllVehicles";
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL);//.queryParam("requestAll", requestAll);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);

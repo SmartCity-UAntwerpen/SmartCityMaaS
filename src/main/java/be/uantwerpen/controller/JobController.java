@@ -22,9 +22,6 @@ import java.net.URL;
 import java.util.*;
 
 
-/**
- * Created by Kevin on 17/05/2017.
- */
 @Controller
 public class JobController {
     @Autowired
@@ -40,7 +37,6 @@ public class JobController {
     private UserService userService;
 
     //for testing purposes
-    //zet alles op om route calculaties te testen
     @RequestMapping(value="/initAstar", method= RequestMethod.GET)
     public String initAstar(final ModelMap model){
         astar.init();
@@ -108,11 +104,9 @@ public class JobController {
     }
 
     @RequestMapping(value = "/removeOrders")
-    public String removeOrders()
-    {
+    public String removeOrders() {
         jobListRepository.deleteAll();
-        if(jobListRepository.findAll().size() == 0)
-        {
+        if(jobListRepository.findAll().size() == 0) {
             System.out.println("all orders have been cleared");
         }
         return "redirect:/";
@@ -120,19 +114,16 @@ public class JobController {
 
     //make an order
     @RequestMapping(value ="/createOrder/{Start}/{Stop}")
-    public String createOrder(@PathVariable String Start, @PathVariable String Stop)
-    {
+    public String createOrder(@PathVariable String Start, @PathVariable String Stop) {
         astar.init();
         astar.makeNode();
         astar.makeEdge();
-
         astar.testDeterminePath(astar.getGraph(),Start,Stop);
         return "redirect:/jobs";
     }
 
     @RequestMapping(value="/completeJob/{idJob}", method= RequestMethod.GET)
     public String completeJob (@PathVariable Long idJob) {
-
         System.out.println("job Complete");
         for (JobList jl: jobListService.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob)) {
@@ -147,7 +138,7 @@ public class JobController {
                 System.out.println("delete order");
             }
         }
-        // TODO roep methode aan om nieuwe job te dispatchen. DIE MOET GE MAKEN IN DE SERVICE
+
         if(jobListRepository.findAll().size() != 0) {
             jobListService.dispatch2Core();
             System.out.println("dispatch next job");

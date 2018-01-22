@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Frédéric Melaerts on 11/05/2017.
  *
  * This controller delivers the physical world and vehicle progress to javascript on the frontend.
  *
@@ -213,7 +212,6 @@ public class DataController {
                 break;
             }
         }
-        // TODO ask Oliver service for current job of this delivery with the DeliveryID
         // it returns the value of
         //
         String idVehicle = "request progress";
@@ -261,7 +259,6 @@ public class DataController {
                     entity,
                     String.class);
 
-            //System.out.println("Performed exchange for bot vehicle" );
             System.out.println("Response backbone : " + httpResponse.toString());
             System.out.println("Response backbone : " + httpResponse.getBody());
             System.out.println("Response body backbone : " + httpResponse.hasBody());
@@ -299,15 +296,12 @@ public class DataController {
             int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];
             coordinatesVehicle[1] = coordinatesVehicle_temp[1];
-            if(delivery_id.equals("null") == false)
-            {
+            if(delivery_id.equals("null") == false) {
                 coordinatesVehicle[2] = vehicleID;
-            }else
-            {
+            } else {
                 coordinatesVehicle[2] = vehicle_id;
             }
-        }else
-        {
+        } else {
             coordinatesVehicle[0] = -1;
             coordinatesVehicle[1] = -1;
             coordinatesVehicle[2] = -1;
