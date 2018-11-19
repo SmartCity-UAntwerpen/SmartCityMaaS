@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visualisation</title>
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/default.css" rel="stylesheet" />
+    <link href="../css/cards.css" rel="stylesheet" />
+    <link href="../css/dashboard.css" rel="stylesheet" />
+    <link href="../css/adminp.css" rel="stylesheet" />
+</head>
+
+<body onload="initFunction()" style="margin:0;">
+
+
+<div class="container-fluid display-table">
+    <div class="row display-table-row">
+        <div th:replace="layout :: side-menu"></div>
+
+        <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+            <div class="row">
+                <header id="nav-header" class="clearfix">
+                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                        <nav class="navbar-default pull-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                        <ul class="navbar-ul pull-right">
+                            <li>
+                                <a href="/logout" class="logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            </div>
+
+            <div class="dashboard-con">
+                <div class="row">
+                    <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->
+                    <div class="col-md-12 alert alert-info" id="info-bar">
+                        ERROR FEEDBACK
+                    </div>
+                </div>
+                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+                <div class="inside-con">
+
+
+                    <div id="loader" class="row"></div>
+                    <div class="row">
+                        <div class="col-sm-12 content" id="content" ><!--style="width:100%">-->
+                            <div id="myMapCanvas" >
+                                <canvas id="mapCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="login-wrap row">
+                        <div class="scrollingtable">
+                            <div>
+                                <div>
+                                    <table class="table table-hover" id = "table_vehicles">
+                                        <thead>
+                                        <tr class="bg-primary">
+                                            <th><span th:label="#{idVehicle}">ID_VEHICLE</span></th>
+                                            <th><span th:label="#{typeVehicle}">TYPE</span></th>
+                                            <th><span th:label="#{idStart}">START</span></th>
+                                            <th><span th:label="#{idEnd}">END</span></th>
+                                            <th><span th:label="#{idProgress}">PROGRESS</span></th>
+                                            <th><span th:label="#{show}">SHOW</span></th>
+                                        </tr>
+                                        </thead>
+                                        <!-- IMPORTANT, class="list" have to be at tbody -->
+                                        <tbody class="list" >
+                                        <tr th:each="vehicle : ${vehiclesInfo}">
+                                            <td class="idVehicle" th:value="${idVehicle}" th:text="${vehicle.ID }">Vehicle ID</td>
+                                            <td class="typeVehicle" th:value="${typeVehicle}" th:text="${vehicle.type }">Vehicle Type</td>
+                                            <td class="idStart" th:value="${idStart}" th:text="${vehicle.start }">Start</td>
+                                            <td class="idEnd" th:value="${idEnd}" th:text="${vehicle.end }">End</td>
+                                            <td class="idProgress" th:value="${idProgress}" th:text="${vehicle.progress }">Progress</td>
+                                            <td><button class="button" th:text="#{show}" th:onclick="${'javascript:changeSelectVehicle(' + vehicle.ID + ')'}">edit</button></td>
+
+                                            <script th:inline="javascript">
+                                                /*<![CDATA[*/
+                                                var currentVehicleID = -1;
+                                                var progressVehicleID = -13;
+                                                var path = [];
+
+                                                function changeSelectVehicle(vehicleID) {
+                                                    path.length = 0;
+                                                    if(currentVehicleID == vehicleID)
+                                                    {
+                                                        currentVehicleID = -1;
+                                                    }else{
+                                                        currentVehicleID = vehicleID;
+                                                    }
+                                                    console.log("Vehicle id clicked "+ currentVehicleID);
+
+                                                    //var selected_Vehicle = [[${vehicle.ID}]];
+
+                                                }
+                                                /*]]>*/
+                                            </script>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="../js/tabs.js"></script>
+
+<script th:inline="javascript">
+    var only_view = true;
+    var visualization = true;
+</script>
+<script  src="../js/map.js"></script>
+</body>
+</html>
+

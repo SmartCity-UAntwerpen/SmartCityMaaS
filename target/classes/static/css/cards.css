@@ -1,0 +1,35 @@
+.card-container {
+    background-color: white;
+    border-radius: 5px;
+    z-index: 1;
+    perspective: 1000px;
+    height: 100%;
+    color: #676a6c;
+    padding: 0 0 0 0;
+    margin: 10px 0;
+}
+
+.card-top {
+    height: 100%;
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+    color: white;
+}
+
+.cyan {
+    background-color: #3498db;
+    color: white;
+}
+
+.yellow {
+    background-color: #ffcc00;
+
+}
+
+.green {
+    background-color:#cccc66;
+}
+
+.pink {
+    background-color: #cc0099;
+}

@@ -1,0 +1,66 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <head th:fragment="head (title)">
+        <title th:text="'idDelivery Test Manager - ' + ${title}"></title>
+
+        <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.5/css/bootstrap.min.css"
+              th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"
+              rel="stylesheet" media="screen" />
+        <script type="text/javascript" src="/js/list.min.js"></script>
+        <script src="http://cdn.jsdelivr.net/webjars/jquery/2.1.4/jquery.min.js"
+                th:src="@{/webjars/jquery/2.1.4/jquery.min.js}" type="text/javascript"></script>
+    </head>
+
+
+    <div th:fragment="side-menu" class="col-md-2 col-sm-1 hidden-xs display-table-cell valign-top" id="side-menu">
+        <img class="hidden-sm hidden-xs logo" src="../images/logo2.png" alt="logo" />
+        <h1 class="webapp-name hidden-sm hidden-xs" th:text="#{appname}">MaaS</h1>
+        <p id="voornaamSession" class="hidden-sm hidden-xs" th:text="${currentUser.firstName}"></p>
+        <p id="vzwSession" class="hidden-sm hidden-xs" th:text="${currentUser.lastName}"></p>
+        <p id="ondTypeSession" class="hidden-sm hidden-xs" th:text="${currentUser.userName}"></p>
+        <ul id="side-nav">
+            <!-- OVERZICHT -->
+            <!-- De PHP-code in het navigatie gedeelte dient om een nummer weer te geven van het aantal notificaties -->
+            <li class="link">
+                <a id="dashboard-show-1" class="nav-ch" href="/">
+                    <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+                    <span class="hidden-xs hidden-sm">OVERVIEW</span>
+                </a>
+            </li>
+            <!-- DELIVERIES -->
+            <li class="link">
+                <a id="dashboard-show-2" href="#collapse-deliv" data-toggle="collapse" aria-controls="collapse-post" class="nav-ch">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    <span class="hidden-xs hidden-sm">DELIVERY</span>
+                </a>
+                <ul class="collapse collapseable" id="collapse-deliv">
+                    <li><a id="new-deliv" class="delivery-link">NEW DELIVERY</a></li>
+                </ul>
+            </li>
+            <!-- VISUALISATIE -->
+            <li class="link">
+                <a id="dashboard-show-3" href="#collapse-vis" data-toggle="collapse" aria-controls="collapse-post" class="nav-ch">
+                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                    <span class="hidden-xs hidden-sm">VISUALISATIE</span>
+                </a>
+                <ul class="collapse collapseable" id="collapse-vis">
+                    <li><a id="vis-show" class="visualisation-link">SHOW</a></li>
+                </ul>
+            </li>
+            <!-- ADMIN PANEL -->
+            <li class="link">
+                <a id="dashboard-show-6" href="#collapse-ap" data-toggle="collapse" aria-controls="collapse-post" class="nav-ch">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    <span class="hidden-xs hidden-sm">ADMIN PANEL</span>
+                </a>
+                <ul class="collapse collapseable" id="collapse-ap">
+                    <li><a class="manage-delivery-link">MANAGE JOBS</a></li>
+                    <li><a class="create-delivery-link">CREATE JOB</a></li>
+                    <li><a class="delivery-history-link">JOB HISTORY</a></li>
+                    <li><a id="admin-settings" class="all-users-link">MANAGE USERS</a></li>
+                    <li><a id="admin-gebruikers" class="create-user-link">CREATE USER</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</html>

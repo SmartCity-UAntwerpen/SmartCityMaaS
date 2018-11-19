@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Home</title>
+        <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="./css/default.css" rel="stylesheet" />
+        <link href="./css/cards.css" rel="stylesheet" />
+        <link href="./css/dashboard.css" rel="stylesheet" />
+        <link href="./css/adminp.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div class="container-fluid display-table">
+            <div class="row display-table-row">
+                <div th:replace="layout :: side-menu"></div>
+
+                <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+                    <div class="row">
+                        <header id="nav-header" class="clearfix">
+                            <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                                <nav class="navbar-default pull-left">
+                                    <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                </nav>
+                            </div>
+                            <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                                <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
+                            </div>
+                            <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                                <ul class="navbar-ul pull-right">
+                                    <li>
+                                        <a href="/logout" class="logout">
+                                            <span class="glyphicon glyphicon-log-out"></span>
+                                            Log out
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </header>
+                    </div>
+
+                    <div class="dashboard-con">
+                        <div class="row">
+                            <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->
+                            <div class="col-md-12 alert alert-info" id="info-bar">
+                                <span th:text="${error}" ></span>
+                            </div>
+                        </div>
+                        <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+                        <div class="inside-con">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 col-lg-6 col-xs-12">
+                                    <div class="card-container card-fixed-height">
+                                        <div class="card"> <div class="front face">
+                                            <div class="card-top text-center cyan">
+                                                <h3><span class="hidden-xs hidden-sm hidden-md">DELIVERIES</span><span class="hidden-lg">DELIV.</span></h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row text-content">
+                                                    <div class="col-xs-1 hidden-xs hidden-sm"></div>
+                                                    <div class="col-xs-10 text-center">Do you need to be somewhere? Plan out your route here.</div>
+                                                    <div class="col-xs-1 hidden-xs hidden-sm"></div>
+                                                </div>
+                                                <div class="row dashboard-buttons">
+                                                    <div class="col-md-4">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a href="/deliveries/put" id="startDelivery" class="button">
+                                                            <button type="button" id="dashboard-show-2_:_keco-add" class="btn btn-default shortcut-btn"><span th:text="#{newDelivery}"></span></button>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="face back"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-lg-6 col-xs-12">
+                                    <div class="card-container card-fixed-height">
+                                        <div class="card">
+                                            <div class="front face">
+                                                <div class="card-top text-center cyan">
+                                                    <h3><span class="hidden-xs hidden-sm">VISUALISATIE</span><span class="hidden-md hidden-lg">VIS.</span></h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row text-content">
+                                                        <div class="col-xs-1 hidden-xs hidden-sm"></div>
+                                                        <div class="col-xs-10 text-center">Get an overview of the map and track a vehicle you'd like to stalk.</div>
+                                                        <div class="col-xs-1 hidden-xs hidden-sm"></div>
+                                                    </div>
+                                                    <div class="row dashboard-buttons">
+                                                        <div class="col-md-4">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <a href="/visualization" id="visualization" class="button">
+                                                                <button type="button" id="dashboard-show-3_:_jap-av" class="btn btn-default shortcut-btn"><span th:text="#{visual}"></span></button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="face back"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="./js/tabs.js"></script>
+
+
+        <script>
+            if( $("#info-bar span").text() !== "Enjoy your stay, at the MaaS milkyway :)" )
+                $("#info-bar").addClass("alert-danger").removeClass("alert-info");
+            $("#dashboard-show-1").addClass("active");
+        </script>
+    </body>
+</html>

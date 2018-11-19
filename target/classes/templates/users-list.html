@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>All users</title>
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./css/default.css" rel="stylesheet" />
+    <link href="./css/dashboard.css" rel="stylesheet" />
+    <link href="./css/adminp.css" rel="stylesheet" />
+</head>
+
+<body onload="initPage()">
+<div class="container-fluid display-table">
+    <div class="row display-table-row">
+        <div th:replace="layout :: side-menu"></div>
+
+        <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+            <div class="row">
+                <header id="nav-header" class="clearfix">
+                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                        <nav class="navbar-default pull-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Manage users</span>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                        <ul class="navbar-ul pull-right">
+                            <li>
+                                <a href="/logout" class="logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            </div>
+
+            <div class="dashboard-con">
+                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+                <div class="inside-con">
+                    <div class="row">
+                        <div id="user-list">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr class="bg-primary">
+                                    <th th:text="#{lastName}">Last Name</th>
+                                    <th th:text="#{firstName}">First Name</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <!-- IMPORTANT, class="list" have to be at tbody -->
+                                <tbody class="list">
+                                <tr th:each="user : ${allUsers}">
+                                    <td class="lastName" th:value="${lastName}" th:text="${user.lastName }">Last Name</td>
+                                    <td class="firstName" th:value="${firstName}" th:text="${user.firstName }">First Name</td>
+                                    <td>
+                                        <a th:href="@{/users/{id}/(id=${user.id})}"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
+                                        <a th:href="@{/users/{id}/delete(id=${user.id})}"><span class="glyphicon glyphicon-trash"></span></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a href="/users/put" class="btn btn-primary" th:text="#{create.user}">Create user</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="./js/tabs.js"></script>
+
+
+<script type="text/javascript">
+    function initPage(){
+        var options = {
+            valueNames: [ 'userName']
+        };
+        var userList = new List('user-list', options);
+    }
+
+    $(document).ready(function() {
+        $("#dashboard-show-6").click();//.addClass("active");
+    });
+</script>
+
+</body>
+</html>

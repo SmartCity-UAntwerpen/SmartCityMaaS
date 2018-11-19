@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manage jobs</title>
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/default.css" rel="stylesheet" />
+    <link href="../css/dashboard.css" rel="stylesheet" />
+    <link href="../css/adminp.css" rel="stylesheet" />
+</head>
+
+<body>
+<div class="container-fluid display-table">
+    <div class="row display-table-row">
+        <div th:replace="layout :: side-menu"></div>
+
+        <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+            <div class="row">
+                <header id="nav-header" class="clearfix">
+                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                        <nav class="navbar-default pull-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Create jobs</span>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                        <ul class="navbar-ul pull-right">
+                            <li>
+                                <a href="/logout" class="logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            </div>
+
+            <div class="dashboard-con">
+                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+                <div class="inside-con">
+                    <div class="row">
+                        <div class="col-xs-12">
+
+                            <form action="#" th:action="@{/jobs/{id}(id=${job})}" th:object="${job}" method="post">
+                                <input th:type="hidden" th:field="*{id}"/>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('joblist.id')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{joblist.id}">IDOrder</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('joblist.id')}" th:errors="*{joblist.id}"> ID Error</span>
+                                    <input class="form-control" type="text" th:field="*{joblist.id}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('id')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{id}">ID</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"> ID Error</span>
+                                    <input class="form-control" type="text" th:field="*{id}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('idStart')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{idStart}">Start</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('idStart')}" th:errors="*{idStart}">Start Error</span>
+                                    <input class="form-control" type="text" th:field="*{idStart}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('idEnd')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{idEnd}">End</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('idEnd')}" th:errors="*{idEnd}"> End Error</span>
+                                    <input class="form-control" type="text" th:field="*{idEnd}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('idVehicle')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{idVehicle}">Vehicle</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('idVehicle')}" th:errors="*{idVehicle}">Vehicle Error</span>
+                                    <input class="form-control" type="text" th:field="*{idVehicle}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('typeVehicle')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{typeVehicle}">typeVehicle</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('typeVehicle')}" th:errors="*{typeVehicle}">type Vehicle Error</span>
+                                    <input class="form-control" type="text" th:field="*{typeVehicle}" />
+                                </div>
+
+                                <div class="form-group" th:classappend="${#fields.hasErrors('status')}?'has-error': ''">
+                                    <label class="control-label" th:text="#{status}">Status</label>
+                                    <span class="control-label" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Status Error</span>
+                                    <input class="form-control" type="text" th:field="*{status}" />
+                                </div>
+
+                                <p>
+                                    <a href="/jobs" th:text="#{close}" class="btn btn-primary">Close</a>
+                                    <button type="submit" th:text="#{save}" class="btn btn-primary">Save</button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="../js/tabs.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $("#dashboard-show-6").click();//.addClass("active");
+    });
+</script>
+</body>
+</html>
+
+
+
+

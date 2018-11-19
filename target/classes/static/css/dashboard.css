@@ -1,0 +1,133 @@
+#info-bar {
+    border-radius: 0;
+}
+
+.dashboard-con {
+    margin-bottom: 30px;
+}
+
+.inside-con {
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.real-con {
+    background-color: white;
+}
+
+
+.blur {
+    z-index: 450;
+    background-color: rgb(255 , 255, 255);
+    position: absolute;
+}
+
+
+.popover {
+    width: 3000%;
+}
+
+.white-bg {
+    background-color: white;
+    padding: 6px;
+    border-radius: 5px;
+}
+
+.cat-head {
+    color: black;
+}
+
+
+
+/******* DROPDOWN MENU NOTIFICATIONS *****/
+.my-dropbtn {
+    padding: 16px;
+}
+
+.my-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.my-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 280px;
+    right: 0;
+    z-index: 100000;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.my-dropdown-content div {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.my-dropdown-content div:hover {background-color: #f1f1f1}
+
+.my-dropdown:hover .my-dropdown-content {
+    display: block;
+}
+
+.close-icon, .close-noti-icon {
+    color: #cc0099;
+    /*background-color: black;*/
+}
+
+.noti-row  {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.filter {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+img.logo {
+    cursor: pointer;
+}
+
+.dashboard-buttons {
+    padding: 5px;
+}
+
+.shortcut-btn {
+    display: block;
+    width: 100%;
+}
+
+
+.pdf-checkbox {
+    padding: 0;
+    top: -20px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pdf-checkbox-td {
+    margin: 0;
+    padding: 0;
+}
+
+
+#loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
