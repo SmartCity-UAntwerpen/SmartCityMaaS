@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 
 /**
@@ -61,7 +62,7 @@ public class GraphBuilder {
     //request the cost from all vehicle cores and fill in the least costly vehicle
     public void getLinkCost()
     {
-        for(Link link: linkList)
+        for(Link link: Arrays.stream(linkList).distinct().collect(Collectors.toList()))
         {
             Long startPoint = link.getStartPoint().getId();
             Long endPoint = link.getStopPoint().getId();

@@ -94,13 +94,7 @@ public class Link
 
         Link that = (Link) o;
 
-        if(id != that.id) return false;
-        if(length != null ? !length.equals(that.length) : that.length != null) return false;
-        if(startDirection != null ? !startDirection.equals(that.startDirection) : that.startDirection != null)
-            return false;
-        if(stopDirection != null ? !stopDirection.equals(that.stopDirection) : that.stopDirection != null)
-            return false;
-
+        if(!id.equals(that.id)) return false;
         return true;
     }
 
