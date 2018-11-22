@@ -98,6 +98,8 @@ public class UserController {
     public String viewEditUser(@PathVariable Long id, final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",userService.findOne(id));
+        User loginUser = userService.getPrincipalUser();
+        model.addAttribute("currentUser", loginUser);
         return "users-manage";
     }
 
