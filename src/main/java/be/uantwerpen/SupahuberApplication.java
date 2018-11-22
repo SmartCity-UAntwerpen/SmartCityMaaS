@@ -1,6 +1,6 @@
 package be.uantwerpen;
 
-
+import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +22,12 @@ import java.util.Locale;
 @EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})
 public class SupahuberApplication extends WebMvcConfigurerAdapter {
 
+	private static final Logger logger = Logger.getLogger(SupahuberApplication.class);
 	public static void main(String[] args) {
+		logger.info("SpringApplication MaaS started.");
 		SpringApplication.run(SupahuberApplication.class, args);
+		logger.info("SpringApplication MaaS is ready for use.");
+
 		/*System.out.println("#### AStar ####");
 		Astar astar = new Astar();
 		astar.startAStar();

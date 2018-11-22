@@ -7,6 +7,7 @@ import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.UserRepository;
 import be.uantwerpen.services.PassengerService;
 import be.uantwerpen.services.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,8 @@ import java.util.List;
 
 @Controller
 public class HomeController {
+    private static final Logger logger = Logger.getLogger(HomeController.class);
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -33,11 +36,12 @@ public class HomeController {
     public String showMap(Model model, @RequestParam(required = false) String code, @RequestParam(required = false) String message) {
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
-        System.out.println("User logged in: "+loginUser.getUserName());
+        logger.info(loginUser.getUserName() + " logged in.");
 
         if( code != null )
         {
             String error = " Ohow, something went wrong: " + code + " - " + message;
+            
             model.addAttribute("error", error);
         }
         return "home_user";
