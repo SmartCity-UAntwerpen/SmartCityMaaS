@@ -1,6 +1,8 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.visualization.model.DummyPoint;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,8 @@ import java.util.*;
 @Component
 public class BackendRestTemplate {
 
+    private static final Logger logger = LogManager.getLogger(BackendRestTemplate.class);
+
     @Value("${core.ip:localhost}")
     private String serverCoreIP;
 
@@ -41,7 +45,7 @@ public class BackendRestTemplate {
      * @return
      */
     public List<DummyPoint> getdataBackend() {
-        System.out.println("Retrieve info from core " );
+        logger.info("Retrieve info from core ");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
