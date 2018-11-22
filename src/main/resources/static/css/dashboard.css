@@ -117,6 +117,15 @@ img.logo {
     padding: 0;
 }
 
+.loadDiv{
+    width: 120px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 100px;
+    position: absolute;
+}
+
 
 #loader {
     border: 16px solid #f3f3f3; /* Light grey */

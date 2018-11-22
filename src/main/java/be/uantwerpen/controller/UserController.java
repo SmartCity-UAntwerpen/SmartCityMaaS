@@ -30,6 +30,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -257,8 +259,8 @@ public class UserController {
 
         // The following code is equal to the function getAllVehicles from the datacontroller
         // with the exception that this functions returns more data of the vehicles.
-        List<DummyVehicle> vehicles = getAllSimData();
         model.addAttribute("currentUser", loginUser);
+        List<DummyVehicle> vehicles = getAllSimData();
         model.addAttribute("vehiclesInfo", vehicles);
         return "visualization_map";
     }
@@ -278,18 +280,21 @@ public class UserController {
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
         // Get response from the core
-        HttpEntity<String> httpResponse = restTemplate.exchange(
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
-                String.class);
+                String.class);*/
         JSONParser parser = new JSONParser();
 
         Object obj = null;
         // Parse JSON data from the core.
         try {
-            obj = parser.parse(httpResponse.getBody());
-            JSONObject jsonObject = (JSONObject) obj;
+            ////// TEST
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("getAllVehicles.txt"));
+            //obj = parser.parse(httpResponse.getBody());
+            //JSONObject jsonObject = (JSONObject) obj;
+            /////////////
             JSONArray virDevices = (JSONArray) jsonObject.get("vehicles");
             Iterator<String> iterator = virDevices.iterator();
             int idVeh = -1;
@@ -313,7 +318,7 @@ public class UserController {
                 dumVeh.setType(type);
                 vehicles.add(dumVeh);
             }
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         System.out.println("Vehicle count: " + vehicles.size());
