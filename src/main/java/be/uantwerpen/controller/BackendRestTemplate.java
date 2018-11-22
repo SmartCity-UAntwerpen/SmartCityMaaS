@@ -12,11 +12,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -56,7 +54,7 @@ public class BackendRestTemplate {
         System.out.println("Entity to Quentin" );
 
         // Get response from the core
-        HttpEntity<String> httpResponse = restTemplate.exchange(
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
@@ -66,7 +64,7 @@ public class BackendRestTemplate {
         System.out.println("Response core : "+httpResponse.getBody());
         System.out.println("Response body core : "+ httpResponse.hasBody());
         String listOfCore = httpResponse.getBody();
-
+*/
         new JSONObject();
 
         pointTransition = new HashMap<Integer,Integer>();
@@ -89,9 +87,14 @@ public class BackendRestTemplate {
             Parse the received string of JSON objects and transform it to a list of points that can be used for
             the map of the world.
          */
+
         try {
-            obj = parser.parse(listOfCore);
-            JSONObject jsonObject = (JSONObject) obj;
+            ////// TEST - 2018
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("mapCoreQuentinFinal.txt"));
+            /////
+            //obj = parser.parse(listOfCore);
+            //JSONObject jsonObject = (JSONObject) obj;
+            /////
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
             System.out.println("Whole list of points:  "+pointsList.toString());
 
@@ -136,7 +139,7 @@ public class BackendRestTemplate {
                 points.add(point);
                 counter++;
             }
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
 

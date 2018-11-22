@@ -4,6 +4,7 @@
 
 var allBots = [];
 var mapCanvas;
+var ctx;
 var world = [];
 var worldLoaded = false;
 
@@ -109,7 +110,7 @@ function drawWorld(){
         mapCanvas.addEventListener("mousedown", clickedOnCanvas, false);
     }
 
-    var ctx = mapCanvas.getContext("2d");
+    ctx = mapCanvas.getContext("2d");
 
     for(var i=world.points.length-1; i>=0; i--){
         var point = world.points[i];
@@ -126,35 +127,32 @@ function drawWorld(){
             }
             if(!linkAlreadyDrawn){
                 ctx.beginPath();
-                if(point.physicalPoisionX < neigbour.physicalPoisionX){
-                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-                    // hiermee tekenen we bochten van 90 graden -> niet geimplementeerd in final build omdat het moeilijk is
-                    // om de progress te visualiseren dan
-                    var middle = ((neigbour.physicalPoisionX - point.physicalPoisionX)/2) + point.physicalPoisionX;
-                    //ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
-                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
-                } else if(point.physicalPoisionX > neigbour.physicalPoisionX ){
-                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-                    var middle = ((point.physicalPoisionX - neigbour.physicalPoisionX )/2) + neigbour.physicalPoisionX;
-                    //ctx.lineTo(middle*xSize,neigbour.physicalPoisionY*ySize);
-                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
 
+                ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
 
-                } else{
-                    ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-                    ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
-                }
+                // 2017: bochten niet geimplementeerd in final build omdat het moeilijk is om de progress te visualiseren dan
+
                 switch (point.type) {
                     case "robot":
+                        ctx.setLineDash([]);
                         ctx.strokeStyle = '#e67e22';
+                        //90 graden
+                        ctx.lineTo(point.physicalPoisionX * xSize, neigbour.physicalPoisionY * ySize);
                         break;
                     case "car":
                         ctx.strokeStyle = '#95a5a6';
+                        /*kink = Math.abs(((neigbour.physicalPoisionX - point.physicalPoisionX)/2) + point.physicalPoisionX);
+                        if(kink > 40) {
+                            ctx.lineTo(kink * xSize, neigbour.physicalPoisionY * ySize);
+                        }*/
+                        ctx.quadraticCurveTo(point.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize, neigbour.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize);
                         break;
                     case "drone":
                         ctx.setLineDash([5, 15]);
                         ctx.strokeStyle = '#2980b9';
                 }
+
+                ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
                 ctx.lineWidth=5;
                 ctx.stroke();
                 linksDrawn.push({start:i,end: neigbourID});
@@ -200,12 +198,10 @@ function drawWorld(){
 
 
 function clickedOnCanvas(event){
-    var mapCanvas = document.getElementById("mapCanvas");
-    var ctx = mapCanvas.getContext("2d");
     var rect = mapCanvas.getBoundingClientRect();
     var canvasX = event.clientX - rect.left;
     var canvasY = event.clientY - rect.top;
-    console.log("Point clicked x = " + canvasX + "y = " + canvasY);
+    console.log("Point clicked x = " + canvasX + ", y = " + canvasY);
     if(pointAset){
         var point = world.points[pointAId];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
@@ -404,28 +400,28 @@ function showPage() {
 
 function getVehiclesVN(){
     var progression = [];
-    var vehicleType;
     if(currentVehicleID != -1){
-        $.when(
+        ////// TEST
+        drawVehicle(currentVehicleType, 35, 25, true);
+        drawVehicle(currentVehicleType, 50, 30, false);
+        //ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height); --> CHECK
+        //this.drawWorld();
+        //////
+        /*$.when(
             $.getJSON("/world1/progress/null/" + currentVehicleID).done(function (progress) {
                 progression = progress;
-            }),
-            $.getJSON("/vehicletype/" + currentVehicleID).done(function (type) {
-                vehicleType = type;
             })
         ).then(function () {
             if (progression[0] != -1) {
-                drawVehicle(vehicleType, progression[0], progression[1], true);
+                drawVehicle(currentVehicleType, progression[0], progression[1], true);
             }
-        })
+        })*/
     }
 }
 
 
 function drawVehicle(type, x, y,selected){
     console.log("draw vehicle x = " + x + " y = " + y + " type " + type);
-    var mapCanvas = document.getElementById("mapCanvas");
-    var ctx = mapCanvas.getContext("2d");
     if(type == "robot") {
         if (selected) {
             ctx.drawImage(robotIconTarget, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
