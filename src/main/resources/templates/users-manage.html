@@ -20,85 +20,51 @@
         <div th:replace="layout :: side-menu"></div>
 
         <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
-            <div class="row">
-                <header id="nav-header" class="clearfix">
-                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
-                        <nav class="navbar-default pull-left">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </nav>
-                    </div>
-                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
-                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Edit user</span>
-                    </div>
-                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
-                        <ul class="navbar-ul pull-right">
-                            <li>
-                                <a href="/logout" class="logout">
-                                    <span class="glyphicon glyphicon-log-out"></span>
-                                    Log out
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </header>
-            </div>
+            <div th:replace="layout :: header('Manage User')"></div>
 
-            <div class="dashboard-con">
+            <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+            <div class="inside-con">
                 <div class="row">
-                    <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->
-                    <div class="col-md-12 alert alert-info" id="info-bar">
-                        ERROR FEEDBACK
-                    </div>
-                </div>
-                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
-                <div class="inside-con">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <form action="#" th:action="@{/users/{id}(id=${user})}" th:object="${user}" method="post">
-                                <input th:type="hidden" th:field="*{id}"/>
-                                <div class="form-group" th:classappend="${#fields.hasErrors('lastName')}?'has-error': ''">
-                                    <label class="control-label" th:text="#{lastName}">Name</label>
-                                    <span class="control-label" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Lastname Error</span>
-                                    <input class="form-control" type="text" th:field="*{lastName}" />
-                                </div>
+                    <div class="col-xs-12">
+                        <form action="#" th:action="@{/users/{id}(id=${user})}" th:object="${user}" method="post">
+                            <input th:type="hidden" th:field="*{id}"/>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('lastName')}?'has-error': ''">
+                                <label class="control-label" th:text="#{lastName}">Name</label>
+                                <span class="control-label" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Lastname Error</span>
+                                <input class="form-control" type="text" th:field="*{lastName}" />
+                            </div>
 
-                                <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}?'has-error': ''">
-                                    <label class="control-label" th:text="#{firstName}">Name</label>
-                                    <span class="control-label" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName Error</span>
-                                    <input class="form-control" type="text" th:field="*{firstName}" />
-                                </div>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}?'has-error': ''">
+                                <label class="control-label" th:text="#{firstName}">Name</label>
+                                <span class="control-label" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName Error</span>
+                                <input class="form-control" type="text" th:field="*{firstName}" />
+                            </div>
 
-                                <div class="form-group" th:classappend="${#fields.hasErrors('userName')}?'has-error': ''">
-                                    <label class="control-label" th:text="#{userName}">Username</label>
-                                    <span class="control-label" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">userName Error</span>
-                                    <input class="form-control" type="text" th:field="*{userName}" />
-                                </div>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('userName')}?'has-error': ''">
+                                <label class="control-label" th:text="#{userName}">Username</label>
+                                <span class="control-label" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">userName Error</span>
+                                <input class="form-control" type="text" th:field="*{userName}" />
+                            </div>
 
-                                <div class="form-group" th:classappend="${#fields.hasErrors('password')}?'has-error': ''">
-                                    <label class="control-label" th:text="#{password}">Password</label>
-                                    <span class="control-label" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</span>
-                                    <input class="form-control" type="password" th:field="*{password}" />
-                                </div>
+                            <div class="form-group" th:classappend="${#fields.hasErrors('password')}?'has-error': ''">
+                                <label class="control-label" th:text="#{password}">Password</label>
+                                <span class="control-label" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</span>
+                                <input class="form-control" type="password" th:field="*{password}" />
+                            </div>
 
-
-                                <p> <label th:text="#{roles}">Roles</label>
-                                    <select th:field="*{roles}" multiple="multiple">
-                                        <option th:each="role : ${allRoles}"
-                                                th:value="${{role}}"
-                                                th:text="${role.name}">Wireframe</option>
-                                    </select>
-                                </p>
-                                <p>
-                                    <a href="/users" th:text="#{close}" class="btn btn-primary">Close</a>
-                                    <button type="submit" th:text="#{save}" class="btn btn-primary">Save</button>
-                                </p>
-                            </form>
-                        </div>
+                            <div class="form-group">
+                                <label for="roles">Roles</label>
+                                <select th:field="*{roles}" >
+                                    <option th:each="role : ${allRoles}"
+                                            th:value="${{role}}"
+                                            th:text="${role.name}">Wireframe</option>
+                                </select>
+                            </div>
+                            <p>
+                                <a href="/users" th:text="#{close}" class="btn btn-primary">Close</a>
+                                <button type="submit" th:text="#{save}" class="btn btn-primary">Save</button>
+                            </p>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -115,10 +81,10 @@
 
 <script type="text/javascript">
     function initPage(){
-        $('#roles').multiSelect({
+        /*$('#roles').multiSelect({
             selectableHeader: '<div class="custom-header" th:text="#{selectable.items}">Selectable items</div>',
             selectionHeader: '<div class="custom-header" th:text="#{selected.items}">Selected items</div>'
-        });
+        });*/
     }
 
     $(document).ready(function() {

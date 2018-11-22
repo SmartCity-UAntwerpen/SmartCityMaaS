@@ -52,7 +52,7 @@ public class DataController {
     public boolean vehicle_start = false;
 
     @Autowired
-    public BackendRestemplate backendRestemplate;
+    public BackendRestTemplate backendRestTemplate;
 
 
     private World myWorld = null;
@@ -96,7 +96,7 @@ public class DataController {
      */
     @RequestMapping(value="/retrieveRealPointName/{valuePoint}")
     public int getPointName(@PathVariable int valuePoint){
-        int keyPoint = backendRestemplate.getKeyHashMap(valuePoint);
+        int keyPoint = backendRestTemplate.getKeyHashMap(valuePoint);
         if(valuePoint != -1)
         {
             System.out.println("### Retrieve key point name from "+valuePoint+ " which is "+ keyPoint+" ###");
@@ -114,7 +114,7 @@ public class DataController {
     @RequestMapping(value="/dataCore")
     public List<DummyPoint> getMapDataBackend(){
         System.out.println("### Retrieve map from backend ###");
-        List<DummyPoint> listofPoints = backendRestemplate.getdataBackend();
+        List<DummyPoint> listofPoints = backendRestTemplate.getdataBackend();
         return listofPoints;
     }
 
@@ -283,9 +283,9 @@ public class DataController {
 
 
                 System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
-                if(backendRestemplate == null)System.out.println("BackendRestTemplate is null.");
-                int id_start = backendRestemplate.getValueofKeyHashMap( idStart );
-                int id_end = backendRestemplate.getValueofKeyHashMap(idEnd);
+                if(backendRestTemplate == null)System.out.println("BackendRestTemplate is null.");
+                int id_start = backendRestTemplate.getValueofKeyHashMap( idStart );
+                int id_end = backendRestTemplate.getValueofKeyHashMap(idEnd);
                 currentListofJobs.add(id_start);
                 currentListofJobs.add(id_end);
                 progress = percentage;

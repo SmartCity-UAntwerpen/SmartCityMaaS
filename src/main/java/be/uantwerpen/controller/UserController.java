@@ -52,7 +52,7 @@ public class UserController {
     @Autowired
     private PassengerService passengerService;
     @Autowired
-    public BackendRestemplate backendRestemplate;
+    public BackendRestTemplate backendRestTemplate;
     @Autowired
     public Astar astarService;
     @Autowired
@@ -216,8 +216,8 @@ public class UserController {
         }
         delivery.setType("HumanTransport");
 
-        delivery.setPointA(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
-        delivery.setPointB(""+backendRestemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
+        delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
+        delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods monogDBClient = new MongoDBMethods();
         monogDBClient.putStatement(delivery);
         Delivery delivery_return = monogDBClient.getLastDelivery();
@@ -235,8 +235,8 @@ public class UserController {
         System.out.println("JOB HAS BEEN CREATED");
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
-        delivery_return.setPointA(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
-        delivery_return.setPointB(""+backendRestemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
+        delivery_return.setPointA(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
+        delivery_return.setPointB(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
         model.addAttribute("delivery", delivery_return);
         return "delivery-navigate-user";
     }

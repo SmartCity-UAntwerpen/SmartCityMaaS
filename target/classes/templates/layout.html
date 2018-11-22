@@ -14,8 +14,10 @@
     <div th:fragment="side-menu" class="col-md-2 col-sm-1 hidden-xs display-table-cell valign-top" id="side-menu">
         <img class="hidden-sm hidden-xs logo" src="../images/logo2.png" alt="logo" />
         <h1 class="webapp-name hidden-sm hidden-xs" th:text="#{appname}">MaaS</h1>
-        <p id="voornaamSession" class="hidden-sm hidden-xs" th:text="${currentUser.firstName}"></p>
-        <p id="vzwSession" class="hidden-sm hidden-xs" th:text="${currentUser.lastName}"></p>
+        <p>
+            <span id="voornaamSession" class="hidden-sm hidden-xs" th:text="${currentUser.firstName}"></span>
+            <span id="vzwSession" class="hidden-sm hidden-xs" th:text="${currentUser.lastName}"></span>
+        </p>
         <p id="ondTypeSession" class="hidden-sm hidden-xs" th:text="${currentUser.userName}"></p>
         <ul id="side-nav">
             <!-- OVERZICHT -->
@@ -61,6 +63,45 @@
                 </ul>
             </li>
         </ul>
+    </div>
+
+    <div th:fragment="header(pagename)" id="header">
+        <div class="row">
+            <header id="nav-header" class="clearfix">
+                <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                    <nav class="navbar-default pull-left">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </nav>
+                </div>
+                <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                    <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title" th:text="${pagename}"></span>
+                </div>
+                <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                    <ul class="navbar-ul pull-right">
+                        <li>
+                            <a href="/logout" class="logout">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                                Log out
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+        </div>
+
+        <div class="dashboard-con">
+            <div class="row">
+                <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->
+                <div class="col-md-12 alert alert-danger" id="info-bar" th:if="${error != null}">
+                    <span th:text="${error}" ></span>
+                </div>
+            </div>
+        </div>
     </div>
 
 </html>

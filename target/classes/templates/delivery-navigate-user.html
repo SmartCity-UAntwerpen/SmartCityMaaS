@@ -20,86 +20,56 @@
         <div th:replace="layout :: side-menu"></div>
 
         <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
-            <div class="row">
-                <header id="nav-header" class="clearfix">
-                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
-                        <nav class="navbar-default pull-left">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </nav>
-                    </div>
-                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
-                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title">Dashboard</span>
-                    </div>
-                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
-                        <ul class="navbar-ul pull-right">
-                            <li>
-                                <a href="/logout" class="logout">
-                                    <span class="glyphicon glyphicon-log-out"></span>
-                                    Log out
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </header>
-            </div>
-
-            <div class="dashboard-con">
-                <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
-                <div class="inside-con">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
-                            <div class="card-container card-fixed-height">
-                                <div class="card"> <div class="front face">
-                                    <div class="card-top text-center cyan">
-                                        <h3><span class="hidden-xs hidden-sm hidden-md">JOB HAS BEEN CREATED</span><span class="hidden-lg">DELIV.</span></h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <h3>job info:</h3>
-                                        <div class="group">
-                                            <div>
-                                                <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
-                                                <label id="passengersNumber" th:text="${delivery.passengers}">Subtitle</label>
-                                            </div>
-                                            <div>
-                                                <label id="pointALabel" th:text="#{segments.pointA}">Passengers</label>
-                                                <label id="pointAtext" th:text="${delivery.pointA}">Subtitle</label>
-                                            </div>
-                                            <div>
-                                                <label id="pointBLabel" th:text="#{segments.pointB}">Passengers</label>
-                                                <label id="pointBtext" th:text="${delivery.pointB}">Subtitle</label>
-                                            </div>
-                                            <div>
-                                                <label id="deliveryIDLabel" th:text="#{idDelivery}">Passengers</label>
-                                                <label id="deliveryID" th:text="${delivery.idDelivery}">Subtitle</label>
-                                            </div>
+            <div th:replace="layout :: header('Delivery')"></div>
+            <div class="inside-con">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
+                        <div class="card-container card-fixed-height">
+                            <div class="card"> <div class="front face">
+                                <div class="card-top text-center cyan">
+                                    <h3><span class="hidden-xs hidden-sm hidden-md">JOB HAS BEEN CREATED</span><span class="hidden-lg">DELIV.</span></h3>
+                                </div>
+                                <div class="card-body">
+                                    <h3>job info:</h3>
+                                    <div class="group">
+                                        <div>
+                                            <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
+                                            <label id="passengersNumber" th:text="${delivery.passengers}">Subtitle</label>
                                         </div>
+                                        <div>
+                                            <label id="pointALabel" th:text="#{segments.pointA}">Passengers</label>
+                                            <label id="pointAtext" th:text="${delivery.pointA}">Subtitle</label>
+                                        </div>
+                                        <div>
+                                            <label id="pointBLabel" th:text="#{segments.pointB}">Passengers</label>
+                                            <label id="pointBtext" th:text="${delivery.pointB}">Subtitle</label>
+                                        </div>
+                                        <div>
+                                            <label id="deliveryIDLabel" th:text="#{idDelivery}">Passengers</label>
+                                            <label id="deliveryID" th:text="${delivery.idDelivery}">Subtitle</label>
+                                        </div>
+                                    </div>
 
 
-                                        <div class="row dashboard-buttons">
-                                            <div class="col-md-4">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <a href="/deliveries" id="startDelivery" class="button">
-                                                    <button type="button" id="dashboard-show-2_:_keco-add" class="btn btn-default shortcut-btn"><span  th:text="#{close}"></span></button>
-                                                </a>
-                                            </div>
-                                            <div class="col-md-4">
-                                            </div>
+                                    <div class="row dashboard-buttons">
+                                        <div class="col-md-4">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a href="/deliveries" id="startDelivery" class="button">
+                                                <button type="button" id="dashboard-show-2_:_keco-add" class="btn btn-default shortcut-btn"><span  th:text="#{close}"></span></button>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
                                         </div>
                                     </div>
                                 </div>
-                                    <div class="face back"></div>
-                                </div>
+                            </div>
+                                <div class="face back"></div>
                             </div>
                         </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
 

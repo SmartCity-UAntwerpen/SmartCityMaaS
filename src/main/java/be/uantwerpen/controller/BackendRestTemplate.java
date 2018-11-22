@@ -23,7 +23,7 @@ import java.util.*;
  * Created by Frédéric Melaerts on 30/05/2017.
  */
 @Component
-public class BackendRestemplate {
+public class BackendRestTemplate {
 
     @Value("${core.ip:localhost}")
     private String serverCoreIP;

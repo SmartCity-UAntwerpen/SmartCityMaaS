@@ -1,13 +1,10 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.localization.astar.Astar;
-import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
-import be.uantwerpen.services.JobListService;
 import be.uantwerpen.services.PassengerService;
 import be.uantwerpen.services.RoleService;
 import be.uantwerpen.services.UserService;
-import be.uantwerpen.visualization.model.DummyVehicle;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,14 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,7 +35,7 @@ public class UserControllerTest {
     @Mock
     private PassengerService passengerService;
     @Mock
-    public BackendRestemplate backendRestemplate;
+    public BackendRestTemplate backendRestTemplate;
     @Mock
     public Astar astarService;
     @Mock
