@@ -5,6 +5,8 @@ import be.uantwerpen.model.JobList;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.World;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,6 +33,7 @@ import java.util.List;
 @RestController
 public class DataController {
 
+    private static final Logger logger = LogManager.getLogger(DataController.class);
 
     @Value("${core.ip:localhost}") // Localhost is default value
     private String serverCoreIP; // Insert value

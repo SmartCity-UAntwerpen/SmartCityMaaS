@@ -25,7 +25,6 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 
 	private static final Logger logger = LogManager.getLogger(SupahuberApplication.class);
 	public static void main(String[] args) {
-		logger.info("SpringApplication MaaS started.");
 		SpringApplication.run(SupahuberApplication.class, args);
 		logger.info("SpringApplication MaaS is ready for use.");
 

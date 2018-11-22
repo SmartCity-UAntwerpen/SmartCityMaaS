@@ -2,6 +2,8 @@ package be.uantwerpen.services;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.repositories.JobRepository;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JobService {
+
+    private static final Logger logger = LogManager.getLogger(JobService.class);
 
     @Autowired
     private JobRepository jobRepository;

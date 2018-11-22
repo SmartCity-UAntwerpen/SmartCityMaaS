@@ -1,5 +1,7 @@
 package be.uantwerpen.services;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
  */
 @Service
 public class PassengerService {
+    private static final Logger logger = LogManager.getLogger(PassengerService.class);
     public Iterable<Integer> findAll() {
         Iterable<Integer> listPassengers;
         List<Integer> persons = new ArrayList<Integer>();

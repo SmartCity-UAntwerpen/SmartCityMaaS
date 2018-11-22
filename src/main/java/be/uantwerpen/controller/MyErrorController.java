@@ -1,5 +1,7 @@
 package be.uantwerpen.controller;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.junit.internal.Throwables;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 @Controller
 public class MyErrorController implements ErrorController {
+    private static final Logger logger = LogManager.getLogger(MyErrorController.class);
 
     private ErrorAttributes errorAttributes;
     private final static String ERROR_PATH = "/error";

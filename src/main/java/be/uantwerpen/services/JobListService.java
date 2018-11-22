@@ -4,6 +4,8 @@ import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.repositories.JobListRepository;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.net.*;
  */
 @Service
 public class JobListService {
+    private static final Logger logger = LogManager.getLogger(JobListService.class);
 
     @Value("${sc.core.ip:localhost}")
     private String serverCoreIP;

@@ -7,6 +7,8 @@ import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.DummyVehicle;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -38,6 +40,7 @@ import java.util.List;
 
 @Controller
 public class UserController {
+    private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Value("${core.ip:localhost}")
     private String serverCoreIP;

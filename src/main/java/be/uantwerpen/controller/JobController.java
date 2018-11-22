@@ -8,6 +8,8 @@ import be.uantwerpen.repositories.JobListRepository;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.services.UserService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -24,6 +26,8 @@ import java.util.*;
 
 @Controller
 public class JobController {
+
+    private static final Logger logger = LogManager.getLogger(JobController.class);
     @Autowired
     private Astar astar;
     @Autowired

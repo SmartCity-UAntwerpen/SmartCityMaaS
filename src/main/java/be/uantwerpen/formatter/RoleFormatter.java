@@ -2,6 +2,8 @@ package be.uantwerpen.formatter;
 
 import be.uantwerpen.model.Role;
 import be.uantwerpen.repositories.RoleRepository;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,8 @@ import java.util.Locale;
  */
 @Component
 public class RoleFormatter implements Formatter<Role> {
+
+    private static final Logger logger = LogManager.getLogger(RoleFormatter.class);
 
     @Autowired
     private RoleRepository roleRepository;

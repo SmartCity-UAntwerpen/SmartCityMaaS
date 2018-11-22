@@ -3,6 +3,8 @@ package be.uantwerpen.services;
 import be.uantwerpen.model.Cost;
 import be.uantwerpen.model.Link;
 import be.uantwerpen.model.Point;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
  */
 @Service
 public class GraphBuilder {
+
+    private static final Logger logger = LogManager.getLogger(GraphBuilder.class);
     @Value("${core.ip:localhost}")
     private String serverCoreIP;
 

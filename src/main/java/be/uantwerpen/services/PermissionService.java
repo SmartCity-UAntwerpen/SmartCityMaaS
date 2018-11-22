@@ -3,6 +3,8 @@ package be.uantwerpen.services;
 import be.uantwerpen.model.Permission;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.PermissionRepository;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.Iterator;
  */
 @Service
 public class PermissionService {
+    private static final Logger logger = LogManager.getLogger(PermissionService.class);
     @Autowired
     private PermissionRepository permissionRepository;
 

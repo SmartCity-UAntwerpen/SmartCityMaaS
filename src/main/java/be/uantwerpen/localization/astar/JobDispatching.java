@@ -6,6 +6,8 @@ import be.uantwerpen.model.JobList;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public class JobDispatching {
+    private static final Logger logger = LogManager.getLogger(JobDispatching.class);
     private JobService jobService;
 
     private JobListService jobListService;

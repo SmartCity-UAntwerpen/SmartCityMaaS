@@ -4,6 +4,8 @@ import be.uantwerpen.model.Permission;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.UserRepository;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +26,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class SecurityService implements UserDetailsService {
 
-
+    private static final Logger logger = LogManager.getLogger(SecurityService.class);
         @Autowired
         private UserRepository userRepository;
 

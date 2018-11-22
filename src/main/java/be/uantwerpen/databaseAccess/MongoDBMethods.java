@@ -3,6 +3,8 @@ package be.uantwerpen.databaseAccess;
 import be.uantwerpen.model.Delivery;
 import com.mongodb.*;
 import com.mongodb.client.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -14,6 +16,8 @@ import java.util.*;
  * Created by Frédéric Melaerts on 15/04/2017.
  */
 public class MongoDBMethods {
+
+    private static final Logger logger = LogManager.getLogger(MongoDBMethods.class);
 
     protected MongoClient mongo;
 

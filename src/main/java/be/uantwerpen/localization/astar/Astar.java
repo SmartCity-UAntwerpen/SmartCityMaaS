@@ -9,6 +9,8 @@ import be.uantwerpen.model.Link;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.graphstream.algorithm.AStar;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -27,6 +29,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class Astar {
+
+    private static final Logger logger = LogManager.getLogger(Astar.class);
 
     @Autowired
     private JobService jobService;

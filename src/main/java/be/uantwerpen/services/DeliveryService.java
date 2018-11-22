@@ -2,6 +2,8 @@ package be.uantwerpen.services;
 
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.repositories.DeliveryRepository;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DeliveryService {
+    private static final Logger logger = LogManager.getLogger(DeliveryService.class);
     @Autowired
     private DeliveryRepository deliveryRepository;
 
