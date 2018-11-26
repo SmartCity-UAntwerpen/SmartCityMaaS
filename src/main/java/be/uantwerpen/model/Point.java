@@ -57,10 +57,8 @@ public class Point
 
         Point that = (Point) o;
 
-        if(id != that.id) return false;
-        if(type != null ? !type.equals(that.type) : that.type != null) return false;
-
-        return true;
+        if(!id.equals(that.id)) return false;
+        return type != null ? type.equals(that.type) : that.type == null;
     }
 
     @Override
