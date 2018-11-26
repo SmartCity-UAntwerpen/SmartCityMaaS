@@ -79,22 +79,9 @@ public class BackendRestTemplate {
         Object neighbourObject = null;
         List<DummyPoint> points = new ArrayList<DummyPoint>();
 
-        /*
-        Code for test purposes:
-        This code in comments is used to read JSON data from a txt-file instead of the HTTP-response.
-        BufferedReader br = new BufferedReader(new FileReader("mapCoreQuentinFinal.txt"));
-        String line;
-        while ((line = br.readLine()) != null)
-            obj = parser.parse(line);
-        */
-        /*
-            Parse the received string of JSON objects and transform it to a list of points that can be used for
-            the map of the world.
-         */
-
         try {
             ////// TEST - 2018
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("mapCoreQuentinFinal.txt"));
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/stringmapjson.txt"));
             /////
             //obj = parser.parse(listOfCore);
             //JSONObject jsonObject = (JSONObject) obj;

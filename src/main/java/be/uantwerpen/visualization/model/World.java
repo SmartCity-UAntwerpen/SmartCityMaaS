@@ -66,22 +66,26 @@ public class World {
      * @return
      */
 
-    public int[] getDistancePoints(List<Integer> jobs, int progress)
+    public int[] getDistancePoints(List<Integer> jobs, int progress, String type)
     {
-        return getDistance(jobs.get(0),jobs.get(1),(double)(progress)/100.0);
+        return getDistance(jobs.get(0),jobs.get(1),(double)(progress)/100.0, type);
     }
 
-    public int[] getDistance(int startID, int endID, double progress){
+    public int[] getDistance(int startID, int endID, double progress, String type){
         int startX = 0;
         int startY = 0;
 
         int endX = 0;
         int endY = 0;
+
+        boolean beginYaxis = true; //start in Y direction
+        int startPointId = 0;
         System.out.println("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
         for(int i = 0; i < points.size(); i++){
             if(points.get(i).getPointName() == startID){
                 startX = points.get(i).getPhysicalPoisionX();
                 startY = points.get(i).getPhysicalPoisionY();
+                startPointId = i;
             }
             if(points.get(i).getPointName() == endID){
                 endX = points.get(i).getPhysicalPoisionX();
@@ -93,11 +97,51 @@ public class World {
 
         }
 
+        // control corner direction: check if start has neighbour intersections not to pass
+        if(endID != points.get(startPointId+1).getPointName()){
+            if(points.get(startPointId+1).getPhysicalPoisionY() == endY){
+                beginYaxis = false;
+            }
+
+        } else if(endID != points.get(startPointId-1).getPointName()){
+            if(points.get(startPointId-1).getPhysicalPoisionY() == endY){
+                beginYaxis = false;
+            }
+        }
+
         System.out.println(" Points on map Start: x = "+startX + " y " + startY + " End: x = " + endX + " y = " + endY );
 
         int[] coordinates = new int[2];
         coordinates[0] = (int)(startX + ((endX - startX) * progress));
         coordinates[1] = (int)(startY + ((endY - startY) * progress));
+
+        switch (type) {
+            case "robot":
+                //90 graden
+                if(startX != endX && startY != endY) {
+                    if (progress <= 0.5) {
+                        if(beginYaxis) { // start in Y direction
+                            coordinates[0] = startX;
+                            coordinates[1] = (int) (startY + ((endY - startY) * progress * 2));
+                        } else { // start in X direction
+                            coordinates[0] = (int) (startX + ((endX - startX) * progress * 2));
+                            coordinates[1] = startY;
+                        }
+                    } else {
+                        if(beginYaxis) {
+                            coordinates[0] = (int) (endX - ((endX - startX) * (1 - progress) * 2));
+                            coordinates[1] = endY;
+                        } else {
+                            coordinates[0] = endX;
+                            coordinates[1] = (int) (endY - ((endY - startY) * (1 - progress) * 2));
+                        }
+                    }
+                }
+                break;
+            case "car":
+                //ctx.quadraticCurveTo(point.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize, neigbour.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize);
+                break;
+        }
 
         System.out.println(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
         System.out.println();

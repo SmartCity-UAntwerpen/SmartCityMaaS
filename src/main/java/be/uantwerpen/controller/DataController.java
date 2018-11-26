@@ -159,7 +159,7 @@ public class DataController {
         Object obj = null;
         try {
             ////// TEST
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("getAllVehicles.txt"));
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getAllVehicles.txt"));
             //////
             //obj = parser.parse(httpResponse.getBody());
             //JSONObject jsonObject = (JSONObject) obj;
@@ -210,7 +210,6 @@ public class DataController {
     @RequestMapping(value="/{worldid}/progress/{delivery_id}/{vehicle_id}")
     public int[] getProgress(@PathVariable String worldid, @PathVariable String delivery_id, @PathVariable int vehicle_id){
         int progress = 0;//vehicle.getValue();
-        System.out.println("Progress is asked for id delivery "+delivery_id + " vehicle_id "+vehicle_id );
         World world = new World();
         for(int i = 0; i < worlds.size();i++)
         {
@@ -261,7 +260,7 @@ public class DataController {
 
         if((delivery_id.equals("null") == false && jobListNull == true) || delivery_id.equals("null") == true) {
             // Get response from the core
-            HttpEntity<String> httpResponse = restTemplate.exchange(
+            /*HttpEntity<String> httpResponse = restTemplate.exchange(
                     builder.build().encode().toUri(),
                     HttpMethod.GET,
                     entity,
@@ -271,6 +270,7 @@ public class DataController {
             System.out.println("Response backbone : " + httpResponse.getBody());
             System.out.println("Response body backbone : " + httpResponse.hasBody());
             String vehicleInfo = httpResponse.getBody();
+            */
             JSONParser parser = new JSONParser();
             Job job1 = new Job();
             job1.setIdStart(1);
@@ -279,29 +279,32 @@ public class DataController {
             job1.setIdVehicle(1);
             Object obj = null;
             List<Integer> currentListofJobs = new ArrayList<Integer>();
+            String type = null;
 
             try {
-                obj = parser.parse(vehicleInfo);
+                //////// TEST
+                //obj = parser.parse(vehicleInfo);
+                //JSONObject jsonObject = (JSONObject) obj;
+                JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle.txt"));
+                //////////
 
-                JSONObject jsonObject = (JSONObject) obj;
                 int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
                 int idStart = ((Long) jsonObject.get("idStart")).intValue();
                 int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
                 int percentage = ((Long) jsonObject.get("percentage")).intValue();
+                type = jsonObject.get("type").toString();
 
-
-                System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
                 if(backendRestTemplate == null)System.out.println("BackendRestTemplate is null.");
-                int id_start = backendRestTemplate.getValueofKeyHashMap( idStart );
-                int id_end = backendRestTemplate.getValueofKeyHashMap(idEnd);
+                int id_start = backendRestTemplate.getValueofKeyHashMap( idStart+1 );
+                int id_end = backendRestTemplate.getValueofKeyHashMap( idEnd+1 );
                 currentListofJobs.add(id_start);
                 currentListofJobs.add(id_end);
                 progress = percentage;
 
-            } catch (ParseException e) {
+            } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
-            int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
+            int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress,type);
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];
             coordinatesVehicle[1] = coordinatesVehicle_temp[1];
             if(delivery_id.equals("null") == false) {

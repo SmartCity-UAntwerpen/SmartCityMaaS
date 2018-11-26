@@ -82,7 +82,6 @@ function getWorld(){
     $.getJSON("/retrieveWorld", function(result){
         world = result;
         worldLoaded = true;
-        console.log("JSON WORLD");
         console.log("world x = " + world.dimensionX + " world y = " + world.dimensionY );
 
 
@@ -96,13 +95,11 @@ function getWorld(){
         console.log(" x size = " + xSize + " y size = " + ySize);
         drawWorld();
         showPage();
-        console.log("values"+ linksDrawn);
     });
 }
 
 
 function drawWorld(){
-    console.log("world point size = " + world.points.length);
     mapCanvas = document.getElementById("mapCanvas");
 
 
@@ -114,7 +111,6 @@ function drawWorld(){
 
     for(var i=world.points.length-1; i>=0; i--){
         var point = world.points[i];
-        console.log("point " + i + " x = " +  point.physicalPoisionX + " y = "+point.physicalPoisionY + " charachterestic = " + point.pointCharacteristic + " name = " + point.pointName);
 
         for(var j=0; j < point.neighbours.length; j++){
             var neigbourID = point.neighbours[j];
@@ -130,8 +126,6 @@ function drawWorld(){
 
                 ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
 
-                // 2017: bochten niet geimplementeerd in final build omdat het moeilijk is om de progress te visualiseren dan
-
                 switch (point.type) {
                     case "robot":
                         ctx.setLineDash([]);
@@ -141,11 +135,23 @@ function drawWorld(){
                         break;
                     case "car":
                         ctx.strokeStyle = '#95a5a6';
-                        /*kink = Math.abs(((neigbour.physicalPoisionX - point.physicalPoisionX)/2) + point.physicalPoisionX);
-                        if(kink > 40) {
-                            ctx.lineTo(kink * xSize, neigbour.physicalPoisionY * ySize);
+
+                        /*var numOfKinks = 10;
+                        kinkX = (neigbour.physicalPoisionX - point.physicalPoisionX)/numOfKinks;
+                        kinkY = (neigbour.physicalPoisionY - point.physicalPoisionY)/numOfKinks;
+                        for (var k = 0; k < numOfKinks/2; k++) {
+                            if(k < numOfKinks/2){
+                                ctx.lineTo((point.physicalPoisionX + k*(kinkX*2)) * xSize, (point.physicalPoisionY + k*(kinkY/2)) * ySize);
+                            } else {
+                                ctx.lineTo((point.physicalPoisionX + k*(kinkX/2)) * xSize, (point.physicalPoisionY + k*(kinkY*2)) * ySize);
+                            }
                         }*/
-                        ctx.quadraticCurveTo(point.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize, neigbour.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize);
+                        distX = (neigbour.physicalPoisionX - point.physicalPoisionX);
+                        distY = (neigbour.physicalPoisionY - point.physicalPoisionY);
+                        pointX = (distX/2 + point.physicalPoisionX) + (distX/2);
+                        pointY = (distY/2 + point.physicalPoisionY) + (distY/2);
+                        ctx.lineTo(pointX * xSize, pointY * ySize);
+                        //ctx.quadraticCurveTo(point.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize, neigbour.physicalPoisionX*xSize, neigbour.physicalPoisionY*ySize);
                         break;
                     case "drone":
                         ctx.setLineDash([5, 15]);
@@ -402,12 +408,10 @@ function getVehiclesVN(){
     var progression = [];
     if(currentVehicleID != -1){
         ////// TEST
-        drawVehicle(currentVehicleType, 35, 25, true);
-        drawVehicle(currentVehicleType, 50, 30, false);
-        //ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height); --> CHECK
-        //this.drawWorld();
-        //////
-        /*$.when(
+        ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+        this.drawWorld();
+        drawVehicle(currentVehicleType, 115, 45, true); // id 28
+        $.when(
             $.getJSON("/world1/progress/null/" + currentVehicleID).done(function (progress) {
                 progression = progress;
             })
@@ -415,18 +419,16 @@ function getVehiclesVN(){
             if (progression[0] != -1) {
                 drawVehicle(currentVehicleType, progression[0], progression[1], true);
             }
-        })*/
+        })
     }
 }
 
 
 function drawVehicle(type, x, y,selected){
-    console.log("draw vehicle x = " + x + " y = " + y + " type " + type);
     if(type == "robot") {
         if (selected) {
             ctx.drawImage(robotIconTarget, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
         } else {
-            console.log(" Drawing robot icon ");
             ctx.drawImage(robotIcon, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
         }
     }else if(type == "car") {

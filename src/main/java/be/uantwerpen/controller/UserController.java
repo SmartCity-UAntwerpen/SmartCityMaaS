@@ -291,7 +291,7 @@ public class UserController {
         // Parse JSON data from the core.
         try {
             ////// TEST
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("getAllVehicles.txt"));
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getAllVehicles.txt"));
             //obj = parser.parse(httpResponse.getBody());
             //JSONObject jsonObject = (JSONObject) obj;
             /////////////
