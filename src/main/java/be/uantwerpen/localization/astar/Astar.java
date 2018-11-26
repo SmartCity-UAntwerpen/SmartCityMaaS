@@ -130,11 +130,11 @@ public class Astar {
      * this function will first destroy all the nodes and edges in a graph, request an update from the Graphbuilder service,
      * before rebuilding the Graph, hence updating the Graph
      */
-    public void updateNaE() {
+    public void updateNaE(String startPoint, String endPoint) {
         destroyNodes();
         destroyEdges();
         this.graphBuilder.getMap();
-        graphBuilder.getLinkCost();
+        graphBuilder.getLinkCost(startPoint, endPoint);
         makeNode();
         makeEdge();
     }
@@ -159,20 +159,20 @@ public class Astar {
     /**
      * Way to determine a Path in a Graph
      *
-     * @param startPos (String) startingposition
-     * @param endPos   (String) End position
-     * @param idDelivery    (String) parameter to link an order to a Delivery.
+     * @param startPos   (String) startingposition
+     * @param endPos     (String) End position
+     * @param idDelivery (String) parameter to link an order to a Delivery.
      */
     public void determinePath2(String startPos, String endPos, String idDelivery) {
         AStar astar = new AStar(this.graph);
-        updateNaE();
+        updateNaE(startPos, endPos);
         astar.compute(startPos, endPos);
         System.out.println(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        System.out.println("Shortest Path for "+ idDelivery +": " + path.toString());
+        System.out.println("Shortest Path for " + idDelivery + ": " + path.toString());
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
-        jd.dispatchOrders2( path.toString(), idDelivery );
+        jd.dispatchOrders2(path.toString(), idDelivery);
     }
 }
