@@ -62,23 +62,6 @@ public class Astar {
     }
 
     /**
-     * Start the Astar function, in which a Graph will be builded that consists of Edges and Nodes
-     * This function remains for testing purposes
-     */
-    public void startAStar() {
-        //Testfiles met correcte graaf
-        makeNode();
-        makeEdge();
-        graphBuilder.getLinkCost();
-        //Debuggen met test map
-        //testDeterminePath(graph, "1002", "1015");
-        //testDeterminePath(graph, "1014", "1002");
-        //testDeterminePath(graph, "1004", "1015");
-        //testDeterminePath(graph, "1015", "1010");
-        testDeterminePath(graph, "46", "47");
-    }
-
-    /**
      * MakeNode function
      * will make all the necessairy nodes in the Graph, using information provided by the Graphbuilder service.
      */
