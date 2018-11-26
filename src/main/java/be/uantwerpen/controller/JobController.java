@@ -40,14 +40,6 @@ public class JobController {
     @Autowired
     private UserService userService;
 
-    //for testing purposes
-    @RequestMapping(value="/initAstar", method= RequestMethod.GET)
-    public String initAstar(final ModelMap model){
-        astar.init();
-        astar.startAStar();
-        return "jobs-list";
-    }
-
     //get a list for all the jobs
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
