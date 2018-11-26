@@ -37,7 +37,7 @@ public class HomeController {
     public String showMap(Model model, @RequestParam(required = false) String code, @RequestParam(required = false) String message) {
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
-        logger.info(loginUser.getUserName() + " logged in.");
+        logger.info(loginUser + " is at root.");
 
         if( code != null )
         {

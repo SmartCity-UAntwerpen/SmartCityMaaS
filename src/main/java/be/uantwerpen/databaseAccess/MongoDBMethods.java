@@ -43,7 +43,7 @@ public class MongoDBMethods {
      */
     public void putStatement(Delivery delivery)
     {
-        System.out.println("----- Write data to MongoDB -----");
+        logger.info("Start writing data to MongoDB");
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         Document document = new Document();
         document.put("typeDelivery", delivery.getType());
@@ -55,7 +55,7 @@ public class MongoDBMethods {
         document.put("passengers", (""+delivery.getPassengers()));
         document.put( "timesample",new Date());
         mydatabaserecords.insertOne(document);
-        System.out.println("----- Finish writing to MongoDB -----");
+        logger.info("Finished writing data to MongoDB");
         //String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
     }
 
@@ -65,7 +65,7 @@ public class MongoDBMethods {
      */
     public List<Delivery> getAllDeliveries()
     {
-        System.out.println("----- Get all deliveries data of MongoDB -----");
+        logger.info("Get all deliveries data of MongoDB");
         List<Delivery> deliveries = new ArrayList<Delivery>();
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find();
@@ -105,7 +105,7 @@ public class MongoDBMethods {
      */
     public Delivery getLastDelivery()
     {
-        System.out.println("----- Get last data of MongoDB -----");
+        logger.info("Get last data of MongoDB");
         Delivery lastDelivery = new Delivery();
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find().sort(new Document("_id", -1)).limit(1);
@@ -140,7 +140,7 @@ public class MongoDBMethods {
      */
     public void deleteDelivery(String deliveryID)
     {
-        System.out.println("----- Delete delivery "+deliveryID+" data of MongoDB -----");
+        logger.info("Remove delivery ["+deliveryID+"]'s data from MongoDB");
         MongoCollection<Document> collection = db.getCollection("deliveries");
         //collection.deleteOne(new Document("_id", new ObjectId("57a49c6c33b10927ff09623e")));
         BasicDBObject query = new BasicDBObject();

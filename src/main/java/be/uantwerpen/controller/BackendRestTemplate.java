@@ -45,30 +45,28 @@ public class BackendRestTemplate {
      * @return
      */
     public List<DummyPoint> getdataBackend() {
-        logger.info("Retrieve info from core ");
+        logger.info("Retrieve info from core.");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         List<String> pointList = new ArrayList<String>();
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://"+serverCoreIP+":"+serverCorePort+"/map/stringmapjson/visual");
-        System.out.println("Make builder to Quentin " +builder.build().encode().toUri());
-
+        logger.info("Builder from: " + builder.build().encode().toUri());
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        System.out.println("Entity to Quentin" );
 
+        /* USE BUILDER FROM API
         // Get response from the core
-        /*HttpEntity<String> httpResponse = restTemplate.exchange(
+        HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
                 String.class);
-
-        System.out.println("Performed exchange to Quentin" );
-        System.out.println("Response core : "+httpResponse.getBody());
-        System.out.println("Response body core : "+ httpResponse.hasBody());
+        logger.info("Response core: " + httpResponse.getBody());
+        logger.info("Response body core: " + httpResponse.hasBody());
         String listOfCore = httpResponse.getBody();
-*/
+        */
+
         new JSONObject();
 
         pointTransition = new HashMap<Integer,Integer>();
@@ -100,7 +98,6 @@ public class BackendRestTemplate {
             //JSONObject jsonObject = (JSONObject) obj;
             /////
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
-            System.out.println("Whole list of points:  "+pointsList.toString());
 
             int counter =0;
             Iterator<String> iterator = pointsList.iterator();
@@ -157,7 +154,7 @@ public class BackendRestTemplate {
                     neighbours.set(i,temp_neig);
                 } else {
                     // Retrieve this world id.
-                    System.out.println("Neighbour not found in point hashmap");
+                    logger.warn("Neighbour not found in point hashmap");
                 }
             }
             point.setNeighbours(neighbours);
@@ -167,10 +164,6 @@ public class BackendRestTemplate {
         Iterator it = pointTransition.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-        }
-        System.out.println("Print points");
-        for(int i = 0 ; i <points.size(); i++) {
-            points.get(i).print();
         }
         return points; //new MessageWrapper<>(tracksamples, "server called using eureka with rest template");
     }

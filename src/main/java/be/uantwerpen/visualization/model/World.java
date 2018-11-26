@@ -2,6 +2,8 @@ package be.uantwerpen.visualization.model;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.JobList;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
@@ -22,6 +24,8 @@ import java.util.List;
  *
  */
 public class World {
+    private static final Logger logger = LogManager.getLogger(World.class);
+
     private String world_ID;
     private List<CellRow> cells;
     private int dimensionX;
@@ -77,7 +81,7 @@ public class World {
 
         int endX = 0;
         int endY = 0;
-        System.out.println("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
+        logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
         for(int i = 0; i < points.size(); i++){
             if(points.get(i).getPointName() == startID){
                 startX = points.get(i).getPhysicalPoisionX();
@@ -93,14 +97,13 @@ public class World {
 
         }
 
-        System.out.println(" Points on map Start: x = "+startX + " y " + startY + " End: x = " + endX + " y = " + endY );
+        logger.info(" Points on map Start: x = "+startX + " y " + startY + " End: x = " + endX + " y = " + endY );
 
         int[] coordinates = new int[2];
         coordinates[0] = (int)(startX + ((endX - startX) * progress));
         coordinates[1] = (int)(startY + ((endY - startY) * progress));
 
-        System.out.println(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
-        System.out.println();
+        logger.info(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
         return coordinates;
     }
 
@@ -134,7 +137,7 @@ public class World {
      */
     public CellLink cotrolOrderLink(CellLink cellLink)
     {
-        // System.out.println("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
+        // logger.info("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
         int x_start = cellLink.getStartCell().getX();
         int y_start = cellLink.getStartCell().getY();
         int x_end = cellLink.getEndCell().getX();
@@ -167,7 +170,7 @@ public class World {
         {
             if(cellLinks.get(i).getStartCell().getSpotID() == startID &&  cellLinks.get(i).getEndCell().getSpotID() ==  endID)
             {
-                // System.out.println("Retrieve id "+i+" of link with start "+ startID +" and end "+endID);
+                // logger.info("Retrieve id "+i+" of link with start "+ startID +" and end "+endID);
                 return i;
             }
         }
@@ -205,7 +208,7 @@ public class World {
         this.surround_layer = surround_layer;
     }
     public List<CellLink> getCellLinks() {
-        // System.out.println("cellLinks world "+ cellLinks.size());
+        // logger.info("cellLinks world "+ cellLinks.size());
         return this.cellLinks;
     }
     public void setCellLinks(List<CellLink> cellLinks) {

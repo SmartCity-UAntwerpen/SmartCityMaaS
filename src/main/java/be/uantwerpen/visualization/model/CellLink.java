@@ -1,5 +1,8 @@
 package be.uantwerpen.visualization.model;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,9 @@ import java.util.List;
  *
  */
 public class CellLink {
+
+    private static final Logger logger = LogManager.getLogger(DummyPoint.class);
+
     private Cell startCell;
     private Cell endCell;
     private List<Cell> intermediateCells;
@@ -21,13 +27,13 @@ public class CellLink {
      */
     public void print()
     {
-        System.out.println("-- CellLink -- ");
-        System.out.println("Start : " + startCell.getSpotID() + " ==> x "+startCell.getX()+ " - y "+startCell.getY());
+        logger.info("CellLink:");
+        logger.info("Start : " + startCell.getSpotID() + " ==> x "+startCell.getX()+ " - y "+startCell.getY());
         for(Cell it: intermediateCells)
         {
-            System.out.println(". x " + it.getX() + " - y "+ it.getY());
+            logger.info(". x " + it.getX() + " - y "+ it.getY());
         }
-        System.out.println("End " + endCell.getSpotID() + " ==> x "+endCell.getX()+ " - y "+endCell.getY());
+        logger.info("End " + endCell.getSpotID() + " ==> x "+endCell.getX()+ " - y "+endCell.getY());
     }
 
 

@@ -69,9 +69,8 @@ public class DataController {
      */
     @RequestMapping(value="/retrieveWorld") // Request from http
     public World getWorld(){
-        System.out.println("### Retrieve world callled ###");
+        logger.info("/retrieveworld requested");
         if( myWorld == null ) {
-
             List<DummyPoint> listPoints = getMapDataBackend();
             // Core world or mapCoreQuentinFinal.txt = new world (300,300)
             // Test world or mapCore.txt = new World(250,250);
@@ -83,7 +82,7 @@ public class DataController {
             Example: html : width : 900 height : 900 ==> world : 900,900
          */
             myWorld = new World(300, 300);
-            System.out.println("### CELLIS POINTS SIZE ###" + listPoints.size());
+            logger.info("World's listPoints size is " + listPoints.size());
             //myWorld.parseMap(listPoints);
             myWorld.setWorld_ID("world1");
             //this.world.parseMap(listPoints);
@@ -102,12 +101,11 @@ public class DataController {
     @RequestMapping(value="/retrieveRealPointName/{valuePoint}")
     public int getPointName(@PathVariable int valuePoint){
         int keyPoint = backendRestTemplate.getKeyHashMap(valuePoint);
-        if(valuePoint != -1)
-        {
-            System.out.println("### Retrieve key point name from "+valuePoint+ " which is "+ keyPoint+" ###");
-        }else
-        {
-            System.out.println("### Could not retrieve key point name from "+valuePoint+ ", error "+ keyPoint+" ###");
+        if(valuePoint != -1) {
+            logger.info("Retrieve key point name from "+valuePoint+ " which is "+ keyPoint);
+        }
+        else{
+            logger.error("Could not retrieve key point name from "+valuePoint+ ", error at "+ keyPoint);
         }
         return keyPoint;
     }
@@ -118,7 +116,7 @@ public class DataController {
      */
     @RequestMapping(value="/dataCore")
     public List<DummyPoint> getMapDataBackend(){
-        System.out.println("### Retrieve map from backend ###");
+        logger.info("/dataCore requested, retrieve map from backend");
         List<DummyPoint> listofPoints = backendRestTemplate.getdataBackend();
         return listofPoints;
     }
@@ -129,6 +127,7 @@ public class DataController {
      */
     @RequestMapping(value="/vehicle/{id}")
     public void changeVehicleID(@PathVariable int id){
+        logger.info("/vehicle/" + id + " requested");
         vehicleID = id;
         return;
     }
@@ -181,7 +180,7 @@ public class DataController {
 
     @RequestMapping(value="/vehicletype/{id}")
     public List<String> getVehicleType( @PathVariable String id ){
-        System.out.println("Asking for vehicletype for " + id);
+        logger.info("/vehicletype/" + id + " requested, to get vehicle type");
         List<String> result = new ArrayList<String>();
         Iterator<String> iterator = virDevices.iterator();
         while (iterator.hasNext()) {
@@ -190,10 +189,11 @@ public class DataController {
             int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
             if(idVeh == new Long(id)) {
                 result.add( (String) par_jsonObject.get("type") );
-                System.out.println("Vehicle type found: " + result);
+                logger.info("Vehicle type is found, " + result);
                 return result;
             }
         }
+        logger.warn("Vehicle type is NOT found for " + id);
         result.add("uknown");
         return result;
     }
@@ -210,7 +210,7 @@ public class DataController {
     @RequestMapping(value="/{worldid}/progress/{delivery_id}/{vehicle_id}")
     public int[] getProgress(@PathVariable String worldid, @PathVariable String delivery_id, @PathVariable int vehicle_id){
         int progress = 0;//vehicle.getValue();
-        System.out.println("Progress is asked for id delivery "+delivery_id + " vehicle_id "+vehicle_id );
+        logger.info("/" + worldid + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
         World world = new World();
         for(int i = 0; i < worlds.size();i++)
         {
@@ -246,7 +246,6 @@ public class DataController {
             //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicle_id;
             URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicle_id;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
-            System.out.println("ID device "+vehicle_id);
         }
 
         // coordinatesVehicle[0] = x coordinate vehicle
@@ -267,9 +266,9 @@ public class DataController {
                     entity,
                     String.class);
 
-            System.out.println("Response backbone : " + httpResponse.toString());
-            System.out.println("Response backbone : " + httpResponse.getBody());
-            System.out.println("Response body backbone : " + httpResponse.hasBody());
+            logger.info("[getProgress] Response backbone : " + httpResponse.toString());
+            logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
+            logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
             String vehicleInfo = httpResponse.getBody();
             JSONParser parser = new JSONParser();
             Job job1 = new Job();
@@ -290,8 +289,8 @@ public class DataController {
                 int percentage = ((Long) jsonObject.get("percentage")).intValue();
 
 
-                System.out.println("idVeh "+ idVeh + " idStart "+idStart+" idEnd "+idEnd+ " percentage "+percentage);
-                if(backendRestTemplate == null)System.out.println("BackendRestTemplate is null.");
+                logger.info("idVeh "+ idVeh + ", idStart "+idStart+", idEnd "+idEnd+ ", percentage "+percentage);
+                if(backendRestTemplate == null)logger.error("BackendRestTemplate is null.");
                 int id_start = backendRestTemplate.getValueofKeyHashMap( idStart );
                 int id_end = backendRestTemplate.getValueofKeyHashMap(idEnd);
                 currentListofJobs.add(id_start);
@@ -299,7 +298,7 @@ public class DataController {
                 progress = percentage;
 
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.error("ParseException",e);
             }
             int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress);
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];

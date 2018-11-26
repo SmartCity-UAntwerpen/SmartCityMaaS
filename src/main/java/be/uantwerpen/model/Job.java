@@ -36,6 +36,10 @@ public class Job extends MyAbstractPersistable<Long> {
         this.idVehicle = idVehicle;
     }
 
+    public String toString(){
+        return "[ start: "+idStart+" - end:"+idEnd+" ] vehicle:" + idVehicle;
+    }
+
     public JobList getJoblist() {
         return joblist;
     }
