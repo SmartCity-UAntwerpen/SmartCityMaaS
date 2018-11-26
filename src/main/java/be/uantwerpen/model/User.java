@@ -106,4 +106,8 @@ public class User extends MyAbstractPersistable<Long> {
         }
         return false;
     }
+
+    public String toString(){
+        return "[User-" + getId() + "] " + getUserName() + " (" + getFirstName() + " - " + getLastName() + ")";
+    }
 }

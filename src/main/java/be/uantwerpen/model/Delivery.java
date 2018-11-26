@@ -1,5 +1,7 @@
 package be.uantwerpen.model;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Entity;
@@ -14,6 +16,9 @@ import javax.persistence.Entity;
  */
 @Entity
 public class Delivery extends MyAbstractPersistable<Long> {
+
+    private static final Logger logger = LogManager.getLogger(Delivery.class);
+
     private String userName;
     private String firstName;
     private String lastName;
@@ -146,14 +151,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
      * Print all the information of the delivery.
      */
     public void print() {
-        System.out.print(" idDelivery: "+ idDelivery+ ", ");
-        System.out.print(" userName: "+ userName+ ", ");
-        System.out.print(" firstName: "+ firstName+ ", ");
-        System.out.print(" lastName: "+ lastName+ ", ");
-        System.out.print(" pointA: "+ pointA+ ", ");
-        System.out.print(" pointB: "+ pointB+ ", ");
-        System.out.print(" passengers: "+ passengers+ ", ");
-        System.out.print(" type: "+ type+ ", ");
-        System.out.println(" date: "+ date);
+        logger.info("Delivery: idDelivery " + idDelivery + ", username " + userName + ", firstName " + firstName +
+                ", lastName " + lastName + ", pointA " + pointA + ", pointB " + pointB +
+                ", passengers " + passengers + ", type " + type + ", date " + date);
     }
 }

@@ -38,8 +38,7 @@ public class MyErrorController implements ErrorController {
 
     @RequestMapping( value= ERROR_PATH, produces = "txt/html" )
     public ModelAndView errorHtml( HttpServletRequest request ) {
-        System.out.println("ERROR");
-        System.out.println(getErrorAttributes( request, false ));
+        logger.error(getErrorAttributes( request, false ));
         return new ModelAndView("redirect:/?code=" + getErrorAttributes( request, false ).get("status")
         + "&message=" + getErrorAttributes( request, false ).get("error"));
     }

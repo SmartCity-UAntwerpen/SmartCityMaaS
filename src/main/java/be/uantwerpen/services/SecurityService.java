@@ -37,18 +37,16 @@ public class SecurityService implements UserDetailsService {
                 if (userName.equals(user.getUserName())){
                     Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
                     for (Role role : user.getRoles()) {
-                        System.out.println(role.getName()); //TODO clean - gets printed when logged in - example "user"
                         for (Permission perm : role.getPermissions()){
                             authorities.add(new SimpleGrantedAuthority(perm.getName()));
-                            System.out.println(role.getName()); //TODO clean - gets printed when logged in - example "user"
                         }
                     }
 
                     ud = new org.springframework.security.core.userdetails.User(userName, user.getPassword(), true, true, true, true,authorities);
                 }
             }
-            if (ud == null) throw new UsernameNotFoundException("No user with username '" + userName + "' found!");
-            System.out.println(ud.getPassword()); //TODO clean - gets printed when logged in - example "passwoord123"
+            if (ud == null) logger.error("No user " + userName + " found", new UsernameNotFoundException("No user " + userName + " found"));
+            logger.info(ud + " logged in.");
             return ud;
         }
 

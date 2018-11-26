@@ -63,18 +63,18 @@ public class JobListService {
      * being saved & that the correct information is written into each object
      */
     public void printJobList() {
-        System.out.println(" Lijst van Orders afdrukken");
+        logger.info("Print job list.");
         for (JobList jl: this.jobListRepository.findAll()) {
-            System.out.println(" Order #" + jl.getId());
+            logger.info(" Order #" + jl.getId());
             for(int x = 0; x<jl.getJobs().size(); x++) {
-                System.out.println("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl.getJobs().get(x).getStatus());
+                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
 
     /**
      * Dispatch2core method is a method that will iterate over the Orders & will dispatch the first job from each order
-     * to the respective core so that the job can be performed. Once a succesfull message has been retrieved, the status
+     * to the respective core so that the job can be performed. Once a successful message has been retrieved, the status
      * of the job will be changed to avoid multiple dispatches of the same job while it is being carried out
      */
     public void dispatch2Core() {
@@ -83,18 +83,21 @@ public class JobListService {
             if (jl.getJobs().get(0).getStatus().equals("ready")) {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
                 String url = "http://";
-                if (jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("DRONETOP")){
-                    url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
-                    System.out.println("DroneDispatch");
-                    System.out.println(url);
-                } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("CARTOP")) {
-                    url += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
-                    System.out.println("CarDispatch");
-                    System.out.println(url);
-                } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("ROBOTTOP")) {
-                    url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
-                    System.out.println("RobotDispatch");
-                    System.out.println(url);
+                String typeVehicle = jl.getJobs().get(0).getTypeVehicle().toUpperCase();
+                switch (typeVehicle){
+                    case "DRONETOP":
+                        url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
+                        logger.info("DroneDispatch: " + url);
+                        break;
+                    case "CARTOP":
+                        url += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
+                        logger.info("CarDispatch: " + url);
+                        break;
+                    case "ROBOTTOP":
+                        url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
+                        logger.info("RobotDispatch: " + url);
+                        break;
+                    default: logger.warn("No correct type dispatch2Core function");
                 }
                 // if succesfully dispatched, update status of the job
                 if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)){
@@ -104,11 +107,11 @@ public class JobListService {
                 else {
                     recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
                     // for debug purposes
-                    /* System.out.println(" Lijst van Orders afdrukken");
+                    /* logger.info(" Lijst van Orders afdrukken");
                     for (JobList jl2: jobListRepository.findAll()) {
-                        System.out.println(" Order #" + jl2.getId());
+                        logger.info(" Order #" + jl2.getId());
                         for(int x = 0; x<jl2.getJobs().size(); x++) {
-                            System.out.println("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
+                            logger.info("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
                         }
                     }*/
                 }
@@ -120,18 +123,21 @@ public class JobListService {
     public void dispatchToCore( JobList jl ) {
         //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
         String url = "http://";
-        if (jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("DRONETOP")){
-            url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
-            System.out.println("DroneDispatch");
-            System.out.println(url);
-        } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("CARTOP")) {
-            url += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
-            System.out.println("CarDispatch");
-            System.out.println(url);
-        } else if(jl.getJobs().get(0).getTypeVehicle().toUpperCase().equals("ROBOTTOP")) {
-            url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
-            System.out.println("RobotDispatch");
-            System.out.println(url);
+        String typeVehicle = jl.getJobs().get(0).getTypeVehicle().toUpperCase();
+        switch (typeVehicle){
+            case "DRONETOP":
+                url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
+                logger.info("DroneDispatch: " + url);
+                break;
+            case "CARTOP":
+                url += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
+                logger.info("CarDispatch: " + url);
+                break;
+            case "ROBOTTOP":
+                url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
+                logger.info("RobotDispatch: " + url);
+                break;
+            default: logger.warn("No correct type dispatchToCore function");
         }
         // if succesfully dispatched, update status of the job
         if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)){
@@ -141,11 +147,11 @@ public class JobListService {
         else {
             recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
             // for debug purposes
-                    /* System.out.println(" Lijst van Orders afdrukken");
+                    /* logger.info(" Lijst van Orders afdrukken");
                     for (JobList jl2: jobListRepository.findAll()) {
-                        System.out.println(" Order #" + jl2.getId());
+                        logger.info(" Order #" + jl2.getId());
                         for(int x = 0; x<jl2.getJobs().size(); x++) {
-                            System.out.println("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
+                            logger.info("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
                         }
                     }*/
         }
@@ -164,7 +170,7 @@ public class JobListService {
     {
         boolean status = true;
         temp += (String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
-        System.out.println("the url is: " + temp);
+        logger.info("the url is: " + temp);
         try {
             URL url = new URL(temp);
             HttpURLConnection conn;
@@ -172,15 +178,15 @@ public class JobListService {
             conn.setDoOutput(true);
             conn.setRequestMethod("GET");
             // for debugging purposes
-            /*System.out.println("responsecode " + conn.getResponseCode());
-            System.out.println("responsmsg " + conn.getResponseMessage());*/
+            /*logger.info("responsecode " + conn.getResponseCode());
+            logger.info("responsmsg " + conn.getResponseMessage());*/
             //succesfull transmission
              if (conn.getResponseCode() == 200) {
-                System.out.println(conn.getResponseCode());
+                 logger.info(conn.getResponseCode());
                 /*String msgresponse = conn.getResponseMessage();
                 /*if (msgresponse.equals("ACK")) {
                     //TODO: doet iets met de ACK code
-                    System.out.println(msgresponse);
+                    logger.info(msgresponse);
                 }*/
                 conn.disconnect();
                 status = true;
@@ -188,19 +194,19 @@ public class JobListService {
             // an error has occured
             else{
                 /*String msgresponse = conn.getResponseMessage();
-                System.out.println(msgresponse);
+                logger.info(msgresponse);
                 switch (msgresponse) {
                     case "idVehicleError":
-                        System.out.println(msgresponse);
+                        Slogger.info(msgresponse);
                         break;
-                    default: System.out.println(msgresponse);
+                    default: logger.info(msgresponse);
                 }*/
-                System.out.println("ERROR WHILE DISPATCHING JOB, job ID: " + idJob + " for vehicle " + idVehicle);
+                 logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + idJob + " for vehicle " + idVehicle);
                 conn.disconnect();
                 status = false;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Can't get file", e);
         }
         return status;
     }

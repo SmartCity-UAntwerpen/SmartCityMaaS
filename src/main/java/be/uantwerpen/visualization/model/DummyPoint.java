@@ -1,5 +1,8 @@
 package be.uantwerpen.visualization.model;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,8 @@ import java.util.List;
  *
  */
 public class DummyPoint {
+
+    private static final Logger logger = LogManager.getLogger(DummyPoint.class);
 
     private int pointName;
     private List<Integer> neighbours;
@@ -51,10 +56,7 @@ public class DummyPoint {
     }
     public void print()
     {
-        System.out.print("DummyPoint "+pointName);
-        System.out.print(", x "+physicalPoisionX);
-        System.out.print(", y "+physicalPoisionY);
-        System.out.println(", size neighbours "+neighbours.size());
+        logger.info("DummyPoint "+pointName + ": x "+physicalPoisionX + ", y "+physicalPoisionY + ", size neighbours "+neighbours.size());
     }
 
     public void addNeighbour(int neighbour)

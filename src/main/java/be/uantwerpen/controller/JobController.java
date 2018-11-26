@@ -40,18 +40,11 @@ public class JobController {
     @Autowired
     private UserService userService;
 
-    //for testing purposes
-    @RequestMapping(value="/initAstar", method= RequestMethod.GET)
-    public String initAstar(final ModelMap model){
-        astar.init();
-        astar.startAStar();
-        return "jobs-list";
-    }
-
     //get a list for all the jobs
     @RequestMapping(value="/jobs", method= RequestMethod.GET)
     public String showJobs(final ModelMap model){
         User loginUser = userService.getPrincipalUser();
+        logger.info(loginUser + " requested /jobs");
         model.addAttribute("currentUser", loginUser);
         model.addAttribute("allJobs", jobService.findAll());
         model.addAttribute("allJobList", jobListService.findAll());
@@ -63,6 +56,7 @@ public class JobController {
     @RequestMapping(value="/jobs/put", method= RequestMethod.GET)
     public String viewCreateJob(final ModelMap model){
         User loginUser = userService.getPrincipalUser();
+        logger.info(loginUser + " requested /jobs/put");
         model.addAttribute("currentUser", loginUser);
         model.addAttribute("job",new Job());
         return "jobs-manage";
@@ -72,6 +66,7 @@ public class JobController {
     @RequestMapping(value="/jobs/{id}", method= RequestMethod.GET)
     public String viewEditJob(@PathVariable Long id, final ModelMap model){
         User loginUser = userService.getPrincipalUser();
+        logger.info(loginUser + " requested /jobs/" + id);
         model.addAttribute("currentUser", loginUser);
         model.addAttribute("job",jobService.findOne(id));
         return "jobs-manage";
@@ -80,13 +75,15 @@ public class JobController {
     //make a specific job
     @RequestMapping(value={"/jobs/", "/jobs/{id}"}, method= RequestMethod.POST)
     public String addJob(@PathVariable Long id, @Valid Job job, BindingResult result, final ModelMap model) {
-        System.out.println(result.getModel());
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         if (result.hasErrors()) {
+            logger.error("Creating a new job was unsuccessful");
             return "jobs-manage";
         }
         jobService.saveSomeAttributes(job);
+        logger.info(loginUser + " created new job " + job);
+        logger.info("BingindResult model: " + result.getModel());
         return "redirect:/jobs";
     }
 
@@ -95,6 +92,7 @@ public class JobController {
     public String deleteJob(@PathVariable Long id, final ModelMap model){
         jobService.delete(id);
         model.clear();
+        logger.info(userService.getPrincipalUser() + " deleted job " + id);
         return "redirect:/jobs";
     }
 
@@ -104,6 +102,7 @@ public class JobController {
         // Delete all jobs and joblists
         jobService.deleteAll();
         jobListService.deleteAll();
+        logger.info(userService.getPrincipalUser() + "  deleted all jobs and joblists.");
         return "redirect:/jobs";
     }
 
@@ -111,7 +110,7 @@ public class JobController {
     public String removeOrders() {
         jobListRepository.deleteAll();
         if(jobListRepository.findAll().size() == 0) {
-            System.out.println("all orders have been cleared");
+            logger.info(userService.getPrincipalUser() + " removed all orders.");
         }
         return "redirect:/";
     }
@@ -119,6 +118,7 @@ public class JobController {
     //make an order
     @RequestMapping(value ="/createOrder/{Start}/{Stop}")
     public String createOrder(@PathVariable String Start, @PathVariable String Stop) {
+        logger.info(userService.getPrincipalUser() + " created order from " + Start + " to " + Stop);
         astar.init();
         astar.makeNode();
         astar.makeEdge();
@@ -128,26 +128,24 @@ public class JobController {
 
     @RequestMapping(value="/completeJob/{idJob}", method= RequestMethod.GET)
     public String completeJob (@PathVariable Long idJob) {
-        System.out.println("job Complete");
+        logger.info("Job " + idJob + " is complete");
         for (JobList jl: jobListService.findAll()){
             if (jl.getJobs().get(0).getId().equals(idJob)) {
                 jl.getJobs().remove(0);
-                System.out.println("job deleted");
                 jobService.delete(idJob);
-                System.out.println("job deleted from joblist");
+                logger.info(idJob + " is deleted because it was complete");
             }
             if (jl.getJobs().isEmpty()) {
                 //TODO need to test to see if this works
                 jobListService.deleteOrder(jl.getId());
-                System.out.println("delete order");
+                logger.info("Delete order");
             }
         }
 
         if(jobListRepository.findAll().size() != 0) {
             jobListService.dispatch2Core();
-            System.out.println("dispatch next job");
+            logger.info("Dispatch next job");
         }
-
         return "redirect:/jobs";
     }
 }

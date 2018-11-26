@@ -75,6 +75,7 @@ public class UserController {
     public String showUsers(final ModelMap model){
         model.addAttribute("allUsers", userService.findAll());
         User loginUser = userService.getPrincipalUser();
+        logger.info(loginUser + " requested /users");
         model.addAttribute("currentUser", loginUser);
         return "users-list";
     }
@@ -89,6 +90,7 @@ public class UserController {
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("user",new User("",""));
         User loginUser = userService.getPrincipalUser();
+        logger.info(loginUser + " requested /users/put");
         model.addAttribute("currentUser", loginUser);
         return "users-manage";
     }
@@ -102,9 +104,11 @@ public class UserController {
     @RequestMapping(value="/users/{id}", method= RequestMethod.GET)
     public String viewEditUser(@PathVariable Long id, final ModelMap model){
         model.addAttribute("allRoles", roleService.findAll());
-        model.addAttribute("user",userService.findOne(id));
+        User user = userService.findOne(id);
+        model.addAttribute("user", user);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
+        logger.info(loginUser + " is watching user " + user);
         return "users-manage";
     }
 
@@ -123,8 +127,10 @@ public class UserController {
             roles.add(roleService.findRole("user"));
             user.setRoles(roles);
             userService.saveSomeAttributes(user);
+            logger.info(userService.getPrincipalUser() + " creates new user: " + user);
             return "redirect:/login";
         } else {
+            logger.error(userService.getPrincipalUser() + " failed to create new user");
             return "redirect:/login?error";
         }
     }
@@ -141,6 +147,7 @@ public class UserController {
     public String editUser(@Valid User user, BindingResult result, final ModelMap model){
         if(result.hasErrors()){
             model.addAttribute("allRoles", roleService.findAll());
+            logger.error(userService.getPrincipalUser() + " edited " + user);
             return "users-manage";
         }
         userService.saveSomeAttributes(user);
@@ -155,6 +162,7 @@ public class UserController {
      */
     @RequestMapping(value="/users/{id}/delete")
     public String deleteUser(@PathVariable Long id, final ModelMap model){
+        logger.info(userService.findOne(id) + " removed by " + userService.getPrincipalUser());
         userService.delete(id);
         model.clear();
         return "redirect:/users";
@@ -167,9 +175,10 @@ public class UserController {
      */
     @RequestMapping(value="/deliveries", method= RequestMethod.GET)
     public String viewDeliveries(final ModelMap model){
-        MongoDBMethods monogDBClient = new MongoDBMethods();
-        Iterable<Delivery> deliveries = monogDBClient.getAllDeliveries();
-        model.addAttribute("allDeliveries", monogDBClient.getAllDeliveries());
+        logger.info(userService.getPrincipalUser() + " requested /deliveries");
+        MongoDBMethods mongoDBClient = new MongoDBMethods();
+        Iterable<Delivery> deliveries = mongoDBClient.getAllDeliveries();
+        model.addAttribute("allDeliveries", mongoDBClient.getAllDeliveries());
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         return "delivery-list";
@@ -188,6 +197,7 @@ public class UserController {
 
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
+        logger.info(loginUser + " requested /deliveries/put");
         return "delivery-manage-user";
     }
 
@@ -198,8 +208,9 @@ public class UserController {
      */
     @RequestMapping(value="/deliveries/{idDelivery}/delete", method= RequestMethod.GET)
     public String deleteDelivery(@PathVariable String idDelivery){
-        MongoDBMethods monogDBClient = new MongoDBMethods();
-        monogDBClient.deleteDelivery(idDelivery);
+        MongoDBMethods mongoDBClient = new MongoDBMethods();
+        mongoDBClient.deleteDelivery(idDelivery);
+        logger.info(userService.getPrincipalUser() + " deleted delivery " + idDelivery);
         return "redirect:/deliveries" ;
     }
 
@@ -212,8 +223,8 @@ public class UserController {
      */
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
     public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
-        System.out.println(result.getModel());
-        System.out.println("--- Delivery point A "+ delivery.getPointA() + " point B "+ delivery.getPointB()+" ---");
+        logger.info(result.getModel());
+        logger.info("Delivery: point A "+ delivery.getPointA() + ", point B "+ delivery.getPointB());
 
         if(result.hasErrors()){
             model.addAttribute("allPassengers", passengerService.findAll());
@@ -223,22 +234,22 @@ public class UserController {
 
         delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
         delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
-        MongoDBMethods monogDBClient = new MongoDBMethods();
-        monogDBClient.putStatement(delivery);
-        Delivery delivery_return = monogDBClient.getLastDelivery();
+        MongoDBMethods mongoDBClient = new MongoDBMethods();
+        mongoDBClient.putStatement(delivery);
+        Delivery delivery_return = mongoDBClient.getLastDelivery();
         if(delivery_return.getFirstName() == null) {
-            System.out.println("-- !! Could not retrieve last delivery from MongoDB service !! --");
+            logger.error("Could not retrieve last delivery from MongoDB service.");
             return "home_user";
 
         } else {
-            System.out.println("-- Retrieve last delivery from MongoDB service --");
+            logger.info("Retrieve last delivery from MongoDB service.");
             delivery_return.print();
         }
 
         astarService.init();
         astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
-        System.out.println("JOB HAS BEEN CREATED");
         User loginUser = userService.getPrincipalUser();
+        logger.info("Job has been created by " + loginUser);
         model.addAttribute("currentUser", loginUser);
         delivery_return.setPointA(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
         delivery_return.setPointB(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
@@ -256,6 +267,7 @@ public class UserController {
     public String getSimulation(final ModelMap model){
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
+        logger.info(loginUser + " requested /visualization");
 
         // The following code is equal to the function getAllVehicles from the datacontroller
         // with the exception that this functions returns more data of the vehicles.
@@ -319,9 +331,9 @@ public class UserController {
                 vehicles.add(dumVeh);
             }
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
+            logger.error("Can't read or parse file.", e);
         }
-        System.out.println("Vehicle count: " + vehicles.size());
+        logger.info("Vehicle count: " + vehicles.size());
         return vehicles;
     }
 }
