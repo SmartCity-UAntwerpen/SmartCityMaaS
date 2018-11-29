@@ -1,1 +1,0 @@
-{"vehicles" : [ {"idVehicle" :1247, "idStart" : 46, "idEnd" : 47, "percentage" : 0, "type" : "car"},{"idVehicle" :1251, "idStart" : 48, "idEnd" : 49, "percentage" : 0, "type" : "drone"}]}

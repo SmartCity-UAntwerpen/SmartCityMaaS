@@ -55,7 +55,6 @@ public class BackendRestTemplate {
         logger.info("Builder from: " + builder.build().encode().toUri());
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        /* USE BUILDER FROM API
         // Get response from the core
         HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
@@ -65,7 +64,6 @@ public class BackendRestTemplate {
         logger.info("Response core: " + httpResponse.getBody());
         logger.info("Response body core: " + httpResponse.hasBody());
         String listOfCore = httpResponse.getBody();
-        */
 
         new JSONObject();
 
@@ -79,10 +77,10 @@ public class BackendRestTemplate {
 
         try {
             ////// TEST - 2018
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/stringmapjson.txt"));
+            // JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/stringmapjson.txt"));
             /////
-            //obj = parser.parse(listOfCore);
-            //JSONObject jsonObject = (JSONObject) obj;
+            obj = parser.parse(listOfCore);
+            JSONObject jsonObject = (JSONObject) obj;
             /////
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
 
@@ -127,7 +125,7 @@ public class BackendRestTemplate {
                 points.add(point);
                 counter++;
             }
-        } catch (IOException | ParseException e) {
+        } catch (ParseException e) { // IOException
             e.printStackTrace();
         }
 
