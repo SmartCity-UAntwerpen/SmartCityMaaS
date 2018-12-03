@@ -15,7 +15,7 @@
                   <h1>Register</h1>
 				  <p th:if="${param.logout}" class="alert">You have been logged out</p>
 				  <p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
-                  <input th:field="*{userName}" id="userName" placeholder="username" type="text"/>
+                  <input th:field="*{userName}" id="userName" placeholder="username" type="text" autofocus="autofocus"/>
                   <input th:field="*{password}" id="password" type="password" placeholder="password" data-type="password"/>
                   <input th:field="*{firstName}" id="firstName" type="text" placeholder="firstname"/>
                   <input th:field="*{lastName}" id="lastName" type="text" placeholder="lastname"/>
@@ -27,7 +27,7 @@
                   <h1>Login</h1>
 				  <p th:if="${param.logout}" class="alert">You have been logged out</p>
 				  <p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
-				  <input type="text" name="username" value="" placeholder="name"/>
+				  <input type="text" name="username" value="" placeholder="name" autofocus="autofocus"/>
 				  <input type="password" name="password" placeholder="password"/>
 				  <input type="submit" value="Login"/>
 				  <p class="message">Not registered? <a href="#">Create an account</a></p>
