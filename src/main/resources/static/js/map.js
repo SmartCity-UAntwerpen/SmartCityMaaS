@@ -20,6 +20,8 @@ var pointBId = -10;
 
 var linksDrawn = [];
 
+var traveledPath = [];
+
 var droneDefault;
 var dronePointA;
 var dronePointB;
@@ -432,12 +434,30 @@ function getVehiclesVN(){
                         drawVehicle(currentVehicleType, progression[0], progression[1], true);
                     }
                 } else {
+                    traveledPath = [];
                     drawVehicle(currentVehicleType, progression[0], progression[1], true);
                 }
+
+                if(traveledPath.length < 1){
+                    traveledPath.push([progression[0], progression[1]]);
+                } else if(!(traveledPath[traveledPath.length - 1][0] == progression[0] && traveledPath[traveledPath.length - 1][1] == progression[1])){
+                    traveledPath.push([progression[0], progression[1]]);
+                }
+                // DRAW TRAVELED PATH
+                ctx.beginPath();
+                ctx.setLineDash([20, 5]);
+                ctx.strokeStyle = '#008000';
+                ctx.lineWidth=3;
+                ctx.moveTo(traveledPath[0][0]*xSize,traveledPath[0][1]*ySize);
+                for (var i = 1; i < traveledPath.length; i++) {
+                    ctx.lineTo(traveledPath[i][0]*xSize,traveledPath[i][1]*ySize);
+                }
+                ctx.stroke();
             }
         })
     } else if(currentVehicleID == -1 && prevProg[3] != 0) {
         prevProg[3] = 0;
+        traveledPath = [];
         ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
         drawWorld();
     }
