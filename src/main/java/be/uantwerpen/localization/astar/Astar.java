@@ -1,19 +1,14 @@
 package be.uantwerpen.localization.astar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-import be.uantwerpen.model.Point;
 import be.uantwerpen.model.Link;
+import be.uantwerpen.model.Point;
 import be.uantwerpen.services.GraphBuilder;
-import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.JobListService;
+import be.uantwerpen.services.JobService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.graphstream.algorithm.AStar;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +19,7 @@ import org.springframework.stereotype.Service;
  * This class will provide a path, while building up a graph in which the path will be calculated from input
  * it gets from the Graphbuilder service. Due to last minute additions, there are 2 determinePath method,s of
  * one was a quickfix to add a Delivery paramter so that the code could be integrated in the entire project
- *
+ * <p>
  * VN 2018
  */
 @Service
@@ -39,10 +34,6 @@ public class Astar {
     private Graph graph;
     @Autowired
     private GraphBuilder graphBuilder;
-
-    public Astar() {
-
-    }
 
     /**
      * Initialise function. this make sure all the information is passed on and all functions are correctly initilised.
@@ -67,10 +58,8 @@ public class Astar {
      */
     public void makeNode() {
         Point[] listOfPoints = this.graphBuilder.getPointList();
-        List<Node> nodes = new ArrayList<Node>();
         // provide all the nodes
         for (int i = 0; i < listOfPoints.length; i++) {
-            nodes.add(this.graph.addNode(listOfPoints[i].getId().toString()));
             this.graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
         }
     }
@@ -91,9 +80,9 @@ public class Astar {
      */
     public void makeEdge() {
         Link[] listOfEdges = this.graphBuilder.getLinkList();
-        for (int i = 0; i < listOfEdges.length; i++) {
-            this.graph.addEdge(listOfEdges[i].getId().toString(), listOfEdges[i].getStartPoint().getId().toString(), listOfEdges[i].getStopPoint().getId().toString(), true);
-            this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("weight", listOfEdges[i].getWeight());
+        for (Link listOfEdge : listOfEdges) {
+            this.graph.addEdge(listOfEdge.getId().toString(), listOfEdge.getStartPoint().getId().toString(), listOfEdge.getStopPoint().getId().toString(), true);
+            this.graph.getEdge(listOfEdge.getId().toString()).setAttribute("weight", listOfEdge.getWeight());
             //this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("vehicleType", listOfEdges[i].getVehicle());
         }
     }
@@ -133,9 +122,9 @@ public class Astar {
     public void testDeterminePath(Graph graph, String startPos, String endPos) {
         AStar astar = new AStar(graph);
         astar.compute(startPos, endPos);
-        System.out.println(astar.getShortestPath());
+        logger.info(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        System.out.println("Shortest path: " + path.toString());
+        logger.info("Shortest path: " + path.toString());
         JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
@@ -150,10 +139,10 @@ public class Astar {
         AStar astar = new AStar(this.graph);
         updateNaE(startPos, endPos);
         astar.compute(startPos, endPos);
-        System.out.println(astar.getShortestPath());
+        logger.debug(astar.getShortestPath());
         Path path = astar.getShortestPath();
-        System.out.println("Shortest Path for " + idDelivery + ": " + path.toString());
-        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder, idDelivery);
+        logger.info("Shortest Path for " + idDelivery + ": " + path.toString());
+        JobDispatching jd = new JobDispatching(jobService, jobListService, graphBuilder);
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
         jd.dispatchOrders2(path.toString(), idDelivery);

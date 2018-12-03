@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 /**
  * Service based off the JobListRepository (formerly known as OrderRepository) in which JobList (Orders) will be saved
  * aswell as all functions needed to dispatch jobs to the cores will be forseen.
- *  NV 2018
+ * NV 2018
  */
 @Service
 public class JobListService {
@@ -53,8 +54,7 @@ public class JobListService {
         return this.jobListRepository.findAll();
     }
 
-    public void saveOrder(final JobList joblist)
-    {
+    public void saveOrder(final JobList joblist) {
         this.jobListRepository.save(joblist);
     }
 
@@ -64,10 +64,10 @@ public class JobListService {
      */
     public void printJobList() {
         logger.info("Print job list.");
-        for (JobList jl: this.jobListRepository.findAll()) {
+        for (JobList jl : this.jobListRepository.findAll()) {
             logger.info(" Order #" + jl.getId());
-            for(int x = 0; x<jl.getJobs().size(); x++) {
-                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl.getJobs().get(x).getStatus());
+            for (int x = 0; x < jl.getJobs().size(); x++) {
+                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle() + ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
@@ -84,7 +84,7 @@ public class JobListService {
                 //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
                 String url = "http://";
                 String typeVehicle = jl.getJobs().get(0).getTypeVehicle().toUpperCase();
-                switch (typeVehicle){
+                switch (typeVehicle) {
                     case "DRONETOP":
                         url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
                         logger.info("DroneDispatch: " + url);
@@ -97,10 +97,11 @@ public class JobListService {
                         url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
                         logger.info("RobotDispatch: " + url);
                         break;
-                    default: logger.warn("No correct type dispatch2Core function");
+                    default:
+                        logger.warn("No correct type dispatch2Core function");
                 }
                 // if succesfully dispatched, update status of the job
-                if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)){
+                if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)) {
                     jl.getJobs().get(0).setStatus("busy");
                 }
                 // an error has occured. Rerun the calculations for paths.
@@ -120,11 +121,12 @@ public class JobListService {
     }
 
 
-    public void dispatchToCore( JobList jl ) {
-        //check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
+    public void dispatchToCore(JobList jl) {
+        // TODO: move to backbone
+        // check type of vehicle, to determine which core needs to be addressed. first case: communication required with drone core
         String url = "http://";
         String typeVehicle = jl.getJobs().get(0).getTypeVehicle().toUpperCase();
-        switch (typeVehicle){
+        switch (typeVehicle) {
             case "DRONETOP":
                 url += droneCoreIP + ":" + droneCorePort + "/executeJob/";
                 logger.info("DroneDispatch: " + url);
@@ -137,10 +139,11 @@ public class JobListService {
                 url += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
                 logger.info("RobotDispatch: " + url);
                 break;
-            default: logger.warn("No correct type dispatchToCore function");
+            default:
+                logger.warn("No correct type dispatchToCore function");
         }
         // if succesfully dispatched, update status of the job
-        if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)){
+        if (dispatch(jl.getJobs().get(0).getId(), jl.getJobs().get(0).getIdStart(), jl.getJobs().get(0).getIdEnd(), jl.getJobs().get(0).getIdVehicle(), url)) {
             jl.getJobs().get(0).setStatus("busy");
         }
         // an error has occured. Rerun the calculations for paths.
@@ -159,15 +162,15 @@ public class JobListService {
 
     /**
      * communication to the cores
-     * @param idJob             (long) Id from the job that is being dispatched
-     * @param idStart           (long) id from the startposition
-     * @param idEnd             (long) id from the endposition
-     * @param idVehicle         (long) id from the vehicle
-     * @param temp              (String) url to which is should be send
-     * @return                  (boolean) true if succesfully sent. False if error occured
+     *
+     * @param idJob     (long) Id from the job that is being dispatched
+     * @param idStart   (long) id from the startposition
+     * @param idEnd     (long) id from the endposition
+     * @param idVehicle (long) id from the vehicle
+     * @param temp      (String) url to which is should be send
+     * @return (boolean) true if succesfully sent. False if error occured
      */
-    private Boolean dispatch(long idJob, long idStart, long idEnd, long idVehicle, String temp)
-    {
+    private Boolean dispatch(long idJob, long idStart, long idEnd, long idVehicle, String temp) {
         boolean status = true;
         temp += (String.valueOf(idJob) + "/" + String.valueOf(idVehicle) + "/" + String.valueOf(idStart) + "/" + String.valueOf(idEnd));
         logger.info("the url is: " + temp);
@@ -181,8 +184,8 @@ public class JobListService {
             /*logger.info("responsecode " + conn.getResponseCode());
             logger.info("responsmsg " + conn.getResponseMessage());*/
             //succesfull transmission
-             if (conn.getResponseCode() == 200) {
-                 logger.info(conn.getResponseCode());
+            if (conn.getResponseCode() == 200) {
+                logger.info(conn.getResponseCode());
                 /*String msgresponse = conn.getResponseMessage();
                 /*if (msgresponse.equals("ACK")) {
                     //TODO: doet iets met de ACK code
@@ -192,16 +195,16 @@ public class JobListService {
                 status = true;
             }
             // an error has occured
-            else{
+            else {
                 /*String msgresponse = conn.getResponseMessage();
                 logger.info(msgresponse);
                 switch (msgresponse) {
                     case "idVehicleError":
-                        Slogger.info(msgresponse);
+                        logger.info(msgresponse);
                         break;
                     default: logger.info(msgresponse);
                 }*/
-                 logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + idJob + " for vehicle " + idVehicle);
+                logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + idJob + " for vehicle " + idVehicle);
                 conn.disconnect();
                 status = false;
             }
@@ -213,54 +216,55 @@ public class JobListService {
 
     /**
      * function to check if order is empty or not
-     * @param id        (long) id of the order
-     * @return          (boolean) true if Order is empty
+     *
+     * @param id (long) id of the order
+     * @return (boolean) true if Order is empty
      */
     public boolean isEmpty(long id) {
-        if (this.jobListRepository.findOne(id).getJobs().size() == 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return this.jobListRepository.findOne(id).getJobs().isEmpty();
     }
 
     /**
      * delete an order
-     * @param id    (long) id from the order that needs to be deleted
+     *
+     * @param id (long) id from the order that needs to be deleted
      */
-    public void deleteOrder (long id) {
+    public void deleteOrder(long id) {
         this.jobListRepository.delete(id);
     }
 
-    public void deleteAll() { this.jobListRepository.deleteAll(); }
+    public void deleteAll() {
+        this.jobListRepository.deleteAll();
+    }
 
     /**
      * recalculate the order for which an error occured during the dispatch2core
-     * @param idJob             (long) id from the job in which an error occured
-     * @param idDelivery        (string) id from delivery which needs to be saved when making a new order with correct input
+     *
+     * @param idJob      (long) id from the job in which an error occured
+     * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
      */
-    public void recalculatePathAfterError (long idJob, String idDelivery){
-        for (JobList jl: this.jobListRepository.findAll()){
+    public void recalculatePathAfterError(long idJob, String idDelivery) {
+        for (JobList jl : this.jobListRepository.findAll()) {
             // iterate over all orders untill the correct one is found
             if (jl.getJobs().get(0).getId().equals(idJob)) {
-                String sPos =  Long.toString(jl.getJobs().get(0).getIdStart());
-                String ePos =  Long.toString(jl.getEndPoint());
+                String sPos = Long.toString(jl.getJobs().get(0).getIdStart());
+                String ePos = Long.toString(jl.getEndPoint());
                 deleteOrder(jl.getId());
-                astar.determinePath2(sPos,ePos,idDelivery);
+                astar.determinePath2(sPos, ePos, idDelivery);
             }
         }
     }
 
     /**
      * function to find a delivery
-     * @param idDelivery        (String) Id from the delivery
+     *
+     * @param idDelivery (String) Id from the delivery
      * @return Job              (Job) first job from the order that is found mathcing the delivery ID
      */
     public Job findDelivery(String idDelivery) {
         Job found = new Job();
         boolean foundUpdated = false;
-        for (JobList jl: this.jobListRepository.findAll()){
+        for (JobList jl : this.jobListRepository.findAll()) {
             if (idDelivery.equals(jl.getIdDelivery())) {
                 foundUpdated = true;
                 found = jl.getJobs().get(0);
@@ -268,8 +272,7 @@ public class JobListService {
         }
         if (!foundUpdated) {
             return null;
-        }
-        else {
+        } else {
             return found;
         }
     }
