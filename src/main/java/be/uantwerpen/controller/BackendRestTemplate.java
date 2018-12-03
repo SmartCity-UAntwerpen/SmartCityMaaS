@@ -56,14 +56,15 @@ public class BackendRestTemplate {
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
         // Get response from the core
-        HttpEntity<String> httpResponse = restTemplate.exchange(
+        // COMMENT FOR LOCAL TEST
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
                 String.class);
         logger.info("Response core: " + httpResponse.getBody());
         logger.info("Response body core: " + httpResponse.hasBody());
-        String listOfCore = httpResponse.getBody();
+        String listOfCore = httpResponse.getBody();*/
 
         new JSONObject();
 
@@ -77,11 +78,11 @@ public class BackendRestTemplate {
 
         try {
             ////// TEST - 2018
-            // JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/stringmapjson.txt"));
+            obj = parser.parse(new FileReader("test/stringmapjson.txt"));
             /////
-            obj = parser.parse(listOfCore);
+            //obj = parser.parse(listOfCore);
+            /////
             JSONObject jsonObject = (JSONObject) obj;
-            /////
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
 
             int counter =0;
@@ -125,7 +126,7 @@ public class BackendRestTemplate {
                 points.add(point);
                 counter++;
             }
-        } catch (ParseException e) { // IOException
+        } catch (IOException | ParseException e) { //
             e.printStackTrace();
         }
 

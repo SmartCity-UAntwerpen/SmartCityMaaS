@@ -144,45 +144,56 @@ public class World {
             case "car":
                 // curve with 2 points
                 float distXpiece = (float) distX/8;
-                System.out.println("distx: " + distXpiece);
                 float distYpiece = (float) distY/8;
                 double pointX;
                 double pointY;
-                float kink1 = ((float) 5/8); // 0.625
-                float kink2 = ((float) 7/8); // 0.875
+                // NOT NECESSARY BECAUSE WORKING WITH RELATIVE VALUES NOW
+                //float kink1 = ((float) 5/8); // 0.625
+                //float kink2 = ((float) 7/8); // 0.875
+                // LENGTH OF SEPERATE LINE PIECES (Pythagoras):
+                double line1 =  Math.sqrt(Math.pow(Math.abs(5*distXpiece), 2) +  Math.pow(Math.abs(distYpiece),2));
+                double line2 =  Math.sqrt(Math.pow(Math.abs(2*distXpiece), 2) +  Math.pow(Math.abs(2*distYpiece),2));
+                double line3 =  Math.sqrt(Math.pow(Math.abs(distXpiece), 2) +  Math.pow(Math.abs(5*distYpiece),2));
+                // HOW MUCH PERCENT OF TOTAL LINE IS THIS LINE:
+                double totalLine = line1 + line2 + line3;
+                double line1prog = line1/totalLine;
+                double line2prog = line2/totalLine;
+                double line3prog = line3/totalLine;
+
                 if(startID < endID) { // neighbour to the right (map is going to draw from 1st ID to last)
-                    if (progress < kink1) {
-                        progress = progress * 1.6; // change progress to between start and first kink: 0-0.625 TO 0-100
+                    if (progress < line1prog) {
+                        //progress = progress * (1 / 0.625); // change progress to between start and first kink: 0-0.625 TO 0-100
+                        progress = progress * (1/line1prog);
                         pointX = 5 * distXpiece; // 5/8
                         pointY = distYpiece; // 1/8
-                    } else if (progress < kink2) {
+                    } else if (progress < (line1prog+line2prog)) {
                         startX = (int) (startX + (5 * distXpiece));
                         startY = (int) (startY + distYpiece);
-                        progress = (progress-kink1)*4; // change progress to between the two kinks: 0.625-0.875 TO 0-100
+                        progress = (progress-line1prog)*(1/line2prog); // change progress to between the two kinks: 0.625-0.875 TO 0-100
                         pointX = (2 * distXpiece); // 7/8
                         pointY = (2 * distYpiece); // 3/8
                     } else {
                         startX = (int)(startX + (7 * distXpiece));
                         startY = (int)(startY + (3 * distYpiece));
-                        progress = (progress-kink2)*8; // 0.875-100 to 0-100
+                        progress = (progress-(line1prog+line2prog))*(1/line3prog);
                         pointX = distXpiece; // 8/8
                         pointY = (5 * distYpiece); // 8/8
                     }
                 } else {
-                    if (progress < kink1) {
-                        progress = progress * 1.6;
+                    if (progress < line3prog) {
+                        progress = progress  * (1/line3prog);
                         pointX = (distXpiece);
                         pointY = (5 * distYpiece);
-                    } else if (progress < kink2) {
+                    } else if (progress < (line3prog+line2prog)) {
                         startX = (int)(startX + distXpiece);
                         startY = (int)(startY + (5*distYpiece));
-                        progress = (progress-kink1)*4;
+                        progress = (progress-line3prog)*(1/line2prog);
                         pointX = (2 * distXpiece);
                         pointY = (2 * distYpiece);
                     } else {
                         startX = (int)(startX + (3 * distXpiece));
                         startY = (int)(startY + (7 * distYpiece));
-                        progress = (progress-kink2)*8; // 0.875-100 to 0-100
+                        progress = (progress-(line3prog+line2prog))*(1/line1prog);
                         pointX = 5 * distXpiece; // 8/8
                         pointY = distYpiece; // 8/8
                     }

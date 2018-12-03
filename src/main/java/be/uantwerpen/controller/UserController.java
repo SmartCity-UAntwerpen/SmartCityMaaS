@@ -292,21 +292,24 @@ public class UserController {
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
         // Get response from the core
+        // COMMENT FOR LOCAL TEST
         /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
-                String.class);*/
+                String.class);
+        */
         JSONParser parser = new JSONParser();
 
         Object obj = null;
         // Parse JSON data from the core.
         try {
             ////// TEST
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getAllVehicles.txt"));
+            obj = parser.parse(new FileReader("test/getAllVehicles.txt"));
+            ///
             //obj = parser.parse(httpResponse.getBody());
-            //JSONObject jsonObject = (JSONObject) obj;
             /////////////
+            JSONObject jsonObject = (JSONObject) obj;
             JSONArray virDevices = (JSONArray) jsonObject.get("vehicles");
             Iterator<String> iterator = virDevices.iterator();
             int idVeh = -1;
@@ -330,7 +333,7 @@ public class UserController {
                 dumVeh.setType(type);
                 vehicles.add(dumVeh);
             }
-        } catch (IOException | ParseException e) {
+        } catch (IOException | ParseException e) { //
             logger.error("Can't read or parse file.", e);
         }
         logger.info("Vehicle count: " + vehicles.size());

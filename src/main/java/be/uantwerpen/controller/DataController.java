@@ -148,21 +148,23 @@ public class DataController {
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
         // Get response from the core
+        // COMMENT FOR LOCAL TEST
         /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET, // Make post
                 entity,
-                String.class);*/
+                String.class);
+                */
         JSONParser parser = new JSONParser();
 
         Object obj = null;
         try {
             ////// TEST
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getAllVehicles.txt"));
+            obj = parser.parse(new FileReader("test/getAllVehicles.txt"));
             //////
-            //obj = parser.parse(httpResponse.getBody());
-            //JSONObject jsonObject = (JSONObject) obj;
+            // obj = parser.parse(httpResponse.getBody());
             //////
+            JSONObject jsonObject = (JSONObject) obj;
             virDevices = (JSONArray) jsonObject.get("vehicles");
             Iterator<String> iterator = virDevices.iterator();
             while (iterator.hasNext()) {
@@ -230,7 +232,6 @@ public class DataController {
         // When delivery is null, then the information of the progress is a request from the visualization.
         if(delivery_id.equals("null") == false)
         {
-            //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicleID;
             // Get the ID of the current used vehicle of this delivery.
             for (JobList jl2: jobListService.findAll()) {
                 if(jl2.getIdDelivery().equals(delivery_id) == true)
@@ -243,15 +244,11 @@ public class DataController {
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
         } else {
-            //URL = "http://localhost:9000/bot/getOneVehicle/"+vehicle_id;
             URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicle_id;
             builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
         }
 
-        // coordinatesVehicle[0] = x coordinate vehicle
-        // coordinatesVehicle[1] = y coordinate vehicle
-        // coordinatesVehicle[2] = id of vehicle
-        int[] coordinatesVehicle = new int[3];
+        int[] coordinatesVehicle = new int[3]; // {x, y, id}
 
 
         HttpHeaders headers = new HttpHeaders();
@@ -260,12 +257,13 @@ public class DataController {
 
         if((delivery_id.equals("null") == false && jobListNull == true) || delivery_id.equals("null") == true) {
             // Get response from the core
-            /*HttpEntity<String> httpResponse = restTemplate.exchange(
+            // COMMENT FOR LOCAL TEST
+            /*
+            HttpEntity<String> httpResponse = restTemplate.exchange(
                     builder.build().encode().toUri(),
                     HttpMethod.GET,
                     entity,
                     String.class);
-
             logger.info("[getProgress] Response backbone : " + httpResponse.toString());
             logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
             logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
@@ -283,9 +281,10 @@ public class DataController {
 
             try {
                 //////// TEST
+                JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle.txt"));
+                ////
                 //obj = parser.parse(vehicleInfo);
                 //JSONObject jsonObject = (JSONObject) obj;
-                JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle.txt"));
                 //////////
 
                 int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
