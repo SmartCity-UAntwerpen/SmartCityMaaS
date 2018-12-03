@@ -34,16 +34,13 @@ public class HomeController {
 
     //return the first page, to make a new delivery
     @RequestMapping({"/"})
-    public String showMap(Model model, @RequestParam(required = false) String code, @RequestParam(required = false) String message) {
+    public String showMap(Model model, @RequestParam(required = false) String errorStatus, @RequestParam(required = false) String errorMsg) {
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         logger.info(loginUser + " is at root.");
 
-        if( code != null )
-        {
-            String error = " Ohow, something went wrong: " + code + " - " + message;
-            
-            model.addAttribute("error", error);
+        if( errorStatus != null ){
+            model.addAttribute("error", "Error " + errorStatus + ": " + errorMsg);
         }
         return "home_user";
     }

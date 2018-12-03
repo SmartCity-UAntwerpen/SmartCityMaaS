@@ -36,11 +36,20 @@ public class MyErrorController implements ErrorController {
         this.errorAttributes = errorAttributes;
     }
 
+    private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
+        RequestAttributes requestAttributes = new ServletRequestAttributes(request);
+        return this.errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace);
+    }
+
     @RequestMapping( value= ERROR_PATH, produces = "txt/html" )
-    public ModelAndView errorHtml( HttpServletRequest request ) {
+    public ModelAndView errorHtml( HttpServletRequest request) {
         logger.error(getErrorAttributes( request, false ));
-        return new ModelAndView("redirect:/?code=" + getErrorAttributes( request, false ).get("status")
-        + "&message=" + getErrorAttributes( request, false ).get("error"));
+        ModelAndView mv = new ModelAndView("redirect:/");
+        mv.addObject("errorStatus",getErrorAttributes( request, false ).get("status"));
+        mv.addObject("errorMsg", getErrorAttributes( request, false ).get("error"));
+        return mv;
+
+
     }
 
 
@@ -64,10 +73,7 @@ public class MyErrorController implements ErrorController {
         return !"false".equals(parameter.toLowerCase());
     }
 
-    private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
-        RequestAttributes requestAttributes = new ServletRequestAttributes(request);
-        return this.errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace);
-    }
+
 
     private HttpStatus getStatus(HttpServletRequest request) {
         Integer statusCode = (Integer) request
