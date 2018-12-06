@@ -309,12 +309,12 @@ function clickedOnCanvas(event){
                             console.log("x: " + (parseFloat((point.physicalPoisionX*xSize)) - parseFloat(xSize*3/2)));
                             var pointx = point.physicalPoisionX*xSize;
                             var offsetx = xSize*3/2;
-                            console.log("testp "+ pointx);
+                            /*console.log("testp "+ pointx);
                             console.log("testo "+ offsetx);
                             console.log("test "+ (pointx + offsetx*(-1)));
                             console.log("y: " + ((point.physicalPoisionY*ySize) - ySize*3/2));
                             console.log("xsize: " + xSize*3/2);
-                            console.log("ysize: " + ySize*3);
+                            console.log("ysize: " + ySize*3);*/
                             ctx.drawImage(carPointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),((point.physicalPoisionY*ySize) - (ySize*3/2)),(xSize*3),(ySize*3));
                             break;
                         case "drone":
