@@ -3,7 +3,9 @@ package be.uantwerpen.controller;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
-import be.uantwerpen.services.*;
+import be.uantwerpen.services.PassengerService;
+import be.uantwerpen.services.RoleService;
+import be.uantwerpen.services.UserService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
