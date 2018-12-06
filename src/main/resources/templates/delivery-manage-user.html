@@ -36,7 +36,7 @@
                             <div id="myMapCanvas" >
                                 <canvas id="mapCanvas"></canvas>
                             </div>
-                            <form action="#" th:action="@{/deliveries/{id}(id=${delivery})}" th:object="${delivery}"  method="post">
+                            <form action="#" th:action="@{/deliveries/${id}(id=${delivery})}" th:object="${delivery}"  method="post">
                                 <input th:type="hidden" th:field="*{id}"/>
 
 

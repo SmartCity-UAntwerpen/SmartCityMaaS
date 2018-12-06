@@ -121,14 +121,13 @@ public class Astar {
      * @param idDelivery (String) parameter to link an order to a Delivery.
      */
     public void determinePath2(String startPos, String endPos, String idDelivery) {
+        // todo get graph from BackBone:
         AStar astar = new AStar(this.graph);
         updateNaE(startPos, endPos);
         astar.compute(startPos, endPos);
-        logger.debug(astar.getShortestPath());
         Path path = astar.getShortestPath();
         logger.info("Shortest Path for " + idDelivery + ": " + path.toString());
         JobDispatching jd = new JobDispatching(jobService, jobListService, graphBuilder);
-        //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
         //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
         jd.dispatchOrders2(path.toString(), idDelivery);
     }

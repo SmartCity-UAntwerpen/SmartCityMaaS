@@ -41,6 +41,7 @@ public class JobDispatching {
      * @param idDelivery (String) idDelivery waaraan het Order wordt vastgekoppeld
      */
     public void dispatchOrders2(String path, String idDelivery) {
+        // todo graphbuilder from backbone
         path = path.substring(1); // remove first character '['
         path = path.substring(0, path.length() - 1); // remove last character ']'
         String[] pathSplit = path.split(", ", -1); // Split string up into Edges
@@ -115,6 +116,7 @@ public class JobDispatching {
         jobListService.saveOrder(joblist);
         logger.info("starting Order input");
         printJobList();
+        // todo dispatch to BackBone
         jobListService.dispatchToCore(joblist);
     }
 

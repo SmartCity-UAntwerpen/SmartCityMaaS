@@ -147,9 +147,6 @@ public class World {
                 float distYpiece = (float) distY/8;
                 double pointX;
                 double pointY;
-                // NOT NECESSARY BECAUSE WORKING WITH RELATIVE VALUES NOW
-                //float kink1 = ((float) 5/8); // 0.625
-                //float kink2 = ((float) 7/8); // 0.875
                 // LENGTH OF SEPERATE LINE PIECES (Pythagoras):
                 double line1 =  Math.sqrt(Math.pow(Math.abs(5*distXpiece), 2) +  Math.pow(Math.abs(distYpiece),2));
                 double line2 =  Math.sqrt(Math.pow(Math.abs(2*distXpiece), 2) +  Math.pow(Math.abs(2*distYpiece),2));
@@ -211,75 +208,6 @@ public class World {
         return coordinates;
     }
 
-    /**
-     * Stores the id of the links needed for a specific job in a list.
-     * @param jobList
-     * @return
-     */
-    public List<Integer> getLinkList(JobList jobList)
-    {
-        List<Integer> listLinkIds = new ArrayList<Integer>();
-        List< Job> jobs = jobList.getJobs();
-        for(int i = 0; i < jobs.size() ;i++)
-        {
-            for(int c = 0; c < cellLinks.size() ;c++)
-            {
-                if(cellLinks.get(c).getStartCell().getSpotID() == jobs.get(i).getIdStart() && cellLinks.get(c).getEndCell().getSpotID() == jobs.get(i).getIdEnd())
-                {
-                    listLinkIds.add(c);
-                }
-            }
-        }
-        return listLinkIds;
-    }
-
-    /**
-     * Controls if the cells of a link are in the right order.
-     * If not than change the order.
-     * @param cellLink
-     * @return
-     */
-    public CellLink cotrolOrderLink(CellLink cellLink)
-    {
-        // logger.info("CellLink start "+cellLink.getStartCell().getSpotID() + " end "+cellLink.getEndCell().getSpotID()+ " size links "+cellLink.getLinkCells().size());
-        int x_start = cellLink.getStartCell().getX();
-        int y_start = cellLink.getStartCell().getY();
-        int x_end = cellLink.getEndCell().getX();
-        int y_end = cellLink.getEndCell().getY();
-
-        int differenceX_start = Math.abs(x_start - cellLink.getLinkCells().get(0).getX());
-        int differenceY_start = Math.abs(y_start - cellLink.getLinkCells().get(0).getY());
-        int differenceX_end = Math.abs(x_end - cellLink.getLinkCells().get(cellLink.getLinkCells().size()-1).getX());
-        int differenceY_end = Math.abs(y_end - cellLink.getLinkCells().get(cellLink.getLinkCells().size()-1).getY());
-        if((differenceX_start  ==  differenceX_end && differenceX_start != 1) || (differenceY_start  ==  differenceY_end &&  differenceY_start!= 1))
-        {
-            List<Cell> intermediate_temp = new ArrayList<Cell>();
-            for(int i = cellLink.getLinkCells().size()-1 ; i > -1;i--)
-            {
-                intermediate_temp.add(cellLink.getLinkCells().get(i));
-            }
-            cellLink.setLinkCells(intermediate_temp);
-        }
-        return cellLink;
-    }
-
-    /**
-     * Retrieve the cellLink of a specific start and end point.
-     * @param startID
-     * @param endID
-     * @return
-     */
-    public int getLinkIDofStartEnd(int startID, int endID) {
-        for(int i = 0 ;i < cellLinks.size();i++)
-        {
-            if(cellLinks.get(i).getStartCell().getSpotID() == startID &&  cellLinks.get(i).getEndCell().getSpotID() ==  endID)
-            {
-                // logger.info("Retrieve id "+i+" of link with start "+ startID +" and end "+endID);
-                return i;
-            }
-        }
-        return -1;
-    }
 
     public List<CellRow> getCells() {
         return cells;

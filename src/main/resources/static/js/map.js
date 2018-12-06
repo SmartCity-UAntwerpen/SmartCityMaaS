@@ -37,6 +37,8 @@ var droneIcon;
 var droneIconTarget;
 var racecarIcon;
 var racecarIconTarget;
+var lightGreenIcon;
+var lightRedIcon;
 
 /**
  * Load all the images from the html.
@@ -75,6 +77,11 @@ function loadImages() {
     racecarIconTarget = new Image();
     racecarIconTarget.src = "../images/map/raceCarTargetted.png";
 
+    lightGreenIcon = new Image();
+    lightGreenIcon.src = "../images/map/traffic_green.png";
+    lightRedIcon = new Image();
+    lightRedIcon.src = "../images/map/traffic_red.png";
+
 }
 
 /**
@@ -84,8 +91,6 @@ function getWorld(){
     $.getJSON("/retrieveWorld", function(result){
         world = result;
         worldLoaded = true;
-        console.log("world x = " + world.dimensionX + " world y = " + world.dimensionY );
-
 
         var ratio = world.dimensionX/world.dimensionY;
         $("#mapCanvas").width($("#myMapCanvas").width()).height( $("#myMapCanvas").width()/ratio ).attr("width", $("#mapCanvas").width()).attr("height", $("#mapCanvas").height());
@@ -297,7 +302,6 @@ function clickedOnCanvas(event){
                     }
                 }
                 else{
-                    console.log("last else");
                     switch (point.type) {
                         case "robot":
                             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
@@ -306,15 +310,6 @@ function clickedOnCanvas(event){
                             ctx.drawImage(robotPointB, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             break;
                         case "car":
-                            console.log("x: " + (parseFloat((point.physicalPoisionX*xSize)) - parseFloat(xSize*3/2)));
-                            var pointx = point.physicalPoisionX*xSize;
-                            var offsetx = xSize*3/2;
-                            console.log("testp "+ pointx);
-                            console.log("testo "+ offsetx);
-                            console.log("test "+ (pointx + offsetx*(-1)));
-                            console.log("y: " + ((point.physicalPoisionY*ySize) - ySize*3/2));
-                            console.log("xsize: " + xSize*3/2);
-                            console.log("ysize: " + ySize*3);
                             ctx.drawImage(carPointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),((point.physicalPoisionY*ySize) - (ySize*3/2)),(xSize*3),(ySize*3));
                             break;
                         case "drone":

@@ -28,19 +28,6 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 		SpringApplication.run(SupahuberApplication.class, args);
 		logger.info("SpringApplication MaaS is ready for use.");
 
-		/*System.out.println("#### AStar ####");
-		Astar astar = new Astar();
-		astar.startAStar();
-		System.out.println("#### end AStar ####");
-		System.out.println("starting request");
-		GraphBuilder graphBuilder = new GraphBuilder();
-		ArrayList<Cost> costs = graphBuilder.testRequests((long)1, (long)2);
-		for(Cost cost: costs)
-		{
-			System.out.println("status: " + cost.isStatus() + ", weight: " + cost.getWeight() + ", weightToStart: " + cost.getWeightToStart() + ", vehicleID: " + cost.getIdVehicle());
-		}
-		System.out.println("the end");*/
-
 	}
 	@Bean
 	public LocaleResolver localeResolver() {
@@ -82,20 +69,5 @@ public class SupahuberApplication extends WebMvcConfigurerAdapter {
 		registry.addViewController("/login").setViewName("login");
 		registry.addViewController("/access").setViewName("access");
 	}
-
-	/*
-	@Bean
-	public MongoDbFactory mongoDbFactory() throws Exception {
-
-		// Set credentials
-		MongoClient mongoClient = new MongoClient( "143.129.39.159" , 27017 );
-
-		// Mongo DB Factory
-		SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(
-				mongoClient, "local");
-
-		return simpleMongoDbFactory;
-	}
-*/
 
 }
