@@ -59,9 +59,9 @@ public class testAstar {
 
     @Test
     public void testStartAstar () {
-        when(graphBuilder.getPointList()).thenReturn(pointList);
+//        when(graphBuilder.getPointList()).thenReturn(pointList);
         eigenAstar.makeNode();
-        when(graphBuilder.getLinkList()).thenReturn(linkList);
+//        when(graphBuilder.getLinkList()).thenReturn(linkList);
         eigenAstar.makeEdge();
         //testAstar.compute("1015", "1010");
         //testAstar = new AStar(graph);

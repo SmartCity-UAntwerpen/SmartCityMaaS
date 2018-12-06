@@ -14,6 +14,8 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * A Star Class (will be used as a Service)
  * This class will provide a path, while building up a graph in which the path will be calculated from input
@@ -41,7 +43,7 @@ public class Astar {
      */
     public void init() {
         this.graph = new SingleGraph("SmartCityGraph");
-        graphBuilder.getMap();
+        graphBuilder.getMap(null, null);
     }
 
     public void setGraph(Graph graph) {
@@ -57,10 +59,11 @@ public class Astar {
      * will make all the necessairy nodes in the Graph, using information provided by the Graphbuilder service.
      */
     public void makeNode() {
-        Point[] listOfPoints = this.graphBuilder.getPointList();
+        List<Point> listOfPoints = this.graphBuilder.getPointList();
         // provide all the nodes
-        for (int i = 0; i < listOfPoints.length; i++) {
-            this.graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
+        for (int i = 0; i < listOfPoints.size(); i++) {
+            this.graph.addNode(listOfPoints.get(i).getId().toString());
+            this.graph.getNode(i).setAttribute("xy", listOfPoints.get(i).getX(), listOfPoints.get(i).getY());
         }
     }
 
@@ -79,11 +82,11 @@ public class Astar {
      * will make all the necessairy edges in the Graph, using the information provided by the Graphbuilder
      */
     public void makeEdge() {
-        Link[] listOfEdges = this.graphBuilder.getLinkList();
-        for (Link listOfEdge : listOfEdges) {
-            this.graph.addEdge(listOfEdge.getId().toString(), listOfEdge.getStartPoint().getId().toString(), listOfEdge.getStopPoint().getId().toString(), true);
-            this.graph.getEdge(listOfEdge.getId().toString()).setAttribute("weight", listOfEdge.getWeight());
-            //this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("vehicleType", listOfEdges[i].getVehicle());
+        List<Link> edges = this.graphBuilder.getLinkList();
+        for (Link edge : edges) {
+            this.graph.addEdge(edge.getId().toString(), edge.getStartPoint().getId().toString(), edge.getStopPoint().getId().toString(), true);
+            this.graph.getEdge(edge.getId().toString()).setAttribute("weight", edge.getWeight());
+            //this.graph.getEdge(edge.getId().toString()).setAttribute("vehicleType", edge.getVehicle());
         }
     }
 
@@ -105,27 +108,9 @@ public class Astar {
     public void updateNaE(String startPoint, String endPoint) {
         destroyNodes();
         destroyEdges();
-        this.graphBuilder.getMap();
-        graphBuilder.getLinkCost(startPoint, endPoint);
+        this.graphBuilder.getMap(startPoint, endPoint);
         makeNode();
         makeEdge();
-    }
-
-    /**
-     * Simular functionality as Determine path. However, this was done with Hardcoded example based on dummy code, for testing purposes.
-     * The method won't be deleted, should a futur group want to continue expanding on it.
-     *
-     * @param graph    Graph that needs to be handed down.
-     * @param startPos (String) Starting position in the graph
-     * @param endPos   (String) end position in the graph
-     */
-    public void testDeterminePath(Graph graph, String startPos, String endPos) {
-        AStar astar = new AStar(graph);
-        astar.compute(startPos, endPos);
-        logger.info(astar.getShortestPath());
-        Path path = astar.getShortestPath();
-        logger.info("Shortest path: " + path.toString());
-        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
     /**

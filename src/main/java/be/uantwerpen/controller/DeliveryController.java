@@ -149,8 +149,8 @@ public class DeliveryController {
             astarService.determinePath2(delivery.getPointA(), delivery.getPointB(), delivery_return.getIdDelivery());
 
             logger.info("Job has been created by " + loginUser);
-            delivery_return.setPointA(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
-            delivery_return.setPointB(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
+            delivery_return.setPointA(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
+            delivery_return.setPointB(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
             model.addAttribute("delivery", delivery_return);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
