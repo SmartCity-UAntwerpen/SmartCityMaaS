@@ -251,8 +251,8 @@ public class UserController {
         User loginUser = userService.getPrincipalUser();
         logger.info("Job has been created by " + loginUser);
         model.addAttribute("currentUser", loginUser);
-        delivery_return.setPointA(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
-        delivery_return.setPointB(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
+        delivery_return.setPointA(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
+        delivery_return.setPointB(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
         model.addAttribute("delivery", delivery_return);
         return "delivery-navigate-user";
     }

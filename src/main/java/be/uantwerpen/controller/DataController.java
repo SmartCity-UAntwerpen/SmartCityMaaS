@@ -15,22 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
- *
  * This controller delivers the physical world and vehicle progress to javascript on the frontend.
- *
  */
 @RestController
 public class DataController {
@@ -46,34 +44,28 @@ public class DataController {
     @Autowired
     private JobListService jobListService;
 
-    //public World world  = new World(200,200);
-
-    List<World> worlds = new ArrayList<World>();
+    List<World> worlds = new ArrayList<>();
     int vehicleID = 1;
 
     @Autowired
     private RestTemplate restTemplate;
 
-    public boolean vehicle_start = false;
-
     @Autowired
     public BackendRestTemplate backendRestTemplate;
-
 
     private World myWorld = null;
     JSONArray virDevices;
 
     /**
-     * Return the world with the current map of the smartcity.
-     * @return
+     * Return the world with the current map of the SmartCity.
+     *
+     * @return The world
      */
-    @RequestMapping(value="/retrieveWorld") // Request from http
-    public World getWorld(){
-        logger.info("/retrieveworld requested");
-        if( myWorld == null ) {
+    @RequestMapping(value = "/retrieveWorld") // Request from http
+    public World getWorld() {
+        logger.info("/retrieveWorld requested");
+        if (myWorld == null) {
             List<DummyPoint> listPoints = getMapDataBackend();
-            // Core world or mapCoreQuentinFinal.txt = new world (300,300)
-            // Test world or mapCore.txt = new World(250,250);
 
         /*
             !!! The dimensions of the world must in the right ration with the Mapcanvas from the  html file !!!
@@ -111,37 +103,38 @@ public class DataController {
     }
 
     /**
-     * Get the map data from the backend after it is transformed to the right List of Dummypoints.
-     * @return
+     * Get the map data from the backend after it is transformed to a List of DummyPoints.
+     *
+     * @return List of DummyPoints
      */
-    @RequestMapping(value="/dataCore")
-    public List<DummyPoint> getMapDataBackend(){
+    public List<DummyPoint> getMapDataBackend() {
         logger.info("/dataCore requested, retrieve map from backend");
-        List<DummyPoint> listofPoints = backendRestTemplate.getdataBackend();
-        return listofPoints;
+        return backendRestTemplate.getDataBackend();
     }
 
     /**
      * Return the current vehicle ID.
-     * @param id
+     *
+     * @param id The ID of the vehicle
      */
-    @RequestMapping(value="/vehicle/{id}")
-    public void changeVehicleID(@PathVariable int id){
+    @RequestMapping(value = "/vehicle/{id}")
+    public void changeVehicleID(@PathVariable int id) {
         logger.info("/vehicle/" + id + " requested");
         vehicleID = id;
-        return;
     }
 
     /**
      * Return a list with the all vehicle IDs that are present in the smartcity that is received from the core.
-     * @return
+     *
+     * @return A list of vehicle IDs
      */
-    @RequestMapping(value="/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
-    public List<Integer> getAllVehicles(){
-        List<Integer> idVehicles = new ArrayList<Integer>();
+    @RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
+    @SuppressWarnings("unchecked")
+    public List<Integer> getAllVehicles() {
+        List<Integer> idVehicles = new ArrayList<>();
         String requestAll = "request all";
         // String URL = "http://localhost:9000/posAll";
-        String URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getAllVehicles";
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getAllVehicles";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("requestAll", requestAll);
         HttpHeaders headers = new HttpHeaders();
@@ -149,54 +142,47 @@ public class DataController {
         HttpEntity<?> entity = new HttpEntity<>(headers);
         // Get response from the core
         // COMMENT FOR LOCAL TEST
-        /*HttpEntity<String> httpResponse = restTemplate.exchange(
-                builder.build().encode().toUri(),
-                HttpMethod.GET, // Make post
-                entity,
-                String.class);
-                */
+//        HttpEntity<String> httpResponse = restTemplate.exchange(
+//                builder.build().encode().toUri(),
+//                HttpMethod.GET, // Make post
+//                entity,
+//                String.class);
         JSONParser parser = new JSONParser();
 
-        Object obj = null;
         try {
             ////// TEST
-            obj = parser.parse(new FileReader("test/getAllVehicles.txt"));
+            Object obj = parser.parse(new FileReader("test/getAllVehicles.txt"));
             //////
-            // obj = parser.parse(httpResponse.getBody());
+//            Object obj = parser.parse(httpResponse.getBody());
             //////
             JSONObject jsonObject = (JSONObject) obj;
             virDevices = (JSONArray) jsonObject.get("vehicles");
-            Iterator<String> iterator = virDevices.iterator();
-            while (iterator.hasNext()) {
-                obj = iterator.next();
-                JSONObject par_jsonObject = (JSONObject) obj;
-                int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
+            for (JSONObject par_jsonObject : (Iterable<JSONObject>) virDevices) {
+                int idVeh = ((Long) par_jsonObject.get("idVehicle")).intValue();
                 idVehicles.add(idVeh);
             }
-        } catch (IOException | ParseException e) {
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
         return idVehicles;
     }
 
 
-    @RequestMapping(value="/vehicletype/{id}")
-    public List<String> getVehicleType( @PathVariable String id ){
+    @RequestMapping(value = "/vehicletype/{id}")
+    @SuppressWarnings("unchecked")
+    public List<String> getVehicleType(@PathVariable String id) {
         logger.info("/vehicletype/" + id + " requested, to get vehicle type");
-        List<String> result = new ArrayList<String>();
-        Iterator<String> iterator = virDevices.iterator();
-        while (iterator.hasNext()) {
-            Object obj = iterator.next();
-            JSONObject par_jsonObject = (JSONObject) obj;
-            int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
-            if(idVeh == new Long(id)) {
-                result.add( (String) par_jsonObject.get("type") );
+        List<String> result = new ArrayList<>();
+        for (JSONObject par_jsonObject : (Iterable<JSONObject>) virDevices) {
+            int idVeh = ((Long) par_jsonObject.get("idVehicle")).intValue();
+            if (idVeh == new Long(id)) {
+                result.add((String) par_jsonObject.get("type"));
                 logger.info("Vehicle type is found, " + result);
                 return result;
             }
         }
         logger.warn("Vehicle type is NOT found for " + id);
-        result.add("uknown");
+        result.add("unknown");
         return result;
     }
 
@@ -204,48 +190,45 @@ public class DataController {
     /**
      * Return the x and y coordinates of a current used vehicle that is assigned for a specified delivery.
      * Its ID is returned as third value in the returned int array.
-     * @param worldid
-     * @param delivery_id
-     * @param vehicle_id
-     * @return
+     *
+     * @param worldId     The ID of the world the vehicle is located
+     * @param delivery_id The ID of the delivery
+     * @param vehicle_id  The ID of the vehicle
+     * @return Returns an integer array [x, y, vehicle_id]
      */
-    @RequestMapping(value="/{worldid}/progress/{delivery_id}/{vehicle_id}")
-    public int[] getProgress(@PathVariable String worldid, @PathVariable String delivery_id, @PathVariable int vehicle_id){
+    @RequestMapping(value = "/{worldId}/progress/{delivery_id}/{vehicle_id}")
+    public int[] getProgress(@PathVariable String worldId, @PathVariable String delivery_id, @PathVariable int vehicle_id) {
         int progress = 0;//vehicle.getValue();
-        logger.info("/" + worldid + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
+        logger.info("/" + worldId + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
         World world = new World();
-        for(int i = 0; i < worlds.size();i++)
-        {
-            if(worlds.get(i).getWorld_ID().equals(worldid) == true)
-            {
-                world = worlds.get(i);
+        for (World world1 : worlds) {
+            if (world1.getWorld_ID().equals(worldId)) {
+                world = world1;
                 break;
             }
         }
         // it returns the value of
         //
         String idVehicle = "request progress";
-        String URL = "null";
+        String URL;
         UriComponentsBuilder builder;
         boolean jobListNull = false;
         // When delivery_id == null then the getprogress function is asked for the the visualization
         // When delivery is null, then the information of the progress is a request from the visualization.
-        if(delivery_id.equals("null") == false)
-        {
+        if (!delivery_id.equals("null")) {
             // Get the ID of the current used vehicle of this delivery.
-            for (JobList jl2: jobListService.findAll()) {
-                if(jl2.getIdDelivery().equals(delivery_id) == true)
-                {
+            for (JobList jl2 : jobListService.findAll()) {
+                if (jl2.getIdDelivery().equals(delivery_id)) {
                     vehicleID = Math.toIntExact(jl2.getJobs().get(0).getIdVehicle());
                     jobListNull = true;
                 }
             }
-            URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicleID;
-            builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
+            URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicleID;
+            builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
         } else {
-            URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getOneVehicle/"+vehicle_id;
-            builder =  UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
+            URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
+            builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
         }
 
         int[] coordinatesVehicle = new int[3]; // {x, y, id}
@@ -255,36 +238,33 @@ public class DataController {
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        if((delivery_id.equals("null") == false && jobListNull == true) || delivery_id.equals("null") == true) {
+        if (delivery_id.equals("null") || jobListNull) {
             // Get response from the core
             // COMMENT FOR LOCAL TEST
-            /*
-            HttpEntity<String> httpResponse = restTemplate.exchange(
-                    builder.build().encode().toUri(),
-                    HttpMethod.GET,
-                    entity,
-                    String.class);
-            logger.info("[getProgress] Response backbone : " + httpResponse.toString());
-            logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
-            logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
-            String vehicleInfo = httpResponse.getBody();
-            */
+//            HttpEntity<String> httpResponse = restTemplate.exchange(
+//                    builder.build().encode().toUri(),
+//                    HttpMethod.GET,
+//                    entity,
+//                    String.class);
+//            logger.info("[getProgress] Response backbone : " + httpResponse.toString());
+//            logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
+//            logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
+//            String vehicleInfo = httpResponse.getBody();
             JSONParser parser = new JSONParser();
             Job job1 = new Job();
             job1.setIdStart(1);
             job1.setIdEnd(2);
             job1.setTypeVehicle("car");
             job1.setIdVehicle(1);
-            Object obj = null;
-            List<Integer> currentListofJobs = new ArrayList<Integer>();
+            List<Integer> currentListofJobs = new ArrayList<>();
             String type = null;
 
             try {
                 //////// TEST
                 JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle.txt"));
                 ////
-                //obj = parser.parse(vehicleInfo);
-                //JSONObject jsonObject = (JSONObject) obj;
+//                Object obj = parser.parse(vehicleInfo);
+//                JSONObject jsonObject = (JSONObject) obj;
                 //////////
 
                 int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
@@ -293,21 +273,21 @@ public class DataController {
                 int percentage = ((Long) jsonObject.get("percentage")).intValue();
                 type = jsonObject.get("type").toString();
 
-                logger.info("idVeh "+ idVeh + ", idStart "+idStart+", idEnd "+idEnd+ ", percentage "+percentage);
-                if(backendRestTemplate == null)logger.error("BackendRestTemplate is null.");
-                int id_start = backendRestTemplate.getValueofKeyHashMap( idStart+1 );
-                int id_end = backendRestTemplate.getValueofKeyHashMap( idEnd+1 );
+                logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
+                if (backendRestTemplate == null) logger.error("BackendRestTemplate is null.");
+                int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
+                int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
                 currentListofJobs.add(id_start);
                 currentListofJobs.add(id_end);
                 progress = percentage;
 
-            } catch (IOException | ParseException e) {
-                logger.error("ParseException",e);
+            } catch (ParseException | IOException e) {
+                logger.error("ParseException", e);
             }
-            int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs,progress,type);
+            int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs, progress, type);
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];
             coordinatesVehicle[1] = coordinatesVehicle_temp[1];
-            if(delivery_id.equals("null") == false) {
+            if (!delivery_id.equals("null")) {
                 coordinatesVehicle[2] = vehicleID;
             } else {
                 coordinatesVehicle[2] = vehicle_id;
@@ -319,4 +299,5 @@ public class DataController {
         }
         return coordinatesVehicle;
     }
+
 }

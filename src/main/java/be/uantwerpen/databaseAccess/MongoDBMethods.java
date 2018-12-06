@@ -1,16 +1,20 @@
 package be.uantwerpen.databaseAccess;
 
 import be.uantwerpen.model.Delivery;
-import com.mongodb.*;
-import com.mongodb.client.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Frédéric Melaerts on 15/04/2017.
@@ -26,23 +30,22 @@ public class MongoDBMethods {
     /**
      * Initialize the parameters fot the MongoDB client connection.
      */
-    public MongoDBMethods()
-    {
+    public MongoDBMethods() {
         // IP address public centos VM : 143.129.39.159
         // IP address for proxy server : 172.10.0.8
         // Windows VM on own PC : 192.168.10.2
-        mongo =  new MongoClient( "143.129.39.127" , 27017 );
-        /**** Get database ****/
+        mongo = new MongoClient("143.129.39.127", 27017);
+        /* Get database */
         // if database doesn't exists, MongoDB will create it for you
         db = mongo.getDatabase("local");
     }
 
     /**
      * Put a specific delivery on the database.
-     * @param delivery
+     *
+     * @param delivery The delivery to add
      */
-    public void putStatement(Delivery delivery)
-    {
+    public void putStatement(Delivery delivery) {
         logger.info("Start writing data to MongoDB");
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         Document document = new Document();
@@ -52,8 +55,8 @@ public class MongoDBMethods {
         document.put("lastname", delivery.getLastName());
         document.put("pointA", delivery.getPointA());
         document.put("pointB", delivery.getPointB());
-        document.put("passengers", (""+delivery.getPassengers()));
-        document.put( "timesample",new Date());
+        document.put("passengers", ("" + delivery.getPassengers()));
+        document.put("timesample", new Date());
         mydatabaserecords.insertOne(document);
         logger.info("Finished writing data to MongoDB");
         //String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
@@ -61,28 +64,26 @@ public class MongoDBMethods {
 
     /**
      * Return all the deliveries from the database.
-     * @return
+     *
+     * @return A list of deliveries
      */
-    public List<Delivery> getAllDeliveries()
-    {
+    public List<Delivery> getAllDeliveries() {
         logger.info("Get all deliveries data of MongoDB");
         List<Delivery> deliveries = new ArrayList<Delivery>();
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find();
-        if(cursor != null) {
-            for(Document it: cursor)
-            {
-                Document doc = it;
+        if (cursor != null) {
+            for (Document it : cursor) {
                 Delivery delivery = new Delivery();
-                ObjectId object_id = doc.getObjectId("_id");
-                String typeDelivery = doc.getString("typeDelivery");
-                String username = doc.getString("username");
-                String firstname = doc.getString("firstname");
-                String lastname = doc.getString("lastname");
-                String pointA = doc.getString("pointA");
-                String pointB = doc.getString("pointB");
-                String passengers = doc.getString("passengers");
-                Date d = new Date(doc.getDate("timesample").getTime());
+                ObjectId object_id = it.getObjectId("_id");
+                String typeDelivery = it.getString("typeDelivery");
+                String username = it.getString("username");
+                String firstname = it.getString("firstname");
+                String lastname = it.getString("lastname");
+                String pointA = it.getString("pointA");
+                String pointB = it.getString("pointB");
+                String passengers = it.getString("passengers");
+                Date d = new Date(it.getDate("timesample").getTime());
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
                 delivery.setIdDelivery(object_id.toString());
                 delivery.setUserName(username);
@@ -101,15 +102,15 @@ public class MongoDBMethods {
 
     /**
      * Return the last added delivery from the database.
-     * @return
+     *
+     * @return the last added delivery
      */
-    public Delivery getLastDelivery()
-    {
+    public Delivery getLastDelivery() {
         logger.info("Get last data of MongoDB");
         Delivery lastDelivery = new Delivery();
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find().sort(new Document("_id", -1)).limit(1);
-        if(cursor != null) {
+        if (cursor != null) {
             Document doc = cursor.first();
             ObjectId object_id = doc.getObjectId("_id");
             String typeDelivery = doc.getString("typeDelivery");
@@ -136,16 +137,16 @@ public class MongoDBMethods {
 
     /**
      * Delete delivery from database.
-     * @param deliveryID
+     *
+     * @param deliveryID The ID of the delivery to be deleted
      */
-    public void deleteDelivery(String deliveryID)
-    {
-        logger.info("Remove delivery ["+deliveryID+"]'s data from MongoDB");
+    public void deleteDelivery(String deliveryID) {
+        logger.info("Remove delivery [" + deliveryID + "]'s data from MongoDB");
         MongoCollection<Document> collection = db.getCollection("deliveries");
         //collection.deleteOne(new Document("_id", new ObjectId("57a49c6c33b10927ff09623e")));
         BasicDBObject query = new BasicDBObject();
         query.append("_id", new ObjectId(deliveryID));
         collection.deleteOne(query);//.remove(query);
-        return;
     }
+
 }

@@ -60,6 +60,7 @@ public class Astar {
         Point[] listOfPoints = this.graphBuilder.getPointList();
         // provide all the nodes
         for (int i = 0; i < listOfPoints.length; i++) {
+            this.graph.addNode(listOfPoints[i].getId().toString());
             this.graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
         }
     }
@@ -109,23 +110,6 @@ public class Astar {
         graphBuilder.getLinkCost(startPoint, endPoint);
         makeNode();
         makeEdge();
-    }
-
-    /**
-     * Simular functionality as Determine path. However, this was done with Hardcoded example based on dummy code, for testing purposes.
-     * The method won't be deleted, should a futur group want to continue expanding on it.
-     *
-     * @param graph    Graph that needs to be handed down.
-     * @param startPos (String) Starting position in the graph
-     * @param endPos   (String) end position in the graph
-     */
-    public void testDeterminePath(Graph graph, String startPos, String endPos) {
-        AStar astar = new AStar(graph);
-        astar.compute(startPos, endPos);
-        logger.info(astar.getShortestPath());
-        Path path = astar.getShortestPath();
-        logger.info("Shortest path: " + path.toString());
-        JobDispatching jd = new JobDispatching(jobService, jobListService, path.toString(), graphBuilder);
     }
 
     /**

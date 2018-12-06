@@ -26,74 +26,10 @@ public class JobDispatching {
 
     private GraphBuilder graphBuilder;
 
-    public JobDispatching(JobService jobService, JobListService jobListService, String path, GraphBuilder graphBuilder) {
-        this.jobService = jobService;
-        this.jobListService = jobListService;
-        dispatchOrders(path, graphBuilder);
-    }
-
     public JobDispatching(JobService jobService, JobListService jobListService, GraphBuilder graphBuilder) {
         this.jobService = jobService;
         this.jobListService = jobListService;
         this.graphBuilder = graphBuilder;
-    }
-
-    /**
-     * USED FOR DEBUGGING
-     * Dispatch orders function will use a path as parameter and convert it into a JobList, which consists of Jobs containing all the information required to send to the cores.
-     * At the end of the function, there will be a call to the dispatch2core function, to start communication in the
-     *
-     * @param path         (String) path computed by Astar Algorithm
-     * @param graphBuilder (Graphbuilder Service)
-     */
-    public void dispatchOrders(String path, GraphBuilder graphBuilder) {
-        path = path.substring(1);           // remove first character '['
-        path = path.substring(0, path.length() - 1);       // remove last character ']'
-        String[] pathSplit = path.split(", ", -1);        // Split string up into Edges
-        Link[] listOfEdges = graphBuilder.getLinkList();
-        Link previous = listOfEdges[0];         // will be needed later on to prevent simular vehicletype switching
-        JobList joblist = new JobList();
-        for (int i = 0; i < pathSplit.length - 1; i++) {
-            for (int j = 0; j < graphBuilder.getLinkList().length; j++) {
-                Link link = graphBuilder.getCertainLink(Long.valueOf(pathSplit[i]), Long.valueOf(pathSplit[i + 1]));
-                // If the Link has been found, start creating a job with all relevant information
-                if (listOfEdges[j].getId().equals(link.getId())) {
-                    logger.debug("Edge found: " + listOfEdges[j].getId());
-                    logger.debug(" cost of edge: " + listOfEdges[j].getWeight());
-                    // if we are changing vehicle types, then we will walk from 1 vehicle to another. No need to add a Job then
-                    if (!listOfEdges[j].getVehicle().equals("wait")) {
-                        Job job = new Job();
-                        job.setIdStart(Long.valueOf(pathSplit[i]));             // set start ID from job
-                        job.setIdEnd(Long.valueOf(pathSplit[i + 1]));           // set stop ID from job
-                        job.setTypeVehicle((listOfEdges[j].getVehicle()));                  // set vehicle type
-                        job.setStatus("ready");                                             // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
-                        // for the joblist, we want to keep track of the starting ID!
-                        if (joblist.isEmpty()) {
-                            joblist.setStartPoint(job.getIdStart());
-                        }
-                        // to avoid the problem of changing vehicles of a simular type on the same platform, we are keeping the same ID
-                        if (previous.getStopPoint().getId().equals(link.getStartPoint().getId())) {
-                            job.setIdVehicle(previous.getVehicleID());
-                        } else {
-                            logger.debug("Vehicle ID =" + listOfEdges[j].getVehicleID());
-                            job.setIdVehicle(listOfEdges[j].getVehicleID());
-                        }
-                        // Add it to the joblist (all jobs within 1 delivery) and then to the jobservice (list of all jobs, regardless of to which delivery it belongs)
-                        joblist.addJob(job);
-                        jobService.save(job);
-
-                        // update last endpoint of joblist to the last added endpoint
-                        joblist.setEndPoint(job.getIdEnd());
-                        // previous needed to avoid needless changing of vehicles.
-                        previous = link;
-                    }
-                }
-            }
-        }
-        jobListService.saveOrder(joblist);
-        logger.info("starting Order input");
-        printJobList();
-        jobListService.dispatch2Core();
     }
 
     /**
@@ -131,7 +67,7 @@ public class JobDispatching {
                         job.setIdEnd(link.getStopPoint().getId()); // set stop ID from job
                         job.setTypeVehicle(link.getVehicle());// set vehicle type
                         job.setStatus("ready"); // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
-                        job.setIdVehicle(link.getVehicleID());
+//                        job.setIdVehicle(link.getVehicleID());
                         logger.debug("Job initialized: \n\tStart: " + job.getIdStart() + "\n\tEnd: " + job.getIdEnd() + "\n\tVehicle: " + job.getTypeVehicle());
 
                         // for the joblist, we want to keep track of the starting ID!
@@ -143,10 +79,10 @@ public class JobDispatching {
                         if (previous != null) {
                             if (previous.getStopPoint().getId().equals(link.getStartPoint().getId())) {
                                 logger.debug("voertuig ID previous nemen = " + previous.getVehicleID());
-                                job.setIdVehicle(previous.getVehicleID());
+//                                job.setIdVehicle(previous.getVehicleID());
                             } else {
                                 logger.debug("voertuig ID overstap nemen = " + listOfEdges[j].getVehicleID());
-                                job.setIdVehicle(listOfEdges[j].getVehicleID());
+//                                job.setIdVehicle(listOfEdges[j].getVehicleID());
                             }
                         }
                         // Else: nothing to be done, this means we're executing the first link, so we have to take the first vehicle
@@ -157,7 +93,7 @@ public class JobDispatching {
                             logger.error("ERROR: jobService is null ");
                             continue;
                         }
-                        jobService.save(job);
+//                        jobService.save(job);
 
                         // update last endpoint of joblist to the last added endpoint
                         joblist.setEndPoint(job.getIdEnd());
@@ -169,7 +105,7 @@ public class JobDispatching {
         }
 
         joblist.setIdDelivery(idDelivery);
-        jobListService.saveOrder(joblist);
+//        jobListService.saveOrder(joblist);
         logger.info("starting Order input");
         printJobList();
         jobListService.dispatchToCore(joblist);
