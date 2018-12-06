@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.io.FileReader;
@@ -55,6 +54,8 @@ public class DeliveryController {
     public BackendRestTemplate backendRestTemplate;
     @Autowired
     public Astar astarService;
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * Return page with all the deliveries save in the mongoDB database.
@@ -140,14 +141,22 @@ public class DeliveryController {
         responseGraph = restTemplate.getForEntity(graphUrl, Graph.class);
         Graph graph = responseGraph.getBody();*/
 
-        astarService.init();
-        astarService.determinePath2(delivery.getPointA(), delivery.getPointB(),delivery_return.getIdDelivery());
         User loginUser = userService.getPrincipalUser();
-        logger.info("Job has been created by " + loginUser);
         model.addAttribute("currentUser", loginUser);
-        delivery_return.setPointA(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
-        delivery_return.setPointB(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
-        model.addAttribute("delivery", delivery_return);
+
+        try {
+            astarService.init();
+            astarService.determinePath2(delivery.getPointA(), delivery.getPointB(), delivery_return.getIdDelivery());
+
+            logger.info("Job has been created by " + loginUser);
+            delivery_return.setPointA(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
+            delivery_return.setPointB(""+ backendRestTemplate.getValueofKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
+            model.addAttribute("delivery", delivery_return);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "delivery-manage-user";
+        }
+
         return "delivery-navigate-user";
     }
 
@@ -166,8 +175,13 @@ public class DeliveryController {
         // The following code is equal to the function getAllVehicles from the datacontroller
         // with the exception that this functions returns more data of the vehicles.
         model.addAttribute("currentUser", loginUser);
-        List<DummyVehicle> vehicles = getAllSimData();
-        model.addAttribute("vehiclesInfo", vehicles);
+        try {
+            List<DummyVehicle> vehicles = getAllSimData();
+            model.addAttribute("vehiclesInfo", vehicles);
+        } catch (Exception e){
+            model.addAttribute("error", e.getMessage());
+        }
+
         return "visualization_map";
     }
 
@@ -191,8 +205,8 @@ public class DeliveryController {
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
-                String.class);
-        */
+                String.class);*/
+
         JSONParser parser = new JSONParser();
 
         Object obj = null;
@@ -227,7 +241,7 @@ public class DeliveryController {
                 dumVeh.setType(type);
                 vehicles.add(dumVeh);
             }
-        } catch (IOException | ParseException e) { //
+        } catch (IOException | ParseException e) { //IOException |
             logger.error("Can't read or parse file.", e);
         }
         logger.info("Vehicle count: " + vehicles.size());
