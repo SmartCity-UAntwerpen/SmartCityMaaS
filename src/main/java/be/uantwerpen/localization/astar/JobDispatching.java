@@ -10,7 +10,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -49,15 +48,13 @@ public class JobDispatching {
             logger.error("graphbuilder is null");
             return;
         }
-        Link[] listOfEdges = graphBuilder.getLinkList();
         List<Link> linkList = new ArrayList<>(pathSplit.length - 1);
         for (int i = 0; i < pathSplit.length - 1; ++i)
             graphBuilder.getCertainLink(Long.parseLong(pathSplit[i]), Long.parseLong(pathSplit[i + 1])).ifPresent(linkList::add);
 
-        logger.debug("LIST OF EDGES: " + Arrays.toString(listOfEdges));
         Link previous = null;         // will be needed later on to prevent similar vehicle type switching
         //Link previous = graphBuilder.getCertainLink(Long.valueOf(pathSplit[0]), Long.valueOf(pathSplit[1]));
-        logger.debug("Linklist count: " + graphBuilder.getLinkList().length);
+        logger.debug("Linklist count: " + graphBuilder.getLinkList().size());
         JobList joblist = new JobList(); // New empty joblist
         for (int i = 0; i < linkList.size(); i++) {
             Link link = linkList.get(i);

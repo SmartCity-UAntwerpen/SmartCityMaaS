@@ -82,11 +82,11 @@ public class Astar {
      * will make all the necessairy edges in the Graph, using the information provided by the Graphbuilder
      */
     public void makeEdge() {
-        Link[] listOfEdges = this.graphBuilder.getLinkList();
-        for (Link listOfEdge : listOfEdges) {
-            this.graph.addEdge(listOfEdge.getId().toString(), listOfEdge.getStartPoint().getId().toString(), listOfEdge.getStopPoint().getId().toString(), true);
-            this.graph.getEdge(listOfEdge.getId().toString()).setAttribute("weight", listOfEdge.getWeight());
-            //this.graph.getEdge(listOfEdges[i].getId().toString()).setAttribute("vehicleType", listOfEdges[i].getVehicle());
+        List<Link> edges = this.graphBuilder.getLinkList();
+        for (Link edge : edges) {
+            this.graph.addEdge(edge.getId().toString(), edge.getStartPoint().getId().toString(), edge.getStopPoint().getId().toString(), true);
+            this.graph.getEdge(edge.getId().toString()).setAttribute("weight", edge.getWeight());
+            //this.graph.getEdge(edge.getId().toString()).setAttribute("vehicleType", edge.getVehicle());
         }
     }
 
