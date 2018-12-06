@@ -10,10 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 
 /**
  * Service based off the JobListRepository (formerly known as OrderRepository) in which JobList (Orders) will be saved
@@ -48,6 +44,9 @@ public class JobListService {
     private JobListRepository jobListRepository;
 
     @Autowired
+    private JobService jobService;
+
+    @Autowired
     private Astar astar;
 
     public Iterable<JobList> findAll() {
@@ -76,15 +75,28 @@ public class JobListService {
         // TODO: move to backbone
         Job job = jl.getJobs().get(0);
 
-        // if succesfully dispatched, update status of the job
+        // if successfully dispatched, update status of the job
+        if (job.getStatus().equals("busy")) {
+            // probably not reached rendezvous point yet: wait
+            return;
+        }
+
         if (dispatch(job)) {
-            jl.getJobs().get(0).setStatus("busy");
+            job.setStatus("busy");
+            job.setJoblist(jl);
+            jobService.save(job);
 
             if (jl.getJobs().size() > 1 && !jl.getJobs().get(1).getTypeVehicle().equals(jl.getJobs().get(0).getTypeVehicle())) {
-                dispatch(jl.getJobs().get(1));
+                Job nextJob = jl.getJobs().get(1);
+
+                if (dispatch(nextJob)) {
+                    nextJob.setStatus("busy");
+                    nextJob.setJoblist(jl);
+                    jobService.save(nextJob);
+                }
             }
         } else {
-            // an error has occured. Rerun the calculations for paths.
+            // an error has occurred. Rerun the calculations for paths.
             recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
             // for debug purposes
                     /* logger.info(" Lijst van Orders afdrukken");
@@ -105,6 +117,7 @@ public class JobListService {
      */
     private Boolean dispatch(Job job) {
         logger.info("Dispatch " + job.getId() + " - vehicle " + job.getTypeVehicle());
+        // TODO: dispatch to backbone
         return true;
 //        String stringUrl = "http://";
 //        String typeVehicle = job.getTypeVehicle().toUpperCase();

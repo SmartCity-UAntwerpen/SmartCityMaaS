@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 
@@ -111,26 +112,30 @@ public class JobController {
     }
 
     @RequestMapping(value = "/completeJob/{idJob}", method = RequestMethod.GET)
+    @ResponseBody
     public String completeJob(@PathVariable Long idJob) {
         logger.info("Job " + idJob + " is complete");
         for (JobList jl : jobListService.findAll()) {
             if (jl.getJobs().get(0).getId().equals(idJob)) {
                 jl.getJobs().remove(0);
                 jobService.delete(idJob);
-                logger.info(idJob + " is deleted because it was complete");
+                logger.info("Rendezvous job with id " + idJob + " is deleted because it was complete");
+            } else if (jl.getJobs().size() > 1 && jl.getJobs().get(1).getId().equals(idJob)) {
+                // rendezvous
+                jl.getJobs().remove(1);
+                jobService.delete(idJob);
+                logger.info("Job " + idJob + " is deleted because it was complete");
             }
+
             if (jl.getJobs().isEmpty()) {
-                //TODO need to test to see if this works
                 jobListService.deleteOrder(jl.getId());
                 logger.info("Delete order");
+            } else {
+                jobListService.dispatchToCore(jl);
+                logger.info("Dispatch next job");
             }
         }
 
-        for (JobList jobList : jobListRepository.findAll()) {
-            jobListService.dispatchToCore(jobList);
-            logger.info("Dispatch next job");
-        }
-
-        return "redirect:/jobs";
+        return "ok";
     }
 }

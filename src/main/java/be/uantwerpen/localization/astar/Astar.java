@@ -14,6 +14,8 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * A Star Class (will be used as a Service)
  * This class will provide a path, while building up a graph in which the path will be calculated from input
@@ -41,7 +43,7 @@ public class Astar {
      */
     public void init() {
         this.graph = new SingleGraph("SmartCityGraph");
-        graphBuilder.getMap();
+        graphBuilder.getMap(null, null);
     }
 
     public void setGraph(Graph graph) {
@@ -57,11 +59,11 @@ public class Astar {
      * will make all the necessairy nodes in the Graph, using information provided by the Graphbuilder service.
      */
     public void makeNode() {
-        Point[] listOfPoints = this.graphBuilder.getPointList();
+        List<Point> listOfPoints = this.graphBuilder.getPointList();
         // provide all the nodes
-        for (int i = 0; i < listOfPoints.length; i++) {
-            this.graph.addNode(listOfPoints[i].getId().toString());
-            this.graph.getNode(i).setAttribute("xy", listOfPoints[i].getX(), listOfPoints[i].getY());
+        for (int i = 0; i < listOfPoints.size(); i++) {
+            this.graph.addNode(listOfPoints.get(i).getId().toString());
+            this.graph.getNode(i).setAttribute("xy", listOfPoints.get(i).getX(), listOfPoints.get(i).getY());
         }
     }
 
@@ -106,8 +108,7 @@ public class Astar {
     public void updateNaE(String startPoint, String endPoint) {
         destroyNodes();
         destroyEdges();
-        this.graphBuilder.getMap();
-        graphBuilder.getLinkCost(startPoint, endPoint);
+        this.graphBuilder.getMap(startPoint, endPoint);
         makeNode();
         makeEdge();
     }
