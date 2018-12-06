@@ -192,8 +192,7 @@ function drawWorld(){
                     ctx.strokeStyle = "#95A6A6";
                     ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
                 }else if( point.pointCharacteristic == "LIGHT" ){
-                    ctx.strokeStyle = "";
-                    ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
+                    ctx.drawImage(lightGreenIcon, (point.physicalPoisionX*xSize) - xSize,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                 } else {
                 ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                 }
@@ -414,47 +413,57 @@ function showPage() {
 function getVehiclesVN(){
     var prevProg = [];
     var progression = [];
-    if(currentVehicleID != -1){
+    var selected = false;
+
+    ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+    drawWorld();
+    console.log(allBots);
+    for (var botId in allBots) { // allBots = {id: type}
+
+        console.log("id=" + botId + " type= " +  allBots[botId]);
+        if(botId == currentVehicleID){
+            selected = true;
+        }
         $.when(
-            $.getJSON("/world1/progress/null/" + currentVehicleID).done(function (progress) {
-                prevProg = progression;
-                progression = progress;
+            $.getJSON("/world1/progress/null/" + botId).done(function (progress) { // x, y , vehicleId
+                prevProg[botId] = progression;
+                progression[botId] = progress;
+                console.log(progression);
             })
         ).then(function () {
-            if(progression[0] != -1) { // if progression arrived
-                ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-                drawWorld();
-                if (progression[3] == prevProg[3]) { // if vehicle ID is same
-                    if(progression[0] != prevProg[0] && progression[1] != prevProg[1]){ // if position isn't same
-                        drawVehicle(currentVehicleType, progression[0], progression[1], true);
-                    }
-                } else {
-                    traveledPath = [];
-                    drawVehicle(currentVehicleType, progression[0], progression[1], true);
-                }
 
-                if(traveledPath.length < 1){
-                    traveledPath.push([progression[0], progression[1]]);
-                } else if(!(traveledPath[traveledPath.length - 1][0] == progression[0] && traveledPath[traveledPath.length - 1][1] == progression[1])){
-                    traveledPath.push([progression[0], progression[1]]);
+            console.log("draw id=" + botId + " type= " +  allBots[botId]);
+            if (progression[0] != -1) { // if progression arrived
+
+                drawVehicle(allBots[botId], progression[0], progression[1], selected);
+
+                if(selected) {
+                    if(currentVehicleID != prevProg[2]) { // new tracked vehicle
+                        traveledPath = [];
+                    }
+
+                    if (traveledPath.length < 1) {
+                        traveledPath.push([progression[0], progression[1]]);
+                    } else if (!(traveledPath[traveledPath.length - 1][0] == progression[0] && traveledPath[traveledPath.length - 1][1] == progression[1])) {
+                        traveledPath.push([progression[0], progression[1]]);
+                    }
+                    // DRAW TRAVELED PATH
+                    ctx.beginPath();
+                    ctx.setLineDash([20, 5]);
+                    ctx.strokeStyle = '#008000';
+                    ctx.lineWidth = 3;
+                    ctx.moveTo(traveledPath[0][0] * xSize, traveledPath[0][1] * ySize);
+                    for (var j = 1; j < traveledPath.length; j++) {
+                        ctx.lineTo(traveledPath[j][0] * xSize, traveledPath[j][1] * ySize);
+                    }
+                    ctx.stroke();
                 }
-                // DRAW TRAVELED PATH
-                ctx.beginPath();
-                ctx.setLineDash([20, 5]);
-                ctx.strokeStyle = '#008000';
-                ctx.lineWidth=3;
-                ctx.moveTo(traveledPath[0][0]*xSize,traveledPath[0][1]*ySize);
-                for (var i = 1; i < traveledPath.length; i++) {
-                    ctx.lineTo(traveledPath[i][0]*xSize,traveledPath[i][1]*ySize);
-                }
-                ctx.stroke();
             }
         })
-    } else if(currentVehicleID == -1 && prevProg[3] != 0) {
+    }
+    if(currentVehicleID == -1) {
         prevProg[3] = 0;
         traveledPath = [];
-        ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-        drawWorld();
     }
 }
 

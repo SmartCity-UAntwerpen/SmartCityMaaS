@@ -24,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -137,8 +138,8 @@ public class DataController {
      * @return
      */
     @RequestMapping(value="/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
-    public List<Integer> getAllVehicles(){
-        List<Integer> idVehicles = new ArrayList<Integer>();
+    public HashMap<Integer, String> getAllVehicles(){
+        HashMap<Integer, String> idVehicles = new HashMap<Integer, String>();
         String requestAll = "request all";
         // String URL = "http://localhost:9000/posAll";
         String URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getAllVehicles";
@@ -171,7 +172,8 @@ public class DataController {
                 obj = iterator.next();
                 JSONObject par_jsonObject = (JSONObject) obj;
                 int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
-                idVehicles.add(idVeh);
+                String typeVeh = par_jsonObject.get("type").toString();
+                idVehicles.put(idVeh, typeVeh);
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();

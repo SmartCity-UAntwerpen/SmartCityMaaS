@@ -21,11 +21,11 @@ import java.util.Locale;
 /*
 @EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})*/
 @EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})
-public class SupahuberApplication extends WebMvcConfigurerAdapter {
+public class SmartcityMaaS extends WebMvcConfigurerAdapter {
 
-	private static final Logger logger = LogManager.getLogger(SupahuberApplication.class);
+	private static final Logger logger = LogManager.getLogger(SmartcityMaaS.class);
 	public static void main(String[] args) {
-		SpringApplication.run(SupahuberApplication.class, args);
+		SpringApplication.run(SmartcityMaaS.class, args);
 		logger.info("SpringApplication MaaS is ready for use.");
 
 	}
