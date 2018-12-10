@@ -20,6 +20,8 @@ var pointBId = -10;
 
 var linksDrawn = [];
 
+
+var prevBotId = -1;
 var traveledPath = [];
 
 var droneDefault;
@@ -411,58 +413,52 @@ function showPage() {
 }
 
 function getVehiclesVN(){
-    var prevProg = [];
-    var progression = [];
     var selected = false;
 
     ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
     drawWorld();
-    console.log(allBots);
+    var botType = "unknown";
     for (var botId in allBots) { // allBots = {id: type}
-
-        console.log("id=" + botId + " type= " +  allBots[botId]);
-        if(botId == currentVehicleID){
-            selected = true;
-        }
-        $.when(
-            $.getJSON("/world1/progress/null/" + botId).done(function (progress) { // x, y , vehicleId
-                prevProg[botId] = progression;
-                progression[botId] = progress;
-                console.log(progression);
-            })
-        ).then(function () {
-
-            console.log("draw id=" + botId + " type= " +  allBots[botId]);
-            if (progression[0] != -1) { // if progression arrived
-
-                drawVehicle(allBots[botId], progression[0], progression[1], selected);
-
-                if(selected) {
-                    if(currentVehicleID != prevProg[2]) { // new tracked vehicle
-                        traveledPath = [];
-                    }
-
-                    if (traveledPath.length < 1) {
-                        traveledPath.push([progression[0], progression[1]]);
-                    } else if (!(traveledPath[traveledPath.length - 1][0] == progression[0] && traveledPath[traveledPath.length - 1][1] == progression[1])) {
-                        traveledPath.push([progression[0], progression[1]]);
-                    }
-                    // DRAW TRAVELED PATH
-                    ctx.beginPath();
-                    ctx.setLineDash([20, 5]);
-                    ctx.strokeStyle = '#008000';
-                    ctx.lineWidth = 3;
-                    ctx.moveTo(traveledPath[0][0] * xSize, traveledPath[0][1] * ySize);
-                    for (var j = 1; j < traveledPath.length; j++) {
-                        ctx.lineTo(traveledPath[j][0] * xSize, traveledPath[j][1] * ySize);
-                    }
-                    ctx.stroke();
+        botType = allBots[botId];
+        (function(botId, botType){
+            $.getJSON("/world1/progress/null/" + botId, function (progress) {
+                $("#"+ botId + " .idProgress").text(progress[3]);
+                if(botId == currentVehicleID){
+                    selected = true;
+                } else {
+                    selected = false;
                 }
-            }
-        })
+                if (progress[0] != -1) { // if progression arrived
+
+                    drawVehicle(botType, progress[0], progress[1], selected);
+
+                    if(selected) {
+                        if(currentVehicleID != prevBotId) { // new tracked vehicle
+                            traveledPath = [];
+                        }
+                        if (traveledPath.length < 1) {
+                            traveledPath.push([progress[0], progress[1]]);
+                        } else if (!(traveledPath[traveledPath.length - 1][0] == progress[0] && traveledPath[traveledPath.length - 1][1] == progress[1])) {
+                            traveledPath.push([progress[0], progress[1]]);
+                        }
+                        // DRAW TRAVELED PATH FROM SELECTED
+                        ctx.beginPath();
+                        ctx.setLineDash([20, 5]);
+                        ctx.strokeStyle = '#008000';
+                        ctx.lineWidth = 3;
+                        ctx.moveTo(traveledPath[0][0] * xSize, traveledPath[0][1] * ySize);
+                        for (var j = 1; j < traveledPath.length; j++) {
+                            ctx.lineTo(traveledPath[j][0] * xSize, traveledPath[j][1] * ySize);
+                        }
+                        ctx.stroke();
+                        prevBotId = botId;
+                    }
+                }
+            })
+        })(botId, botType);
     }
     if(currentVehicleID == -1) {
-        prevProg[3] = 0;
+        prevBotId = 0;
         traveledPath = [];
     }
 }
@@ -483,9 +479,9 @@ function drawVehicle(type, x, y,selected){
         }
     } else if(type == "drone") {
         if (selected) {
-            ctx.drawImage(droneIconTarget, ((x * xSize) + xSize * 3 / 2), (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+            ctx.drawImage(droneIconTarget, ((x * xSize) + xSize * -1), (y * ySize) - ySize * 1, xSize * 3, ySize * 3);
         } else {
-            ctx.drawImage(droneIcon, ((x * xSize) + xSize * 3 / 2), (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+            ctx.drawImage(droneIcon, ((x * xSize) + xSize * -1), (y * ySize) - ySize * 1, xSize * 3, ySize * 3);
         }
     }else{
         console.log(" vehicle type not supported");

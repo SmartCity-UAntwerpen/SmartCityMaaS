@@ -84,7 +84,7 @@ public class World {
 
         boolean beginYaxis = true; //start in Y direction
         int startPointId = 0;
-        logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
+        //logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
         for(int i = 0; i < points.size(); i++){
             if(points.get(i).getPointName() == startID){
                 startX = points.get(i).getPhysicalPoisionX();
@@ -100,7 +100,7 @@ public class World {
             if( startX != 0 && endX != 0 ) break;
 
         }
-        logger.info(" Points on map Start: x = "+startX + " y " + startY + " End: x = " + endX + " y = " + endY );
+        //logger.info(" Points on map Start: x = "+startX + " y " + startY + " End: x = " + endX + " y = " + endY );
 
         int[] coordinates = new int[2];
         int distX = (endX - startX);
@@ -204,7 +204,7 @@ public class World {
                 coordinates[1] = (int)(startY + (distY * progress));
                 break;
         }
-        logger.info(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
+        //logger.info(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
         return coordinates;
     }
 

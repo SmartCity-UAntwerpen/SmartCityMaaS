@@ -1,0 +1,1 @@
+{"idVehicle" :1250, "idStart" : 17, "idEnd" : 19, "percentage":100, "type" : "robot"}
