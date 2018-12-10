@@ -3,9 +3,8 @@ package be.uantwerpen.localization.astar;
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.model.Link;
+import be.uantwerpen.services.BackboneService;
 import be.uantwerpen.services.GraphBuilder;
-import be.uantwerpen.services.JobListService;
-import be.uantwerpen.services.JobService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -21,16 +20,13 @@ import java.util.List;
 
 public class JobDispatching {
     private static final Logger logger = LogManager.getLogger(JobDispatching.class);
-    private JobService jobService;
-
-    private JobListService jobListService;
 
     private GraphBuilder graphBuilder;
+    private BackboneService backboneService;
 
-    public JobDispatching(JobService jobService, JobListService jobListService, GraphBuilder graphBuilder) {
-        this.jobService = jobService;
-        this.jobListService = jobListService;
+    public JobDispatching(GraphBuilder graphBuilder, BackboneService backboneService) {
         this.graphBuilder = graphBuilder;
+        this.backboneService = backboneService;
     }
 
     /**
@@ -102,34 +98,16 @@ public class JobDispatching {
 
             // Add it to the joblist (all jobs within 1 delivery) and then to the jobservice (list of all jobs, regardless of to which delivery it belongs)
             joblist.addJob(job);
-            if (jobService == null) {
-                logger.error("ERROR: jobService is null ");
-                continue;
-            }
-            jobService.save(job);
 
             // update last endpoint of joblist to the last added endpoint
             joblist.setEndPoint(job.getIdEnd());
         }
 
         joblist.setIdDelivery(idDelivery);
-        jobListService.saveOrder(joblist);
+        if (!backboneService.saveJobOrder(joblist))
+            return;
         logger.info("starting Order input");
-        printJobList();
-        // todo dispatch to BackBone
-        jobListService.dispatchToCore(joblist);
+        backboneService.dispatch(joblist);
     }
 
-    /**
-     * Print function. Suited for debug purposes so that it's clear that is to be found in the orders and joblisservice etc.
-     */
-    public void printJobList() {
-        logger.debug(" JOBLISTS: ");
-        for (JobList jl : jobListService.findAll()) {
-            logger.debug(" JOBLIST ID" + jl.getId());
-            for (int x = 0; x < jl.getJobs().size(); x++) {
-                logger.debug("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle() + ";   Status :" + jl.getJobs().get(x).getStatus());
-            }
-        }
-    }
 }
