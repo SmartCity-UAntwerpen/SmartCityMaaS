@@ -199,12 +199,12 @@ public class DataController {
      * @param worldId     The ID of the world the vehicle is located
      * @param delivery_id The ID of the delivery
      * @param vehicle_id  The ID of the vehicle
-     * @return Returns an integer array [x, y, vehicle_id]
+     * @return Returns an integer array [x, y, vehicle_id, percentage]
      */
     @RequestMapping(value = "/{worldId}/progress/{delivery_id}/{vehicle_id}")
     public int[] getProgress(@PathVariable String worldId, @PathVariable String delivery_id, @PathVariable int vehicle_id) {
         int progress = 0;//vehicle.getValue();
-        logger.info("/" + worldId + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
+        //logger.info("/" + worldId + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
         World world = new World();
         for (World world1 : worlds) {
             if (world1.getWorld_ID().equals(worldId)) {
@@ -236,7 +236,7 @@ public class DataController {
             builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
         }
 
-        int[] coordinatesVehicle = new int[3]; // {x, y, id}
+        int[] coordinatesVehicle = new int[4]; // {x, y, id, percentage}
 
 
         HttpHeaders headers = new HttpHeaders();
@@ -262,11 +262,11 @@ public class DataController {
             job1.setTypeVehicle("car");
             job1.setIdVehicle(1);
             List<Integer> currentListofJobs = new ArrayList<>();
-            String type = null;
+        String type = null;
 
             try {
                 //////// TEST
-                JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle.txt"));
+                JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle" + vehicle_id + ".txt"));
                 ////
 //                Object obj = parser.parse(vehicleInfo);
 //                JSONObject jsonObject = (JSONObject) obj;
@@ -278,7 +278,7 @@ public class DataController {
                 int percentage = ((Long) jsonObject.get("percentage")).intValue();
                 type = jsonObject.get("type").toString();
 
-                logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
+                //logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
                 if (backendRestTemplate == null) logger.error("BackendRestTemplate is null.");
                 int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
                 int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
@@ -292,15 +292,13 @@ public class DataController {
             int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs, progress, type);
             coordinatesVehicle[0] = coordinatesVehicle_temp[0];
             coordinatesVehicle[1] = coordinatesVehicle_temp[1];
-            if (!delivery_id.equals("null")) {
-                coordinatesVehicle[2] = vehicleID;
-            } else {
-                coordinatesVehicle[2] = vehicle_id;
-            }
+            coordinatesVehicle[2] = vehicle_id;
+            coordinatesVehicle[3] = progress;
         } else {
             coordinatesVehicle[0] = -1;
             coordinatesVehicle[1] = -1;
-            coordinatesVehicle[2] = -1;
+            coordinatesVehicle[2] = vehicleID;
+            coordinatesVehicle[3] = -1;
         }
         return coordinatesVehicle;
     }

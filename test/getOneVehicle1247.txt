@@ -1,0 +1,1 @@
+{"idVehicle" :1247, "idStart" : 46, "idEnd" : 45, "percentage":10, "type" : "car"}

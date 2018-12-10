@@ -56,24 +56,24 @@
                                     </thead>
                                     <!-- IMPORTANT, class="list" have to be at tbody -->
                                     <tbody class="list" >
-                                    <tr th:each="vehicle : ${vehiclesInfo}">
+                                    <tr th:each="vehicle : ${vehiclesInfo}" th:id="${vehicle.ID }">
                                         <td class="idVehicle" th:value="${idVehicle}" th:text="${vehicle.ID }">Vehicle ID</td>
                                         <td class="typeVehicle" th:value="${typeVehicle}" th:text="${vehicle.type }">Vehicle Type</td>
                                         <td class="idStart" th:value="${idStart}" th:text="${vehicle.start }">Start</td>
                                         <td class="idEnd" th:value="${idEnd}" th:text="${vehicle.end }">End</td>
                                         <td class="idProgress" th:value="${idProgress}" th:text="${vehicle.progress }">Progress</td>
-                                        <td><button class="button" th:text="#{show}" th:onclick="'javascript:changeSelectVehicle(\''+ ${vehicle.type} +'\','+ ${vehicle.ID} + ');'">edit</button></td>
+                                        <td><button class="button track" th:text="#{show}" th:onclick="'javascript:changeSelectVehicle(\''+ ${vehicle.type} +'\','+ ${vehicle.ID} + ');'">edit</button></td>
 
                                         <script th:inline="javascript">
                                             /*<![CDATA[*/
                                             var currentVehicleID = -1;
-                                            var progressVehicleID = -13;
                                             var currentVehicleType = 'none';
                                             var path = [];
 
                                             // function is used in button above
                                             function changeSelectVehicle(vehicleType, vehicleID) {
                                                 path.length = 0;
+                                                $('.track').text("TRACK");
                                                 if(currentVehicleID == vehicleID)
                                                 {
                                                     currentVehicleID = -1;
@@ -81,11 +81,9 @@
                                                 }else{
                                                     currentVehicleID = vehicleID;
                                                     currentVehicleType = vehicleType;
+                                                    $("#"+vehicleID + " .track").text('UNTRACK');
                                                 }
                                                 console.log("Vehicle id clicked "+ currentVehicleID);
-
-                                                //var selected_Vehicle = [[${vehicle.ID}]];
-
                                             }
                                             /*]]>*/
                                         </script>

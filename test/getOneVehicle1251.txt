@@ -1,0 +1,1 @@
+{"idVehicle" :1247, "idStart" : 43, "idEnd" : 42, "percentage":0, "type" : "drone"}
