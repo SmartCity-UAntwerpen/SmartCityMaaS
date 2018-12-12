@@ -20,16 +20,14 @@ public class DatabaseLoader {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final DeliveryRepository deliveryRepository;
-    private final JobRepository jobRepository;
     private final JobListRepository jobListRepository;
 
     @Autowired
-    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, JobRepository jobRepository, JobListRepository jobListRepository) {
+    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, JobListRepository jobListRepository) {
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.deliveryRepository = deliveryRepository;
-        this.jobRepository = jobRepository;
         this.jobListRepository = jobListRepository;
     }
 
