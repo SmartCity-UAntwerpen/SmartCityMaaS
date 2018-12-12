@@ -42,7 +42,7 @@ public class JobService {
     }
 
     public void save(final Job job){
-        String path = basePath + "/deletejob/{id}";
+        String path = basePath + "/savejob";
 
         //set your headers
         HttpHeaders headers = new HttpHeaders();
