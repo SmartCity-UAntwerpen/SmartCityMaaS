@@ -40,15 +40,6 @@ public class Job extends MyAbstractPersistable<Long> {
         return "[ start: "+idStart+" - end:"+idEnd+" ] vehicle:" + idVehicle;
     }
 
-    public JobList getJoblist() {
-        return joblist;
-    }
-
-    public void setJoblist(JobList joblist) {
-        this.joblist = joblist;
-    }
-    //TODO nog nakijken voor duplicate ID's!
-
     public long getIdStart() {
         return idStart;
     }

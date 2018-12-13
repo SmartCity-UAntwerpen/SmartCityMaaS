@@ -83,7 +83,6 @@ public class JobListService {
 
         if (dispatch(job)) {
             job.setStatus("busy");
-            job.setJoblist(jl);
             jobService.save(job);
 
             if (jl.getJobs().size() > 1 && !jl.getJobs().get(1).getTypeVehicle().equals(jl.getJobs().get(0).getTypeVehicle())) {
@@ -91,7 +90,6 @@ public class JobListService {
 
                 if (dispatch(nextJob)) {
                     nextJob.setStatus("busy");
-                    nextJob.setJoblist(jl);
                     jobService.save(nextJob);
                 }
             }
