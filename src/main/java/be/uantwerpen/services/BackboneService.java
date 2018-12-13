@@ -1,5 +1,6 @@
 package be.uantwerpen.services;
 
+import be.uantwerpen.model.Job;
 import be.uantwerpen.model.JobList;
 import be.uantwerpen.model.Link;
 import be.uantwerpen.model.Point;
@@ -42,6 +43,26 @@ public class BackboneService {
 
     public List<Point> getPointsFromLinks(List<Link> linkList) {
         return linkList.stream().flatMap(link -> Stream.of(link.getStartPoint(), link.getStopPoint())).distinct().collect(Collectors.toList());
+    }
+
+    public Job[] getJobs() {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/findalljobs", Job[].class);
+    }
+
+    public Job getJobById(Long id) {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/getjob/{id}", Job.class, id);
+    }
+
+    public void deleteJobById(Long id) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/deletejob/{id}", null, Void.class, id);
+    }
+
+    public void deleteAllJobs() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/deletealljobs", null, Void.class);
     }
 
     public boolean saveJobOrder(JobList jobList) {

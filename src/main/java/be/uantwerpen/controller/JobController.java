@@ -2,6 +2,7 @@ package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Job;
 import be.uantwerpen.model.User;
+import be.uantwerpen.services.BackboneService;
 import be.uantwerpen.services.UserService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -13,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 
@@ -32,14 +32,16 @@ public class JobController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BackboneService backboneService;
+
     //get a list for all the jobs
     @RequestMapping(value = "/jobs", method = RequestMethod.GET)
     public String showJobs(final ModelMap model) {
         User loginUser = userService.getPrincipalUser();
         logger.info(loginUser + " requested /jobs");
         model.addAttribute("currentUser", loginUser);
-        RestTemplate restTemplate = new RestTemplate();
-        Job[] jobs = restTemplate.getForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/findalljobs", Job[].class);
+        Job[] jobs = backboneService.getJobs();
         model.addAttribute("allJobs", jobs);
         // TODO: model.addAttribute("allJobList", jobListService.findAll());
         return "jobs-list";
@@ -61,8 +63,7 @@ public class JobController {
         User loginUser = userService.getPrincipalUser();
         logger.info(loginUser + " requested /jobs/" + id);
         model.addAttribute("currentUser", loginUser);
-        RestTemplate restTemplate = new RestTemplate();
-        Job job = restTemplate.getForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/getjob/{id}", Job.class, id);
+        Job job = backboneService.getJobById(id);
         model.addAttribute("job", job);
         return "jobs-manage";
     }
@@ -86,8 +87,7 @@ public class JobController {
     //delete a specific job
     @RequestMapping(value = "/jobs/{id}/delete")
     public String deleteJob(@PathVariable Long id, final ModelMap model) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/deletejob/{id}", null, Job.class, id);
+        backboneService.deleteJobById(id);
         model.clear();
         logger.info(userService.getPrincipalUser() + " deleted job " + id);
         return "redirect:/jobs";
@@ -96,8 +96,7 @@ public class JobController {
 
     @RequestMapping(value = "/jobs/deleteAll")
     public String deleteAllJobs(final ModelMap model) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject("http://" + serverCoreIP + ":" + serverCorePort + "/job/service/deletealljobs", null, Job.class);
+        backboneService.deleteAllJobs();
         // TODO: delete JobLists
         logger.info(userService.getPrincipalUser() + "  deleted all jobs and joblists.");
         return "redirect:/jobs";
@@ -105,10 +104,6 @@ public class JobController {
 
     @RequestMapping(value = "/removeOrders")
     public String removeOrders() {
-//        jobListRepository.deleteAll();
-//        if (jobListRepository.findAll().size() == 0) {
-//            logger.info(userService.getPrincipalUser() + " removed all orders.");
-//        }
         // TODO: remove orders in backbone
         return "redirect:/";
     }
