@@ -1,6 +1,6 @@
 package be.uantwerpen.services;
 
-import be.uantwerpen.model.Job;
+import be.uantwerpen.sc.models.Job;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

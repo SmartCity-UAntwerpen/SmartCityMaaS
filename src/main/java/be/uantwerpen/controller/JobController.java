@@ -1,8 +1,8 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.localization.astar.Astar;
-import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.JobListRepository;
 import be.uantwerpen.services.JobListService;

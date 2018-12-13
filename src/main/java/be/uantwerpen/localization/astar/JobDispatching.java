@@ -1,7 +1,7 @@
 package be.uantwerpen.localization.astar;
 
-import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.model.Link;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobListService;

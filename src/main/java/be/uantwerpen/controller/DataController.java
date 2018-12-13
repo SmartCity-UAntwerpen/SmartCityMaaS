@@ -1,7 +1,7 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.World;

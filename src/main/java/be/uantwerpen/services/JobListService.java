@@ -1,8 +1,8 @@
 package be.uantwerpen.services;
 
 import be.uantwerpen.localization.astar.Astar;
-import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.repositories.JobListRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
