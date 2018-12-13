@@ -111,31 +111,4 @@ public class JobController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/completeJob/{idJob}", method = RequestMethod.GET)
-    @ResponseBody
-    public String completeJob(@PathVariable Long idJob) {
-        logger.info("Job " + idJob + " is complete");
-        for (JobList jl : jobListService.findAll()) {
-            if (jl.getJobs().get(0).getId().equals(idJob)) {
-                jl.getJobs().remove(0);
-                jobService.delete(idJob);
-                logger.info("Rendezvous job with id " + idJob + " is deleted because it was complete");
-            } else if (jl.getJobs().size() > 1 && jl.getJobs().get(1).getId().equals(idJob)) {
-                // rendezvous
-                jl.getJobs().remove(1);
-                jobService.delete(idJob);
-                logger.info("Job " + idJob + " is deleted because it was complete");
-            }
-
-            if (jl.getJobs().isEmpty()) {
-                jobListService.deleteOrder(jl.getId());
-                logger.info("Delete order");
-            } else {
-                jobListService.dispatchToCore(jl);
-                logger.info("Dispatch next job");
-            }
-        }
-
-        return "ok";
-    }
 }
