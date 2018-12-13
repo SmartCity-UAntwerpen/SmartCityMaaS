@@ -1,6 +1,8 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.localization.astar.Astar;
+import be.uantwerpen.services.JobListService;
+import be.uantwerpen.services.JobService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,12 @@ public class JobControllerTest {
 
     @Mock
     private Astar astar;
+
+    @Mock
+    private JobService jobService;
+
+    @Mock
+    private JobListService jobListService;
 
     private MockMvc mvc;
 
