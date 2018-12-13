@@ -69,8 +69,9 @@ public class JobController {
     }
 
     //make a specific job
-    @RequestMapping(value = {"/jobs/", "/jobs/{id}"}, method = RequestMethod.POST)
-    public String addJob(@PathVariable Long id, @Valid Job job, BindingResult result, final ModelMap model) {
+    @RequestMapping(value = {"/jobs/"}, method = RequestMethod.POST)
+    public String addJob(@Valid Job job, BindingResult result, final ModelMap model) {
+
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         if (result.hasErrors()) {

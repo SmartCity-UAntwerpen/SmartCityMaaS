@@ -20,10 +20,6 @@ public class Job extends MyAbstractPersistable<Long> {
     private long idVehicle;
     private String typeVehicle;
     private String Status;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ID_ORDER")
-    private JobList joblist;
-
 
     public Job() {
 
