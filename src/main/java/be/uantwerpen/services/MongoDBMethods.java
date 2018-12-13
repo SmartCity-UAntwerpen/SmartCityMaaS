@@ -1,4 +1,4 @@
-package be.uantwerpen.databaseAccess;
+package be.uantwerpen.services;
 
 import be.uantwerpen.model.Delivery;
 import com.mongodb.BasicDBObject;
@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 /**
  * Created by Frédéric Melaerts on 15/04/2017.
  */
+@Service
 public class MongoDBMethods {
 
     private static final Logger logger = LogManager.getLogger(MongoDBMethods.class);
@@ -31,13 +33,8 @@ public class MongoDBMethods {
      * Initialize the parameters fot the MongoDB client connection.
      */
     public MongoDBMethods() {
-        // IP address public centos VM : 143.129.39.159
-        // IP address for proxy server : 172.10.0.8
-        // Windows VM on own PC : 192.168.10.2
         mongo = new MongoClient("143.129.39.127", 27017);
-        /* Get database */
-        // if database doesn't exists, MongoDB will create it for you
-        db = mongo.getDatabase("local");
+        db = mongo.getDatabase("smartcity");
     }
 
     /**

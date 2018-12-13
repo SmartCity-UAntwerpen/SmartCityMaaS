@@ -1,8 +1,6 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
-import be.uantwerpen.services.JobListService;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.World;
 import org.apache.log4j.LogManager;
@@ -19,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.FileReader;
@@ -43,14 +40,8 @@ public class DataController {
     @Value("#{new Integer(${core.port}) ?: 1994}") // 1994 default value with bitwise operations (#)
     private int serverCorePort;
 
-    @Autowired
-    private JobListService jobListService;
-
     List<World> worlds = new ArrayList<>();
     int vehicleID = 1;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     public BackendRestTemplate backendRestTemplate;
@@ -89,17 +80,17 @@ public class DataController {
 
     /**
      * Retrieve the real name of a point as it is defined in the received map.
+     *
      * @param valuePoint
      * @return
      */
-    @RequestMapping(value="/retrieveRealPointName/{valuePoint}")
-    public int getPointName(@PathVariable int valuePoint){
+    @RequestMapping(value = "/retrieveRealPointName/{valuePoint}")
+    public int getPointName(@PathVariable int valuePoint) {
         int keyPoint = backendRestTemplate.getKeyHashMap(valuePoint);
-        if(valuePoint != -1) {
-            logger.info("Retrieve key point name from "+valuePoint+ " which is "+ keyPoint);
-        }
-        else{
-            logger.error("Could not retrieve key point name from "+valuePoint+ ", error at "+ keyPoint);
+        if (valuePoint != -1) {
+            logger.info("Retrieve key point name from " + valuePoint + " which is " + keyPoint);
+        } else {
+            logger.error("Could not retrieve key point name from " + valuePoint + ", error at " + keyPoint);
         }
         return keyPoint;
     }
@@ -130,8 +121,8 @@ public class DataController {
      *
      * @return A list of vehicle IDs
      */
-    @RequestMapping(value="/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
-    public HashMap<Integer, String> getAllVehicles(){
+    @RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
+    public HashMap<Integer, String> getAllVehicles() {
         HashMap<Integer, String> idVehicles = new HashMap<Integer, String>();
         String requestAll = "request all";
         // String URL = "http://localhost:9000/posAll";
@@ -162,7 +153,7 @@ public class DataController {
             while (iterator.hasNext()) {
                 obj = iterator.next();
                 JSONObject par_jsonObject = (JSONObject) obj;
-                int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
+                int idVeh = ((Long) par_jsonObject.get("idVehicle")).intValue();
                 String typeVeh = par_jsonObject.get("type").toString();
                 idVehicles.put(idVeh, typeVeh);
             }
@@ -222,12 +213,13 @@ public class DataController {
         // When delivery is null, then the information of the progress is a request from the visualization.
         if (!delivery_id.equals("null")) {
             // Get the ID of the current used vehicle of this delivery.
-            for (JobList jl2 : jobListService.findAll()) {
-                if (jl2.getIdDelivery().equals(delivery_id)) {
-                    vehicleID = Math.toIntExact(jl2.getJobs().get(0).getIdVehicle());
-                    jobListNull = true;
-                }
-            }
+//            for (JobList jl2 : jobListService.findAll()) {
+//                if (jl2.getIdDelivery().equals(delivery_id)) {
+//                    vehicleID = Math.toIntExact(jl2.getJobs().get(0).getIdVehicle());
+//                    jobListNull = true;
+//                }
+//            }
+            // TODO: fix above code
             URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicleID;
             builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
 
