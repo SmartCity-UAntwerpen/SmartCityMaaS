@@ -116,8 +116,8 @@ public class JobDispatching {
         jobListService.saveOrder(joblist);
         logger.info("starting Order input");
         printJobList();
-        // todo dispatch to BackBone
-        jobListService.dispatchToCore(joblist);
+        // Dispatch method will be done on the BackBone
+        jobListService.dispatchToCore();
     }
 
     /**
