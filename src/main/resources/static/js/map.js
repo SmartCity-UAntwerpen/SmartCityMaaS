@@ -43,6 +43,30 @@ var lightGreenIcon;
 var lightRedIcon;
 
 /**
+ * The initialize function of the html page.
+ */
+function initFunction() {
+    document.getElementById("loader").style.display = "block";
+    showPage();
+    loadImages();
+    console.log("get world");
+    getWorld();
+
+    if(visualization){
+        $.getJSON("/world1/allVehicles").done(function(allVehicles) {
+            allBots = allVehicles;
+        });
+        setInterval(getVehicles, 1000);
+    }
+
+    if(!only_view)
+    {
+        // Hide save button, this button will only be showed when both of the points are selected.
+        document.getElementById('saveDelivery').style.visibility = 'hidden';
+    }
+}
+
+/**
  * Load all the images from the html.
  */
 
@@ -184,10 +208,6 @@ function drawWorld(){
             }
         }
 
-    }
-
-    for(var i=0; i<world.points.length; i++) {
-        var point = world.points[i];
         switch (point.type) {
             case "robot":
                 if( point.pointCharacteristic == "INTERSECTION"){
@@ -196,7 +216,7 @@ function drawWorld(){
                 }else if( point.pointCharacteristic == "LIGHT" ){
                     ctx.drawImage(lightGreenIcon, (point.physicalPoisionX*xSize) - xSize,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                 } else {
-                ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                 }
                 break;
             case "car":
@@ -331,30 +351,6 @@ function clickedOnCanvas(event){
     }
 }
 
-
-/**
- * The initialize function of the html page.
- */
-function initFunction() {
-    document.getElementById("loader").style.display = "block";
-    showPage();
-    loadImages();
-    getWorld();
-
-    if(visualization){
-        $.getJSON("/world1/allVehicles").done(function(allVehicles) {
-            allBots = allVehicles;
-        });
-        setInterval(getVehiclesVN, 1000);
-    }
-
-    if(!only_view)
-    {
-        // Hide save button, this button will only be showed when both of the points are selected.
-        document.getElementById('saveDelivery').style.visibility = 'hidden';
-    }
-}
-
 /**
  * Shows a loading animation when data is loaded.
  * When all information is tranferred to the html page, the functional elements are shown while to loading animation
@@ -412,11 +408,12 @@ function showPage() {
     }
 }
 
-function getVehiclesVN(){
+function getVehicles(){
     var selected = false;
-
-    ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-    drawWorld();
+    if(ctx){
+        ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+        drawWorld();
+    }
     var botType = "unknown";
     for (var botId in allBots) { // allBots = {id: type}
         botType = allBots[botId];

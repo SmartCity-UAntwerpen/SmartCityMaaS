@@ -38,7 +38,34 @@
                     </div>
                 </div>
 
+                <div class="login-wrap row">
+                    <div class="scrollingtable">
+                        <div>
+                            <div>
+                                <table class="table table-hover" id = "table_deliveries">
+                                    <thead>
+                                    <tr class="bg-primary">
+                                        <th><span th:label="#{idVehicle}">Delivery ID</span></th>
+                                        <th th:text="#{userName}">User Name</th>
+                                        <th th:text="#{start}">Start</th>
+                                        <th th:text="#{arrival}">Arrival</th>
+                                    </tr>
+                                    </thead>
+                                    <!-- IMPORTANT, class="list" have to be at tbody -->
+                                    <tbody class="list" >
+                                    <tr th:each="delivery : ${deliveries}" th:id="${delivery.idDelivery }">
+                                        <td class="idVehicle" th:value="${idVehicle}" th:text="${delivery.idDelivery }">Delivery ID</td>
+                                        <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
+                                        <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
+                                        <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
                 <div class="login-wrap row">
                     <div class="scrollingtable">
                         <div>
@@ -46,12 +73,12 @@
                                 <table class="table table-hover" id = "table_vehicles">
                                     <thead>
                                     <tr class="bg-primary">
-                                        <th><span th:label="#{idVehicle}">ID_VEHICLE</span></th>
-                                        <th><span th:label="#{typeVehicle}">TYPE</span></th>
-                                        <th><span th:label="#{idStart}">START</span></th>
-                                        <th><span th:label="#{idEnd}">END</span></th>
-                                        <th><span th:label="#{idProgress}">PROGRESS</span></th>
-                                        <th><span th:label="#{show}">SHOW</span></th>
+                                        <th><span th:text="#{idVehicle}">ID_VEHICLE</span></th>
+                                        <th><span th:text="#{typeVehicle}">TYPE</span></th>
+                                        <th><span th:text="#{idStart}">START</span></th>
+                                        <th><span th:text="#{idEnd}">END</span></th>
+                                        <th><span th:text="#{idProgress}">PROGRESS</span></th>
+                                        <th><span th:text="#{show}">SHOW</span></th>
                                     </tr>
                                     </thead>
                                     <!-- IMPORTANT, class="list" have to be at tbody -->

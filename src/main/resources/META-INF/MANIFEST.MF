@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Class-Path: spring-data-mongodb-1.10.1.RELEASE.jar mbox2-1.0.jar jcomm
+ on-1.0.17.jar antlr-2.7.7.jar gs-algo-1.2.jar thymeleaf-extras-spring
+ security3-2.1.1.RELEASE.jar tomcat-jdbc-8.5.11.jar mongodb-driver-3.4
+ .2.jar jcl-over-slf4j-1.7.24.jar json-simple-1.1.jar thymeleaf-layout
+ -dialect-1.4.0.jar xml-apis-1.4.01.jar classmate-1.3.3.jar hibernate-
+ core-5.0.12.Final.jar ognl-3.0.8.jar scala-library-2.10.0.jar spring-
+ boot-starter-1.5.2.RELEASE.jar gs-ui-1.2.jar spring-boot-starter-secu
+ rity-1.5.2.RELEASE.jar spring-beans-4.3.7.RELEASE.jar jfreechart-1.0.
+ 14.jar spring-boot-starter-log4j-1.3.8.RELEASE.jar bootstrap-3.3.5.ja
+ r hamcrest-core-1.3.jar javax.transaction-api-1.2.jar jackson-databin
+ d-2.8.7.jar spring-boot-starter-tomcat-1.5.2.RELEASE.jar spring-secur
+ ity-test-4.0.2.RELEASE.jar gs-core-1.2.jar thymeleaf-2.1.5.RELEASE.ja
+ r h2-1.4.193.jar snakeyaml-1.17.jar junit-4.12.jar thymeleaf-spring4-
+ 2.1.5.RELEASE.jar validation-api-1.1.0.Final.jar spring-mobile-device
+ -1.1.5.RELEASE.jar tomcat-embed-core-8.5.11.jar jackson-core-2.8.7.ja
+ r spring-context-4.2.4.RELEASE.jar spring-jdbc-4.3.7.RELEASE.jar pher
+ d-1.0.jar commons-math-2.1.jar jandex-2.0.0.Final.jar jul-to-slf4j-1.
+ 7.24.jar bcprov-jdk14-138.jar spring-boot-starter-data-jpa-1.3.6.RELE
+ ASE.jar geronimo-jta_1.1_spec-1.1.1.jar spring-security-core-4.2.2.RE
+ LEASE.jar hibernate-commons-annotations-5.0.1.Final.jar log4j-1.2.17.
+ jar hibernate-validator-5.3.4.Final.jar spring-test-4.3.7.RELEASE.jar
+  spring-web-4.3.7.RELEASE.jar tomcat-juli-8.5.11.jar mysql-connector-
+ java-5.1.38.jar commons-math3-3.0.jar spring-webmvc-4.3.7.RELEASE.jar
+  spring-boot-autoconfigure-1.5.2.RELEASE.jar spring-aspects-4.3.7.REL
+ EASE.jar spring-boot-starter-mobile-1.5.2.RELEASE.jar spring-boot-sta
+ rter-web-1.5.2.RELEASE.jar spring-security-web-4.2.2.RELEASE.jar mong
+ o-java-driver-3.4.2.jar spring-data-commons-1.13.1.RELEASE.jar tomcat
+ -embed-el-8.5.11.jar unbescape-1.1.0.RELEASE.jar spring-boot-1.5.2.RE
+ LEASE.jar hibernate-entitymanager-5.0.12.Final.jar spring-data-jpa-1.
+ 11.1.RELEASE.jar jackson-annotations-2.8.0.jar mongodb-driver-core-3.
+ 4.2.jar spring-expression-4.3.7.RELEASE.jar spring-core-4.3.7.RELEASE
+ .jar aspectjweaver-1.8.9.jar aopalliance-1.0.jar spring-boot-starter-
+ data-mongodb-1.5.2.RELEASE.jar dom4j-1.6.1.jar groovy-2.4.9.jar jboss
+ -logging-3.3.0.Final.jar tomcat-embed-websocket-8.5.11.jar spring-tx-
+ 4.3.7.RELEASE.jar spring-security-config-4.2.2.RELEASE.jar javassist-
+ 3.21.0-GA.jar slf4j-log4j12-1.7.5.jar hibernate-jpa-2.1-api-1.0.0.Fin
+ al.jar itext-2.1.5.jar bson-3.4.2.jar slf4j-api-1.7.5.jar spring-boot
+ -starter-jdbc-1.5.2.RELEASE.jar spring-orm-4.3.7.RELEASE.jar spring-a
+ op-4.3.7.RELEASE.jar jquery-2.1.4.jar bcmail-jdk14-138.jar spring-boo
+ t-starter-aop-1.5.2.RELEASE.jar spring-boot-starter-thymeleaf-1.5.2.R
+ ELEASE.jar
+Main-Class: be.uantwerpen.SmartcityMaaS
+

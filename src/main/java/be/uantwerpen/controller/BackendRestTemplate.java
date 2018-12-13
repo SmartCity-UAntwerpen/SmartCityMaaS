@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -58,14 +59,14 @@ public class BackendRestTemplate {
 
         // Get response from the core
         // COMMENT FOR LOCAL TEST
-//        HttpEntity<String> httpResponse = restTemplate.exchange(
-//                builder.build().encode().toUri(),
-//                HttpMethod.GET,
-//                entity,
-//                String.class);
-//        logger.info("Response core: " + httpResponse.getBody());
-//        logger.info("Response body core: " + httpResponse.hasBody());
-//        String listOfCore = httpResponse.getBody();
+/*        HttpEntity<String> httpResponse = restTemplate.exchange(
+                builder.build().encode().toUri(),
+                HttpMethod.GET,
+                entity,
+                String.class);
+        logger.info("Response core: " + httpResponse.getBody());
+        logger.info("Response body core: " + httpResponse.hasBody());
+        String listOfCore = httpResponse.getBody();*/
 
         new JSONObject();
 
@@ -78,9 +79,9 @@ public class BackendRestTemplate {
 
         try {
             ////// TEST - 2018
-            obj = parser.parse(new FileReader("test/stringmapjson.txt"));
+            obj = parser.parse(new FileReader("testdata/stringmapjson.txt"));
             /////
-//            obj = parser.parse(listOfCore);
+            //obj = parser.parse(listOfCore);
             /////
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
@@ -120,7 +121,7 @@ public class BackendRestTemplate {
                 }
                 points.add(point);
             }
-        } catch (ParseException | IOException e) { //
+        } catch (ParseException | IOException e) { //IOException
             e.printStackTrace();
         }
 

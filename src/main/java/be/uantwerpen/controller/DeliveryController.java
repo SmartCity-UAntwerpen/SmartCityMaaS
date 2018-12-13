@@ -177,7 +177,9 @@ public class DeliveryController {
         model.addAttribute("currentUser", loginUser);
         try {
             List<DummyVehicle> vehicles = getAllSimData();
+            MongoDBMethods mongoDBClient = new MongoDBMethods();
             model.addAttribute("vehiclesInfo", vehicles);
+            model.addAttribute("deliveries", mongoDBClient.getAllBusyDeliveries());
         } catch (Exception e){
             model.addAttribute("error", e.getMessage());
         }
@@ -213,7 +215,7 @@ public class DeliveryController {
         // Parse JSON data from the core.
         try {
             ////// TEST
-            obj = parser.parse(new FileReader("test/getAllVehicles.txt"));
+            obj = parser.parse(new FileReader("testdata/getAllVehicles.txt"));
             ///
             //obj = parser.parse(httpResponse.getBody());
             /////////////
@@ -241,7 +243,7 @@ public class DeliveryController {
                 dumVeh.setType(type);
                 vehicles.add(dumVeh);
             }
-        } catch (IOException | ParseException e) { //IOException |
+        } catch (ParseException | IOException e) { //IOException |
             logger.error("Can't read or parse file.", e);
         }
         logger.info("Vehicle count: " + vehicles.size());

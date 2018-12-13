@@ -69,35 +69,9 @@ public class MongoDBMethods {
      */
     public List<Delivery> getAllDeliveries() {
         logger.info("Get all deliveries data of MongoDB");
-        List<Delivery> deliveries = new ArrayList<Delivery>();
         MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
         FindIterable<Document> cursor = mydatabaserecords.find();
-        if (cursor != null) {
-            for (Document it : cursor) {
-                Delivery delivery = new Delivery();
-                ObjectId object_id = it.getObjectId("_id");
-                String typeDelivery = it.getString("typeDelivery");
-                String username = it.getString("username");
-                String firstname = it.getString("firstname");
-                String lastname = it.getString("lastname");
-                String pointA = it.getString("pointA");
-                String pointB = it.getString("pointB");
-                String passengers = it.getString("passengers");
-                Date d = new Date(it.getDate("timesample").getTime());
-                String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
-                delivery.setIdDelivery(object_id.toString());
-                delivery.setUserName(username);
-                delivery.setFirstName(firstname);
-                delivery.setLastName(lastname);
-                delivery.setPointA(pointA);
-                delivery.setPointB(pointB);
-                delivery.setType(typeDelivery);
-                delivery.setPassengers(Integer.parseInt(passengers));
-                delivery.setDate(timestamp);
-                deliveries.add(delivery);
-            }
-        }
-        return deliveries;
+        return GetListData(cursor);
     }
 
     /**
@@ -147,6 +121,54 @@ public class MongoDBMethods {
         BasicDBObject query = new BasicDBObject();
         query.append("_id", new ObjectId(deliveryID));
         collection.deleteOne(query);//.remove(query);
+    }
+
+
+    /**
+     * Return all the deliveries from the database which type is not set as 'done'.
+     *
+     * @return A list of deliveries
+     */
+    public List<Delivery> getAllBusyDeliveries() {
+        logger.info("Get all busy deliveries data of MongoDB");
+
+        MongoCollection<Document> mydatabaserecords = db.getCollection("deliveries");
+        BasicDBObject searchObject = new BasicDBObject();
+        searchObject.put("typeDelivery", "HumanTransport");
+        FindIterable<Document> cursor = mydatabaserecords.find(searchObject);
+        return GetListData(cursor);
+
+    }
+
+
+    public List<Delivery> GetListData(FindIterable<Document> cursor){
+        List<Delivery> deliveries = new ArrayList<Delivery>();
+        if (cursor != null) {
+            for (Document it : cursor) {
+                Delivery delivery = new Delivery();
+                ObjectId object_id = it.getObjectId("_id");
+                String typeDelivery = it.getString("typeDelivery");
+                String username = it.getString("username");
+                String firstname = it.getString("firstname");
+                String lastname = it.getString("lastname");
+                String pointA = it.getString("pointA");
+                String pointB = it.getString("pointB");
+                String passengers = it.getString("passengers");
+                Date d = new Date(it.getDate("timesample").getTime());
+                String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
+                delivery.setIdDelivery(object_id.toString());
+                delivery.setUserName(username);
+                delivery.setFirstName(firstname);
+                delivery.setLastName(lastname);
+                delivery.setPointA(pointA);
+                delivery.setPointB(pointB);
+                delivery.setType(typeDelivery);
+                delivery.setPassengers(Integer.parseInt(passengers));
+                delivery.setDate(timestamp);
+                deliveries.add(delivery);
+            }
+        }
+        return deliveries;
     }
 
 }

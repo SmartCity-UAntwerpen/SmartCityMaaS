@@ -44,12 +44,12 @@ public class JobControllerTest {
         mvc = MockMvcBuilders.standaloneSetup(jobController).build();
     }
 
-    @Test
+     @Test
     public void testShowJobs() throws Exception {
         mvc.perform(get("/jobs")).andExpect(view().name("jobs-list"));
     }
 
-    @Test
+   @Test
     public void testViewCreateJobs() throws Exception {
         mvc.perform(get("/jobs/put")).andExpect(view().name("jobs-manage"));
     }

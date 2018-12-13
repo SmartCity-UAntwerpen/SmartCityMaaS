@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -143,18 +144,18 @@ public class DataController {
         HttpEntity<?> entity = new HttpEntity<>(headers);
         // Get response from the core
         // COMMENT FOR LOCAL TEST
-//        HttpEntity<String> httpResponse = restTemplate.exchange(
-//                builder.build().encode().toUri(),
-//                HttpMethod.GET, // Make post
-//                entity,
-//                String.class);
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
+                builder.build().encode().toUri(),
+                HttpMethod.GET, // Make post
+                entity,
+                String.class);*/
         JSONParser parser = new JSONParser();
 
         try {
             ////// TEST
-            Object obj = parser.parse(new FileReader("test/getAllVehicles.txt"));
+            Object obj = parser.parse(new FileReader("testdata/getAllVehicles.txt"));
             //////
-//            Object obj = parser.parse(httpResponse.getBody());
+            //Object obj = parser.parse(httpResponse.getBody());
             //////
             JSONObject jsonObject = (JSONObject) obj;
             virDevices = (JSONArray) jsonObject.get("vehicles");
@@ -166,7 +167,7 @@ public class DataController {
                 String typeVeh = par_jsonObject.get("type").toString();
                 idVehicles.put(idVeh, typeVeh);
             }
-        } catch (ParseException | IOException e) {
+        } catch (ParseException | IOException e) { //
             e.printStackTrace();
         }
         return idVehicles;
@@ -246,15 +247,15 @@ public class DataController {
         if (delivery_id.equals("null") || jobListNull) {
             // Get response from the core
             // COMMENT FOR LOCAL TEST
-//            HttpEntity<String> httpResponse = restTemplate.exchange(
-//                    builder.build().encode().toUri(),
-//                    HttpMethod.GET,
-//                    entity,
-//                    String.class);
-//            logger.info("[getProgress] Response backbone : " + httpResponse.toString());
-//            logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
-//            logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
-//            String vehicleInfo = httpResponse.getBody();
+            /*HttpEntity<String> httpResponse = restTemplate.exchange(
+                    builder.build().encode().toUri(),
+                    HttpMethod.GET,
+                    entity,
+                    String.class);
+            logger.info("[getProgress] Response backbone : " + httpResponse.toString());
+            logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
+            logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
+            String vehicleInfo = httpResponse.getBody();*/
             JSONParser parser = new JSONParser();
             Job job1 = new Job();
             job1.setIdStart(1);
@@ -266,12 +267,12 @@ public class DataController {
 
             try {
                 //////// TEST
-                JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("test/getOneVehicle" + vehicle_id + ".txt"));
+                Object obj = parser.parse(new FileReader("testdata/getOneVehicle" + vehicle_id + ".txt"));
                 ////
-//                Object obj = parser.parse(vehicleInfo);
-//                JSONObject jsonObject = (JSONObject) obj;
+                //Object obj = parser.parse(vehicleInfo);
                 //////////
 
+                JSONObject jsonObject = (JSONObject) obj;
                 int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
                 int idStart = ((Long) jsonObject.get("idStart")).intValue();
                 int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
@@ -286,7 +287,7 @@ public class DataController {
                 currentListofJobs.add(id_end);
                 progress = percentage;
 
-            } catch (ParseException | IOException e) {
+            } catch (ParseException | IOException e) { // | IOException
                 logger.error("ParseException", e);
             }
             int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs, progress, type);
