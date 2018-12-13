@@ -1,6 +1,6 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.services.MongoDBMethods;
+import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
@@ -8,6 +8,7 @@ import be.uantwerpen.services.*;
 import be.uantwerpen.visualization.model.DummyVehicle;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.graphstream.graph.Graph;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -56,9 +57,6 @@ public class DeliveryController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private MongoDBMethods mongoDBClient;
-
     /**
      * Return page with all the deliveries save in the mongoDB database.
      * @param model
@@ -67,8 +65,9 @@ public class DeliveryController {
     @RequestMapping(value="/deliveries", method= RequestMethod.GET)
     public String viewDeliveries(final ModelMap model){
         logger.info(userService.getPrincipalUser() + " requested /deliveries");
+        MongoDBMethods mongoDBClient = new MongoDBMethods();
         Iterable<Delivery> deliveries = mongoDBClient.getAllDeliveries();
-        model.addAttribute("allDeliveries", deliveries);
+        model.addAttribute("allDeliveries", mongoDBClient.getAllDeliveries());
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         return "delivery-list";
@@ -98,6 +97,7 @@ public class DeliveryController {
      */
     @RequestMapping(value="/deliveries/{idDelivery}/delete", method= RequestMethod.GET)
     public String deleteDelivery(@PathVariable String idDelivery){
+        MongoDBMethods mongoDBClient = new MongoDBMethods();
         mongoDBClient.deleteDelivery(idDelivery);
         logger.info(userService.getPrincipalUser() + " deleted delivery " + idDelivery);
         return "redirect:/deliveries" ;
@@ -123,6 +123,7 @@ public class DeliveryController {
 
         delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
         delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
+        MongoDBMethods mongoDBClient = new MongoDBMethods();
         mongoDBClient.putStatement(delivery);
         Delivery delivery_return = mongoDBClient.getLastDelivery();
         if(delivery_return.getFirstName() == null) {

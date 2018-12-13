@@ -32,6 +32,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class testAstar {
 
+    @Mock
+    private JobService jobService;
+    @Mock
+    private JobListService jobListService;
     @Resource
     private Graph graph;
     @Mock

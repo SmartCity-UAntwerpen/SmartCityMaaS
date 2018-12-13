@@ -1,21 +1,18 @@
 package be.uantwerpen.model;
 
-import javax.persistence.Entity;
-
 /**
  * Created by NV 2018
  */
-@Entity
-public class Cost extends MyAbstractPersistable<Long> {
+public class Cost {
     private boolean status;
     private long weightToStart;
     private long weight;
     private long idVehicle;
 
-    public Cost() {
-    }
+    public Cost() {}
 
-    public Cost(boolean status, long weightToStart, long weight, long idVehicle) {
+    public Cost(boolean status, long weightToStart, long weight, long idVehicle)
+    {
         this.status = status;
         this.weightToStart = weightToStart;
         this.weight = weight;
