@@ -201,7 +201,7 @@ public class DataController {
      * @param vehicle_id  The ID of the vehicle
      * @return Returns an integer array [x, y, vehicle_id, percentage]
      */
-    @RequestMapping(value = "/{worldId}/progress/{delivery_id}/{vehicle_id}")
+    @RequestMapping(value = "/{worldId}/progress/{vehicle_id}")
     public int[] getProgress(@PathVariable String worldId, @PathVariable int vehicle_id) {
         int progress = 0;//vehicle.getValue();
         //logger.info("/" + worldId + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");

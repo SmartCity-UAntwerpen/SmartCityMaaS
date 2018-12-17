@@ -419,7 +419,7 @@ function getVehicles(){
     for (var botId in allBots) { // allBots = {id: type}
         botType = allBots[botId];
         (function(botId, botType){
-            $.getJSON("/world1/progress/null/" + botId, function (progress) {
+            $.getJSON("/world1/progress/" + botId, function (progress) {
                 $("#"+ botId + " .idProgress").text(progress[3]);
                 if(botId == currentVehicleID){
                     selected = true;
