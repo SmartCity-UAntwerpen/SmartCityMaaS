@@ -1,13 +1,13 @@
 package be.uantwerpen.data;
 
-import be.uantwerpen.model.*;
-import be.uantwerpen.repositories.*;
+import be.uantwerpen.repositories.PermissionRepository;
+import be.uantwerpen.repositories.RoleRepository;
+import be.uantwerpen.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Databaseloader is used to store information in the database.
@@ -19,16 +19,12 @@ public class DatabaseLoader {
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final DeliveryRepository deliveryRepository;
-    private final JobListRepository jobListRepository;
 
     @Autowired
-    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, DeliveryRepository deliveryRepository, JobListRepository jobListRepository) {
+    public DatabaseLoader(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository) {
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
-        this.deliveryRepository = deliveryRepository;
-        this.jobListRepository = jobListRepository;
     }
 
     @PostConstruct

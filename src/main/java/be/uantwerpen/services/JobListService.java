@@ -16,8 +16,7 @@ import java.util.List;
 
 
 /**
- * Service based off the JobListRepository (formerly known as OrderRepository) in which JobList (Orders) will be saved
- * aswell as all functions needed to dispatch jobs to the cores will be forseen.
+ * Service in which JobList (Orders) will be saved as well as all functions needed to dispatch jobs to the cores will be foreseen.
  * NV 2018
  */
 @Service
@@ -34,22 +33,21 @@ public class JobListService {
 
     public JobListService(@Value("${core.ip}") String coreIp, @Value("${core.port}") int corePort) {
         // Build URL using properties
-        basePath = "http://"+coreIp+":"+corePort+"/jobs";
+        basePath = "http://" + coreIp + ":" + corePort + "/jobs";
     }
 
-    public Iterable<JobList> findAll()
-    {
+    public Iterable<JobList> findAll() {
         String path = basePath + "/findAllJobLists";
         ResponseEntity<List<JobList>> response = restTemplate.exchange(
                 path,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<JobList>>(){});
+                new ParameterizedTypeReference<List<JobList>>() {
+                });
         return response.getBody();
     }
 
-    public void saveOrder(final JobList joblist)
-    {
+    public void saveOrder(final JobList joblist) {
         String path = basePath + "/saveOrder";
 
         //Set your headers
@@ -57,14 +55,14 @@ public class JobListService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Set your entity to send
-        HttpEntity entity = new HttpEntity(joblist,headers);
+        HttpEntity entity = new HttpEntity(joblist, headers);
 
         //Send it!
         ResponseEntity<String> response = restTemplate.exchange(path, HttpMethod.POST, entity
                 , String.class);
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while saving joblist "+joblist.getId());
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            logger.warn("Error while saving joblist " + joblist.getId());
         }
     }
 
@@ -82,8 +80,7 @@ public class JobListService {
         }
     }
 
-    public void dispatchToCore()
-    {
+    public void dispatchToCore() {
         String path = basePath + "/dispatch";
         ResponseEntity<String> response = restTemplate.exchange(path,
                 HttpMethod.POST,
@@ -91,13 +88,14 @@ public class JobListService {
                 String.class
         );
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
+        if (!response.getStatusCode().is2xxSuccessful()) {
             logger.warn("Error while dispatching");
-            logger.warn("Response body: "+response.getBody());
+            logger.warn("Response body: " + response.getBody());
         }
     }
 
     // TODO Nodig?
+
     /**
      * communication to the cores
      *
@@ -170,6 +168,7 @@ public class JobListService {
     }
 
     // TODO Nodig?
+
     /**
      * function to check if order is empty or not
      *
@@ -194,9 +193,9 @@ public class JobListService {
                 id
         );
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while deleting jobList "+id);
-            logger.warn("Response body: "+response.getBody());
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            logger.warn("Error while deleting jobList " + id);
+            logger.warn("Response body: " + response.getBody());
         }
     }
 
@@ -208,9 +207,9 @@ public class JobListService {
                 String.class
         );
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
+        if (!response.getStatusCode().is2xxSuccessful()) {
             logger.warn("Error while deleting all job lists and jobs");
-            logger.warn("Response body: "+response.getBody());
+            logger.warn("Response body: " + response.getBody());
         }
     }
 
