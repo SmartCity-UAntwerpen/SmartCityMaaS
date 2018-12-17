@@ -2,8 +2,9 @@ package be.uantwerpen.localization.astar;
 
 import be.uantwerpen.model.Link;
 import be.uantwerpen.model.Point;
-import be.uantwerpen.services.BackboneService;
 import be.uantwerpen.services.GraphBuilder;
+import be.uantwerpen.services.JobListService;
+import be.uantwerpen.services.JobService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.graphstream.algorithm.AStar;
@@ -13,7 +14,6 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,11 +29,13 @@ public class Astar {
 
     private static final Logger logger = LogManager.getLogger(Astar.class);
 
+    @Autowired
+    private JobService jobService;
+    @Autowired
+    private JobListService jobListService;
     private Graph graph;
     @Autowired
     private GraphBuilder graphBuilder;
-    @Autowired
-    private BackboneService backboneService;
 
     /**
      * Initialise function. this make sure all the information is passed on and all functions are correctly initilised.
@@ -122,28 +124,11 @@ public class Astar {
         // todo get graph from BackBone:
         AStar astar = new AStar(this.graph);
         updateNaE(startPos, endPos);
-        List<Path> paths = getShortestPaths(astar, startPos, endPos, 5);
-        paths.forEach(System.out::println);
-
-//        JobDispatching jd = new JobDispatching(graphBuilder, backboneService);
-//        //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
-//        jd.dispatchOrders2(path.toString(), idDelivery);
+        astar.compute(startPos, endPos);
+        Path path = astar.getShortestPath();
+        logger.info("Shortest Path for " + idDelivery + ": " + path.toString());
+        JobDispatching jd = new JobDispatching(jobService, jobListService, graphBuilder);
+        //JobDispatching jd = new JobDispatching( path.toString(), idDelivery, graphBuilder );
+        jd.dispatchOrders2(path.toString(), idDelivery);
     }
-
-    private List<Path> getShortestPaths(AStar astar, String startPos, String endPos, int number) {
-        List<Path> paths = new ArrayList<>();
-        for (int i = 0; i < number; i++) {
-            astar.compute(startPos, endPos);
-            if (astar.noPathFound()) {
-                logger.info("No additional paths found; returning");
-                return paths;
-            }
-            Path path = astar.getShortestPath();
-            logger.info("Path " + (i + 1) + " calculated: " + path.toString());
-            path.getEdgeSet().forEach(graph::removeEdge);
-//            path.getNodeSet().forEach(graph::removeNode);
-        }
-        return paths;
-    }
-
 }
