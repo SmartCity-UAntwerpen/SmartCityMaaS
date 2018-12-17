@@ -1,8 +1,8 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.localization.astar.Astar;
-import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.model.User;
 import be.uantwerpen.repositories.JobListRepository;
 import be.uantwerpen.services.JobListService;
@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -69,8 +66,9 @@ public class JobController {
     }
 
     //make a specific job
-    @RequestMapping(value = {"/jobs/", "/jobs/{id}"}, method = RequestMethod.POST)
-    public String addJob(@PathVariable Long id, @Valid Job job, BindingResult result, final ModelMap model) {
+    @RequestMapping(value = {"/jobs/"}, method = RequestMethod.POST)
+    public String addJob(@Valid Job job, BindingResult result, final ModelMap model) {
+
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         if (result.hasErrors()) {
@@ -104,11 +102,10 @@ public class JobController {
 
     @RequestMapping(value = "/removeOrders")
     public String removeOrders() {
-        jobListRepository.deleteAll();
+        //jobListRepository.deleteAll(); TODO needed?
         if (jobListRepository.findAll().size() == 0) {
             logger.info(userService.getPrincipalUser() + " removed all orders.");
         }
         return "redirect:/";
     }
-
 }

@@ -1,7 +1,7 @@
 package be.uantwerpen.localization.astar;
 
-import be.uantwerpen.model.Job;
-import be.uantwerpen.model.JobList;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.model.Link;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobListService;
@@ -116,8 +116,8 @@ public class JobDispatching {
         jobListService.saveOrder(joblist);
         logger.info("starting Order input");
         printJobList();
-        // todo dispatch to BackBone
-        jobListService.dispatchToCore(joblist);
+        // Dispatch method will be done on the BackBone
+        jobListService.dispatchToCore();
     }
 
     /**
