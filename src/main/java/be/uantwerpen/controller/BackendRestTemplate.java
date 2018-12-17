@@ -59,7 +59,7 @@ public class BackendRestTemplate {
 
         // Get response from the core
         // COMMENT FOR LOCAL TEST
-/*        HttpEntity<String> httpResponse = restTemplate.exchange(
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET,
                 entity,
@@ -81,7 +81,7 @@ public class BackendRestTemplate {
             ////// TEST - 2018
             obj = parser.parse(new FileReader("testdata/stringmapjson.txt"));
             /////
-            //obj = parser.parse(listOfCore);
+            // obj = parser.parse(listOfCore);
             /////
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray pointsList = (JSONArray) jsonObject.get("pointList");

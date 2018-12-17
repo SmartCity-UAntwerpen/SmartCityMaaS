@@ -140,6 +140,23 @@ public class MongoDBMethods {
 
     }
 
+    /**
+     * Set a delivery as done.
+     *
+     * @param deliveryID The ID of the delivery to be set
+     */
+    public void setDeliveryDone(String deliveryID) {
+        logger.info("Setting delivery [" + deliveryID + "] as done.");
+        MongoCollection<Document> collection = db.getCollection("deliveries");
+
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", deliveryID);
+        BasicDBObject carrier = new BasicDBObject();
+        carrier.put("typeDelivery", "done");
+        BasicDBObject set = new BasicDBObject("$set", carrier);
+        collection.updateOne(query, set);
+    }
+
 
     public List<Delivery> GetListData(FindIterable<Document> cursor){
         List<Delivery> deliveries = new ArrayList<Delivery>();

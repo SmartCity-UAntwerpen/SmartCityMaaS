@@ -93,13 +93,9 @@
 
                                         <script th:inline="javascript">
                                             /*<![CDATA[*/
-                                            var currentVehicleID = -1;
-                                            var currentVehicleType = 'none';
-                                            var path = [];
 
                                             // function is used in button above
                                             function changeSelectVehicle(vehicleType, vehicleID) {
-                                                path.length = 0;
                                                 $('.track').text("TRACK");
                                                 if(currentVehicleID == vehicleID)
                                                 {

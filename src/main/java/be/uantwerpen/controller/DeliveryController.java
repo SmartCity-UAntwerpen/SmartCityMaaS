@@ -161,6 +161,9 @@ public class DeliveryController {
     }
 
 
+    // TODO: SET DELIVERY DONE (MongoDBMethods)
+
+
     /**
      * Return the page with th visualization of the smartcity vehicles on the map.
      * @param model

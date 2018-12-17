@@ -20,6 +20,8 @@ var pointBId = -10;
 
 var linksDrawn = [];
 
+var currentVehicleID = -1;
+var currentVehicleType = 'none';
 
 var prevBotId = -1;
 var traveledPath = [];
@@ -49,7 +51,6 @@ function initFunction() {
     document.getElementById("loader").style.display = "block";
     showPage();
     loadImages();
-    console.log("get world");
     getWorld();
 
     if(visualization){
