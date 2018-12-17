@@ -109,8 +109,6 @@ public class JobService {
         if (tempJob != null){
             tempJob.setIdStart(job.getIdStart());
             tempJob.setIdEnd(job.getIdEnd());
-            tempJob.setIdVehicle(job.getIdVehicle());
-            tempJob.setTypeVehicle(job.getTypeVehicle());
             tempJob.setStatus(job.getStatus());
             this.save(tempJob);
         }

@@ -3,6 +3,7 @@ package be.uantwerpen.localization.astar;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.model.Link;
+import be.uantwerpen.sc.models.JobState;
 import be.uantwerpen.services.GraphBuilder;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.services.JobService;
@@ -66,24 +67,17 @@ public class JobDispatching {
                 job = new Job();
                 job.setIdStart(link.getStopPoint().getId());
                 job.setIdEnd(link.getStopPoint().getId());
-                job.setTypeVehicle(linkList.get(i + 1).getVehicle());
-                job.setStatus("ready");
+                job.setStatus(JobState.TODO);
 //                job.setIdVehicle(linkList.get[j + 1].getVehicleID());
-                logger.info("Rendezvous job for " + job.getTypeVehicle() + ": \tStart: " + job.getIdStart() + "\tEnd: " + job.getIdEnd());
+                logger.info("Rendezvous job: \tStart: " + job.getIdStart() + "\tEnd: " + job.getIdEnd());
             } else {
                 // We DO need a vehicle so let's make a job
                 job = new Job();
                 job.setIdStart(link.getStartPoint().getId()); // set start ID from job
                 job.setIdEnd(link.getStopPoint().getId()); // set stop ID from job
-                job.setTypeVehicle(link.getVehicle());// set vehicle type
-                job.setStatus("ready"); // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
+                job.setStatus(JobState.TODO); // set status (3 status: ready, busy or done. since this is the creating part, we'll init them on ready)
 //                job.setIdVehicle(link.getVehicleID());
-                logger.info("Job initialized for " + job.getTypeVehicle() + ": \tStart: " + job.getIdStart() + "\tEnd: " + job.getIdEnd());
-
-                // for the joblist, we want to keep track of the starting ID!
-                if (joblist.isEmpty()) {
-                    joblist.setStartPoint(job.getIdStart());
-                }
+                logger.info("Job initialized: \tStart: " + job.getIdStart() + "\tEnd: " + job.getIdEnd());
 
                 // to avoid the problem of changing vehicles of a similar type on the same platform, we are keeping the same ID
                 if (previous != null) {
@@ -107,9 +101,6 @@ public class JobDispatching {
                 continue;
             }
             jobService.save(job);
-
-            // update last endpoint of joblist to the last added endpoint
-            joblist.setEndPoint(job.getIdEnd());
         }
 
         joblist.setIdDelivery(idDelivery);
@@ -128,7 +119,7 @@ public class JobDispatching {
         for (JobList jl : jobListService.findAll()) {
             logger.debug(" JOBLIST ID" + jl.getId());
             for (int x = 0; x < jl.getJobs().size(); x++) {
-                logger.debug("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle() + ";   Status :" + jl.getJobs().get(x).getStatus());
+                logger.debug("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
