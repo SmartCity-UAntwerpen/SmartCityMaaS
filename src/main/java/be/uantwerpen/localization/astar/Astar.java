@@ -118,10 +118,13 @@ public class Astar {
      *
      * @param startPos   (String) startingposition
      * @param endPos     (String) End position
+     * @param startMap   (int) map id of startingposition
+     * @param endMap     (int) map id of End position
      * @param idDelivery (String) parameter to link an order to a Delivery.
      */
-    public void determinePath2(String startPos, String endPos, String idDelivery) {
+    public void determinePath2(String startPos, String endPos, int startMap, int endMap, String idDelivery) {
         // todo get graph from BackBone:
+        // TODO hou rekening met verschillende map ids
         AStar astar = new AStar(this.graph);
         updateNaE(startPos, endPos);
         astar.compute(startPos, endPos);

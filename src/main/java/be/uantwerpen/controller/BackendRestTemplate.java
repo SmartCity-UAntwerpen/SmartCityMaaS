@@ -70,63 +70,73 @@ public class BackendRestTemplate {
 
         new JSONObject();
 
-        pointTransition = new HashMap<>();
+       // pointTransition = new HashMap<>();
         JSONParser parser = new JSONParser();
 
         Object obj;
         JSONObject point_jsonObject;
+        JSONObject mapListObject;
         List<DummyPoint> points = new ArrayList<>();
 
         try {
             ////// TEST - 2018
-            obj = parser.parse(new FileReader("testdata/stringmapjson.txt"));
+            obj = parser.parse(new FileReader("testdata/stringmapjsonNEW.txt"));
             /////
             // obj = parser.parse(listOfCore);
             /////
             JSONObject jsonObject = (JSONObject) obj;
-            JSONArray pointsList = (JSONArray) jsonObject.get("pointList");
 
-            Iterator<JSONObject> iterator = pointsList.iterator();
-            int index_counter = 0;
-            while (iterator.hasNext()) {
-                DummyPoint point = new DummyPoint();
+            JSONArray maplist = (JSONArray) jsonObject.get("maplist");
+            Iterator<JSONObject> mapIterator = maplist.iterator();
+            //int index_counter = 0;
+            while (mapIterator.hasNext()) {
+                mapListObject = mapIterator.next();
+                JSONArray pointsList = (JSONArray) mapListObject.get("pointList");
 
-                point_jsonObject = iterator.next();
-                int point_ID = ((Long) point_jsonObject.get("id")).intValue();
-                if (!pointTransition.containsKey(point_ID)) {
-                    pointTransition.put(point_ID, index_counter);
-                    point_ID = index_counter;
-                    index_counter++;
-                } else {
-                    point_ID = pointTransition.get(point_ID);
-                }
-                int x = ((Long) point_jsonObject.get("x")).intValue();
-                int y = ((Long) point_jsonObject.get("y")).intValue();
+                Iterator<JSONObject> iterator = pointsList.iterator();
 
-                String type = (String) point_jsonObject.get("access");
-                String characteristic;
-                characteristic = (String) point_jsonObject.get("type");
-                if (characteristic == null) {
-                    characteristic = "inbetween";
+                while (iterator.hasNext()) {
+                    DummyPoint point = new DummyPoint();
+
+                    point_jsonObject = iterator.next();
+                    int point_ID = ((Long) point_jsonObject.get("id")).intValue();
+                    /*if (!pointTransition.containsKey(point_ID)) {
+                        pointTransition.put(point_ID, index_counter);
+                        point_ID = index_counter;
+                        index_counter++;
+                    } else {
+                        point_ID = pointTransition.get(point_ID);
+                    }*/
+                    int x = ((Long) point_jsonObject.get("x")).intValue();
+                    int y = ((Long) point_jsonObject.get("y")).intValue();
+
+                    String type = (String) mapListObject.get("access");
+                    String characteristic;
+                    characteristic = (String) point_jsonObject.get("type");
+                    if (characteristic == null) {
+                        characteristic = "inbetween";
+                    }
+                    int mapId = ((Long) mapListObject.get("mapId")).intValue();
+                    JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
+                    point.setPointName(point_ID);
+                    point.setPhysicalPoisionX(x);
+                    point.setPhysicalPoisionY(y);
+                    point.setType(type);
+                    point.setMapId(mapId);
+                    point.setPointCharacteristic(characteristic);
+                    for (JSONObject neighbourJSON : (Iterable<JSONObject>) neighbours) {
+                        int neighbour = ((Long) neighbourJSON.get("neighbour")).intValue();
+                        point.addNeighbour(neighbour);
+                    }
+                    points.add(point);
                 }
-                JSONArray neighbours = (JSONArray) point_jsonObject.get("neighbours");
-                point.setPointName(point_ID);
-                point.setPhysicalPoisionX(x);
-                point.setPhysicalPoisionY(y);
-                point.setType(type);
-                point.setPointCharacteristic(characteristic);
-                for (JSONObject neighbourJSON : (Iterable<JSONObject>) neighbours) {
-                    int neighbour = ((Long) neighbourJSON.get("neighbour")).intValue();
-                    point.addNeighbour(neighbour);
-                }
-                points.add(point);
             }
         } catch (ParseException | IOException e) { //IOException
             e.printStackTrace();
         }
 
         // Transform the id of the neighbours to the right one of the HashMap
-        for (int p = 0; p < points.size(); p++) {
+        /*for (int p = 0; p < points.size(); p++) {
             DummyPoint point = points.get(p);
             List<Integer> neighbours = point.getNeighbours();
             for (int i = 0; i < neighbours.size(); i++) {
@@ -140,10 +150,16 @@ public class BackendRestTemplate {
             }
             point.setNeighbours(neighbours);
             points.set(p, point);
-        }
+        }*/
 
         return points;
     }
+
+
+
+    ///_______________________________________________
+    /// DEPRECATED
+    ///_______________________________________________
 
     /**
      * Retrieve the original value from a DummyPoint in the world.
@@ -167,5 +183,6 @@ public class BackendRestTemplate {
     public Integer getValueOfKeyHashMap(Integer key) {
         return pointTransition.get(key);
     }
+    ///_______________________________________________
 
 }

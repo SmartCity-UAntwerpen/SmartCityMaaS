@@ -24,6 +24,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
     private String lastName;
     private String pointA;
     private String pointB;
+    private int mapA;
+    private int mapB;
     private int passengers;
     private String type;
     private String date;
@@ -39,6 +41,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.lastName = lastName;
         this.pointA = "";
         this.pointB = "";
+        this.mapA = -1;
+        this.mapB = -1;
         this.passengers = 0;
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
@@ -49,6 +53,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.lastName = lastName;
         this.pointA = pointA;
         this.pointB = pointB;
+        this.mapA = -1;
+        this.mapB = -1;
         this.passengers = passengers;
         this.date = date;
         this.type = type;
@@ -60,6 +66,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.lastName = lastName;
         this.pointA = pointA;
         this.pointB = pointB;
+        this.mapA = -1;
+        this.mapB = -1;
         this.passengers = passengers;
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
@@ -70,6 +78,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.lastName = lastName;
         this.pointA = pointA;
         this.pointB = pointB;
+        this.mapA = -1;
+        this.mapB = -1;
         this.passengers = passengers;
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
@@ -81,6 +91,8 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.lastName = lastName;
         this.pointA = pointA;
         this.pointB = pointB;
+        this.mapA = -1;
+        this.mapB = -1;
         this.passengers = 0;
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
@@ -147,12 +159,28 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = date;
     }
 
+    public int getMapA() {
+        return mapA;
+    }
+
+    public void setMapA(int mapA) {
+        this.mapA = mapA;
+    }
+
+    public int getMapB() {
+        return mapB;
+    }
+
+    public void setMapB(int mapB) {
+        this.mapB = mapB;
+    }
+
     /**
      * Print all the information of the delivery.
      */
     public void print() {
         logger.info("Delivery: idDelivery " + idDelivery + ", username " + userName + ", firstName " + firstName +
-                ", lastName " + lastName + ", pointA " + pointA + ", pointB " + pointB +
+                ", lastName " + lastName + ", pointA " + pointA + ", pointB " + pointB + ", mapA " + mapA + ", mapB " + mapB +
                 ", passengers " + passengers + ", type " + type + ", date " + date);
     }
 }

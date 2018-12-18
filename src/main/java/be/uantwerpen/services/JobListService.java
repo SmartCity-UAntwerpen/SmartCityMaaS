@@ -48,6 +48,16 @@ public class JobListService {
         return response.getBody();
     }
 
+    public JobList findOneByDelivery(String deliveryId){
+        String path = basePath + "/findOneByDelivery/" + deliveryId;
+        ResponseEntity<JobList> response = restTemplate.exchange(
+                path,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<JobList>(){});
+        return response.getBody();
+    }
+
     public void saveOrder(final JobList joblist)
     {
         String path = basePath + "/saveOrder";

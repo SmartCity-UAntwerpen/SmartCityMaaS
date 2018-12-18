@@ -13,10 +13,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -198,12 +195,11 @@ public class DataController {
      * Its ID is returned as third value in the returned int array.
      *
      * @param worldId     The ID of the world the vehicle is located
-     * @param delivery_id The ID of the delivery
      * @param vehicle_id  The ID of the vehicle
      * @return Returns an integer array [x, y, vehicle_id, percentage]
      */
-    @RequestMapping(value = "/{worldId}/progress/{delivery_id}/{vehicle_id}")
-    public int[] getProgress(@PathVariable String worldId, @PathVariable String delivery_id, @PathVariable int vehicle_id) {
+    @RequestMapping(value = "/{worldId}/progress/{vehicle_id}")
+    public int[] getProgress(@PathVariable String worldId, @PathVariable int vehicle_id) {
         int progress = 0;//vehicle.getValue();
         //logger.info("/" + worldId + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
         World world = new World();
@@ -215,36 +211,19 @@ public class DataController {
         }
         // it returns the value of
         //
-        String idVehicle = "request progress";
         String URL;
         UriComponentsBuilder builder;
         boolean jobListNull = false;
-        // When delivery_id == null then the getprogress function is asked for the the visualization
-        // When delivery is null, then the information of the progress is a request from the visualization.
-        if (!delivery_id.equals("null")) {
-            // Get the ID of the current used vehicle of this delivery.
-            for (JobList jl2 : jobListService.findAll()) {
-                if (jl2.getIdDelivery().equals(delivery_id)) {
-                    vehicleID = Math.toIntExact(jl2.getJobs().get(0).getIdVehicle());
-                    jobListNull = true;
-                }
-            }
-            URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicleID;
-            builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", idVehicle);
-
-        } else {
-            URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
-            builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
-        }
+        URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
+        builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
 
         int[] coordinatesVehicle = new int[4]; // {x, y, id, percentage}
-
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        if (delivery_id.equals("null") || jobListNull) {
+        if (jobListNull) {
             // Get response from the core
             // COMMENT FOR LOCAL TEST
             /*HttpEntity<String> httpResponse = restTemplate.exchange(
@@ -263,7 +242,7 @@ public class DataController {
             job1.setTypeVehicle("car");
             job1.setIdVehicle(1);
             List<Integer> currentListofJobs = new ArrayList<>();
-        String type = null;
+            String type = null;
 
             try {
                 //////// TEST
@@ -281,10 +260,10 @@ public class DataController {
 
                 //logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
                 if (backendRestTemplate == null) logger.error("BackendRestTemplate is null.");
-                int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
-                int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
-                currentListofJobs.add(id_start);
-                currentListofJobs.add(id_end);
+                //int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
+                //int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
+                currentListofJobs.add(idStart);
+                currentListofJobs.add(idEnd);
                 progress = percentage;
 
             } catch (ParseException | IOException e) { // | IOException
@@ -304,4 +283,26 @@ public class DataController {
         return coordinatesVehicle;
     }
 
+    @RequestMapping(value="/{worldId}/delivery/{delivery_id")
+    public void  getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
+        String URL;
+        UriComponentsBuilder builder;
+        URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        HttpEntity<String> httpResponse = restTemplate.exchange(
+                URL,
+                HttpMethod.GET,
+                entity,
+                String.class);
+        String delivery = httpResponse.getBody();
+        JSONParser parser = new JSONParser();
+        try {
+            Object obj = parser.parse(delivery);
+            JSONObject jsonObject = (JSONObject) obj;
+        } catch (ParseException e) {
+            logger.error("ParseException", e);
+        }
+    }
 }
