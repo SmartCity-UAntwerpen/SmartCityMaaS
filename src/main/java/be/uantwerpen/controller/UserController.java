@@ -1,6 +1,5 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Role;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.PassengerService;
@@ -44,8 +43,6 @@ public class UserController {
     private PassengerService passengerService;
     @Autowired
     public BackendRestTemplate backendRestTemplate;
-    @Autowired
-    public Astar astarService;
     @Autowired
     private RestTemplate restTemplate;
 

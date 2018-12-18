@@ -1,21 +1,23 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.databaseAccess.MongoDBMethods;
-import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
-import be.uantwerpen.services.*;
+import be.uantwerpen.services.BackboneService;
+import be.uantwerpen.services.PassengerService;
+import be.uantwerpen.services.UserService;
 import be.uantwerpen.visualization.model.DummyVehicle;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.graphstream.graph.Graph;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -53,9 +55,10 @@ public class DeliveryController {
     @Autowired
     public BackendRestTemplate backendRestTemplate;
     @Autowired
-    public Astar astarService;
-    @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private BackboneService backboneService;
 
     /**
      * Return page with all the deliveries save in the mongoDB database.
@@ -145,8 +148,7 @@ public class DeliveryController {
         model.addAttribute("currentUser", loginUser);
 
         try {
-            astarService.init();
-            astarService.determinePath2(delivery.getPointA(), delivery.getPointB(), delivery.getMapA(), delivery.getMapB(), delivery_return.getIdDelivery());
+            backboneService.planPath(Integer.parseInt(delivery.getPointA()), Integer.parseInt(delivery.getPointB()), delivery.getMapA(), delivery.getMapB());
 
             logger.info("Job has been created by " + loginUser);
             //delivery_return.setPointA(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointA())));

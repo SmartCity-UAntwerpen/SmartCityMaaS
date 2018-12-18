@@ -1,6 +1,5 @@
 package be.uantwerpen.services;
 
-import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import org.apache.log4j.LogManager;
@@ -22,9 +21,6 @@ import java.util.List;
 @Service
 public class JobListService {
     private static final Logger logger = LogManager.getLogger(JobListService.class);
-
-    @Autowired
-    private Astar astar;
 
     @Autowired
     private RestTemplate restTemplate;

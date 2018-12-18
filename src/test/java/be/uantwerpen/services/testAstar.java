@@ -1,6 +1,5 @@
 package be.uantwerpen.services;
 
-import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.Link;
 import be.uantwerpen.model.Point;
 import org.graphstream.algorithm.AStar;
@@ -10,18 +9,13 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Testclass for AStar
@@ -39,11 +33,7 @@ public class testAstar {
     @Resource
     private Graph graph;
     @Mock
-    private GraphBuilder graphBuilder;
-    @Mock
     private AStar testAstar;
-    @InjectMocks
-    private Astar eigenAstar;
     private Link[] linkList = new Link[60];
     private Point[] pointList = new Point[18];
 
@@ -52,7 +42,7 @@ public class testAstar {
         //this.jobService = jobService;
         //this.jobListService = jobListService;
         graph = new SingleGraph("TestSmartCityGraph");
-        eigenAstar.setGraph(graph);
+//        eigenAstar.setGraph(graph);
         setUpTest();
         MockitoAnnotations.initMocks(this);
     }
@@ -60,17 +50,17 @@ public class testAstar {
     @Test
     public void testStartAstar () {
 //        when(graphBuilder.getPointList()).thenReturn(pointList);
-        eigenAstar.makeNode();
+//        eigenAstar.makeNode();
 //        when(graphBuilder.getLinkList()).thenReturn(linkList);
-        eigenAstar.makeEdge();
+//        eigenAstar.makeEdge();
         //testAstar.compute("1015", "1010");
         //testAstar = new AStar(graph);
         testAstar = new AStar(this.graph);
         testAstar.compute("1015", "1010");;
         Path path = testAstar.getShortestPath();
         System.out.println(path);
-        assertEquals(60, eigenAstar.getGraph().getEdgeCount());
-        assertEquals(18, eigenAstar.getGraph().getNodeCount());
+//        assertEquals(60, eigenAstar.getGraph().getEdgeCount());
+//        assertEquals(18, eigenAstar.getGraph().getNodeCount());
         assertEquals("[1015, 1012, 1010]",path.toString());
     }
 

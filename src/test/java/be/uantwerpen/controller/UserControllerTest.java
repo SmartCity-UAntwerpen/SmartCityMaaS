@@ -1,6 +1,5 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.localization.astar.Astar;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.PassengerService;
 import be.uantwerpen.services.RoleService;
@@ -36,8 +35,6 @@ public class UserControllerTest {
     private PassengerService passengerService;
     @Mock
     public BackendRestTemplate backendRestTemplate;
-    @Mock
-    public Astar astarService;
     @Mock
     private RestTemplate restTemplate;
 

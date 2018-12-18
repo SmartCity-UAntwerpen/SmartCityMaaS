@@ -43,4 +43,16 @@ public class BackboneService {
         return linkList.stream().flatMap(link -> Stream.of(link.getStartPoint(), link.getStopPoint())).distinct().collect(Collectors.toList());
     }
 
+    public boolean planPath(int startPid, int startMapId, int endPid, int endMapId) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Void> responseList;
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://" + serverCoreIP + ":" + serverCorePort + "/map/planpath")
+                .queryParam("startpid", startPid)
+                .queryParam("startmapid", startMapId)
+                .queryParam("stoppid", endPid)
+                .queryParam("stopmapid", endMapId);
+        responseList = restTemplate.getForEntity(builder.build().encode().toUri(), Void.class);
+        return responseList.getStatusCode().is2xxSuccessful();
+    }
+
 }
