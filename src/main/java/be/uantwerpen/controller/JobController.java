@@ -1,10 +1,7 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.localization.astar.Astar;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.model.User;
-import be.uantwerpen.repositories.JobListRepository;
+import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.services.JobService;
 import be.uantwerpen.services.UserService;
@@ -14,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 
@@ -27,8 +26,6 @@ public class JobController {
     private JobService jobService;
     @Autowired
     private JobListService jobListService;
-    @Autowired
-    private JobListRepository jobListRepository;
 
     @Autowired
     private UserService userService;
@@ -100,12 +97,4 @@ public class JobController {
         return "redirect:/jobs";
     }
 
-    @RequestMapping(value = "/removeOrders")
-    public String removeOrders() {
-        //jobListRepository.deleteAll(); TODO needed?
-        if (jobListRepository.findAll().size() == 0) {
-            logger.info(userService.getPrincipalUser() + " removed all orders.");
-        }
-        return "redirect:/";
-    }
 }

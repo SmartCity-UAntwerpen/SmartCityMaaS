@@ -16,8 +16,7 @@ import java.util.List;
 
 
 /**
- * Service based off the JobListRepository (formerly known as OrderRepository) in which JobList (Orders) will be saved
- * aswell as all functions needed to dispatch jobs to the cores will be forseen.
+ * Service in which JobList (Orders) will be saved as well as all functions needed to dispatch jobs to the cores will be foreseen.
  * NV 2018
  */
 @Service
@@ -34,17 +33,17 @@ public class JobListService {
 
     public JobListService(@Value("${core.ip}") String coreIp, @Value("${core.port}") int corePort) {
         // Build URL using properties
-        basePath = "http://"+coreIp+":"+corePort+"/jobs";
+        basePath = "http://" + coreIp + ":" + corePort + "/jobs";
     }
 
-    public Iterable<JobList> findAll()
-    {
+    public Iterable<JobList> findAll() {
         String path = basePath + "/findAllJobLists";
         ResponseEntity<List<JobList>> response = restTemplate.exchange(
                 path,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<JobList>>(){});
+                new ParameterizedTypeReference<List<JobList>>() {
+                });
         return response.getBody();
     }
 
@@ -67,14 +66,14 @@ public class JobListService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Set your entity to send
-        HttpEntity entity = new HttpEntity(joblist,headers);
+        HttpEntity entity = new HttpEntity<>(joblist, headers);
 
         //Send it!
         ResponseEntity<String> response = restTemplate.exchange(path, HttpMethod.POST, entity
                 , String.class);
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while saving joblist "+joblist.getId());
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            logger.warn("Error while saving joblist " + joblist.getId());
         }
     }
 
@@ -87,13 +86,12 @@ public class JobListService {
         for (JobList jl : this.findAll()) {
             logger.info(" Order #" + jl.getId());
             for (int x = 0; x < jl.getJobs().size(); x++) {
-                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle() + ";   Status :" + jl.getJobs().get(x).getStatus());
+                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
 
-    public void dispatchToCore()
-    {
+    public void dispatchToCore() {
         String path = basePath + "/dispatch";
         ResponseEntity<String> response = restTemplate.exchange(path,
                 HttpMethod.POST,
@@ -101,13 +99,14 @@ public class JobListService {
                 String.class
         );
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
+        if (!response.getStatusCode().is2xxSuccessful()) {
             logger.warn("Error while dispatching");
-            logger.warn("Response body: "+response.getBody());
+            logger.warn("Response body: " + response.getBody());
         }
     }
 
     // TODO Nodig?
+
     /**
      * communication to the cores
      *
@@ -115,7 +114,7 @@ public class JobListService {
      * @return (boolean) true if successfully sent. False if error occurred
      */
     private Boolean dispatch(Job job) {
-        logger.info("Dispatch " + job.getId() + " - vehicle " + job.getTypeVehicle());
+        logger.info("Dispatch " + job.getId());
         // TODO: dispatch to backbone
         return true;
 //        String stringUrl = "http://";
@@ -180,6 +179,7 @@ public class JobListService {
     }
 
     // TODO Nodig?
+
     /**
      * function to check if order is empty or not
      *
@@ -204,9 +204,9 @@ public class JobListService {
                 id
         );
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while deleting jobList "+id);
-            logger.warn("Response body: "+response.getBody());
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            logger.warn("Error while deleting jobList " + id);
+            logger.warn("Response body: " + response.getBody());
         }
     }
 
@@ -218,59 +218,11 @@ public class JobListService {
                 String.class
         );
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
+        if (!response.getStatusCode().is2xxSuccessful()) {
             logger.warn("Error while deleting all job lists and jobs");
-            logger.warn("Response body: "+response.getBody());
+            logger.warn("Response body: " + response.getBody());
         }
     }
-
-    // TODO
-    /**
-     * recalculate the order for which an error occured during the dispatch2core
-     *
-     * @param idJob      (long) id from the job in which an error occured
-     * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
-     */
-
-
-    public void recalculatePathAfterError(long idJob, String idDelivery) {
-        for (JobList jl : this.findAll()) {
-            // iterate over all orders untill the correct one is found
-            if (jl.getJobs().get(0).getId().equals(idJob)) {
-                String sPos = Long.toString(jl.getJobs().get(0).getIdStart());
-                String ePos = Long.toString(jl.getEndPoint());
-                deleteOrder(jl.getId());
-                astar.determinePath2(sPos, ePos, idDelivery);
-            }
-        }
-    }
-
-
-    // TODO Nodig?
-    /**
-     * function to find a delivery
-     *
-     * @param idDelivery (String) Id from the delivery
-     * @return Job              (Job) first job from the order that is found mathcing the delivery ID
-     */
-
-    /**
-    public Job findDelivery(String idDelivery) {
-        Job found = new Job();
-        boolean foundUpdated = false;
-        for (JobList jl : this.jobListRepository.findAll()) {
-            if (idDelivery.equals(jl.getIdDelivery())) {
-                foundUpdated = true;
-                found = jl.getJobs().get(0);
-            }
-        }
-        if (!foundUpdated) {
-            return null;
-        } else {
-            return found;
-        }
-    }
-     **/
 
 }
 

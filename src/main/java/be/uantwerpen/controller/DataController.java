@@ -87,17 +87,17 @@ public class DataController {
 
     /**
      * Retrieve the real name of a point as it is defined in the received map.
+     *
      * @param valuePoint
      * @return
      */
-    @RequestMapping(value="/retrieveRealPointName/{valuePoint}")
-    public int getPointName(@PathVariable int valuePoint){
+    @RequestMapping(value = "/retrieveRealPointName/{valuePoint}")
+    public int getPointName(@PathVariable int valuePoint) {
         int keyPoint = backendRestTemplate.getKeyHashMap(valuePoint);
-        if(valuePoint != -1) {
-            logger.info("Retrieve key point name from "+valuePoint+ " which is "+ keyPoint);
-        }
-        else{
-            logger.error("Could not retrieve key point name from "+valuePoint+ ", error at "+ keyPoint);
+        if (valuePoint != -1) {
+            logger.info("Retrieve key point name from " + valuePoint + " which is " + keyPoint);
+        } else {
+            logger.error("Could not retrieve key point name from " + valuePoint + ", error at " + keyPoint);
         }
         return keyPoint;
     }
@@ -128,8 +128,8 @@ public class DataController {
      *
      * @return A list of vehicle IDs
      */
-    @RequestMapping(value="/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
-    public HashMap<Integer, String> getAllVehicles(){
+    @RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
+    public HashMap<Integer, String> getAllVehicles() {
         HashMap<Integer, String> idVehicles = new HashMap<Integer, String>();
         String requestAll = "request all";
         // String URL = "http://localhost:9000/posAll";
@@ -160,7 +160,7 @@ public class DataController {
             while (iterator.hasNext()) {
                 obj = iterator.next();
                 JSONObject par_jsonObject = (JSONObject) obj;
-                int idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
+                int idVeh = ((Long) par_jsonObject.get("idVehicle")).intValue();
                 String typeVeh = par_jsonObject.get("type").toString();
                 idVehicles.put(idVeh, typeVeh);
             }
@@ -209,13 +209,9 @@ public class DataController {
                 break;
             }
         }
-        // it returns the value of
-        //
-        String URL;
-        UriComponentsBuilder builder;
         boolean jobListNull = false;
-        URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
-        builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
 
         int[] coordinatesVehicle = new int[4]; // {x, y, id, percentage}
 
@@ -235,12 +231,11 @@ public class DataController {
             logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
             logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
             String vehicleInfo = httpResponse.getBody();*/
+
             JSONParser parser = new JSONParser();
             Job job1 = new Job();
             job1.setIdStart(1);
             job1.setIdEnd(2);
-            job1.setTypeVehicle("car");
-            job1.setIdVehicle(1);
             List<Integer> currentListofJobs = new ArrayList<>();
             String type = null;
 
