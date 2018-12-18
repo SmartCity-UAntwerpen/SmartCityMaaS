@@ -55,7 +55,7 @@ public class JobListService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Set your entity to send
-        HttpEntity entity = new HttpEntity(joblist, headers);
+        HttpEntity entity = new HttpEntity<>(joblist, headers);
 
         //Send it!
         ResponseEntity<String> response = restTemplate.exchange(path, HttpMethod.POST, entity
