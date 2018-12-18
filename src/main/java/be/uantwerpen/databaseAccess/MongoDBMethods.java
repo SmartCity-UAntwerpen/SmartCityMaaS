@@ -37,7 +37,7 @@ public class MongoDBMethods {
         mongo = new MongoClient("143.129.39.127", 27017);
         /* Get database */
         // if database doesn't exists, MongoDB will create it for you
-        db = mongo.getDatabase("smartcity");
+        db = mongo.getDatabase("local");
     }
 
     /**

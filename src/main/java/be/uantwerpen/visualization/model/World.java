@@ -83,13 +83,12 @@ public class World {
         int endY = 0;
 
         boolean beginYaxis = true; //start in Y direction
-        int startPointId = 0;
+
         //logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
         for(int i = 0; i < points.size(); i++){
             if(points.get(i).getPointName() == startID){
                 startX = points.get(i).getPhysicalPoisionX();
                 startY = points.get(i).getPhysicalPoisionY();
-                startPointId = i;
             }
             if(points.get(i).getPointName() == endID){
                 endX = points.get(i).getPhysicalPoisionX();
@@ -109,35 +108,33 @@ public class World {
         switch (type) {
             case "robot":
                 //90 graden
-                if(startX != endX && startY != endY) {
-                    // control corner direction: check if start has neighbour intersections not to pass
-                    if(endID != points.get(startPointId+1).getPointName()){
-                        if(points.get(startPointId+1).getPhysicalPoisionY() == endY){
-                            beginYaxis = false;
-                        }
-
-                    } else if(endID != points.get(startPointId-1).getPointName()){
-                        if(points.get(startPointId-1).getPhysicalPoisionY() == endY){
-                            beginYaxis = false;
-                        }
+                if(startX != endX || startY != endY) {
+                    // control corner direction: path starts from ID = 0 in x-direction
+                    if(startID < endID) {
+                        beginYaxis = false;
                     }
 
-                    if (progress <= 0.5) {
-                        if(beginYaxis) { // start in Y direction
-                            coordinates[0] = startX;
-                            coordinates[1] = (int) (startY + (distY * progress * 2));
-                        } else { // start in X direction
-                            coordinates[0] = (int) (startX + (distX * progress * 2));
-                            coordinates[1] = startY;
+                    if(distX != 0 && distY != 0) { // if corner
+                        if (progress <= 0.5) {
+                            if (beginYaxis) { // start in Y direction
+                                coordinates[0] = startX;
+                                coordinates[1] = (int) (startY + (distY * progress * 2));
+                            } else { // start in X direction
+                                coordinates[0] = (int) (startX + (distX * progress * 2));
+                                coordinates[1] = startY;
+                            }
+                        } else {
+                            if (beginYaxis) {
+                                coordinates[0] = (int) (endX - (distX * (1 - progress) * 2));
+                                coordinates[1] = endY;
+                            } else {
+                                coordinates[0] = endX;
+                                coordinates[1] = (int) (endY - (distY * (1 - progress) * 2));
+                            }
                         }
                     } else {
-                        if(beginYaxis) {
-                            coordinates[0] = (int) (endX - (distX * (1 - progress) * 2));
-                            coordinates[1] = endY;
-                        } else {
-                            coordinates[0] = endX;
-                            coordinates[1] = (int) (endY - (endY * (1 - progress) * 2));
-                        }
+                        coordinates[0] = (int) (startX + (distX * progress));
+                        coordinates[1] = (int) (startY + (distY * progress));
                     }
                 }
                 break;

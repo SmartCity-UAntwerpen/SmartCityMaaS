@@ -26,8 +26,9 @@ var linksDrawn = [];
 var currentVehicleID = -1;
 var currentVehicleType = 'none';
 
-var prevBotId = -1;
 var traveledPath = [];
+
+var jobs = [];
 
 var droneDefault;
 var dronePointA;
@@ -47,6 +48,7 @@ var racecarIconTarget;
 var lightGreenIcon;
 var lightRedIcon;
 
+var vehiclesInterval;
 /**
  * The initialize function of the html page.
  */
@@ -60,7 +62,7 @@ function initFunction() {
         $.getJSON("/world1/allVehicles").done(function(allVehicles) {
             allBots = allVehicles;
         });
-        setInterval(getVehicles, 1000);
+        vehiclesInterval = setInterval(getVehicles, 1000);
     }
 
     if(!only_view)
@@ -121,7 +123,8 @@ function getWorld(){
     $.getJSON("/retrieveWorld", function(result){
         world = result;
         worldLoaded = true;
-console.log(result);
+        console.log(result);
+
         var ratio = world.dimensionX/world.dimensionY;
         $("#mapCanvas").width($("#myMapCanvas").width()).height( $("#myMapCanvas").width()/ratio ).attr("width", $("#mapCanvas").width()).attr("height", $("#mapCanvas").height());
 
@@ -158,61 +161,17 @@ function drawWorld(){
             })[0];
             var linkAlreadyDrawn = false;
             for(var k=0; k < linksDrawn.length; k++){
-                if(linksDrawn[k].end == i && linksDrawn[k].start == neigbourID){
+                if(linksDrawn[k].end == point.pointName && linksDrawn[k].start == neigbourID){
                     linkAlreadyDrawn = true;
+                } else if(linksDrawn[k].start == point.pointName && linksDrawn[k].end == neigbourID) {
+                    linkAlreadyDrawn = false;
                 }
             }
             if(!linkAlreadyDrawn){
                 ctx.beginPath();
+                drawLink(point.type, point, neigbour, false);
 
-                ctx.moveTo(point.physicalPoisionX*xSize,point.physicalPoisionY*ySize);
-
-                switch (point.type) {
-                    case "robot":
-                        ctx.setLineDash([]);
-                        ctx.strokeStyle = '#e67e22';
-                        ctx.lineWidth=5;
-                        //90 graden
-                        ctx.lineTo(point.physicalPoisionX * xSize, neigbour.physicalPoisionY * ySize);
-                        break;
-                    case "car":
-                        ctx.setLineDash([]);
-                        ctx.strokeStyle = '#95a5a6';
-                        ctx.lineWidth=7;
-
-                        var distX = (neigbour.physicalPoisionX - point.physicalPoisionX);
-                        var distY = (neigbour.physicalPoisionY - point.physicalPoisionY);
-                        var distXpiece = distX/8;
-                        var distYpiece = distY/8;
-                        var pointX = 0;
-                        var pointY = 0;
-
-                        /*if(distX > 0) { // neighbour to the right (left city is higher than right city)
-                            pointX = point.physicalPoisionX + 5 * distXpiece; // go on x-axis 5/8
-                            pointY = point.physicalPoisionY + distYpiece; // go on y-axis 1/8
-                            ctx.lineTo(pointX * xSize, pointY * ySize);
-                            pointX = point.physicalPoisionX + 7 * distXpiece; // go further on x-as until 7/8
-                            pointY = point.physicalPoisionY + 3 * distYpiece; // go further on y-axis until 3/8
-                            ctx.lineTo(pointX * xSize, pointY * ySize);*/
-                        //} else {
-                            // CAR POINTS ID GIVEN FROM BOTTOM COUNTER CLOCK WISE (better this way)
-                            pointX = point.physicalPoisionX + distXpiece;
-                            pointY = point.physicalPoisionY + 5 * distYpiece;
-                            ctx.lineTo(pointX * xSize, pointY * ySize);
-                            pointX = point.physicalPoisionX + 3 * distXpiece;
-                            pointY = point.physicalPoisionY + 7 * distYpiece;
-                            ctx.lineTo(pointX * xSize, pointY * ySize);
-                        //}
-                        break;
-                    case "drone":
-                        ctx.setLineDash([5, 15]);
-                        ctx.strokeStyle = '#2980b9';
-                        ctx.lineWidth= 2;
-                }
-
-                ctx.lineTo(neigbour.physicalPoisionX*xSize,neigbour.physicalPoisionY*ySize);
-                ctx.stroke();
-                linksDrawn.push({start:i,end: neigbourID});
+                linksDrawn.push({start:point.pointName,end: neigbourID});
             }
         }
 
@@ -423,16 +382,20 @@ function showPage() {
 }
 
 function getVehicles(){
+    if (jobs.length > 0){
+        clearInterval(vehiclesInterval);
+    }
     var selected = false;
     if(ctx){
         ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
         drawWorld();
     }
-    var botType = "unknown";
+
     for (var botId in allBots) { // allBots = {id: type}
-        botType = allBots[botId];
+        var botType = allBots[botId];
         (function(botId, botType){
             $.getJSON("/world1/progress/" + botId, function (progress) {
+
                 $("#"+ botId + " .idProgress").text(progress[3]);
                 if(botId == currentVehicleID){
                     selected = true;
@@ -441,12 +404,10 @@ function getVehicles(){
                 }
                 if (progress[0] != -1) { // if progression arrived
 
+                    // TODO x en y --> OFFSET per map
                     drawVehicle(botType, progress[0], progress[1], selected);
 
                     if(selected) {
-                        if(currentVehicleID != prevBotId) { // new tracked vehicle
-                            traveledPath = [];
-                        }
                         if (traveledPath.length < 1) {
                             traveledPath.push([progress[0], progress[1]]);
                         } else if (!(traveledPath[traveledPath.length - 1][0] == progress[0] && traveledPath[traveledPath.length - 1][1] == progress[1])) {
@@ -455,27 +416,96 @@ function getVehicles(){
                         // DRAW TRAVELED PATH FROM SELECTED
                         ctx.beginPath();
                         ctx.setLineDash([20, 5]);
-                        ctx.strokeStyle = '#008000';
+                        ctx.strokeStyle = '#00d900';
                         ctx.lineWidth = 3;
                         ctx.moveTo(traveledPath[0][0] * xSize, traveledPath[0][1] * ySize);
                         for (var j = 1; j < traveledPath.length; j++) {
                             ctx.lineTo(traveledPath[j][0] * xSize, traveledPath[j][1] * ySize);
                         }
                         ctx.stroke();
-                        prevBotId = botId;
                     }
                 }
             })
         })(botId, botType);
     }
-    if(currentVehicleID == -1) {
-        prevBotId = 0;
-        traveledPath = [];
-    }
 }
 
 function trackDelivery(deliveryId){
+    $.getJSON("/world1/progress/delivery/" + deliveryId).done(function(delivery) {
+        console.log(delivery);
+        jobs = delivery.jobs;
+        for (var i = 0; i < jobs.length; i++) {
+            var startPoint = $.grep(world.points, function(e){
+                return e.pointName === jobs[i].idStart && e.mapId === jobs[i].idMap;
+            })[0];
 
+            var endPoint = $.grep(world.points, function(e){
+                return e.pointName === jobs[i].idEnd && e.mapId === jobs[i].idMap;
+            })[0];
+
+            ctx.beginPath();
+            ctx.setLineDash([20, 5]);
+            ctx.strokeStyle = '#d90d1d';
+            ctx.lineWidth = 3;
+            drawLink(type, startpoint, endpoint, true)
+        }
+    });
+}
+
+function drawLink(type, startpoint, endpoint, track){
+
+    ctx.moveTo(startpoint.physicalPoisionX*xSize,startpoint.physicalPoisionY*ySize);
+
+    switch (type) {
+        case "robot":
+            if (!track) {
+                ctx.setLineDash([]);
+                ctx.strokeStyle = '#e67e22';
+                ctx.lineWidth = 5;
+            }
+            //90 graden
+            ctx.lineTo(startpoint.physicalPoisionX * xSize, endpoint.physicalPoisionY * ySize);
+            break;
+        case "car":
+            if (!track) {
+                ctx.setLineDash([]);
+                ctx.strokeStyle = '#95a5a6';
+                ctx.lineWidth = 7;
+            }
+            var distX = (endpoint.physicalPoisionX - startpoint.physicalPoisionX);
+            var distY = (endpoint.physicalPoisionY - startpoint.physicalPoisionY);
+            var distXpiece = distX/8;
+            var distYpiece = distY/8;
+            var pointX = 0;
+            var pointY = 0;
+
+            /*if(distX > 0) { // neighbour to the right (left city is higher than right city)
+                pointX = point.physicalPoisionX + 5 * distXpiece; // go on x-axis 5/8
+                pointY = point.physicalPoisionY + distYpiece; // go on y-axis 1/8
+                ctx.lineTo(pointX * xSize, pointY * ySize);
+                pointX = point.physicalPoisionX + 7 * distXpiece; // go further on x-as until 7/8
+                pointY = point.physicalPoisionY + 3 * distYpiece; // go further on y-axis until 3/8
+                ctx.lineTo(pointX * xSize, pointY * ySize);*/
+            //} else {
+            // CAR POINTS ID GIVEN FROM BOTTOM COUNTER CLOCK WISE (better this way)
+            pointX = startpoint.physicalPoisionX + distXpiece;
+            pointY = startpoint.physicalPoisionY + 5 * distYpiece;
+            ctx.lineTo(pointX * xSize, pointY * ySize);
+            pointX = startpoint.physicalPoisionX + 3 * distXpiece;
+            pointY = startpoint.physicalPoisionY + 7 * distYpiece;
+            ctx.lineTo(pointX * xSize, pointY * ySize);
+            //}
+            break;
+        case "drone":
+            if (!track) {
+                ctx.setLineDash([5, 15]);
+                ctx.strokeStyle = '#2980b9';
+                ctx.lineWidth = 2;
+            }
+    }
+
+    ctx.lineTo(endpoint.physicalPoisionX*xSize,endpoint.physicalPoisionY*ySize);
+    ctx.stroke();
 }
 
 

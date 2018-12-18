@@ -209,7 +209,7 @@ public class DataController {
                 break;
             }
         }
-        boolean jobListNull = false;
+
         String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
 
@@ -219,70 +219,66 @@ public class DataController {
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        if (jobListNull) {
-            // Get response from the core
-            // COMMENT FOR LOCAL TEST
-            /*HttpEntity<String> httpResponse = restTemplate.exchange(
-                    builder.build().encode().toUri(),
-                    HttpMethod.GET,
-                    entity,
-                    String.class);
-            logger.info("[getProgress] Response backbone : " + httpResponse.toString());
-            logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
-            logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
-            String vehicleInfo = httpResponse.getBody();*/
 
-            JSONParser parser = new JSONParser();
-            Job job1 = new Job();
-            job1.setIdStart(1);
-            job1.setIdEnd(2);
-            List<Integer> currentListofJobs = new ArrayList<>();
-            String type = null;
+        // Get response from the core
+        // COMMENT FOR LOCAL TEST
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
+                builder.build().encode().toUri(),
+                HttpMethod.GET,
+                entity,
+                String.class);
+        logger.info("[getProgress] Response backbone : " + httpResponse.toString());
+        logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
+        logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
+        String vehicleInfo = httpResponse.getBody();*/
 
-            try {
-                //////// TEST
-                Object obj = parser.parse(new FileReader("testdata/getOneVehicle" + vehicle_id + ".txt"));
-                ////
-                //Object obj = parser.parse(vehicleInfo);
-                //////////
+        JSONParser parser = new JSONParser();
+        Job job1 = new Job();
+        job1.setIdStart(1);
+        job1.setIdEnd(2);
+        List<Integer> currentListofJobs = new ArrayList<>();
+        String type = null;
 
-                JSONObject jsonObject = (JSONObject) obj;
-                int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
-                int idStart = ((Long) jsonObject.get("idStart")).intValue();
-                int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
-                int percentage = ((Long) jsonObject.get("percentage")).intValue();
-                type = jsonObject.get("type").toString();
+        try {
+            //////// TEST
+            Object obj = parser.parse(new FileReader("testdata/getOneVehicle" + vehicle_id + ".txt"));
+            ////
+            //Object obj = parser.parse(vehicleInfo);
+            //////////
 
-                //logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
-                if (backendRestTemplate == null) logger.error("BackendRestTemplate is null.");
-                //int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
-                //int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
-                currentListofJobs.add(idStart);
-                currentListofJobs.add(idEnd);
-                progress = percentage;
+            JSONObject jsonObject = (JSONObject) obj;
+            int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
+            int idStart = ((Long) jsonObject.get("idStart")).intValue();
+            int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
+            progress = ((Long) jsonObject.get("percentage")).intValue();
+            type = jsonObject.get("type").toString();
 
-            } catch (ParseException | IOException e) { // | IOException
-                logger.error("ParseException", e);
-            }
-            int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs, progress, type);
-            coordinatesVehicle[0] = coordinatesVehicle_temp[0];
-            coordinatesVehicle[1] = coordinatesVehicle_temp[1];
-            coordinatesVehicle[2] = vehicle_id;
-            coordinatesVehicle[3] = progress;
-        } else {
-            coordinatesVehicle[0] = -1;
-            coordinatesVehicle[1] = -1;
-            coordinatesVehicle[2] = vehicleID;
-            coordinatesVehicle[3] = -1;
+            //logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
+            if (backendRestTemplate == null) logger.error("BackendRestTemplate is null.");
+            //int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
+            //int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
+            currentListofJobs.add(idStart);
+            currentListofJobs.add(idEnd);
+
+        } catch (ParseException | IOException e) { // | IOException
+            logger.error("ParseException", e);
         }
+        int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs, progress, type);
+        coordinatesVehicle[0] = coordinatesVehicle_temp[0];
+        coordinatesVehicle[1] = coordinatesVehicle_temp[1];
+        coordinatesVehicle[2] = vehicle_id;
+        coordinatesVehicle[3] = progress;
+
         return coordinatesVehicle;
     }
 
-    @RequestMapping(value="/{worldId}/delivery/{delivery_id")
-    public void  getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
+    @RequestMapping(value="/{worldId}/delivery/{delivery_id}")
+    public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
+        JSONObject jsonObject = new JSONObject();
         String URL;
         UriComponentsBuilder builder;
-        URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
+        //URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
+        URL = "http://localhost:10000/jobs/findOneByDelivery/MaaSId1";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -295,9 +291,10 @@ public class DataController {
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(delivery);
-            JSONObject jsonObject = (JSONObject) obj;
+            jsonObject = (JSONObject) obj;
         } catch (ParseException e) {
             logger.error("ParseException", e);
         }
+        return jsonObject;
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 @SpringBootApplication
+@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})
 public class SmartcityMaaS extends WebMvcConfigurerAdapter {
 
 	private static final Logger logger = LogManager.getLogger(SmartcityMaaS.class);

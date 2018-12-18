@@ -51,6 +51,7 @@
                                         <th th:text="#{start} + #{id}">Start ID</th>
                                         <th th:text="#{arrival} + #{map}">Arrival map</th>
                                         <th th:text="#{arrival} + #{id}">Arrival ID</th>
+                                        <th><span th:text="#{show}">SHOW</span></th>
                                     </tr>
                                     </thead>
                                     <!-- IMPORTANT, class="list" have to be at tbody -->
@@ -62,6 +63,7 @@
                                         <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
                                         <td class="pointName" th:value="${mapB}" th:text="${delivery.mapB }">Map B</td>
                                         <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
+                                        <td><button class="button track" th:text="#{show}" th:onclick="${'javascript:trackDelivery(' + delivery.idDelivery + ')'}">Track</button></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -101,6 +103,7 @@
                                             // function is used in button above
                                             function changeSelectVehicle(vehicleType, vehicleID) {
                                                 $('.track').text("TRACK");
+                                                traveledPath = [];
                                                 if(currentVehicleID == vehicleID)
                                                 {
                                                     currentVehicleID = -1;

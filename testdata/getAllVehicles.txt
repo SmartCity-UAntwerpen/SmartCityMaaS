@@ -1,1 +1,1 @@
-{"vehicles" : [ {"idVehicle" :1247, "idStart" : 46, "idEnd" : 45, "percentage" : 0, "type" : "car"},{"idVehicle" :1251, "idStart" : 43, "idEnd" : 42, "percentage" : 00, "type" : "drone"},{"idVehicle" :1250, "idStart" : 17, "idEnd" : 19, "percentage" : 00, "type" : "robot"}]}
+{"vehicles" : [ {"idVehicle" :1247, "idStart" : 46, "idEnd" : 45, "percentage" : 0, "type" : "car"},{"idVehicle" :1251, "idStart" : 43, "idEnd" : 42, "percentage" : 00, "type" : "drone"},{"idVehicle" :1250, "idStart" : 3, "idEnd" : 4, "percentage" : 00, "type" : "robot"}]}
