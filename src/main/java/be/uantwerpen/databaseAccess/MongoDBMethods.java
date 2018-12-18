@@ -37,7 +37,7 @@ public class MongoDBMethods {
         mongo = new MongoClient("143.129.39.127", 27017);
         /* Get database */
         // if database doesn't exists, MongoDB will create it for you
-        db = mongo.getDatabase("local");
+        db = mongo.getDatabase("smartcity");
     }
 
     /**
@@ -55,6 +55,8 @@ public class MongoDBMethods {
         document.put("lastname", delivery.getLastName());
         document.put("pointA", delivery.getPointA());
         document.put("pointB", delivery.getPointB());
+        document.put("mapA", delivery.getMapA());
+        document.put("mapB", delivery.getMapB());
         document.put("passengers", ("" + delivery.getPassengers()));
         document.put("timesample", new Date());
         mydatabaserecords.insertOne(document);
@@ -93,6 +95,8 @@ public class MongoDBMethods {
             String lastname = doc.getString("lastname");
             String pointA = doc.getString("pointA");
             String pointB = doc.getString("pointB");
+            int mapA = doc.getInteger("mapA");
+            int mapB = doc.getInteger("mapB");
             String passengers = doc.getString("passengers");
             Date d = new Date(doc.getDate("timesample").getTime());
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
@@ -102,6 +106,8 @@ public class MongoDBMethods {
             lastDelivery.setLastName(lastname);
             lastDelivery.setPointA(pointA);
             lastDelivery.setPointB(pointB);
+            lastDelivery.setMapA(mapA);
+            lastDelivery.setMapB(mapB);
             lastDelivery.setType(typeDelivery);
             lastDelivery.setPassengers(Integer.parseInt(passengers));
             lastDelivery.setDate(timestamp);
@@ -170,6 +176,8 @@ public class MongoDBMethods {
                 String lastname = it.getString("lastname");
                 String pointA = it.getString("pointA");
                 String pointB = it.getString("pointB");
+                int mapA = it.getInteger("mapA");
+                int mapB = it.getInteger("mapB");
                 String passengers = it.getString("passengers");
                 Date d = new Date(it.getDate("timesample").getTime());
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
@@ -179,6 +187,8 @@ public class MongoDBMethods {
                 delivery.setLastName(lastname);
                 delivery.setPointA(pointA);
                 delivery.setPointB(pointB);
+                delivery.setMapA(mapA);
+                delivery.setMapB(mapB);
                 delivery.setType(typeDelivery);
                 delivery.setPassengers(Integer.parseInt(passengers));
                 delivery.setDate(timestamp);

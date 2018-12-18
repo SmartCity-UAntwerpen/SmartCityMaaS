@@ -113,7 +113,7 @@ public class DeliveryController {
     @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
     public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
         logger.info(result.getModel());
-        logger.info("Delivery: point A "+ delivery.getPointA() + ", point B "+ delivery.getPointB());
+        logger.info("Delivery: point A "+ delivery.getPointA() + " map " + delivery.getMapA() + ", point B "+ delivery.getPointB() + " map " + delivery.getMapB());
 
         if(result.hasErrors()){
             model.addAttribute("allPassengers", passengerService.findAll());
@@ -121,8 +121,8 @@ public class DeliveryController {
         }
         delivery.setType("HumanTransport");
 
-        delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
-        delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
+        //delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
+        //delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods mongoDBClient = new MongoDBMethods();
         mongoDBClient.putStatement(delivery);
         Delivery delivery_return = mongoDBClient.getLastDelivery();
@@ -146,11 +146,11 @@ public class DeliveryController {
 
         try {
             astarService.init();
-            astarService.determinePath2(delivery.getPointA(), delivery.getPointB(), delivery_return.getIdDelivery());
+            astarService.determinePath2(delivery.getPointA(), delivery.getPointB(), delivery.getMapA(), delivery.getMapB(), delivery_return.getIdDelivery());
 
             logger.info("Job has been created by " + loginUser);
-            delivery_return.setPointA(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
-            delivery_return.setPointB(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
+            //delivery_return.setPointA(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
+            //delivery_return.setPointB(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
             model.addAttribute("delivery", delivery_return);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

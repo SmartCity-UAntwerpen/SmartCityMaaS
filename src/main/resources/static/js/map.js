@@ -18,6 +18,9 @@ var pointBset = false;
 var pointAId = -10;
 var pointBId = -10;
 
+var mapAId = -10;
+var mapBId = -10;
+
 var linksDrawn = [];
 
 var currentVehicleID = -1;
@@ -118,7 +121,7 @@ function getWorld(){
     $.getJSON("/retrieveWorld", function(result){
         world = result;
         worldLoaded = true;
-
+console.log(result);
         var ratio = world.dimensionX/world.dimensionY;
         $("#mapCanvas").width($("#myMapCanvas").width()).height( $("#myMapCanvas").width()/ratio ).attr("width", $("#mapCanvas").width()).attr("height", $("#mapCanvas").height());
 
@@ -148,7 +151,11 @@ function drawWorld(){
 
         for(var j=0; j < point.neighbours.length; j++){
             var neigbourID = point.neighbours[j];
-            var neigbour = world.points[neigbourID];
+            //var neigbour = world.points[neigbourID];
+            //var neigbour = world.points.find(item => item.pointName === neigbourID);
+            var neigbour = $.grep(world.points, function(e){
+                return e.pointName === neigbourID;
+            })[0];
             var linkAlreadyDrawn = false;
             for(var k=0; k < linksDrawn.length; k++){
                 if(linksDrawn[k].end == i && linksDrawn[k].start == neigbourID){
@@ -248,7 +255,7 @@ function clickedOnCanvas(event){
     var canvasY = event.clientY - rect.top;
     console.log("Point clicked x = " + canvasX + ", y = " + canvasY);
     if(pointAset){
-        var point = world.points[pointAId];
+        var point =  $.grep(world.points, function(e){return e.pointName === pointAId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             switch (point.type) {
                 case "robot":
@@ -268,11 +275,12 @@ function clickedOnCanvas(event){
             console.log("turning off point A");
             pointAset = false;
             pointAId = -10;
+            mapAId = -10;
             return;
         }
     }
     if(pointBset){
-        var point = world.points[pointBId];
+        var point = $.grep(world.points, function(e){return e.pointName === pointBId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             console.log("pointBset");
             switch (point.type) {
@@ -292,6 +300,7 @@ function clickedOnCanvas(event){
             console.log("turning off point B");
             pointBset = false;
             pointBId = -10;
+            mapBId = -10;
             document.getElementById('saveDelivery').style.visibility = 'hidden';
             return;
         }
@@ -301,7 +310,9 @@ function clickedOnCanvas(event){
             var point = world.points[i];
             if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
                 if(!pointAset){
-                    console.log("Point A id = " + i);
+                    pointAId = point.pointName;
+                    mapAId = point.mapId;
+                    console.log("Point A id = " + pointAId + " - map " + mapAId);
                     switch (point.type) {
                         case "robot":
                             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
@@ -316,14 +327,16 @@ function clickedOnCanvas(event){
                             ctx.drawImage(dronePointA,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             break;
                     }
-                    pointAId = i;
                     pointAset = true;
-                    document.getElementById("inputA").value = point.pointName;
+                    document.getElementById("inputA").value = pointAId;
+                    document.getElementById("mapA").value = mapAId;
                     if(pointBset){
                         document.getElementById('saveDelivery').style.visibility = 'visible';
                     }
                 }
                 else{
+                    pointBId = point.pointName;
+                    mapBId = point.mapId;
                     switch (point.type) {
                         case "robot":
                             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
@@ -338,11 +351,11 @@ function clickedOnCanvas(event){
                             ctx.drawImage(dronePointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             break;
                     }
-                    console.log("Point B id = " + i);
+                    console.log("Point B id = " + pointBId + " - map " + mapBId);
                     ctx.fillStyle="#0000FF";
-                    pointBId = i;
                     pointBset = true;
-                    document.getElementById("inputB").value = point.pointName;
+                    document.getElementById("inputB").value = pointBId;
+                    document.getElementById("mapB").value = mapBId;
                     document.getElementById('saveDelivery').style.visibility = 'visible';
 
                 }
@@ -389,13 +402,13 @@ function showPage() {
         if(only_view == false)
         {
             document.getElementById("content").style.visibility = "visible";
-            document.getElementById("passengersLabel").style.visibility = "visible";
-            document.getElementById("passengersSelect").style.visibility = "visible";
+            //document.getElementById("passengersLabel").style.visibility = "visible";
+            //document.getElementById("passengersSelect").style.visibility = "visible";
         }else
             if(visualization == false) {
                 document.getElementById("content").style.visibility = "visible";
-                document.getElementById("passengersLabel").style.visibility = "visible";
-                document.getElementById("passengersNumber").style.visibility = "visible";
+                //document.getElementById("passengersLabel").style.visibility = "visible";
+                //document.getElementById("passengersNumber").style.visibility = "visible";
                 document.getElementById("pointALabel").style.visibility = "visible";
                 document.getElementById("pointAtext").style.visibility = "visible";
                 document.getElementById("pointBLabel").style.visibility = "visible";
@@ -459,6 +472,10 @@ function getVehicles(){
         prevBotId = 0;
         traveledPath = [];
     }
+}
+
+function trackDelivery(deliveryId){
+
 }
 
 

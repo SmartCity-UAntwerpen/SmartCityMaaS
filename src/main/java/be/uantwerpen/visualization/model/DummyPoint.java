@@ -27,6 +27,7 @@ public class DummyPoint {
     private int physicalPoisionY;
     private String type;
     private String pointCharacteristic;
+    private int mapId;
 
     public DummyPoint() {
         this.neighbours = new ArrayList<Integer>();
@@ -109,5 +110,13 @@ public class DummyPoint {
     }
     public void setPointCharacteristic(String pointCharacteristic) {
         this.pointCharacteristic = pointCharacteristic;
+    }
+
+    public int getMapId() {
+        return mapId;
+    }
+
+    public void setMapId(int mapId) {
+        this.mapId = mapId;
     }
 }

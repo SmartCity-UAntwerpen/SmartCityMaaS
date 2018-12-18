@@ -47,7 +47,18 @@ public class JobListService {
         return response.getBody();
     }
 
-    public void saveOrder(final JobList joblist) {
+    public JobList findOneByDelivery(String deliveryId){
+        String path = basePath + "/findOneByDelivery/" + deliveryId;
+        ResponseEntity<JobList> response = restTemplate.exchange(
+                path,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<JobList>(){});
+        return response.getBody();
+    }
+
+    public void saveOrder(final JobList joblist)
+    {
         String path = basePath + "/saveOrder";
 
         //Set your headers
@@ -55,7 +66,7 @@ public class JobListService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //Set your entity to send
-        HttpEntity entity = new HttpEntity(joblist, headers);
+        HttpEntity entity = new HttpEntity<>(joblist, headers);
 
         //Send it!
         ResponseEntity<String> response = restTemplate.exchange(path, HttpMethod.POST, entity
