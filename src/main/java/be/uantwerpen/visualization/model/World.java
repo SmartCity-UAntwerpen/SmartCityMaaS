@@ -70,9 +70,9 @@ public class World {
      * @return
      */
 
-    public int[] getDistancePoints(List<Integer> jobs, int progress, String type)
+    public int[] getDistancePoints(List<Integer> endPoints, int progress, String type)
     {
-        return getDistance(jobs.get(0),jobs.get(1),(double)(progress)/100.0, type);
+        return getDistance(endPoints.get(0),endPoints.get(1),(double)(progress)/100.0, type);
     }
 
     public int[] getDistance(int startID, int endID, double progress, String type){

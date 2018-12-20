@@ -260,3 +260,15 @@ label.no-bold {
 span.pink-letter {
     color: #cc0099;
 }
+
+
+.deliverBtn {
+    position: fixed;
+    float: right;
+    bottom: 50px;
+    right: 50px;
+}
+
+.deliverBtn button {
+    width: 80px;
+}

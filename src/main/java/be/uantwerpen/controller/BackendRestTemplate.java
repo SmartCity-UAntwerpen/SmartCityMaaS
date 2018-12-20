@@ -38,8 +38,6 @@ public class BackendRestTemplate {
     @Autowired
     private RestTemplate restTemplate;
 
-    private HashMap<Integer, Integer> pointTransition;
-
 
     /**
      * Retrieves the map information from the backend and stores it in DummyPoints that are used in the world-map.
@@ -70,7 +68,6 @@ public class BackendRestTemplate {
 
         new JSONObject();
 
-       // pointTransition = new HashMap<>();
         JSONParser parser = new JSONParser();
 
         Object obj;
@@ -88,7 +85,6 @@ public class BackendRestTemplate {
 
             JSONArray maplist = (JSONArray) jsonObject.get("maplist");
             Iterator<JSONObject> mapIterator = maplist.iterator();
-            //int index_counter = 0;
             while (mapIterator.hasNext()) {
                 mapListObject = mapIterator.next();
                 JSONArray pointsList = (JSONArray) mapListObject.get("pointList");
@@ -100,15 +96,8 @@ public class BackendRestTemplate {
 
                     point_jsonObject = iterator.next();
                     int point_ID = ((Long) point_jsonObject.get("id")).intValue();
-                    /*if (!pointTransition.containsKey(point_ID)) {
-                        pointTransition.put(point_ID, index_counter);
-                        point_ID = index_counter;
-                        index_counter++;
-                    } else {
-                        point_ID = pointTransition.get(point_ID);
-                    }*/
-                    int x = ((Long) point_jsonObject.get("x")).intValue();
-                    int y = ((Long) point_jsonObject.get("y")).intValue();
+                    int x = ((Long) point_jsonObject.get("x")).intValue() + ((Long) mapListObject.get("offsetX")).intValue(); // EVERY MAP X & Y OFFSET ADDED TO COORDINATES
+                    int y = ((Long) point_jsonObject.get("y")).intValue() + ((Long) mapListObject.get("offsetY")).intValue();
 
                     String type = (String) mapListObject.get("access");
                     String characteristic;
@@ -135,54 +124,6 @@ public class BackendRestTemplate {
             e.printStackTrace();
         }
 
-        // Transform the id of the neighbours to the right one of the HashMap
-        /*for (int p = 0; p < points.size(); p++) {
-            DummyPoint point = points.get(p);
-            List<Integer> neighbours = point.getNeighbours();
-            for (int i = 0; i < neighbours.size(); i++) {
-                if (pointTransition.containsKey(neighbours.get(i))) {
-                    int temp_neigh = pointTransition.get(neighbours.get(i));
-                    neighbours.set(i, temp_neigh);
-                } else {
-                    // Retrieve this world id.
-                    logger.warn("Neighbour not found in point hashmap");
-                }
-            }
-            point.setNeighbours(neighbours);
-            points.set(p, point);
-        }*/
-
         return points;
     }
-
-
-
-    ///_______________________________________________
-    /// DEPRECATED
-    ///_______________________________________________
-
-    /**
-     * Retrieve the original value from a DummyPoint in the world.
-     * It is equal to the key of the imposed value.
-     *
-     * @param value The DummyPoint value
-     * @return The original key, or -1 if not found
-     */
-    public Integer getKeyHashMap(Integer value) {
-        Optional<Integer> optionalEntry = pointTransition.entrySet().stream()
-                .filter((entry) -> entry.getValue().equals(value)).map(Map.Entry::getKey).findFirst();
-        return optionalEntry.orElse(-1);
-    }
-
-    /**
-     * Get the value or map point ID from a key or received point ID.
-     *
-     * @param key Point ID
-     * @return DummyPoint value ID
-     */
-    public Integer getValueOfKeyHashMap(Integer key) {
-        return pointTransition.get(key);
-    }
-    ///_______________________________________________
-
 }

@@ -84,24 +84,6 @@ public class DataController {
         return myWorld;
     }
 
-
-    /**
-     * Retrieve the real name of a point as it is defined in the received map.
-     *
-     * @param valuePoint
-     * @return
-     */
-    @RequestMapping(value = "/retrieveRealPointName/{valuePoint}")
-    public int getPointName(@PathVariable int valuePoint) {
-        int keyPoint = backendRestTemplate.getKeyHashMap(valuePoint);
-        if (valuePoint != -1) {
-            logger.info("Retrieve key point name from " + valuePoint + " which is " + keyPoint);
-        } else {
-            logger.error("Could not retrieve key point name from " + valuePoint + ", error at " + keyPoint);
-        }
-        return keyPoint;
-    }
-
     /**
      * Get the map data from the backend after it is transformed to a List of DummyPoints.
      *
@@ -189,19 +171,19 @@ public class DataController {
         return result;
     }
 
-
     /**
      * Return the x and y coordinates of a current used vehicle that is assigned for a specified delivery.
      * Its ID is returned as third value in the returned int array.
      *
      * @param worldId     The ID of the world the vehicle is located
-     * @param vehicle_id  The ID of the vehicle
-     * @return Returns an integer array [x, y, vehicle_id, percentage]
+     * @param jobId The ID of the job
+     * @param startId The ID of the startpoint
+     * @param endId The ID of the endpoint
+     * @param type The type of the vehicle
+     * @return Returns a JSON response [x, y, percentage, status]
      */
-    @RequestMapping(value = "/{worldId}/progress/{vehicle_id}")
-    public int[] getProgress(@PathVariable String worldId, @PathVariable int vehicle_id) {
-        int progress = 0;//vehicle.getValue();
-        //logger.info("/" + worldId + "/progress/" + delivery_id + "/" + vehicle_id + " requested, to get the progress.");
+    @RequestMapping(value = "/{worldId}/progress/{jobId}/{startId}/{endId}/{type}")
+    public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int startId, @PathVariable int endId, @PathVariable String type) {
         World world = new World();
         for (World world1 : worlds) {
             if (world1.getWorld_ID().equals(worldId)) {
@@ -210,89 +192,65 @@ public class DataController {
             }
         }
 
-        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getOneVehicle/" + vehicle_id;
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL).queryParam("idVehicle", vehicle_id);
+        JSONObject response = new JSONObject();
 
-        int[] coordinatesVehicle = new int[4]; // {x, y, id, percentage}
-
+        JSONObject jsonObject = new JSONObject();
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/job/service/getJobProgress/" + jobId;
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-
-
-        // Get response from the core
-        // COMMENT FOR LOCAL TEST
         /*HttpEntity<String> httpResponse = restTemplate.exchange(
-                builder.build().encode().toUri(),
+                URL,
                 HttpMethod.GET,
                 entity,
                 String.class);
-        logger.info("[getProgress] Response backbone : " + httpResponse.toString());
-        logger.info("[getProgress] Response backbone : " + httpResponse.getBody());
-        logger.info("[getProgress] Response body backbone : " + httpResponse.hasBody());
-        String vehicleInfo = httpResponse.getBody();*/
-
+        String progress = httpResponse.getBody();*/
         JSONParser parser = new JSONParser();
-        Job job1 = new Job();
-        job1.setIdStart(1);
-        job1.setIdEnd(2);
-        List<Integer> currentListofJobs = new ArrayList<>();
-        String type = null;
-
         try {
-            //////// TEST
-            Object obj = parser.parse(new FileReader("testdata/getOneVehicle" + vehicle_id + ".txt"));
-            ////
-            //Object obj = parser.parse(vehicleInfo);
-            //////////
+            Object obj = parser.parse(new FileReader("testdata/getJobProgress"+jobId+".txt"));
+            //Object obj = parser.parse(progress);
+            jsonObject = (JSONObject) obj;
+            String status = (String) jsonObject.get("status");
+            int progress = ((Long) jsonObject.get("progress")).intValue();
 
-            JSONObject jsonObject = (JSONObject) obj;
-            int idVeh = ((Long) jsonObject.get("idVehicle")).intValue();
-            int idStart = ((Long) jsonObject.get("idStart")).intValue();
-            int idEnd = ((Long) jsonObject.get("idEnd")).intValue();
-            progress = ((Long) jsonObject.get("percentage")).intValue();
-            type = jsonObject.get("type").toString();
 
-            //logger.info("idVeh " + idVeh + ", idStart " + idStart + ", idEnd " + idEnd + ", percentage " + percentage);
-            if (backendRestTemplate == null) logger.error("BackendRestTemplate is null.");
-            //int id_start = backendRestTemplate.getValueOfKeyHashMap(idStart + 1);
-            //int id_end = backendRestTemplate.getValueOfKeyHashMap(idEnd + 1);
-            currentListofJobs.add(idStart);
-            currentListofJobs.add(idEnd);
-
-        } catch (ParseException | IOException e) { // | IOException
+            int x = 0;
+            int y = 0;
+            if(status.equals("BUSY")) {
+                int[] coordinatesVehicle_temp = world.getDistance(startId, endId, (double) (progress) / 100.0, type);
+                x =  coordinatesVehicle_temp[0];
+                y = coordinatesVehicle_temp[1];
+            }
+            response.put("x",x);
+            response.put("y",y);
+            response.put("progress",progress);
+            response.put("status",status);
+        } catch (ParseException | IOException e) {
             logger.error("ParseException", e);
         }
-        int[] coordinatesVehicle_temp = world.getDistancePoints(currentListofJobs, progress, type);
-        coordinatesVehicle[0] = coordinatesVehicle_temp[0];
-        coordinatesVehicle[1] = coordinatesVehicle_temp[1];
-        coordinatesVehicle[2] = vehicle_id;
-        coordinatesVehicle[3] = progress;
 
-        return coordinatesVehicle;
+        return response;
     }
 
     @RequestMapping(value="/{worldId}/delivery/{delivery_id}")
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
         JSONObject jsonObject = new JSONObject();
-        String URL;
-        UriComponentsBuilder builder;
-        //URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
-        URL = "http://localhost:10000/jobs/findOneByDelivery/MaaSId1";
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        HttpEntity<String> httpResponse = restTemplate.exchange(
+       /* HttpEntity<String> httpResponse = restTemplate.exchange(
                 URL,
                 HttpMethod.GET,
                 entity,
                 String.class);
-        String delivery = httpResponse.getBody();
+        String delivery = httpResponse.getBody();*/
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(delivery);
+            Object obj = parser.parse(new FileReader("testdata/getDelivery100.txt"));
+            //Object obj = parser.parse(delivery);
             jsonObject = (JSONObject) obj;
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
             logger.error("ParseException", e);
         }
         return jsonObject;

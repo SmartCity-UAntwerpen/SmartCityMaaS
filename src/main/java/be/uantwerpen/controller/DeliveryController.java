@@ -124,8 +124,6 @@ public class DeliveryController {
         }
         delivery.setType("HumanTransport");
 
-        //delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
-        //delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
         MongoDBMethods mongoDBClient = new MongoDBMethods();
         mongoDBClient.putStatement(delivery);
         Delivery delivery_return = mongoDBClient.getLastDelivery();
@@ -138,12 +136,6 @@ public class DeliveryController {
             delivery_return.print();
         }
 
-        /*String graphUrl = "http://" + serverCoreIP + ":" + serverCorePort + "/link/pathlinks";
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Graph> responseGraph;
-        responseGraph = restTemplate.getForEntity(graphUrl, Graph.class);
-        Graph graph = responseGraph.getBody();*/
-
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
 
@@ -151,8 +143,6 @@ public class DeliveryController {
             backboneService.planPath(Integer.parseInt(delivery.getPointA()), Integer.parseInt(delivery.getPointB()), delivery.getMapA(), delivery.getMapB());
 
             logger.info("Job has been created by " + loginUser);
-            //delivery_return.setPointA(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointA())));
-            //delivery_return.setPointB(""+ backendRestTemplate.getValueOfKeyHashMap(Integer.parseInt(delivery_return.getPointB())));
             model.addAttribute("delivery", delivery_return);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

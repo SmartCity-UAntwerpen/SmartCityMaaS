@@ -56,15 +56,21 @@
                                     </thead>
                                     <!-- IMPORTANT, class="list" have to be at tbody -->
                                     <tbody class="list" >
-                                    <tr th:each="delivery : ${deliveries}" th:id="${delivery.idDelivery }">
-                                        <td class="idVehicle" th:value="${idVehicle}" th:text="${delivery.idDelivery }">Delivery ID</td>
-                                        <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
-                                        <td class="pointName" th:value="${mapA}" th:text="${delivery.mapA }">Map A</td>
-                                        <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
-                                        <td class="pointName" th:value="${mapB}" th:text="${delivery.mapB }">Map B</td>
-                                        <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
-                                        <td><button class="button track" th:text="#{show}" th:onclick="${'javascript:trackDelivery(' + delivery.idDelivery + ')'}">Track</button></td>
-                                    </tr>
+                                    <div th:each="delivery : ${deliveries}">
+                                        <tr th:id="${delivery.idDelivery }">
+                                            <td class="idVehicle" th:value="${idVehicle}" th:text="${delivery.idDelivery }">Delivery ID</td>
+                                            <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
+                                            <td class="pointName" th:value="${mapA}" th:text="${delivery.mapA }">Map A</td>
+                                            <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
+                                            <td class="pointName" th:value="${mapB}" th:text="${delivery.mapB }">Map B</td>
+                                            <td class="pointName" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
+                                            <td><button class="button track" data-toggle="collapse" th:attr="data-target='#'+${delivery.idDelivery}+'-jobs'" th:text="#{show}" th:onclick="'javascript:trackDelivery(\'' + ${delivery.idDelivery} + '\');'">Track</button></td>
+                                        </tr>
+                                        <tr th:id="${delivery.idDelivery} + '-jobs'" class="collapse">
+                                            <td>Jobs:</td>
+                                            <td class="deliveryJobs"></td>
+                                        </tr>
+                                    </div>
                                     </tbody>
                                 </table>
                             </div>
@@ -72,61 +78,6 @@
                     </div>
 
                 </div>
-                <div class="login-wrap row">
-                    <div class="scrollingtable">
-                        <div>
-                            <div>
-                                <table class="table table-hover" id = "table_vehicles">
-                                    <thead>
-                                    <tr class="bg-primary">
-                                        <th><span th:text="#{idVehicle}">ID_VEHICLE</span></th>
-                                        <th><span th:text="#{typeVehicle}">TYPE</span></th>
-                                        <th><span th:text="#{idStart}">START</span></th>
-                                        <th><span th:text="#{idEnd}">END</span></th>
-                                        <th><span th:text="#{idProgress}">PROGRESS</span></th>
-                                        <th><span th:text="#{show}">SHOW</span></th>
-                                    </tr>
-                                    </thead>
-                                    <!-- IMPORTANT, class="list" have to be at tbody -->
-                                    <tbody class="list" >
-                                    <tr th:each="vehicle : ${vehiclesInfo}" th:id="${vehicle.ID }">
-                                        <td class="idVehicle" th:value="${idVehicle}" th:text="${vehicle.ID }">Vehicle ID</td>
-                                        <td class="typeVehicle" th:value="${typeVehicle}" th:text="${vehicle.type }">Vehicle Type</td>
-                                        <td class="idStart" th:value="${idStart}" th:text="${vehicle.start }">Start</td>
-                                        <td class="idEnd" th:value="${idEnd}" th:text="${vehicle.end }">End</td>
-                                        <td class="idProgress" th:value="${idProgress}" th:text="${vehicle.progress }">Progress</td>
-                                        <td><button class="button track" th:text="#{show}" th:onclick="'javascript:changeSelectVehicle(\''+ ${vehicle.type} +'\','+ ${vehicle.ID} + ');'">edit</button></td>
-
-                                        <script th:inline="javascript">
-                                            /*<![CDATA[*/
-
-                                            // function is used in button above
-                                            function changeSelectVehicle(vehicleType, vehicleID) {
-                                                $('.track').text("TRACK");
-                                                traveledPath = [];
-                                                if(currentVehicleID == vehicleID)
-                                                {
-                                                    currentVehicleID = -1;
-                                                    currentVehicleType = 'none';
-                                                }else{
-                                                    currentVehicleID = vehicleID;
-                                                    currentVehicleType = vehicleType;
-                                                    $("#"+vehicleID + " .track").text('UNTRACK');
-                                                }
-                                                console.log("Vehicle id clicked "+ currentVehicleID);
-                                            }
-                                            /*]]>*/
-                                        </script>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
             </div>
         </div>
     </div>
