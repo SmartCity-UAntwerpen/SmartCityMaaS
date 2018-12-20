@@ -13,6 +13,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -254,5 +255,17 @@ public class DataController {
             logger.error("ParseException", e);
         }
         return jsonObject;
+    }
+
+    @RequestMapping(value = "/getTrafficLightStats")
+    public JSONObject getTrafficLightStats() {
+        String path = "http://" + serverCoreIP + ":" + serverCorePort + "/map/getTrafficLightStats";
+        ResponseEntity<JSONObject> response = restTemplate.exchange(
+                path,
+                HttpMethod.GET,
+                null,
+                JSONObject.class
+        );
+        return response.getBody();
     }
 }
