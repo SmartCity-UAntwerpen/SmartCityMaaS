@@ -1,4 +1,4 @@
-package be.uantwerpen.databaseAccess;
+package be.uantwerpen.services;
 
 import be.uantwerpen.model.Delivery;
 import com.mongodb.BasicDBObject;
@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,9 +20,10 @@ import java.util.List;
 /**
  * Created by Frédéric Melaerts on 15/04/2017.
  */
-public class MongoDBMethods {
+@Service
+public class MongoService {
 
-    private static final Logger logger = LogManager.getLogger(MongoDBMethods.class);
+    private static final Logger logger = LogManager.getLogger(MongoService.class);
 
     protected MongoClient mongo;
 
@@ -30,7 +32,7 @@ public class MongoDBMethods {
     /**
      * Initialize the parameters fot the MongoDB client connection.
      */
-    public MongoDBMethods() {
+    public MongoService() {
         // IP address public centos VM : 143.129.39.159
         // IP address for proxy server : 172.10.0.8
         // Windows VM on own PC : 192.168.10.2
@@ -164,7 +166,7 @@ public class MongoDBMethods {
     }
 
 
-    public List<Delivery> GetListData(FindIterable<Document> cursor){
+    public List<Delivery> GetListData(FindIterable<Document> cursor) {
         List<Delivery> deliveries = new ArrayList<Delivery>();
         if (cursor != null) {
             for (Document it : cursor) {

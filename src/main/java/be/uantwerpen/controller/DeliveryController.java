@@ -1,9 +1,9 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.databaseAccess.MongoDBMethods;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.BackboneService;
+import be.uantwerpen.services.MongoService;
 import be.uantwerpen.services.PassengerService;
 import be.uantwerpen.services.UserService;
 import be.uantwerpen.visualization.model.DummyVehicle;
@@ -24,7 +24,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -54,23 +53,24 @@ public class DeliveryController {
     private PassengerService passengerService;
     @Autowired
     public BackendRestTemplate backendRestTemplate;
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private BackboneService backboneService;
 
+    @Autowired
+    private MongoService mongoService;
+
     /**
      * Return page with all the deliveries save in the mongoDB database.
+     *
      * @param model
      * @return
      */
-    @RequestMapping(value="/deliveries", method= RequestMethod.GET)
-    public String viewDeliveries(final ModelMap model){
+    @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
+    public String viewDeliveries(final ModelMap model) {
         logger.info(userService.getPrincipalUser() + " requested /deliveries");
-        MongoDBMethods mongoDBClient = new MongoDBMethods();
-        Iterable<Delivery> deliveries = mongoDBClient.getAllDeliveries();
-        model.addAttribute("allDeliveries", mongoDBClient.getAllDeliveries());
+        Iterable<Delivery> deliveries = mongoService.getAllDeliveries();
+        model.addAttribute("allDeliveries", deliveries);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         return "delivery-list";
@@ -78,13 +78,14 @@ public class DeliveryController {
 
     /**
      * Return the page where a new delivery can be created.
+     *
      * @param model
      * @return
      */
-    @RequestMapping(value="/deliveries/put", method= RequestMethod.GET)
-    public String viewCreateDelivery(final ModelMap model){
-        Delivery del = new Delivery("","","");
-        model.addAttribute("delivery",del);
+    @RequestMapping(value = "/deliveries/put", method = RequestMethod.GET)
+    public String viewCreateDelivery(final ModelMap model) {
+        Delivery del = new Delivery("", "", "");
+        model.addAttribute("delivery", del);
         model.addAttribute("allPassengers", passengerService.findAll());
 
         User loginUser = userService.getPrincipalUser();
@@ -95,30 +96,31 @@ public class DeliveryController {
 
     /**
      * Delete a specified id from the mongoDB database.
+     *
      * @param idDelivery
      * @return
      */
-    @RequestMapping(value="/deliveries/{idDelivery}/delete", method= RequestMethod.GET)
-    public String deleteDelivery(@PathVariable String idDelivery){
-        MongoDBMethods mongoDBClient = new MongoDBMethods();
-        mongoDBClient.deleteDelivery(idDelivery);
+    @RequestMapping(value = "/deliveries/{idDelivery}/delete", method = RequestMethod.GET)
+    public String deleteDelivery(@PathVariable String idDelivery) {
+        mongoService.deleteDelivery(idDelivery);
         logger.info(userService.getPrincipalUser() + " deleted delivery " + idDelivery);
-        return "redirect:/deliveries" ;
+        return "redirect:/deliveries";
     }
 
     /**
      * Add a delivery to deliveries in the mongoDB database.
+     *
      * @param delivery
      * @param result
      * @param model
      * @return
      */
-    @RequestMapping(value={"/deliveries/", "/deliveries/{id}"}, method= RequestMethod.POST)
-    public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model){
+    @RequestMapping(value = {"/deliveries/", "/deliveries/{id}"}, method = RequestMethod.POST)
+    public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model) {
         logger.info(result.getModel());
-        logger.info("Delivery: point A "+ delivery.getPointA() + " map " + delivery.getMapA() + ", point B "+ delivery.getPointB() + " map " + delivery.getMapB());
+        logger.info("Delivery: point A " + delivery.getPointA() + " map " + delivery.getMapA() + ", point B " + delivery.getPointB() + " map " + delivery.getMapB());
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage2";
         }
@@ -126,10 +128,9 @@ public class DeliveryController {
 
         //delivery.setPointA(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointA())));
         //delivery.setPointB(""+ backendRestTemplate.getKeyHashMap(Integer.parseInt(delivery.getPointB())));
-        MongoDBMethods mongoDBClient = new MongoDBMethods();
-        mongoDBClient.putStatement(delivery);
-        Delivery delivery_return = mongoDBClient.getLastDelivery();
-        if(delivery_return.getFirstName() == null) {
+        mongoService.putStatement(delivery);
+        Delivery delivery_return = mongoService.getLastDelivery();
+        if (delivery_return.getFirstName() == null) {
             logger.error("Could not retrieve last delivery from MongoDB service.");
             return "home_user";
 
@@ -168,11 +169,12 @@ public class DeliveryController {
 
     /**
      * Return the page with th visualization of the smartcity vehicles on the map.
+     *
      * @param model
      * @return
      */
-    @RequestMapping(value="/visualization",method= RequestMethod.GET)
-    public String getSimulation(final ModelMap model){
+    @RequestMapping(value = "/visualization", method = RequestMethod.GET)
+    public String getSimulation(final ModelMap model) {
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         logger.info(loginUser + " requested /visualization");
@@ -182,10 +184,9 @@ public class DeliveryController {
         model.addAttribute("currentUser", loginUser);
         try {
             List<DummyVehicle> vehicles = getAllSimData();
-            MongoDBMethods mongoDBClient = new MongoDBMethods();
             model.addAttribute("vehiclesInfo", vehicles);
-            model.addAttribute("deliveries", mongoDBClient.getAllBusyDeliveries());
-        } catch (Exception e){
+            model.addAttribute("deliveries", mongoService.getAllBusyDeliveries());
+        } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
 
@@ -195,12 +196,13 @@ public class DeliveryController {
     /**
      * Retrieve all the vehicle data from the core.
      * This includes their identifier, type, start point, end point, and the %-progress between these two points.
+     *
      * @return
      */
     public List<DummyVehicle> getAllSimData() {
         List<DummyVehicle> vehicles = new ArrayList<DummyVehicle>();
         String requestAll = "request all";
-        String URL = "http://"+serverCoreIP+":"+serverCorePort+"/bot/getAllVehicles";
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/bot/getAllVehicles";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL);
         HttpHeaders headers = new HttpHeaders();
@@ -236,10 +238,10 @@ public class DeliveryController {
                 DummyVehicle dumVeh = new DummyVehicle();
                 obj = iterator.next();
                 JSONObject par_jsonObject = (JSONObject) obj;
-                idVeh = ((Long)par_jsonObject.get("idVehicle")).intValue();
-                idStart = ((Long)par_jsonObject.get("idStart")).intValue();
-                idEnd = ((Long)par_jsonObject.get("idEnd")).intValue();
-                percentage = ((Long)par_jsonObject.get("percentage")).intValue();
+                idVeh = ((Long) par_jsonObject.get("idVehicle")).intValue();
+                idStart = ((Long) par_jsonObject.get("idStart")).intValue();
+                idEnd = ((Long) par_jsonObject.get("idEnd")).intValue();
+                percentage = ((Long) par_jsonObject.get("percentage")).intValue();
                 type = par_jsonObject.get("type").toString();
                 dumVeh.setID(idVeh);
                 dumVeh.setStart(idStart);
