@@ -1,6 +1,5 @@
 package be.uantwerpen.services;
 
-import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -34,27 +34,37 @@ public class JobListService {
 
     public Iterable<JobList> findAll() {
         String path = basePath + "/findAllJobLists";
-        ResponseEntity<List<JobList>> response = restTemplate.exchange(
-                path,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<JobList>>() {
-                });
-        return response.getBody();
+        try {
+            ResponseEntity<List<JobList>> response = restTemplate.exchange(
+                    path,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<JobList>>() {
+                    });
+            return response.getBody();
+        } catch (RestClientException e) {
+            logger.debug(e);
+            return null;
+        }
     }
 
-    public JobList findOneByDelivery(String deliveryId){
+    public JobList findOneByDelivery(String deliveryId) {
         String path = basePath + "/findOneByDelivery/" + deliveryId;
-        ResponseEntity<JobList> response = restTemplate.exchange(
-                path,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<JobList>(){});
-        return response.getBody();
+        try {
+            ResponseEntity<JobList> response = restTemplate.exchange(
+                    path,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<JobList>() {
+                    });
+            return response.getBody();
+        } catch (RestClientException e) {
+            logger.debug(e);
+            return null;
+        }
     }
 
-    public void saveOrder(final JobList joblist)
-    {
+    public boolean saveOrder(final JobList joblist) {
         String path = basePath + "/saveOrder";
 
         //Set your headers
@@ -65,125 +75,14 @@ public class JobListService {
         HttpEntity entity = new HttpEntity<>(joblist, headers);
 
         //Send it!
-        ResponseEntity<String> response = restTemplate.exchange(path, HttpMethod.POST, entity
-                , String.class);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        try {
+            restTemplate.exchange(path, HttpMethod.POST, entity, String.class);
+            return true;
+        } catch (RestClientException e) {
             logger.warn("Error while saving joblist " + joblist.getId());
+            logger.debug(e);
+            return false;
         }
-    }
-
-    /**
-     * a print function, mainly written for debug purposes in the console to make certain that the objects are correctly
-     * being saved & that the correct information is written into each object
-     */
-    public void printJobList() {
-        logger.info("Print job list.");
-        for (JobList jl : this.findAll()) {
-            logger.info(" Order #" + jl.getId());
-            for (int x = 0; x < jl.getJobs().size(); x++) {
-                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   Status :" + jl.getJobs().get(x).getStatus());
-            }
-        }
-    }
-
-    public void dispatchToCore() {
-        String path = basePath + "/dispatch";
-        ResponseEntity<String> response = restTemplate.exchange(path,
-                HttpMethod.POST,
-                null,
-                String.class
-        );
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while dispatching");
-            logger.warn("Response body: " + response.getBody());
-        }
-    }
-
-    // TODO Nodig?
-
-    /**
-     * communication to the cores
-     *
-     * @param job The job to dispatch
-     * @return (boolean) true if successfully sent. False if error occurred
-     */
-    private Boolean dispatch(Job job) {
-        logger.info("Dispatch " + job.getId());
-        // TODO: dispatch to backbone
-        return true;
-//        String stringUrl = "http://";
-//        String typeVehicle = job.getTypeVehicle().toUpperCase();
-//        switch (typeVehicle) {
-//            case "DRONETOP":
-//                stringUrl += droneCoreIP + ":" + droneCorePort + "/executeJob/";
-//                logger.info("DroneDispatch: " + stringUrl);
-//                break;
-//            case "CARTOP":
-//                stringUrl += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
-//                logger.info("CarDispatch: " + stringUrl);
-//                break;
-//            case "ROBOTTOP":
-//                stringUrl += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
-//                logger.info("RobotDispatch: " + stringUrl);
-//                break;
-//            default:
-//                logger.warn("No correct type dispatchToCore function");
-//        }
-//
-//        boolean status = true;
-//        stringUrl += (String.valueOf(job.getId()) + "/" + String.valueOf(job.getIdVehicle()) + "/" + String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()));
-//        logger.info("the url is: " + stringUrl);
-//        try {
-//            URL url = new URL(stringUrl);
-//            HttpURLConnection conn;
-//            conn = (HttpURLConnection) url.openConnection();
-//            conn.setDoOutput(true);
-//            conn.setRequestMethod("GET");
-//            // for debugging purposes
-//            /*logger.info("responsecode " + conn.getResponseCode());
-//            logger.info("responsmsg " + conn.getResponseMessage());*/
-//            //succesfull transmission
-//            if (conn.getResponseCode() == 200) {
-//                logger.info(conn.getResponseCode());
-//                /*String msgresponse = conn.getResponseMessage();
-//                /*if (msgresponse.equals("ACK")) {
-//                    //TODO: doet iets met de ACK code
-//                    logger.info(msgresponse);
-//                }*/
-//                conn.disconnect();
-//            }
-//            // an error has occured
-//            else {
-//                /*String msgresponse = conn.getResponseMessage();
-//                logger.info(msgresponse);
-//                switch (msgresponse) {
-//                    case "idVehicleError":
-//                        logger.info(msgresponse);
-//                        break;
-//                    default: logger.info(msgresponse);
-//                }*/
-//                logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + job.getId() + " for vehicle " + job.getIdVehicle());
-//                conn.disconnect();
-//                status = false;
-//            }
-//        } catch (IOException e) {
-//            logger.error("Can't get file", e);
-//        }
-//        return status;
-    }
-
-    // TODO Nodig?
-
-    /**
-     * function to check if order is empty or not
-     *
-     * @param id (long) id of the order
-     * @return (boolean) true if Order is empty
-     */
-    public boolean isEmpty(long id) {
-        return true;//this.jobListRepository.findOne(id).getJobs().isEmpty();
     }
 
     /**
@@ -191,32 +90,34 @@ public class JobListService {
      *
      * @param id (long) id from the order that needs to be deleted
      */
-    public void deleteOrder(long id) {
+    public boolean deleteOrder(long id) {
         String path = basePath + "/deleteOrder/{id}";
-        ResponseEntity<String> response = restTemplate.exchange(path,
-                HttpMethod.POST,
-                null,
-                String.class,
-                id
-        );
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        try {
+            restTemplate.exchange(path,
+                    HttpMethod.POST,
+                    null,
+                    String.class,
+                    id
+            );
+            return true;
+        } catch (RestClientException e) {
             logger.warn("Error while deleting jobList " + id);
-            logger.warn("Response body: " + response.getBody());
+            return false;
         }
     }
 
-    public void deleteAll() {
+    public boolean deleteAll() {
         String path = basePath + "/deleteAllLists";
-        ResponseEntity<String> response = restTemplate.exchange(path,
-                HttpMethod.POST,
-                null,
-                String.class
-        );
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        try {
+            restTemplate.exchange(path,
+                    HttpMethod.POST,
+                    null,
+                    String.class
+            );
+            return true;
+        } catch (RestClientException e) {
             logger.warn("Error while deleting all job lists and jobs");
-            logger.warn("Response body: " + response.getBody());
+            return false;
         }
     }
 

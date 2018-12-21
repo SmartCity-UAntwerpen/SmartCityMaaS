@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,12 +20,9 @@ import java.util.List;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by dries on 8/06/2017.
- */
-@RunWith(MockitoJUnitRunner.class)
-public class UserServiceTests
-{
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
@@ -39,8 +37,7 @@ public class UserServiceTests
     private List<Permission> permissionListAdmin;
 
     @Before
-    public void init()
-    {
+    public void init() {
         Permission p1 = new Permission("logon");
         Permission p2 = new Permission("secret-message");
 
@@ -68,8 +65,7 @@ public class UserServiceTests
     }
 
     @Test
-    public void addNewUserTest()
-    {
+    public void addNewUserTest() {
         User u2 = new User("Dries", "Blontrock");
         u2.setUserName("Pruster");
         u2.setPassword("DoingMyBest");
@@ -81,8 +77,7 @@ public class UserServiceTests
     }
 
     @Test
-    public void addExistingUserTest()
-    {
+    public void addExistingUserTest() {
         when(userRepository.findAll()).thenReturn(userList);
         when(userRepository.save(userList.get(0))).thenReturn(userList.get(0));
 
@@ -90,16 +85,14 @@ public class UserServiceTests
     }
 
     @Test
-    public void checkExistingNameTest()
-    {
+    public void checkExistingNameTest() {
         when(userRepository.findAll()).thenReturn(userList);
 
         assertTrue(userService.checkUserName("Held"));
     }
 
     @Test
-    public void addUserWithDuplicatedUsernameTest()
-    {
+    public void addUserWithDuplicatedUsernameTest() {
         User u3 = new User("Oliver", "Nyssen");
         u3.setUserName("Held");
         u3.setPassword("twister");
@@ -111,8 +104,7 @@ public class UserServiceTests
     }
 
     @Test
-    public void usernameNotExistsTest()
-    {
+    public void usernameNotExistsTest() {
         when(userRepository.findAll()).thenReturn(userList);
 
         String nonExistingUsername = new String("roadBlock");

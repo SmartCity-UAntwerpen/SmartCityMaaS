@@ -38,7 +38,6 @@ public class JobController {
         model.addAttribute("currentUser", loginUser);
         model.addAttribute("allJobs", jobService.findAll());
         model.addAttribute("allJobList", jobListService.findAll());
-        jobListService.printJobList();
         return "jobs-list";
     }
 

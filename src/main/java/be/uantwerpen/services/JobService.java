@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -28,20 +29,26 @@ public class JobService {
 
     public JobService(@Value("${core.ip}") String coreIp, @Value("${core.port}") int corePort) {
         // build URL using properties
-        basePath = "http://"+coreIp+":"+corePort+"/job/service";
+        basePath = "http://" + coreIp + ":" + corePort + "/job/service";
     }
 
     public Iterable<Job> findAll() {
         String path = basePath + "/findalljobs";
-        ResponseEntity<List<Job>> response = restTemplate.exchange(
-                path,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Job>>(){});
-        return response.getBody();
+        try {
+            ResponseEntity<List<Job>> response = restTemplate.exchange(
+                    path,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<Job>>() {
+                    });
+            return response.getBody();
+        } catch (RestClientException e) {
+            logger.debug(e);
+            return null;
+        }
     }
 
-    public void save(final Job job){
+    public boolean save(final Job job) {
         String path = basePath + "/savejob";
 
         //set your headers
@@ -49,71 +56,82 @@ public class JobService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //set your entity to send
-        HttpEntity entity = new HttpEntity(job,headers);
+        HttpEntity entity = new HttpEntity<>(job, headers);
 
         // send it!
-        ResponseEntity<String> response = restTemplate.exchange(path, HttpMethod.POST, entity
-                , String.class);
-
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while saving job "+job.getId());
+        try {
+            restTemplate.exchange(path, HttpMethod.POST, entity, String.class);
+            return true;
+        } catch (RestClientException e) {
+            logger.warn("Error while saving job " + job.getId());
+            logger.debug(e);
+            return false;
         }
     }
 
     public Job findOne(Long id) {
         String path = basePath + "/getjob/{id}";
-        ResponseEntity<Job> response = restTemplate.exchange(path,
-                HttpMethod.GET,
-                null,
-                Job.class,
-                id
-        );
-        return response.getBody();
-    }
-
-    public void delete(Long id) {
-        String path = basePath + "/deletejob/{id}";
-        ResponseEntity<String> response = restTemplate.exchange(path,
-                HttpMethod.POST,
-                null,
-                String.class,
-                id
-        );
-
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            logger.warn("Error while deleting job "+id);
-            logger.warn("Response body: "+response.getBody());
+        try {
+            ResponseEntity<Job> exchange = restTemplate.exchange(path,
+                    HttpMethod.GET,
+                    null,
+                    Job.class,
+                    id
+            );
+            return exchange.getBody();
+        } catch (RestClientException e) {
+            logger.debug(e);
+            return null;
         }
     }
 
-    public void deleteAll() {
-        String path = basePath + "/deletealljobs";
-        ResponseEntity<String> response = restTemplate.exchange(path,
-                HttpMethod.POST,
-                null,
-                String.class
-        );
+    public boolean delete(Long id) {
+        String path = basePath + "/deletejob/{id}";
+        try {
+            restTemplate.exchange(path,
+                    HttpMethod.POST,
+                    null,
+                    String.class,
+                    id
+            );
+            return true;
+        } catch (RestClientException e) {
+            logger.warn("Error while deleting job " + id);
+            logger.debug(e);
+            return false;
+        }
+    }
 
-        if(!response.getStatusCode().is2xxSuccessful()) {
+    public boolean deleteAll() {
+        String path = basePath + "/deletealljobs";
+        try {
+            restTemplate.exchange(path,
+                    HttpMethod.POST,
+                    null,
+                    String.class
+            );
+            return true;
+        } catch (RestClientException e) {
             logger.warn("Error while deleting all jobs");
-            logger.warn("Response body: "+response.getBody());
+            logger.debug(e);
+            return false;
         }
     }
 
     /**
      * Function to save all relevant information concernting the Job class. This is a standard function for service usage
-     * @param job   (Job) class of which all information needs to be saved
+     *
+     * @param job (Job) class of which all information needs to be saved
      */
-    public void saveSomeAttributes(Job job) {
-        Job tempJob = (((Long)job.getId() == null) ? null : findOne(job.getId()));
-        if (tempJob != null){
+    public boolean saveSomeAttributes(Job job) {
+        Job tempJob = job.getId() == null ? null : findOne(job.getId());
+        if (tempJob != null) {
             tempJob.setIdStart(job.getIdStart());
             tempJob.setIdEnd(job.getIdEnd());
             tempJob.setStatus(job.getStatus());
-            this.save(tempJob);
-        }
-        else{
-            this.save(job);
+            return save(tempJob);
+        } else {
+            return save(job);
         }
     }
 }

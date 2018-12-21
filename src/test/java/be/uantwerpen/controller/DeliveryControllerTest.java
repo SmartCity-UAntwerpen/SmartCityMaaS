@@ -29,17 +29,10 @@ public class DeliveryControllerTest {
     @Mock
     private UserService userService;
     @Mock
-    private RoleService roleService;
-    @Mock
+    @SuppressWarnings("unused")
     private PassengerService passengerService;
     @Mock
-    public BackendRestTemplate backendRestTemplate;
-    @Mock
-    private BackboneService backboneService;
-    @Mock
     private MongoService mongoService;
-    @Autowired
-    ObjectMapper objectMapper;
 
     private MockMvc mvc;
 
