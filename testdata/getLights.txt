@@ -1,4 +1,4 @@
 [{
  "id" : 7,
- "status" : "RED"
+ "status" : "GREEN"
 }]

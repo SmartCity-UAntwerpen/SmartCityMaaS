@@ -1,5 +1,5 @@
 {
   "id" : 2,
-  "progress" :60,
-  "status": "BUSY"
+  "progress" :00,
+  "status": "TODO"
 }

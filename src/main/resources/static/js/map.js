@@ -25,7 +25,7 @@ var currentVehicleID = -1;
 var currentVehicleType = 'none';
 var currentDeliveryId = -1;
 
-var traveledPath = [];
+var traveledCarPath = [];
 
 var jobs = [];
 
@@ -152,18 +152,22 @@ function drawWorld(){
         for(var j=0; j < point.neighbours.length; j++){
             var neigbourID = point.neighbours[j];
             var neigbour = $.grep(world.points, function(e){
-                return e.pointName === neigbourID;
+                return e.mapId === point.mapId && e.pointName === neigbourID;
             })[0];
             var linkAlreadyDrawn = false;
             for(var k=0; k < linksDrawn.length; k++){
-                if(linksDrawn[k].end == point.pointName && linksDrawn[k].start == neigbourID){
-                    linkAlreadyDrawn = true;
-                } else if(linksDrawn[k].start == point.pointName && linksDrawn[k].end == neigbourID) {
-                    linkAlreadyDrawn = true;
+                if(linksDrawn[k].map === point.mapId) {
+                    if (linksDrawn[k].end === point.pointName && linksDrawn[k].start === neigbourID) {
+                        linkAlreadyDrawn = true;
+                        break;
+                    } else if (linksDrawn[k].start === point.pointName && linksDrawn[k].end === neigbourID) {
+                        linkAlreadyDrawn = true;
+                        break;
+                    }
                 }
             }
             if(!linkAlreadyDrawn){
-                linksDrawn.push({start:point.pointName,end: neigbourID});
+                linksDrawn.push({map:point.mapId, start:point.pointName,end: neigbourID});
                 drawLink(point.type, point, neigbour, false);
             }
         }
@@ -211,7 +215,7 @@ function clickedOnCanvas(event){
     var canvasY = event.clientY - rect.top;
     console.log("Point clicked x = " + canvasX + ", y = " + canvasY);
     if(pointAset){
-        var point =  $.grep(world.points, function(e){return e.pointName === pointAId;})[0];
+        var point =  $.grep(world.points, function(e){return e.pointName === pointAId && e.mapId === mapAId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             switch (point.type) {
                 case "robot":
@@ -236,7 +240,7 @@ function clickedOnCanvas(event){
         }
     }
     if(pointBset){
-        var point = $.grep(world.points, function(e){return e.pointName === pointBId;})[0];
+        var point = $.grep(world.points, function(e){return e.pointName === pointBId && e.mapId === mapBId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             console.log("pointBset");
             switch (point.type) {
@@ -382,7 +386,7 @@ function getJobVehicles(){
 
     for (var i = 0; i < jobs.length; i++) {
         (function(i){
-            $.getJSON("/world1/progress/" + jobs[i].id + "/" + jobs[i].idStart + "/" + jobs[i].idEnd + "/" + jobs[i].startPoint.type, function (progress) {
+            $.getJSON("/world1/progress/" + jobs[i].id + "/" + jobs[i].idMap + "/" + jobs[i].idStart + "/" + jobs[i].idEnd + "/" + jobs[i].startPoint.type, function (progress) {
                 //progress = [x, y, progress, status]
                 switch (progress.status) {
                     case "TODO":
@@ -398,9 +402,29 @@ function getJobVehicles(){
                     case "BUSY":
                         ctx.strokeStyle = '#d90d1d';
                         drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);
-                        var endPoint = {"physicalPoisionX": progress.x, "physicalPoisionY": progress.y, "pointName": jobs[i].endPoint.pointName};
+                        var endPoint = {
+                            "physicalPoisionX": progress.x,
+                            "physicalPoisionY": progress.y,
+                            "pointName": jobs[i].endPoint.pointName
+                        };
                         ctx.strokeStyle = '#00d900';
-                        drawLink(jobs[i].startPoint.type, jobs[i].startPoint, endPoint, true);
+                        /*if (jobs[i].startPoint.type == "car") { // car difficult to track
+                            ctx.beginPath();
+                            ctx.setLineDash([20, 5]);
+                            ctx.lineWidth = 3;
+                            ctx.moveTo(jobs[i].startPoint.physicalPoisionX*xSize,jobs[i].startPoint.physicalPoisionY*ySize);
+
+                            if(!traveledCarPath[jobs[i].id]) {
+                                traveledCarPath.push(jobs[i].id);
+                            }
+                            traveledCarPath[jobs[i].id].push({"x": progress.x, "y": progress.y});
+                            for (var j = 0; j < traveledCarPath[jobs[i].id].length; j++) {
+                                ctx.lineTo(traveledCarPath[jobs[i].id][j].x*xSize,traveledCarPath[j][jobs[i].id].y*ySize);
+                            }
+                            ctx.stroke();
+                        } else {*/
+                            drawLink(jobs[i].startPoint.type, jobs[i].startPoint, endPoint, true);
+                        //}
                         drawVehicle(jobs[i].startPoint.type, progress.x, progress.y, true);
                         break;
                 }
@@ -551,16 +575,16 @@ function drawVehicle(type, x, y,selected){
 function getTrafficStatus(){
     var lights =  $.grep(world.points, function(e){return e.pointCharacteristic === "LIGHT"});
     $.getJSON("/getTrafficLightStats", function(result){
-        var status;
+        var status = lightGreenIcon;
         for (var i = 0; i < result.length; i++) {
             var point =  $.grep(lights, function(e){return e.pointName === result[i].id})[0];
-            if (result[i].status == "GREEN") {
-                status = lightGreenIcon;
-            } else {
-                status = lightRedIcon;
+            if(point) {
+                if (result[i].status != "GREEN") {
+                    status = lightRedIcon;
+                }
+                point.status = status;
+                ctx.drawImage(status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
             }
-            point.status = status;
-            ctx.drawImage(status, (point.physicalPoisionX*xSize) - xSize,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
         }
     });
 }

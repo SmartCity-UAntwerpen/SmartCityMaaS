@@ -272,3 +272,7 @@ span.pink-letter {
 .deliverBtn button {
     width: 80px;
 }
+
+.card-body {
+    margin-left: 20px;
+}

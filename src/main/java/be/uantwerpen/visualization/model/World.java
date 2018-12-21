@@ -70,12 +70,12 @@ public class World {
      * @return
      */
 
-    public int[] getDistancePoints(List<Integer> endPoints, int progress, String type)
+    public int[] getDistancePoints(List<Integer> endPoints, int progress, String type, int mapId)
     {
-        return getDistance(endPoints.get(0),endPoints.get(1),(double)(progress)/100.0, type);
+        return getDistance(mapId, endPoints.get(0),endPoints.get(1),(double)(progress)/100.0, type);
     }
 
-    public int[] getDistance(int startID, int endID, double progress, String type){
+    public int[] getDistance(int mapId, int startID, int endID, double progress, String type){
         int startX = 0;
         int startY = 0;
 
@@ -84,16 +84,18 @@ public class World {
 
         boolean beginYaxis = true; //start in Y direction
 
-        //logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
+        logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
         for(int i = 0; i < points.size(); i++){
-            if(points.get(i).getPointName() == startID){
-                startX = points.get(i).getPhysicalPoisionX();
-                startY = points.get(i).getPhysicalPoisionY();
-            }
-            if(points.get(i).getPointName() == endID){
-                endX = points.get(i).getPhysicalPoisionX();
-                endY = points.get(i).getPhysicalPoisionY();
+            if(points.get(i).getMapId() == mapId) {
+                if (points.get(i).getPointName() == startID) {
+                    startX = points.get(i).getPhysicalPoisionX();
+                    startY = points.get(i).getPhysicalPoisionY();
+                }
+                if (points.get(i).getPointName() == endID) {
+                    endX = points.get(i).getPhysicalPoisionX();
+                    endY = points.get(i).getPhysicalPoisionY();
 
+                }
             }
 
             if( startX != 0 && endX != 0 ) break;

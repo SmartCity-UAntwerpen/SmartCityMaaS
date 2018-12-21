@@ -178,13 +178,14 @@ public class DataController {
      *
      * @param worldId     The ID of the world the vehicle is located
      * @param jobId The ID of the job
+     * @param jobId The ID of the map
      * @param startId The ID of the startpoint
      * @param endId The ID of the endpoint
      * @param type The type of the vehicle
      * @return Returns a JSON response [x, y, percentage, status]
      */
-    @RequestMapping(value = "/{worldId}/progress/{jobId}/{startId}/{endId}/{type}")
-    public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int startId, @PathVariable int endId, @PathVariable String type) {
+    @RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
+    public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int mapId, @PathVariable int startId, @PathVariable int endId, @PathVariable String type) {
         World world = new World();
         for (World world1 : worlds) {
             if (world1.getWorld_ID().equals(worldId)) {
@@ -218,7 +219,7 @@ public class DataController {
             int x = 0;
             int y = 0;
             if(status.equals("BUSY")) {
-                int[] coordinatesVehicle_temp = world.getDistance(startId, endId, (double) (progress) / 100.0, type);
+                int[] coordinatesVehicle_temp = world.getDistance(mapId, startId, endId, (double) (progress) / 100.0, type);
                 x =  coordinatesVehicle_temp[0];
                 y = coordinatesVehicle_temp[1];
             }
@@ -235,6 +236,7 @@ public class DataController {
 
     @RequestMapping(value="/{worldId}/delivery/{delivery_id}")
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
+        logger.info("getting delivery: " + delivery_id);
         JSONObject jsonObject = new JSONObject();
         String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
         HttpHeaders headers = new HttpHeaders();
