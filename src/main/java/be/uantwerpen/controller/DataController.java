@@ -258,14 +258,25 @@ public class DataController {
     }
 
     @RequestMapping(value = "/getTrafficLightStats")
-    public JSONObject getTrafficLightStats() {
+    public JSONArray getTrafficLightStats() {
         String path = "http://" + serverCoreIP + ":" + serverCorePort + "/map/getTrafficLightStats";
-        ResponseEntity<JSONObject> response = restTemplate.exchange(
+        JSONArray jsonObject = new JSONArray();
+        /*ResponseEntity<JSONObject> response = restTemplate.exchange(
                 path,
                 HttpMethod.GET,
                 null,
                 JSONObject.class
         );
-        return response.getBody();
+        jsonObject = response.getBody();*/
+
+        try {
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(new FileReader("testdata/getLights.txt"));
+            jsonObject = (JSONArray) obj;
+        } catch (ParseException | IOException e) {
+            logger.error("ParseException", e);
+        }
+
+        return jsonObject;
     }
 }

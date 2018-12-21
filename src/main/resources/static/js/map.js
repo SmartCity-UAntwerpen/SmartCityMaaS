@@ -48,6 +48,7 @@ var lightGreenIcon;
 var lightRedIcon;
 
 var vehiclesInterval;
+var trafficInterval;
 /**
  * The initialize function of the html page.
  */
@@ -56,6 +57,10 @@ function initFunction() {
     showPage();
     loadImages();
     getWorld();
+
+    if(visualization){
+        trafficInterval = setInterval(getTrafficStatus, 1005);
+    }
 
     if(!only_view)
     {
@@ -169,7 +174,10 @@ function drawWorld(){
                     ctx.strokeStyle = "#95A6A6";
                     ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
                 }else if( point.pointCharacteristic == "LIGHT" ){
-                    ctx.drawImage(lightGreenIcon, (point.physicalPoisionX*xSize) - xSize,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+                    if(!point.status){ // if it has no status, just make in green (bv in delivery)
+                        point.status = lightGreenIcon;
+                    }
+                    ctx.drawImage(point.status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                 } else {
                     ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                 }
@@ -538,6 +546,23 @@ function drawVehicle(type, x, y,selected){
         console.log(" vehicle type not supported");
     }
 
+}
+
+function getTrafficStatus(){
+    var lights =  $.grep(world.points, function(e){return e.pointCharacteristic === "LIGHT"});
+    $.getJSON("/getTrafficLightStats", function(result){
+        var status;
+        for (var i = 0; i < result.length; i++) {
+            var point =  $.grep(lights, function(e){return e.pointName === result[i].id})[0];
+            if (result[i].status == "GREEN") {
+                status = lightGreenIcon;
+            } else {
+                status = lightRedIcon;
+            }
+            point.status = status;
+            ctx.drawImage(status, (point.physicalPoisionX*xSize) - xSize,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
+        }
+    });
 }
 
 
