@@ -173,8 +173,9 @@ public class DeliveryController {
         // with the exception that this functions returns more data of the vehicles.
         model.addAttribute("currentUser", loginUser);
         try {
-            List<DummyVehicle> vehicles = getAllSimData();
-            model.addAttribute("vehiclesInfo", vehicles);
+            // DEPRECATED
+            //List<DummyVehicle> vehicles = getAllSimData();
+            //model.addAttribute("vehiclesInfo", vehicles);
             model.addAttribute("deliveries", mongoService.getAllBusyDeliveries());
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
