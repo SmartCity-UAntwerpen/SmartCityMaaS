@@ -111,6 +111,7 @@ public class DataController {
      *
      * @return A list of vehicle IDs
      */
+    // ------------------ DEPRECATED --------------
     @RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
     public HashMap<Integer, String> getAllVehicles() {
         HashMap<Integer, String> idVehicles = new HashMap<Integer, String>();

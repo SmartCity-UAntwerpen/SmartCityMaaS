@@ -312,7 +312,6 @@ function clickedOnCanvas(event){
                             break;
                     }
                     console.log("Point B id = " + pointBId + " - map " + mapBId);
-                    ctx.fillStyle="#0000FF";
                     pointBset = true;
                     document.getElementById("inputB").value = pointBId;
                     document.getElementById("mapB").value = mapBId;
@@ -437,7 +436,7 @@ function getJobVehicles(){
     }
 }
 
-// is used inline
+// is used inline: visualization_map.html
 function trackDelivery(deliveryId){
     $('.track').text("TRACK");
     if(currentDeliveryId != deliveryId) {
