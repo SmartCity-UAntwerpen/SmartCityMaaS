@@ -124,18 +124,18 @@ public class DataController {
         HttpEntity<?> entity = new HttpEntity<>(headers);
         // Get response from the core
         // COMMENT FOR LOCAL TEST
-        /*HttpEntity<String> httpResponse = restTemplate.exchange(
+        HttpEntity<String> httpResponse = restTemplate.exchange(
                 builder.build().encode().toUri(),
                 HttpMethod.GET, // Make post
                 entity,
-                String.class);*/
+                String.class);
         JSONParser parser = new JSONParser();
 
         try {
             ////// TEST
-            Object obj = parser.parse(new FileReader("testdata/getAllVehicles.txt"));
+            //Object obj = parser.parse(new FileReader("testdata/getAllVehicles.txt"));
             //////
-            //Object obj = parser.parse(httpResponse.getBody());
+            Object obj = parser.parse(httpResponse.getBody());
             //////
             JSONObject jsonObject = (JSONObject) obj;
             virDevices = (JSONArray) jsonObject.get("vehicles");
@@ -147,7 +147,7 @@ public class DataController {
                 String typeVeh = par_jsonObject.get("type").toString();
                 idVehicles.put(idVeh, typeVeh);
             }
-        } catch (ParseException | IOException e) { //
+        } catch (ParseException e) { // | IOException
             e.printStackTrace();
         }
         return idVehicles;
@@ -201,16 +201,16 @@ public class DataController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        /*HttpEntity<String> httpResponse = restTemplate.exchange(
+        HttpEntity<String> httpResponse = restTemplate.exchange(
                 URL,
                 HttpMethod.GET,
                 entity,
                 String.class);
-        String progress = httpResponse.getBody();*/
+        String httpBody = httpResponse.getBody();
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(new FileReader("testdata/getJobProgress"+jobId+".txt"));
-            //Object obj = parser.parse(progress);
+            //Object obj = parser.parse(new FileReader("testdata/getJobProgress"+jobId+".txt"));
+            Object obj = parser.parse(httpBody);
             jsonObject = (JSONObject) obj;
             String status = (String) jsonObject.get("status");
             int progress = ((Long) jsonObject.get("progress")).intValue();
@@ -227,7 +227,7 @@ public class DataController {
             response.put("y",y);
             response.put("progress",progress);
             response.put("status",status);
-        } catch (ParseException | IOException e) {
+        } catch (ParseException e) { // | IOException
             logger.error("ParseException", e);
         }
 
@@ -242,18 +242,18 @@ public class DataController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-       /* HttpEntity<String> httpResponse = restTemplate.exchange(
+        HttpEntity<String> httpResponse = restTemplate.exchange(
                 URL,
                 HttpMethod.GET,
                 entity,
                 String.class);
-        String delivery = httpResponse.getBody();*/
+        String delivery = httpResponse.getBody();
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(new FileReader("testdata/getDelivery100.txt"));
-            //Object obj = parser.parse(delivery);
+            //Object obj = parser.parse(new FileReader("testdata/getDelivery100.txt"));
+            Object obj = parser.parse(delivery);
             jsonObject = (JSONObject) obj;
-        } catch (ParseException | IOException e) {
+        } catch (ParseException e) { //IOException
             logger.error("ParseException", e);
         }
         return jsonObject;
@@ -263,21 +263,21 @@ public class DataController {
     public JSONArray getTrafficLightStats() {
         String path = "http://" + serverCoreIP + ":" + serverCorePort + "/map/getTrafficLightStats";
         JSONArray jsonObject = new JSONArray();
-        /*ResponseEntity<JSONObject> response = restTemplate.exchange(
+        ResponseEntity<JSONArray> response = restTemplate.exchange(
                 path,
                 HttpMethod.GET,
                 null,
-                JSONObject.class
+                JSONArray.class
         );
-        jsonObject = response.getBody();*/
+        jsonObject = response.getBody();
 
-        try {
+        /*try {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(new FileReader("testdata/getLights.txt"));
             jsonObject = (JSONArray) obj;
         } catch (ParseException | IOException e) {
             logger.error("ParseException", e);
-        }
+        }*/
 
         return jsonObject;
     }

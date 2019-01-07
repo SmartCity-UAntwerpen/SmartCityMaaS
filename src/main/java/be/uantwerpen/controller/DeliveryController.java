@@ -190,6 +190,7 @@ public class DeliveryController {
      *
      * @return
      */
+    // DEPRECATED
     public List<DummyVehicle> getAllSimData() {
         List<DummyVehicle> vehicles = new ArrayList<DummyVehicle>();
         String requestAll = "request all";
