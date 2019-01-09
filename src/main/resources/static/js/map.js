@@ -75,41 +75,41 @@ function initFunction() {
 
 function loadImages() {
     droneDefault = new Image();
-    droneDefault.src = "../images/map/drone_h.png";
+    droneDefault.src = "/images/map/drone_h.png";
     dronePointA = new Image();
-    dronePointA.src = "../images/map/drone_h_pointA.png";
+    dronePointA.src = "/images/map/drone_h_pointA.png";
     dronePointB = new Image();
-    dronePointB.src = "../images/map/drone_h_pointB.png";
+    dronePointB.src = "/images/map/drone_h_pointB.png";
     carDefault = new Image();
-    carDefault.src = "../images/map/car_gas.png";
+    carDefault.src = "/images/map/car_gas.png";
     carPointA = new Image();
-    carPointA.src = "../images/map/car_gas_pointA.png";
+    carPointA.src = "/images/map/car_gas_pointA.png";
     carPointB = new Image();
-    carPointB.src = "../images/map/car_gas_pointB.png";
+    carPointB.src = "/images/map/car_gas_pointB.png";
     robotDefault = new Image();
-    robotDefault.src = "../images/map/robot_charge.png";
+    robotDefault.src = "/images/map/robot_charge.png";
     robotPointA = new Image();
-    robotPointA.src = "../images/map/robot_charge_pointA.png";
+    robotPointA.src = "/images/map/robot_charge_pointA.png";
     robotPointB = new Image();
-    robotPointB.src = "../images/map/robot_charge_pointB.png";
+    robotPointB.src = "/images/map/robot_charge_pointB.png";
 
     robotIcon = new Image();
-    robotIcon.src = "../images/map/robotIcon.png";
+    robotIcon.src = "/images/map/robotIcon.png";
     robotIconTarget = new Image();
-    robotIconTarget.src = "../images/map/robotTargetted.png";
+    robotIconTarget.src = "/images/map/robotTargetted.png";
     droneIcon = new Image();
-    droneIcon.src = "../images/map/droneIcon.png";
+    droneIcon.src = "/images/map/droneIcon.png";
     droneIconTarget = new Image();
-    droneIconTarget.src = "../images/map/droneTargetted.png";
+    droneIconTarget.src = "/images/map/droneTargetted.png";
     racecarIcon = new Image();
-    racecarIcon.src = "../images/map/racecarIcon.png";
+    racecarIcon.src = "/images/map/racecarIcon.png";
     racecarIconTarget = new Image();
-    racecarIconTarget.src = "../images/map/raceCarTargetted.png";
+    racecarIconTarget.src = "/images/map/raceCarTargetted.png";
 
     lightGreenIcon = new Image();
-    lightGreenIcon.src = "../images/map/traffic_green.png";
+    lightGreenIcon.src = "/images/map/traffic_green.png";
     lightRedIcon = new Image();
-    lightRedIcon.src = "../images/map/traffic_red.png";
+    lightRedIcon.src = "/images/map/traffic_red.png";
 
 }
 
