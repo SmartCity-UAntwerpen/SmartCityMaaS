@@ -578,7 +578,7 @@ function getTrafficStatus(){
         for (var i = 0; i < result.length; i++) {
             var point =  $.grep(lights, function(e){return e.pointName === result[i].id})[0];
             if(point) {
-                if (result[i].status != "GREEN") {
+                if (result[i].state !== "GREEN") {
                     status = lightRedIcon;
                 }
                 point.status = status;

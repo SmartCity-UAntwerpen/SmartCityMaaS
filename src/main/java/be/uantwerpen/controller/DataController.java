@@ -1,7 +1,5 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.services.JobListService;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.World;
@@ -13,20 +11,21 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * This controller delivers the physical world and vehicle progress to javascript on the frontend.
@@ -176,12 +175,12 @@ public class DataController {
      * Return the x and y coordinates of a current used vehicle that is assigned for a specified delivery.
      * Its ID is returned as third value in the returned int array.
      *
-     * @param worldId     The ID of the world the vehicle is located
-     * @param jobId The ID of the job
-     * @param jobId The ID of the map
+     * @param worldId The ID of the world the vehicle is located
+     * @param jobId   The ID of the job
+     * @param jobId   The ID of the map
      * @param startId The ID of the startpoint
-     * @param endId The ID of the endpoint
-     * @param type The type of the vehicle
+     * @param endId   The ID of the endpoint
+     * @param type    The type of the vehicle
      * @return Returns a JSON response [x, y, percentage, status]
      */
     @RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
@@ -218,15 +217,15 @@ public class DataController {
 
             int x = 0;
             int y = 0;
-            if(status.equals("BUSY")) {
+            if (status.equals("BUSY")) {
                 int[] coordinatesVehicle_temp = world.getDistance(mapId, startId, endId, (double) (progress) / 100.0, type);
-                x =  coordinatesVehicle_temp[0];
+                x = coordinatesVehicle_temp[0];
                 y = coordinatesVehicle_temp[1];
             }
-            response.put("x",x);
-            response.put("y",y);
-            response.put("progress",progress);
-            response.put("status",status);
+            response.put("x", x);
+            response.put("y", y);
+            response.put("progress", progress);
+            response.put("status", status);
         } catch (ParseException e) { // | IOException
             logger.error("ParseException", e);
         }
@@ -234,7 +233,7 @@ public class DataController {
         return response;
     }
 
-    @RequestMapping(value="/{worldId}/delivery/{delivery_id}")
+    @RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
         logger.info("getting delivery: " + delivery_id);
         JSONObject jsonObject = new JSONObject();
@@ -260,25 +259,18 @@ public class DataController {
     }
 
     @RequestMapping(value = "/getTrafficLightStats")
-    public JSONArray getTrafficLightStats() {
+    @ResponseBody
+    public String getTrafficLightStats() throws IOException {
         String path = "http://" + serverCoreIP + ":" + serverCorePort + "/map/getTrafficLightStats";
-        JSONArray jsonObject = new JSONArray();
-        ResponseEntity<JSONArray> response = restTemplate.exchange(
-                path,
-                HttpMethod.GET,
-                null,
-                JSONArray.class
-        );
-        jsonObject = response.getBody();
-
-        /*try {
-            JSONParser parser = new JSONParser();
-            Object obj = parser.parse(new FileReader("testdata/getLights.txt"));
-            jsonObject = (JSONArray) obj;
-        } catch (ParseException | IOException e) {
-            logger.error("ParseException", e);
-        }*/
-
-        return jsonObject;
+        return readStringFromURL(path);
     }
+
+    private String readStringFromURL(String requestURL) throws IOException {
+        try (Scanner scanner = new Scanner(new URL(requestURL).openStream(),
+                StandardCharsets.UTF_8.toString())) {
+            scanner.useDelimiter("\\A");
+            return scanner.hasNext() ? scanner.next() : "";
+        }
+    }
+
 }

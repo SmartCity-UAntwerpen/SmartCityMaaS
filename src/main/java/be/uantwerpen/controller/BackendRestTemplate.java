@@ -66,8 +66,6 @@ public class BackendRestTemplate {
         logger.info("Response body core: " + httpResponse.hasBody());
         String listOfCore = httpResponse.getBody();
 
-        new JSONObject();
-
         JSONParser parser = new JSONParser();
 
         Object obj;
