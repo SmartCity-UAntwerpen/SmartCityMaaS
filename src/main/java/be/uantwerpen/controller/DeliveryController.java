@@ -141,7 +141,7 @@ public class DeliveryController {
         model.addAttribute("currentUser", loginUser);
 
         try {
-            backboneService.planPath(Integer.parseInt(delivery.getPointA()), Integer.parseInt(delivery.getPointB()), delivery.getMapA(), delivery.getMapB());
+            backboneService.planPath(Integer.parseInt(delivery.getPointA()), delivery.getMapA(), Integer.parseInt(delivery.getPointB()), delivery.getMapB());
 
             logger.info("Job has been created by " + loginUser);
             model.addAttribute("delivery", delivery_return);
