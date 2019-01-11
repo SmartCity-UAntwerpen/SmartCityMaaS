@@ -594,7 +594,7 @@ function getTrafficStatus(){
     $.getJSON("/getTrafficLightStats", function(result){
         var status = lightGreenIcon;
         for (var i = 0; i < result.length; i++) {
-            var point =  $.grep(lights, function(e){return e.pointName === result[i].id})[0];
+            var point =  $.grep(lights, function(e){return e.pointName === result[i].point.id})[0];
             if(point) {
                 if (result[i].state !== "GREEN") {
                     status = lightRedIcon;
