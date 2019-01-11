@@ -33,20 +33,9 @@
                                     <h3>job info:</h3>
                                     <div class="group">
                                         <div>
-                                            <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
-                                            <label id="passengersNumber" th:text="${delivery.passengers}">Subtitle</label>
-                                        </div>
-                                        <div>
-                                            <label id="pointALabel" th:text="#{segments.pointA}">Passengers</label>
-                                            <label id="pointAtext" th:text="${delivery.pointA}">Subtitle</label>
-                                        </div>
-                                        <div>
-                                            <label id="pointBLabel" th:text="#{segments.pointB}">Passengers</label>
-                                            <label id="pointBtext" th:text="${delivery.pointB}">Subtitle</label>
-                                        </div>
-                                        <div>
-                                            <label id="deliveryIDLabel" th:text="#{idDelivery}">Passengers</label>
-                                            <label id="deliveryID" th:text="${delivery.idDelivery}">Subtitle</label>
+                                            <p><strong th:text="#{segments.pointA}"></strong>: Map <span th:text="${delivery.mapA}"></span> - ID <span th:text="${delivery.pointA}"></span></p>
+                                            <p><strong th:text="#{segments.pointB}"></strong>: Map <span th:text="${delivery.mapB}"></span> - ID <span th:text="${delivery.pointB}"></span></p>
+                                            <p><strong th:text="#{idDelivery}"></strong>: <span th:text="${delivery.backboneId}"></span></p>
                                         </div>
                                     </div>
 
@@ -55,8 +44,8 @@
                                         <div class="col-md-4">
                                         </div>
                                         <div class="col-md-4">
-                                            <a href="/deliveries" id="startDelivery" class="button">
-                                                <button type="button" id="dashboard-show-2_:_keco-add" class="btn btn-default shortcut-btn"><span  th:text="#{close}"></span></button>
+                                            <a href="/visualization" id="startDelivery" class="button">
+                                                <button type="button" id="dashboard-show-2_:_keco-add" class="btn btn-default shortcut-btn"><span  th:text="#{visual}"></span></button>
                                             </a>
                                         </div>
                                         <div class="col-md-4">

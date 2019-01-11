@@ -137,7 +137,7 @@ function getWorld(){
         drawWorld();
         showPage();
     }).fail(function() {
-        showError("Could not load world");
+        showError("Could not load world.");
     });;
 }
 
@@ -178,28 +178,29 @@ function drawWorld(){
             }
         }
 
-        switch (point.type) {
-            case "robot":
-                if( point.pointCharacteristic == "INTERSECTION"){
-                    ctx.strokeStyle = "#95A6A6";
-                    ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
-                }else if( point.pointCharacteristic == "LIGHT" ){
-                    if(!point.status){ // if it has no status, just make in green (bv in delivery)
-                        point.status = lightGreenIcon;
+        if( point.pointCharacteristic == "INTERSECTION"){
+            ctx.strokeStyle = "#95A6A6";
+            ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
+        } else {
+            switch (point.type) {
+                case "robot":
+                    if (point.pointCharacteristic == "LIGHT") {
+                        if (!point.status) { // if it has no status, just make in green (bv in delivery)
+                            point.status = lightGreenIcon;
+                        }
+                        ctx.drawImage(point.status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                    } else {
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                     }
-                    ctx.drawImage(point.status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
-                } else {
-                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                }
-                break;
-            case "car":
-                ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                break;
-            case "drone":
-                ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                break;
+                    break;
+                case "car":
+                    ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                    break;
+                case "drone":
+                    ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                    break;
+            }
         }
-
     }
 
     document.getElementById("loader").style.display = "none";
@@ -223,21 +224,21 @@ function clickedOnCanvas(event){
     if(pointAset){
         var point =  $.grep(world.points, function(e){return e.pointName === pointAId && e.mapId === mapAId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
-            switch (point.type) {
-                case "robot":
-                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                        ctx.fillStyle = "#000000";
-                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
-                    } else {
+            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+                ctx.fillStyle = "#000000";
+                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+            } else {
+                switch (point.type) {
+                    case "robot":
                         ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
-                    }
-                    break;
-                case "car":
-                    ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-                case "drone":
-                    ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
+                        break;
+                    case "car":
+                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "drone":
+                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                }
             }
             document.getElementById('saveDelivery').style.visibility = 'hidden';
             console.log("turning off point A");
@@ -251,21 +252,21 @@ function clickedOnCanvas(event){
         var point = $.grep(world.points, function(e){return e.pointName === pointBId && e.mapId === mapBId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             console.log("pointBset");
-            switch (point.type) {
-                case "robot":
-                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT"){
-                        ctx.fillStyle = "#000000";
-                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
-                    } else {
-                        ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    }
-                    break;
-                case "car":
-                    ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
-                case "drone":
-                    ctx.drawImage(droneDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                    break;
+            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+                ctx.fillStyle = "#000000";
+                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+            } else {
+                switch (point.type) {
+                    case "robot":
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "car":
+                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                    case "drone":
+                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        break;
+                }
             }
             console.log("turning off point B");
             pointBset = false;
@@ -283,21 +284,21 @@ function clickedOnCanvas(event){
                     pointAId = point.pointName;
                     mapAId = point.mapId;
                     console.log("Point A id = " + pointAId + " - map " + mapAId);
-                    switch (point.type) {
-                        case "robot":
-                            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                                ctx.fillStyle = "#0004ff";
-                                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
-                            } else {
+                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+                        ctx.fillStyle = "#0004ff";
+                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                    } else {
+                        switch (point.type) {
+                            case "robot":
                                 ctx.drawImage(robotPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
-                            }
-                            break;
-                        case "car":
-                            ctx.drawImage(carPointA,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
-                        case "drone":
-                            ctx.drawImage(dronePointA,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
+                                break;
+                            case "car":
+                                ctx.drawImage(carPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                            case "drone":
+                                ctx.drawImage(dronePointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                        }
                     }
                     pointAset = true;
                     document.getElementById("inputA").value = pointAId;
@@ -309,21 +310,21 @@ function clickedOnCanvas(event){
                 else{
                     pointBId = point.pointName;
                     mapBId = point.mapId;
-                    switch (point.type) {
-                        case "robot":
-                            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                                ctx.fillStyle = "#ff030c";
-                                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
-                            } else {
-                                ctx.drawImage(robotPointB, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            }
-                            break;
-                        case "car":
-                            ctx.drawImage(carPointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),((point.physicalPoisionY*ySize) - (ySize*3/2)),(xSize*3),(ySize*3));
-                            break;
-                        case "drone":
-                            ctx.drawImage(dronePointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
-                            break;
+                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+                        ctx.fillStyle = "#ff030c";
+                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                    } else {
+                        switch (point.type) {
+                            case "robot":
+                                ctx.drawImage(robotPointB, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                            case "car":
+                                ctx.drawImage(carPointB, ((point.physicalPoisionX * xSize) - (xSize * 3 / 2)), ((point.physicalPoisionY * ySize) - (ySize * 3 / 2)), (xSize * 3), (ySize * 3));
+                                break;
+                            case "drone":
+                                ctx.drawImage(dronePointB, ((point.physicalPoisionX * xSize) - (xSize * 3 / 2)), (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                break;
+                        }
                     }
                     console.log("Point B id = " + pointBId + " - map " + mapBId);
                     pointBset = true;
@@ -445,9 +446,20 @@ function getJobVehicles(){
                 $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" .prog").text(progress.progress);
                 $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" .stat").text(progress.status);
             }).fail(function() {
-                showError("Delivery job " + jobs[i].id + " not found");
+                showError("Delivery job " + jobs[i].id + " not found!");
             });
         })(i);
+
+
+        if(0 < i && i < jobs.length) {
+            ctx.beginPath();
+            ctx.setLineDash([20, 5]);
+            ctx.strokeStyle = '#b99239';
+            ctx.lineWidth = 3;
+            ctx.moveTo(jobs[i-1].endPoint.physicalPoisionX*xSize,jobs[i-1].endPoint.physicalPoisionY*ySize);
+            ctx.lineTo(jobs[i].startPoint.physicalPoisionX*xSize,jobs[i].startPoint.physicalPoisionY*ySize);
+            ctx.stroke();
+        }
 
     }
 }
@@ -486,7 +498,7 @@ function trackDelivery(deliveryId){
                 );
             }
         }).fail(function() {
-            showError("Delivery "+ deliveryId +" not found");
+            showError("Delivery "+ deliveryId +" not found!");
         });
         vehiclesInterval = setInterval(getJobVehicles, trackingInterval);
     } else {
@@ -559,6 +571,8 @@ function drawLink(type, startpoint, endpoint, track){
             }
     }
 
+
+    console.log(endpoint);
     ctx.lineTo(endpoint.physicalPoisionX*xSize,endpoint.physicalPoisionY*ySize);
     ctx.stroke();
 }
@@ -604,7 +618,7 @@ function getTrafficStatus(){
             }
         }
     }).fail(function() {
-        showError("Could not update traffic-lights");
+        showError("Could not update traffic-lights.");
     });;
 }
 
