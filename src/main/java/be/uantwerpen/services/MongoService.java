@@ -158,7 +158,7 @@ public class MongoService {
         MongoCollection<Document> collection = db.getCollection("deliveries");
 
         BasicDBObject query = new BasicDBObject();
-        query.put("_id", deliveryID);
+        query.put("_id", new ObjectId(deliveryID));
         BasicDBObject carrier = new BasicDBObject();
         carrier.put("typeDelivery", "done");
         BasicDBObject set = new BasicDBObject("$set", carrier);
@@ -180,6 +180,7 @@ public class MongoService {
                 String pointB = it.getString("pointB");
                 int mapA = it.getInteger("mapA");
                 int mapB = it.getInteger("mapB");
+                int backboneId = it.getInteger("backboneId");
                 String passengers = it.getString("passengers");
                 Date d = new Date(it.getDate("timesample").getTime());
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").format(d);
@@ -194,10 +195,21 @@ public class MongoService {
                 delivery.setType(typeDelivery);
                 delivery.setPassengers(Integer.parseInt(passengers));
                 delivery.setDate(timestamp);
+                delivery.setBackboneId(backboneId);
                 deliveries.add(delivery);
             }
         }
         return deliveries;
+    }
+
+
+    public void setDeliveryBackboneId(String deliveryID, int backboneId) {
+        logger.info("Setting delivery [" + deliveryID + "] with backboneId " + backboneId);
+        MongoCollection<Document> collection = db.getCollection("deliveries");
+
+        BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(deliveryID));
+        BasicDBObject carrier = new BasicDBObject().append("$set", new BasicDBObject().append("backboneId", backboneId));
+        collection.updateOne(query, carrier);
     }
 
 }

@@ -49,6 +49,10 @@ var lightRedIcon;
 
 var vehiclesInterval;
 var trafficInterval;
+
+
+var trackingInterval = 3000;
+
 /**
  * The initialize function of the html page.
  */
@@ -59,7 +63,7 @@ function initFunction() {
     getWorld();
 
     if(visualization){
-        trafficInterval = setInterval(getTrafficStatus, 1005);
+        //trafficInterval = setInterval(getTrafficStatus, 1050);
     }
 
     if(!only_view)
@@ -132,7 +136,9 @@ function getWorld(){
         console.log(" x size = " + xSize + " y size = " + ySize);
         drawWorld();
         showPage();
-    });
+    }).fail(function() {
+        showError("Could not load world");
+    });;
 }
 
 
@@ -220,9 +226,11 @@ function clickedOnCanvas(event){
             switch (point.type) {
                 case "robot":
                     if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                        return;
+                        ctx.fillStyle = "#000000";
+                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                    } else {
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                     }
-                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                     break;
                 case "car":
                     ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
@@ -246,9 +254,11 @@ function clickedOnCanvas(event){
             switch (point.type) {
                 case "robot":
                     if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT"){
-                        return;
+                        ctx.fillStyle = "#000000";
+                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                    } else {
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                     }
-                    ctx.drawImage(robotDefault, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                     break;
                 case "car":
                     ctx.drawImage(carDefault,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
@@ -276,9 +286,11 @@ function clickedOnCanvas(event){
                     switch (point.type) {
                         case "robot":
                             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                                return;
+                                ctx.fillStyle = "#0004ff";
+                                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                            } else {
+                                ctx.drawImage(robotPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
                             }
-                            ctx.drawImage(robotPointA, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             break;
                         case "car":
                             ctx.drawImage(carPointA,(point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
@@ -300,9 +312,11 @@ function clickedOnCanvas(event){
                     switch (point.type) {
                         case "robot":
                             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
-                                return;
+                                ctx.fillStyle = "#ff030c";
+                                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                            } else {
+                                ctx.drawImage(robotPointB, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             }
-                            ctx.drawImage(robotPointB, (point.physicalPoisionX*xSize) - xSize*3/2,(point.physicalPoisionY*ySize) - ySize*3/2,xSize*3,ySize*3);
                             break;
                         case "car":
                             ctx.drawImage(carPointB,((point.physicalPoisionX*xSize) - (xSize*3/2)),((point.physicalPoisionY*ySize) - (ySize*3/2)),(xSize*3),(ySize*3));
@@ -430,7 +444,9 @@ function getJobVehicles(){
 
                 $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" .prog").text(progress.progress);
                 $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" .stat").text(progress.status);
-            })
+            }).fail(function() {
+                showError("Delivery job " + jobs[i].id + " not found");
+            });
         })(i);
 
     }
@@ -469,8 +485,10 @@ function trackDelivery(deliveryId){
                     " - Progress: <span class='prog'>0</span>% (<span class='stat'>" +  jobs[i].status + "</span>)</p>"
                 );
             }
+        }).fail(function() {
+            showError("Delivery "+ deliveryId +" not found");
         });
-        vehiclesInterval = setInterval(getJobVehicles, 1000);
+        vehiclesInterval = setInterval(getJobVehicles, trackingInterval);
     } else {
         currentDeliveryId = -1;
         reDrawWorld();
@@ -585,7 +603,18 @@ function getTrafficStatus(){
                 ctx.drawImage(status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
             }
         }
-    });
+    }).fail(function() {
+        showError("Could not update traffic-lights");
+    });;
+}
+
+function  showError(error){
+    $("#error-bar").remove();
+    $(".dashboard-con .row").append(
+        "<div class='col-md-12 alert alert-danger' id='error-bar'>" +
+        "<span>"+error+"</span>" +
+        "</div>"
+    );
 }
 
 

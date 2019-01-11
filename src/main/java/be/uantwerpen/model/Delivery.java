@@ -31,6 +31,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
     private String date;
     private String idDelivery;
     private boolean complete = false;
+    private int backboneId;
 
     public Delivery() {
     }
@@ -47,6 +48,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
         this.idDelivery = "0";
+        this.backboneId = 0;
     }
     public Delivery(String idDelivery, String type, String firstName, String lastName, String pointA, String pointB, int passengers, String date) {
         this.firstName = firstName;
@@ -59,6 +61,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = date;
         this.type = type;
         this.idDelivery = idDelivery;
+        this.backboneId = 0;
     }
     public Delivery(String userName, String firstName, String lastName, String pointA, String pointB, int passengers) {
         this.userName = userName;
@@ -72,6 +75,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
         this.idDelivery = "0";
+        this.backboneId = 0;
     }
     public Delivery(String firstName, String lastName, String pointA, String pointB, int passengers) {
         this.firstName = firstName;
@@ -84,6 +88,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
         this.idDelivery = "0";
+        this.backboneId = 0;
     }
 
     public Delivery(String firstName, String lastName, String pointA, String pointB) {
@@ -97,6 +102,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = "0000-01-01 01:00:00.000 000";
         this.type = "HumanTransport";
         this.idDelivery = "0";
+        this.backboneId = 0;
     }
     public String getFirstName() {
         return firstName;
@@ -159,6 +165,14 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.date = date;
     }
 
+    public int getBackboneId() {
+        return backboneId;
+    }
+
+    public void setBackboneId(int backboneId) {
+        this.backboneId = backboneId;
+    }
+
     public int getMapA() {
         return mapA;
     }
@@ -181,6 +195,6 @@ public class Delivery extends MyAbstractPersistable<Long> {
     public void print() {
         logger.info("Delivery: idDelivery " + idDelivery + ", username " + userName + ", firstName " + firstName +
                 ", lastName " + lastName + ", pointA " + pointA + ", pointB " + pointB + ", mapA " + mapA + ", mapB " + mapB +
-                ", passengers " + passengers + ", type " + type + ", date " + date);
+                ", passengers " + passengers + ", type " + type + ", date " + date + ", backboneId " + backboneId);
     }
 }

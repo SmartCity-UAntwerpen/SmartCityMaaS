@@ -65,7 +65,7 @@
                                     <input class="form-control" id = "firtName" th:type="hidden" th:field="*{firstName}"/>
                                     <script th:inline="javascript">
                                         /*<![CDATA[*/
-                                        document.getElementById("firtName").value = [[${currentUser.firstName}]];
+                                        document.getElementById("firstName").value = [[${currentUser.firstName}]];
                                         /*]]>*/
                                     </script>
                                 </div>

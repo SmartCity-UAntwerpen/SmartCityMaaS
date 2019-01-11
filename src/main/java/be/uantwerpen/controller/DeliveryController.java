@@ -69,7 +69,7 @@ public class DeliveryController {
     @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
     public String viewDeliveries(final ModelMap model) {
         logger.info(userService.getPrincipalUser() + " requested /deliveries");
-        Iterable<Delivery> deliveries = mongoService.getAllDeliveries();
+        Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
         model.addAttribute("allDeliveries", deliveries);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
@@ -116,7 +116,7 @@ public class DeliveryController {
      * @return
      */
     @RequestMapping(value = {"/deliveries/", "/deliveries/{id}"}, method = RequestMethod.POST)
-    public String addDeliver(@Valid Delivery delivery, BindingResult result, final ModelMap model) {
+    public String addDelivery(@Valid Delivery delivery, BindingResult result, final ModelMap model) {
         logger.info(result.getModel());
         logger.info("Delivery: point A " + delivery.getPointA() + " map " + delivery.getMapA() + ", point B " + delivery.getPointB() + " map " + delivery.getMapB());
 
@@ -141,8 +141,8 @@ public class DeliveryController {
         model.addAttribute("currentUser", loginUser);
 
         try {
-            backboneService.planPath(Integer.parseInt(delivery.getPointA()), delivery.getMapA(), Integer.parseInt(delivery.getPointB()), delivery.getMapB());
-
+            int backboneId = backboneService.planPath(Integer.parseInt(delivery.getPointA()), delivery.getMapA(), Integer.parseInt(delivery.getPointB()), delivery.getMapB());
+            mongoService.setDeliveryBackboneId(delivery_return.getIdDelivery(), backboneId);
             logger.info("Job has been created by " + loginUser);
             model.addAttribute("delivery", delivery_return);
         } catch (Exception e) {
@@ -179,6 +179,7 @@ public class DeliveryController {
             model.addAttribute("deliveries", mongoService.getAllBusyDeliveries());
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            logger.error(e);
         }
 
         return "visualization_map";
@@ -190,7 +191,7 @@ public class DeliveryController {
      *
      * @return
      */
-    // DEPRECATED
+    // ------------ DEPRECATED -----------
     public List<DummyVehicle> getAllSimData() {
         List<DummyVehicle> vehicles = new ArrayList<DummyVehicle>();
         String requestAll = "request all";
