@@ -93,28 +93,6 @@ public class JobListServiceTest {
     }
 
     @Test
-    public void saveOrder() {
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl("http://localhost:9000/jobs/saveOrder")
-                .build();
-        mockServer.expect(requestTo(uriComponents.toUri()))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess());
-        assertTrue(jobListService.saveOrder(new JobList()));
-        mockServer.verify();
-    }
-
-    @Test
-    public void saveOrderFail() {
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl("http://localhost:9000/jobs/saveOrder")
-                .build();
-        mockServer.expect(requestTo(uriComponents.toUri()))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withServerError());
-        assertFalse(jobListService.saveOrder(new JobList()));
-        mockServer.verify();
-    }
-
-    @Test
     public void deleteOrder() {
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl("http://localhost:9000/jobs/deleteOrder/5")
                 .build();
