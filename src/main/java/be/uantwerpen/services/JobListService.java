@@ -64,27 +64,6 @@ public class JobListService {
         }
     }
 
-    public boolean saveOrder(final JobList joblist) {
-        String path = basePath + "/saveOrder";
-
-        //Set your headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        //Set your entity to send
-        HttpEntity entity = new HttpEntity<>(joblist, headers);
-
-        //Send it!
-        try {
-            restTemplate.exchange(path, HttpMethod.POST, entity, String.class);
-            return true;
-        } catch (RestClientException e) {
-            logger.warn("Error while saving joblist " + joblist.getId());
-            logger.debug(e);
-            return false;
-        }
-    }
-
     /**
      * delete an order
      *
