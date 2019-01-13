@@ -52,6 +52,7 @@ var trafficInterval;
 
 
 var trackingInterval = 3000;
+var iconSize = 3;
 
 /**
  * The initialize function of the html page.
@@ -63,7 +64,7 @@ function initFunction() {
     getWorld();
 
     if(visualization){
-        //trafficInterval = setInterval(getTrafficStatus, 1050);
+        trafficInterval = setInterval(getTrafficStatus, 1050);
     }
 
     if(!only_view)
@@ -422,23 +423,11 @@ function getJobVehicles(){
                             "pointName": jobs[i].endPoint.pointName
                         };
                         ctx.strokeStyle = '#00d900';
-                        /*if (jobs[i].startPoint.type == "car") { // car difficult to track
-                            ctx.beginPath();
-                            ctx.setLineDash([20, 5]);
-                            ctx.lineWidth = 3;
-                            ctx.moveTo(jobs[i].startPoint.physicalPoisionX*xSize,jobs[i].startPoint.physicalPoisionY*ySize);
-
-                            if(!traveledCarPath[jobs[i].id]) {
-                                traveledCarPath.push(jobs[i].id);
-                            }
-                            traveledCarPath[jobs[i].id].push({"x": progress.x, "y": progress.y});
-                            for (var j = 0; j < traveledCarPath[jobs[i].id].length; j++) {
-                                ctx.lineTo(traveledCarPath[jobs[i].id][j].x*xSize,traveledCarPath[j][jobs[i].id].y*ySize);
-                            }
-                            ctx.stroke();
-                        } else {*/
+                        if (jobs[i].startPoint.type === "car") { // car difficult to track
+                            trackCarLink(jobs[i].startPoint, endPoint, jobs[i].endPoint, progress.progress);
+                        } else {
                             drawLink(jobs[i].startPoint.type, jobs[i].startPoint, endPoint, true);
-                        //}
+                        }
                         drawVehicle(jobs[i].startPoint.type, progress.x, progress.y, true);
                         break;
                 }
@@ -532,7 +521,11 @@ function drawLink(type, startpoint, endpoint, track){
                 ctx.lineWidth = 5;
             }
             //90 graden
-            ctx.lineTo(startpoint.physicalPoisionX * xSize, endpoint.physicalPoisionY * ySize);
+            if (startpoint.pointName > endpoint.pointName) {
+                ctx.lineTo(endpoint.physicalPoisionX * xSize, startpoint.physicalPoisionY * ySize);
+            } else {
+                ctx.lineTo(startpoint.physicalPoisionX * xSize, endpoint.physicalPoisionY * ySize);
+            }
             break;
         case "car":
             if (!track) {
@@ -571,9 +564,62 @@ function drawLink(type, startpoint, endpoint, track){
             }
     }
 
-
-    console.log(endpoint);
     ctx.lineTo(endpoint.physicalPoisionX*xSize,endpoint.physicalPoisionY*ySize);
+    ctx.stroke();
+}
+
+function trackCarLink(startpoint, currentpoint, endpoint, progress){
+    // Similar code in World.java
+    ctx.beginPath();
+    ctx.setLineDash([20, 5]);
+    ctx.lineWidth = 3;
+
+    ctx.moveTo(startpoint.physicalPoisionX*xSize,startpoint.physicalPoisionY*ySize);
+
+    var distX = (endpoint.physicalPoisionX - startpoint.physicalPoisionX);
+    var distY = (endpoint.physicalPoisionY - startpoint.physicalPoisionY);
+    var distXpiece = distX/8;
+    var distYpiece = distY/8;
+    var pointX;
+    var pointY;
+    // LENGTH OF SEPERATE LINE PIECES (Pythagoras):
+    var line1 =  Math.sqrt(Math.pow(Math.abs(5*distXpiece), 2) +  Math.pow(Math.abs(distYpiece),2));
+    var line2 =  Math.sqrt(Math.pow(Math.abs(2*distXpiece), 2) +  Math.pow(Math.abs(2*distYpiece),2));
+    var line3 =  Math.sqrt(Math.pow(Math.abs(distXpiece), 2) +  Math.pow(Math.abs(5*distYpiece),2));
+    // HOW MUCH PERCENT OF TOTAL LINE IS THIS LINE:
+    var totalLine = line1 + line2 + line3;
+    var line1prog = line1/totalLine;
+    var line2prog = line2/totalLine;
+
+    if (progress < line1prog) {
+        ctx.lineTo(currentpoint.physicalPoisionX * xSize, currentpoint.physicalPoisionY * ySize);
+    } else if(progress < line2prog) {
+        if (startpoint.pointName > endpoint.pointName) {
+            pointX = startpoint.physicalPoisionX + distXpiece;
+            pointY = startpoint.physicalPoisionY + 5 * distYpiece;
+        } else {
+            pointX = startpoint.physicalPoisionX + 5 * distXpiece;
+            pointY = startpoint.physicalPoisionY + distYpiece;
+        }
+        ctx.lineTo(pointX * xSize, pointY * ySize);
+        ctx.lineTo(currentpoint.physicalPoisionX * xSize, currentpoint.physicalPoisionY * ySize);
+    } else {
+        if (startpoint.pointName > endpoint.pointName) {
+            pointX = startpoint.physicalPoisionX + distXpiece;
+            pointY = startpoint.physicalPoisionY + 5 * distYpiece;
+            ctx.lineTo(pointX * xSize, pointY * ySize);
+            pointX = startpoint.physicalPoisionX + 3 * distXpiece;
+            pointY = startpoint.physicalPoisionY + 7 * distYpiece;
+        } else {
+            pointX = startpoint.physicalPoisionX + 5 * distXpiece;
+            pointY = startpoint.physicalPoisionY + distYpiece;
+            ctx.lineTo(pointX * xSize, pointY * ySize);
+            pointX = startpoint.physicalPoisionX + 7 * distXpiece;
+            pointY = startpoint.physicalPoisionY + 3 * distYpiece;
+        }
+        ctx.lineTo(pointX * xSize, pointY * ySize);
+        ctx.lineTo(currentpoint.physicalPoisionX * xSize, currentpoint.physicalPoisionY * ySize);
+    }
     ctx.stroke();
 }
 
