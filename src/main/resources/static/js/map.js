@@ -52,7 +52,7 @@ var trafficInterval;
 
 
 var trackingInterval = 3000;
-var iconSize = 3;
+var iconSize = 8;
 
 /**
  * The initialize function of the html page.
@@ -181,7 +181,7 @@ function drawWorld(){
 
         if( point.pointCharacteristic == "INTERSECTION"){
             ctx.strokeStyle = "#95A6A6";
-            ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5); // fill in the pixel at (10,10)
+            ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5); // fill in the pixel at (10,10)
         } else {
             switch (point.type) {
                 case "robot":
@@ -189,16 +189,16 @@ function drawWorld(){
                         if (!point.status) { // if it has no status, just make in green (bv in delivery)
                             point.status = lightGreenIcon;
                         }
-                        ctx.drawImage(point.status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(point.status, (point.physicalPoisionX * xSize) - iconSize, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                     } else {
-                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                     }
                     break;
                 case "car":
-                    ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                    ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                     break;
                 case "drone":
-                    ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                    ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                     break;
             }
         }
@@ -227,17 +227,17 @@ function clickedOnCanvas(event){
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
                 ctx.fillStyle = "#000000";
-                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
             } else {
                 switch (point.type) {
                     case "robot":
-                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                         break;
                     case "car":
-                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                         break;
                     case "drone":
-                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                         break;
                 }
             }
@@ -255,17 +255,17 @@ function clickedOnCanvas(event){
             console.log("pointBset");
             if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
                 ctx.fillStyle = "#000000";
-                ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
             } else {
                 switch (point.type) {
                     case "robot":
-                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(robotDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                         break;
                     case "car":
-                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(carDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                         break;
                     case "drone":
-                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                        ctx.drawImage(droneDefault, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                         break;
                 }
             }
@@ -287,17 +287,17 @@ function clickedOnCanvas(event){
                     console.log("Point A id = " + pointAId + " - map " + mapAId);
                     if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
                         ctx.fillStyle = "#0004ff";
-                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                        ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
                     } else {
                         switch (point.type) {
                             case "robot":
-                                ctx.drawImage(robotPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                ctx.drawImage(robotPointA, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                                 break;
                             case "car":
-                                ctx.drawImage(carPointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                ctx.drawImage(carPointA, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                                 break;
                             case "drone":
-                                ctx.drawImage(dronePointA, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                ctx.drawImage(dronePointA, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                                 break;
                         }
                     }
@@ -313,17 +313,17 @@ function clickedOnCanvas(event){
                     mapBId = point.mapId;
                     if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
                         ctx.fillStyle = "#ff030c";
-                        ctx.fillRect((point.physicalPoisionX * xSize)- xSize*1.5/2, (point.physicalPoisionY * ySize)- ySize*1.5/2, xSize*1.5, ySize*1.5);
+                        ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
                     } else {
                         switch (point.type) {
                             case "robot":
-                                ctx.drawImage(robotPointB, (point.physicalPoisionX * xSize) - xSize * 3 / 2, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                ctx.drawImage(robotPointB, (point.physicalPoisionX * xSize) - iconSize * 3 / 2, (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                                 break;
                             case "car":
-                                ctx.drawImage(carPointB, ((point.physicalPoisionX * xSize) - (xSize * 3 / 2)), ((point.physicalPoisionY * ySize) - (ySize * 3 / 2)), (xSize * 3), (ySize * 3));
+                                ctx.drawImage(carPointB, ((point.physicalPoisionX * xSize) - (iconSize * 3 / 2)), ((point.physicalPoisionY * ySize) - (iconSize * 3 / 2)), (iconSize * 3), (iconSize * 3));
                                 break;
                             case "drone":
-                                ctx.drawImage(dronePointB, ((point.physicalPoisionX * xSize) - (xSize * 3 / 2)), (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                                ctx.drawImage(dronePointB, ((point.physicalPoisionX * xSize) - (iconSize * 3 / 2)), (point.physicalPoisionY * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
                                 break;
                         }
                     }
@@ -398,7 +398,7 @@ function getJobVehicles(){
         clearInterval(vehiclesInterval);
     }
     reDrawWorld();
-
+    var allDone = false;
     for (var i = 0; i < jobs.length; i++) {
         (function(i){
             $.getJSON("/world1/progress/" + jobs[i].id + "/" + jobs[i].idMap + "/" + jobs[i].idStart + "/" + jobs[i].idEnd + "/" + jobs[i].startPoint.type, function (progress) {
@@ -410,6 +410,9 @@ function getJobVehicles(){
                         drawVehicle(jobs[i].startPoint.type, jobs[i].startPoint.physicalPoisionX, jobs[i].startPoint.physicalPoisionY, false);
                         break;
                     case "DONE":
+                        if(i === jobs.length-1){
+                            allDone = true;
+                        }
                         ctx.strokeStyle = '#00d900';
                         drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);
                         //drawVehicle(jobs[i].endPoint.type, jobs[i].endPoint.physicalPoisionX, jobs[i].endPoint.physicalPoisionY, false);
@@ -424,7 +427,7 @@ function getJobVehicles(){
                         };
                         ctx.strokeStyle = '#00d900';
                         if (jobs[i].startPoint.type === "car") { // car difficult to track
-                            trackCarLink(jobs[i].startPoint, endPoint, jobs[i].endPoint, progress.progress);
+                            trackCarLink(jobs[i].startPoint, endPoint, jobs[i].endPoint, progress.progress/100);
                         } else {
                             drawLink(jobs[i].startPoint.type, jobs[i].startPoint, endPoint, true);
                         }
@@ -439,7 +442,6 @@ function getJobVehicles(){
             });
         })(i);
 
-
         if(0 < i && i < jobs.length) {
             ctx.beginPath();
             ctx.setLineDash([20, 5]);
@@ -449,7 +451,9 @@ function getJobVehicles(){
             ctx.lineTo(jobs[i].startPoint.physicalPoisionX*xSize,jobs[i].startPoint.physicalPoisionY*ySize);
             ctx.stroke();
         }
-
+    }
+    if(allDone){
+        clearInterval(vehiclesInterval);
     }
 }
 
@@ -593,7 +597,7 @@ function trackCarLink(startpoint, currentpoint, endpoint, progress){
 
     if (progress < line1prog) {
         ctx.lineTo(currentpoint.physicalPoisionX * xSize, currentpoint.physicalPoisionY * ySize);
-    } else if(progress < line2prog) {
+    } else if(progress < line1prog+line2prog) {
         if (startpoint.pointName > endpoint.pointName) {
             pointX = startpoint.physicalPoisionX + distXpiece;
             pointY = startpoint.physicalPoisionY + 5 * distYpiece;
@@ -627,21 +631,21 @@ function trackCarLink(startpoint, currentpoint, endpoint, progress){
 function drawVehicle(type, x, y,selected){
     if(type == "robot") {
         if (selected) {
-            ctx.drawImage(robotIconTarget, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+            ctx.drawImage(robotIconTarget, (x * xSize) - iconSize * 3 / 2, (y * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
         } else {
-            ctx.drawImage(robotIcon, (x * xSize) - xSize * 3 / 2, (y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+            ctx.drawImage(robotIcon, (x * xSize) - iconSize * 3 / 2, (y * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
         }
     }else if(type == "car") {
         if (selected) {
-            ctx.drawImage(racecarIconTarget, ((x * xSize) - (xSize * 3 / 2)), ((y * ySize) - (ySize * 3 / 2)), xSize * 3, ySize * 3);
+            ctx.drawImage(racecarIconTarget, ((x * xSize) - (iconSize * 3 / 2)), ((y * ySize) - (iconSize * 3 / 2)), iconSize * 3, iconSize * 3);
         } else {
-            ctx.drawImage(racecarIcon, ((x * xSize) - (xSize * 3 / 2)), ((y * ySize) - (ySize * 3 / 2)), xSize * 3, ySize * 3);
+            ctx.drawImage(racecarIcon, ((x * xSize) - (iconSize * 3 / 2)), ((y * ySize) - (iconSize * 3 / 2)), iconSize * 3, iconSize * 3);
         }
     } else if(type == "drone") {
         if (selected) {
-            ctx.drawImage(droneIconTarget, ((x * xSize) + xSize * -1), (y * ySize) - ySize * 1, xSize * 3, ySize * 3);
+            ctx.drawImage(droneIconTarget, ((x * xSize) + iconSize * -1), (y * ySize) - iconSize * 1, iconSize * 3, iconSize * 3);
         } else {
-            ctx.drawImage(droneIcon, ((x * xSize) + xSize * -1), (y * ySize) - ySize * 1, xSize * 3, ySize * 3);
+            ctx.drawImage(droneIcon, ((x * xSize) + iconSize * -1), (y * ySize) - iconSize * 1, iconSize * 3, iconSize * 3);
         }
     }else{
         console.log(" vehicle type not supported");

@@ -6,6 +6,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.bson.Document;
@@ -209,7 +210,8 @@ public class MongoService {
 
         BasicDBObject query = new BasicDBObject().append("_id", new ObjectId(deliveryID));
         BasicDBObject carrier = new BasicDBObject().append("$set", new BasicDBObject().append("backboneId", backboneId));
-        collection.updateOne(query, carrier);
+        UpdateResult dev = collection.updateOne(query, carrier);
+        logger.info(dev.toString());
     }
 
 }

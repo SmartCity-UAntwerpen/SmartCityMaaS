@@ -57,7 +57,7 @@
                                     <!-- IMPORTANT, class="list" have to be at tbody -->
                                     <tbody class="list" >
                                     <div th:each="delivery : ${deliveries}">
-                                        <tr th:id="${delivery.idDelivery }">
+                                        <tr th:id="${delivery.backboneId }">
                                             <td class="idVehicle" th:value="${idVehicle}" th:text="${delivery.backboneId }">Delivery ID</td>
                                             <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
                                             <td class="pointName" th:value="${mapA}" th:text="${delivery.mapA }">Map A</td>
