@@ -5,6 +5,11 @@
     padding: 8% 0 0;
     margin: auto;
 }
+@media screen and (max-width: 750px) {
+    .login-page {
+        width: 95%;
+    }
+}
 .form {
     position: relative;
     z-index: 1;
