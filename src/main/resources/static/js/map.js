@@ -525,7 +525,7 @@ function drawLink(type, startpoint, endpoint, track){
                 ctx.lineWidth = 5;
             }
             //90 graden
-            if (startpoint.pointName > endpoint.pointName) {
+            if (startpoint.pointName < endpoint.pointName) {
                 ctx.lineTo(endpoint.physicalPoisionX * xSize, startpoint.physicalPoisionY * ySize);
             } else {
                 ctx.lineTo(startpoint.physicalPoisionX * xSize, endpoint.physicalPoisionY * ySize);

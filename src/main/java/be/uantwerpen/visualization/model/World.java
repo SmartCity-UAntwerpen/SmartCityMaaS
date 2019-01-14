@@ -112,14 +112,14 @@ public class World {
                 //90 graden
                 if(startX != endX || startY != endY) {
                     // control corner direction: path starts from ID = 0 in x-direction
-                    if(startID > endID) {
+                    if(startID < endID) {
                         beginYaxis = false;
                     }
                     // procentual length of X and Y line
                     double totalDist = Math.abs(distX) + Math.abs(distY);
                     double Xprog = Math.abs(distX) / totalDist;
                     double Yprog = Math.abs(distY)/totalDist;
-                    
+
                     if(distX != 0 && distY != 0) { // if corner
                         if (beginYaxis) { // start in Y direction
                             if(progress <= Yprog){

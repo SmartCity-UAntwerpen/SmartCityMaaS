@@ -75,9 +75,9 @@ public class BackendRestTemplate {
 
         try {
             ////// TEST - 2018
-            obj = parser.parse(new FileReader("testdata/stringmapjsonNEW.txt"));
+            //obj = parser.parse(new FileReader("testdata/stringmapjsonNEW.txt"));
             /////
-            //obj = parser.parse(listOfCore);
+            obj = parser.parse(listOfCore);
             /////
             JSONObject jsonObject = (JSONObject) obj;
 
@@ -118,7 +118,7 @@ public class BackendRestTemplate {
                     points.add(point);
                 }
             }
-        } catch (ParseException | IOException e) { //IOException
+        } catch (ParseException e) { //IOException
             e.printStackTrace();
         }
 
