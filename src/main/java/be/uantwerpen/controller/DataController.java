@@ -201,16 +201,16 @@ public class DataController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        HttpEntity<String> httpResponse = restTemplate.exchange(
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 URL,
                 HttpMethod.GET,
                 entity,
                 String.class);
-        String httpBody = httpResponse.getBody();
+        String httpBody = httpResponse.getBody();*/
         JSONParser parser = new JSONParser();
         try {
-            //Object obj = parser.parse(new FileReader("testdata/getJobProgress"+jobId+".txt"));
-            Object obj = parser.parse(httpBody);
+            Object obj = parser.parse(new FileReader("testdata/getJobProgress"+jobId+".txt"));
+            //Object obj = parser.parse(httpBody);
             jsonObject = (JSONObject) obj;
             String status = (String) jsonObject.get("status");
             int progress = ((Long) jsonObject.get("progress")).intValue();
@@ -227,7 +227,7 @@ public class DataController {
             response.put("y", y);
             response.put("progress", progress);
             response.put("status", status);
-        } catch (ParseException e) { // | IOException
+        } catch (ParseException | IOException e) { // | IOException
             logger.error("ParseException", e);
         }
 
@@ -242,18 +242,18 @@ public class DataController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        HttpEntity<String> httpResponse = restTemplate.exchange(
+        /*HttpEntity<String> httpResponse = restTemplate.exchange(
                 URL,
                 HttpMethod.GET,
                 entity,
                 String.class);
-        String delivery = httpResponse.getBody();
+        String delivery = httpResponse.getBody();*/
         JSONParser parser = new JSONParser();
         try {
-            //Object obj = parser.parse(new FileReader("testdata/getDelivery100.txt"));
-            Object obj = parser.parse(delivery);
+            Object obj = parser.parse(new FileReader("testdata/getDelivery100.txt"));
+            //Object obj = parser.parse(delivery);
             jsonObject = (JSONObject) obj;
-        } catch (ParseException e) { //IOException
+        } catch (ParseException | IOException e) { //IOException
             logger.error("ParseException", e);
         }
         return jsonObject;

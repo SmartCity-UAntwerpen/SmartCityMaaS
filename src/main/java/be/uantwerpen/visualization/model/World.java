@@ -112,26 +112,30 @@ public class World {
                 //90 graden
                 if(startX != endX || startY != endY) {
                     // control corner direction: path starts from ID = 0 in x-direction
-                    if(startID < endID) {
+                    if(startID > endID) {
                         beginYaxis = false;
                     }
-
+                    // procentual length of X and Y line
+                    double totalDist = Math.abs(distX) + Math.abs(distY);
+                    double Xprog = Math.abs(distX) / totalDist;
+                    double Yprog = Math.abs(distY)/totalDist;
+                    
                     if(distX != 0 && distY != 0) { // if corner
-                        if (progress <= 0.5) {
-                            if (beginYaxis) { // start in Y direction
+                        if (beginYaxis) { // start in Y direction
+                            if(progress <= Yprog){
                                 coordinates[0] = startX;
-                                coordinates[1] = (int) (startY + (distY * progress * 2));
-                            } else { // start in X direction
-                                coordinates[0] = (int) (startX + (distX * progress * 2));
-                                coordinates[1] = startY;
-                            }
-                        } else {
-                            if (beginYaxis) {
-                                coordinates[0] = (int) (endX - (distX * (1 - progress) * 2));
+                                coordinates[1] = (int) (startY + (distY * progress * 1/Yprog));
+                            } else {
+                                coordinates[0] = (int) (endX - (distX * (1 - progress) * 1/Xprog));
                                 coordinates[1] = endY;
+                            }
+                        } else { // start in X direction
+                            if(progress <= Xprog){
+                                coordinates[0] = (int) (startX + (distX * progress * 1/Xprog));
+                                coordinates[1] = startY;
                             } else {
                                 coordinates[0] = endX;
-                                coordinates[1] = (int) (endY - (distY * (1 - progress) * 2));
+                                coordinates[1] = (int) (endY - (distY * (1 - progress) * 1/Yprog));
                             }
                         }
                     } else {
@@ -198,7 +202,7 @@ public class World {
                 coordinates[1] = (int)(startY + (pointY * progress));
                 break;
 
-            default:
+            default: //DRONE
                 coordinates[0] = (int)(startX + (distX * progress));
                 coordinates[1] = (int)(startY + (distY * progress));
                 break;
