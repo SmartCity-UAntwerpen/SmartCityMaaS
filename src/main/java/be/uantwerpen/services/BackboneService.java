@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+
 /**
  * This class handles all communication with the backbone.
  */
@@ -36,6 +38,7 @@ public class BackboneService {
         int deliveryId = 1;
 
         JSONParser parser = new JSONParser();
+        URI test = builder.build().toUri();
         HttpEntity<String> httpResponse = restTemplate.getForEntity(builder.build().toUri(), String.class);
         Object obj = null;
         try {

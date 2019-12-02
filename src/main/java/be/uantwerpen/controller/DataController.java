@@ -1,6 +1,5 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.services.JobListService;
 import be.uantwerpen.visualization.model.DummyPoint;
 import be.uantwerpen.visualization.model.World;
 import org.apache.log4j.LogManager;
@@ -41,9 +40,6 @@ public class DataController {
 
     @Value("#{new Integer(${core.port}) ?: 1994}") // 1994 default value with bitwise operations (#)
     private int serverCorePort;
-
-    @Autowired
-    private JobListService jobListService;
 
     List<World> worlds = new ArrayList<>();
     int vehicleID = 1;

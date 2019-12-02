@@ -62,7 +62,7 @@
 
                                 <div class="form-group" th:classappend="${#fields.hasErrors('firstName')}?'has-error': ''">
                                     <span class="control-label" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">firstName Error</span>
-                                    <input class="form-control" id = "firtName" th:type="hidden" th:field="*{firstName}"/>
+                                    <input class="form-control" id = "firstName" th:type="hidden" th:field="*{firstName}"/>
                                     <script th:inline="javascript">
                                         /*<![CDATA[*/
                                         document.getElementById("firstName").value = [[${currentUser.firstName}]];

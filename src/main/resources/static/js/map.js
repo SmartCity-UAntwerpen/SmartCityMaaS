@@ -51,7 +51,7 @@ var vehiclesInterval;
 var trafficInterval;
 
 
-var trackingInterval = 3000;
+var trackingInterval = 1000;
 var iconSize = 8;
 
 /**
@@ -139,7 +139,7 @@ function getWorld(){
         showPage();
     }).fail(function() {
         showError("Could not load world.");
-    });;
+    });
 }
 
 
@@ -179,13 +179,13 @@ function drawWorld(){
             }
         }
 
-        if( point.pointCharacteristic == "INTERSECTION"){
+        if( point.pointCharacteristic === "INTERSECTION"){
             ctx.strokeStyle = "#95A6A6";
             ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5); // fill in the pixel at (10,10)
         } else {
             switch (point.type) {
                 case "robot":
-                    if (point.pointCharacteristic == "LIGHT") {
+                    if (point.pointCharacteristic === "LIGHT") {
                         if (!point.status) { // if it has no status, just make in green (bv in delivery)
                             point.status = lightGreenIcon;
                         }
@@ -223,9 +223,9 @@ function clickedOnCanvas(event){
     var canvasY = event.clientY - rect.top;
     console.log("Point clicked x = " + canvasX + ", y = " + canvasY);
     if(pointAset){
-        var point =  $.grep(world.points, function(e){return e.pointName === pointAId && e.mapId === mapAId;})[0];
+        var point = $.grep(world.points, function(e){return e.pointName === pointAId && e.mapId === mapAId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
-            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+            if( point.pointCharacteristic === "INTERSECTION" || point.pointCharacteristic === "LIGHT" ){
                 ctx.fillStyle = "#000000";
                 ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
             } else {
@@ -253,7 +253,7 @@ function clickedOnCanvas(event){
         var point = $.grep(world.points, function(e){return e.pointName === pointBId && e.mapId === mapBId;})[0];
         if(canvasX >= point.physicalPoisionX*xSize - xSize*3/2 && canvasX <= point.physicalPoisionX*xSize + xSize*3/2 && canvasY >= point.physicalPoisionY*ySize - ySize*3/2 && canvasY <= point.physicalPoisionY*ySize + ySize*3/2){
             console.log("pointBset");
-            if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+            if( point.pointCharacteristic === "INTERSECTION" || point.pointCharacteristic === "LIGHT" ){
                 ctx.fillStyle = "#000000";
                 ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
             } else {
@@ -285,7 +285,7 @@ function clickedOnCanvas(event){
                     pointAId = point.pointName;
                     mapAId = point.mapId;
                     console.log("Point A id = " + pointAId + " - map " + mapAId);
-                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+                    if( point.pointCharacteristic === "INTERSECTION" || point.pointCharacteristic === "LIGHT" ){
                         ctx.fillStyle = "#0004ff";
                         ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
                     } else {
@@ -311,7 +311,7 @@ function clickedOnCanvas(event){
                 else{
                     pointBId = point.pointName;
                     mapBId = point.mapId;
-                    if( point.pointCharacteristic == "INTERSECTION" || point.pointCharacteristic == "LIGHT" ){
+                    if( point.pointCharacteristic === "INTERSECTION" || point.pointCharacteristic === "LIGHT" ){
                         ctx.fillStyle = "#ff030c";
                         ctx.fillRect((point.physicalPoisionX * xSize)- iconSize*1.5/2, (point.physicalPoisionY * ySize)- iconSize*1.5/2, iconSize*1.5, iconSize*1.5);
                     } else {
@@ -346,8 +346,8 @@ function clickedOnCanvas(event){
  * is hidden.
  */
 function showPage() {
-    if(map_ready == false) {
-        if(only_view == false)
+    if(map_ready === false) {
+        if(only_view === false)
         {
             // Hide the devices,labels,... and show them when the that og the map is loaded.
             document.getElementById("content").style.visibility = "hidden";
@@ -355,7 +355,7 @@ function showPage() {
             document.getElementById("passengersSelect").style.visibility = "hidden";
         }else
         {
-            if(visualization == false) {
+            if(visualization === false) {
                 document.getElementById("content").style.visibility = "hidden";
                 document.getElementById("passengersLabel").style.visibility = "hidden";
                 document.getElementById("passengersNumber").style.visibility = "hidden";
@@ -374,11 +374,11 @@ function showPage() {
         }
     }else
     {
-        if(only_view == false)
+        if(only_view === false)
         {
             document.getElementById("content").style.visibility = "visible";
         }else
-            if(visualization == false) {
+            if(visualization === false) {
                 document.getElementById("content").style.visibility = "visible";
                 document.getElementById("pointALabel").style.visibility = "visible";
                 document.getElementById("pointAtext").style.visibility = "visible";
@@ -394,7 +394,7 @@ function showPage() {
 }
 
 function getJobVehicles(){
-    if (jobs.length == 0){
+    if (jobs.length === 0){
         clearInterval(vehiclesInterval);
     }
     reDrawWorld();
@@ -460,7 +460,7 @@ function getJobVehicles(){
 // is used inline: visualization_map.html
 function trackDelivery(deliveryId){
     $('.track').text("TRACK");
-    if(currentDeliveryId != deliveryId) {
+    if(currentDeliveryId !== deliveryId) {
         currentDeliveryId = deliveryId;
         $("#"+deliveryId + " .track").text('UNTRACK');
         var startPoint;
