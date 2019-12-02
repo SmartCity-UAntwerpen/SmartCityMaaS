@@ -35,14 +35,14 @@ public class DataController {
 
     private static final Logger logger = LogManager.getLogger(DataController.class);
 
-    @Value("${core.ip:localhost}") // Localhost is default value
+    @Value("${core.ip}") // Localhost is default value
     private String serverCoreIP; // Insert value
 
     @Value("#{new Integer(${core.port}) ?: 1994}") // 1994 default value with bitwise operations (#)
     private int serverCorePort;
 
-    List<World> worlds = new ArrayList<>();
-    int vehicleID = 1;
+    private List<World> worlds = new ArrayList<>();
+    private int vehicleID;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -86,7 +86,7 @@ public class DataController {
      *
      * @return List of DummyPoints
      */
-    public List<DummyPoint> getMapDataBackend() {
+    private List<DummyPoint> getMapDataBackend() {
         logger.info("/dataCore requested, retrieve map from backend");
         return backendRestTemplate.getDataBackend();
     }
@@ -105,9 +105,9 @@ public class DataController {
     /**
      * Return a list with the all vehicle IDs that are present in the smartcity that is received from the core.
      *
-     * @return A list of vehicle IDs
+     * return A list of vehicle IDs
      */
-    @RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
+    /*@RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
     public HashMap<Integer, String> getAllVehicles() {
         HashMap<Integer, String> idVehicles = new HashMap<Integer, String>();
         String requestAll = "request all";
@@ -147,7 +147,7 @@ public class DataController {
             e.printStackTrace();
         }
         return idVehicles;
-    }
+    }*/
 
 
     @RequestMapping(value = "/vehicletype/{id}")
@@ -172,15 +172,15 @@ public class DataController {
      * Return the x and y coordinates of a current used vehicle that is assigned for a specified delivery.
      * Its ID is returned as third value in the returned int array.
      *
-     * @param worldId The ID of the world the vehicle is located
-     * @param jobId   The ID of the job
-     * @param jobId   The ID of the map
-     * @param startId The ID of the startpoint
-     * @param endId   The ID of the endpoint
-     * @param type    The type of the vehicle
-     * @return Returns a JSON response [x, y, percentage, status]
+     * param worldId The ID of the world the vehicle is located
+     * param jobId   The ID of the job
+     * param jobId   The ID of the map
+     * param startId The ID of the startpoint
+     * param endId   The ID of the endpoint
+     * param type    The type of the vehicle
+     * return Returns a JSON response [x, y, percentage, status]
      */
-    @RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
+    /*@RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
     public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int mapId, @PathVariable int startId, @PathVariable int endId, @PathVariable String type) {
         World world = new World();
         for (World world1 : worlds) {
@@ -228,9 +228,9 @@ public class DataController {
         }
 
         return response;
-    }
+    }*/
 
-    @RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
+    /*@RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
         logger.info("getting delivery: " + delivery_id);
         JSONObject jsonObject = new JSONObject();
@@ -253,7 +253,7 @@ public class DataController {
             logger.error("ParseException", e);
         }
         return jsonObject;
-    }
+    }*/
 
     @RequestMapping(value = "/getTrafficLightStats")
     @ResponseBody

@@ -30,6 +30,9 @@ public class MongoService {
 
     protected MongoDatabase db;
 
+
+    private String backboneIp;
+
     /**
      * Initialize the parameters fot the MongoDB client connection.
      */

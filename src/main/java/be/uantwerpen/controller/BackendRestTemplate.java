@@ -29,7 +29,7 @@ public class BackendRestTemplate {
 
     private static final Logger logger = LogManager.getLogger(BackendRestTemplate.class);
 
-    @Value("${core.ip:localhost}")
+    @Value("${core.ip}")
     private String serverCoreIP;
 
     @Value("#{new Integer(${core.port}) ?: 1994}")

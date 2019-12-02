@@ -62,6 +62,7 @@ function initFunction() {
     showPage();
     loadImages();
     getWorld();
+    getDeliveries();
 
     if(visualization){
         trafficInterval = setInterval(getTrafficStatus, 1050);
@@ -74,49 +75,7 @@ function initFunction() {
     }
 }
 
-/**
- * Load all the images from the html.
- */
 
-function loadImages() {
-    droneDefault = new Image();
-    droneDefault.src = "/images/map/drone_h.png";
-    dronePointA = new Image();
-    dronePointA.src = "/images/map/drone_h_pointA.png";
-    dronePointB = new Image();
-    dronePointB.src = "/images/map/drone_h_pointB.png";
-    carDefault = new Image();
-    carDefault.src = "/images/map/car_gas.png";
-    carPointA = new Image();
-    carPointA.src = "/images/map/car_gas_pointA.png";
-    carPointB = new Image();
-    carPointB.src = "/images/map/car_gas_pointB.png";
-    robotDefault = new Image();
-    robotDefault.src = "/images/map/robot_charge.png";
-    robotPointA = new Image();
-    robotPointA.src = "/images/map/robot_charge_pointA.png";
-    robotPointB = new Image();
-    robotPointB.src = "/images/map/robot_charge_pointB.png";
-
-    robotIcon = new Image();
-    robotIcon.src = "/images/map/robotIcon.png";
-    robotIconTarget = new Image();
-    robotIconTarget.src = "/images/map/robotTargetted.png";
-    droneIcon = new Image();
-    droneIcon.src = "/images/map/droneIcon.png";
-    droneIconTarget = new Image();
-    droneIconTarget.src = "/images/map/droneTargetted.png";
-    racecarIcon = new Image();
-    racecarIcon.src = "/images/map/racecarIcon.png";
-    racecarIconTarget = new Image();
-    racecarIconTarget.src = "/images/map/raceCarTargetted.png";
-
-    lightGreenIcon = new Image();
-    lightGreenIcon.src = "/images/map/traffic_green.png";
-    lightRedIcon = new Image();
-    lightRedIcon.src = "/images/map/traffic_red.png";
-
-}
 
 /**
  * Retrieve the physical world from the MaaS.
@@ -140,6 +99,13 @@ function getWorld(){
     }).fail(function() {
         showError("Could not load world.");
     });
+}
+
+function getDeliveries() {
+    $.getJSON("/deliveries", function(result) {
+        deliveries = result;
+        print("test")
+    })
 }
 
 
@@ -211,9 +177,9 @@ function drawWorld(){
 
 /**
  * This function is performed on every mouse click
- * It controls the if the position of the mouse click is set on a spot/surrouding point and if a point A or B is
+ * It controls the if the position of the mouse click is set on a spot/surrounding point and if a point A or B is
  * activated or deactivated
- * @param e
+ * @param event
  */
 
 
@@ -586,7 +552,7 @@ function trackCarLink(startpoint, currentpoint, endpoint, progress){
     var distYpiece = distY/8;
     var pointX;
     var pointY;
-    // LENGTH OF SEPERATE LINE PIECES (Pythagoras):
+    // LENGTH OF SEPARATE LINE PIECES (Pythagoras):
     var line1 =  Math.sqrt(Math.pow(Math.abs(5*distXpiece), 2) +  Math.pow(Math.abs(distYpiece),2));
     var line2 =  Math.sqrt(Math.pow(Math.abs(2*distXpiece), 2) +  Math.pow(Math.abs(2*distYpiece),2));
     var line3 =  Math.sqrt(Math.pow(Math.abs(distXpiece), 2) +  Math.pow(Math.abs(5*distYpiece),2));
@@ -629,19 +595,19 @@ function trackCarLink(startpoint, currentpoint, endpoint, progress){
 
 
 function drawVehicle(type, x, y,selected){
-    if(type == "robot") {
+    if(type === "robot") {
         if (selected) {
             ctx.drawImage(robotIconTarget, (x * xSize) - iconSize * 3 / 2, (y * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
         } else {
             ctx.drawImage(robotIcon, (x * xSize) - iconSize * 3 / 2, (y * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
         }
-    }else if(type == "car") {
+    }else if(type === "car") {
         if (selected) {
             ctx.drawImage(racecarIconTarget, ((x * xSize) - (iconSize * 3 / 2)), ((y * ySize) - (iconSize * 3 / 2)), iconSize * 3, iconSize * 3);
         } else {
             ctx.drawImage(racecarIcon, ((x * xSize) - (iconSize * 3 / 2)), ((y * ySize) - (iconSize * 3 / 2)), iconSize * 3, iconSize * 3);
         }
-    } else if(type == "drone") {
+    } else if(type === "drone") {
         if (selected) {
             ctx.drawImage(droneIconTarget, ((x * xSize) + iconSize * -1), (y * ySize) - iconSize * 1, iconSize * 3, iconSize * 3);
         } else {
@@ -669,7 +635,51 @@ function getTrafficStatus(){
         }
     }).fail(function() {
         showError("Could not update traffic-lights.");
-    });;
+    });
+}
+
+/**
+ * Load all the images from the html.
+ */
+
+function loadImages() {
+    droneDefault = new Image();
+    droneDefault.src = "/images/map/drone_h.png";
+    dronePointA = new Image();
+    dronePointA.src = "/images/map/drone_h_pointA.png";
+    dronePointB = new Image();
+    dronePointB.src = "/images/map/drone_h_pointB.png";
+    carDefault = new Image();
+    carDefault.src = "/images/map/car_gas.png";
+    carPointA = new Image();
+    carPointA.src = "/images/map/car_gas_pointA.png";
+    carPointB = new Image();
+    carPointB.src = "/images/map/car_gas_pointB.png";
+    robotDefault = new Image();
+    robotDefault.src = "/images/map/robot_charge.png";
+    robotPointA = new Image();
+    robotPointA.src = "/images/map/robot_charge_pointA.png";
+    robotPointB = new Image();
+    robotPointB.src = "/images/map/robot_charge_pointB.png";
+
+    robotIcon = new Image();
+    robotIcon.src = "/images/map/robotIcon.png";
+    robotIconTarget = new Image();
+    robotIconTarget.src = "/images/map/robotTargetted.png";
+    droneIcon = new Image();
+    droneIcon.src = "/images/map/droneIcon.png";
+    droneIconTarget = new Image();
+    droneIconTarget.src = "/images/map/droneTargetted.png";
+    racecarIcon = new Image();
+    racecarIcon.src = "/images/map/racecarIcon.png";
+    racecarIconTarget = new Image();
+    racecarIconTarget.src = "/images/map/raceCarTargetted.png";
+
+    lightGreenIcon = new Image();
+    lightGreenIcon.src = "/images/map/traffic_green.png";
+    lightRedIcon = new Image();
+    lightRedIcon.src = "/images/map/traffic_red.png";
+
 }
 
 function  showError(error){
