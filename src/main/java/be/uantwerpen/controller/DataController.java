@@ -230,7 +230,7 @@ public class DataController {
         return response;
     }*/
 
-    /*@RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
+    @RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
         logger.info("getting delivery: " + delivery_id);
         JSONObject jsonObject = new JSONObject();
@@ -253,7 +253,7 @@ public class DataController {
             logger.error("ParseException", e);
         }
         return jsonObject;
-    }*/
+    }
 
     @RequestMapping(value = "/getTrafficLightStats")
     @ResponseBody

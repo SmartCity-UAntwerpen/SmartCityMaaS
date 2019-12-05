@@ -66,6 +66,7 @@ public class SmartcityMaaS extends WebMvcConfigurerAdapter {
 	{
 		registry.addViewController("/login").setViewName("login");
 		registry.addViewController("/access").setViewName("access");
+		registry.addViewController("/mapbuilder").setViewName("mapbuilder");
 	}
 
 }
