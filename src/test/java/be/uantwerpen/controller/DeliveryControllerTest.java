@@ -3,14 +3,12 @@ package be.uantwerpen.controller;
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,8 +29,7 @@ public class DeliveryControllerTest {
     @Mock
     @SuppressWarnings("unused")
     private PassengerService passengerService;
-    @Mock
-    private MongoService mongoService;
+
 
     private MockMvc mvc;
 
@@ -47,13 +44,13 @@ public class DeliveryControllerTest {
         when(userService.getPrincipalUser()).thenReturn(loginUser);
 
         Delivery delivery = new Delivery();
-        delivery.setFirstName("test");
-        delivery.setLastName("Mock");
+        delivery.setFirstname("test");
+        delivery.setLastname("Mock");
         delivery.setPointA("1");
         delivery.setPointB("2");
         delivery.setMapA(1);
         delivery.setMapB(2);
-        when(mongoService.getLastDelivery()).thenReturn(delivery);
+      //  when(mongoService.getLastDelivery()).thenReturn(delivery);
 
         mvc = MockMvcBuilders.standaloneSetup(deliveryController).build();
     }

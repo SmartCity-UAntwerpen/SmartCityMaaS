@@ -38,18 +38,18 @@
                         </thead>
                         <!-- IMPORTANT, class="list" have to be at tbody -->
                         <tbody class="list">
-                        <tr th:each="delivery : ${allDeliveries}">
-                            <td class="id" th:value="${deliveryID}" th:text="${delivery.idDelivery }">User Name</td>
-                            <td class="lastName" th:value="${userName}" th:text="${delivery.userName }">User Name</td>
-                            <td class="lastName" th:value="${lastName}" th:text="${delivery.lastName }">Last Name</td>
-                            <td class="firstName" th:value="${firstName}" th:text="${delivery.firstName }">First Name</td>
-                            <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
-                            <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
-                            <td class="passengers" th:value="${passengers}" th:text="${delivery.passengers }">Passengers</td>
-                            <td>
-                                <a th:href="@{/deliveries/{id}/delete(id=${delivery.idDelivery})}"><span class="glyphicon glyphicon-trash"></span></a>
-                            </td>
-                        </tr>
+<!--                        <tr th:each="delivery : ${allDeliveries}">-->
+<!--                            <td class="id" th:value="${id}" th:text="${delivery.id }">User Name</td>-->
+<!--                            <td class="lastName" th:value="${username}" th:text="${delivery.username }">User Name</td>-->
+<!--                            <td class="lastName" th:value="${lastname}" th:text="${delivery.lastname }">Last Name</td>-->
+<!--                            <td class="firstName" th:value="${firstname}" th:text="${delivery.firstname }">First Name</td>-->
+<!--                            <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>-->
+<!--                            <td class="pointB" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>-->
+<!--                            <td class="passengers" th:value="${passengers}" th:text="${delivery.passengers }">Passengers</td>-->
+<!--                            <td>-->
+<!--                                <a th:href="@{/deliveries/{id}/delete(id=${delivery.id})}"><span class="glyphicon glyphicon-trash"></span></a>-->
+<!--                            </td>-->
+<!--                        </tr>-->
                         </tbody>
                     </table>
                     <a href="/deliveries/put" class="btn btn-primary" th:text="#{create}">Create delivery</a>
