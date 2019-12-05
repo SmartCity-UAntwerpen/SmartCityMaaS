@@ -107,7 +107,7 @@ public class DataController {
      *
      * return A list of vehicle IDs
      */
-    /*@RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
+    @RequestMapping(value = "/world1/allVehicles") // Retrieve all vehicles via REST to the backbone
     public HashMap<Integer, String> getAllVehicles() {
         HashMap<Integer, String> idVehicles = new HashMap<Integer, String>();
         String requestAll = "request all";
@@ -147,7 +147,7 @@ public class DataController {
             e.printStackTrace();
         }
         return idVehicles;
-    }*/
+    }
 
 
     @RequestMapping(value = "/vehicletype/{id}")
@@ -180,7 +180,7 @@ public class DataController {
      * param type    The type of the vehicle
      * return Returns a JSON response [x, y, percentage, status]
      */
-    /*@RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
+    @RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
     public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int mapId, @PathVariable int startId, @PathVariable int endId, @PathVariable String type) {
         World world = new World();
         for (World world1 : worlds) {
@@ -228,9 +228,9 @@ public class DataController {
         }
 
         return response;
-    }*/
+    }
 
-    /*@RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
+    @RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
         logger.info("getting delivery: " + delivery_id);
         JSONObject jsonObject = new JSONObject();
@@ -246,14 +246,13 @@ public class DataController {
         String delivery = httpResponse.getBody();
         JSONParser parser = new JSONParser();
         try {
-            //Object obj = parser.parse(new FileReader("testdata/getDelivery100.txt"));
             Object obj = parser.parse(delivery);
             jsonObject = (JSONObject) obj;
         } catch (ParseException e) { //IOException
             logger.error("ParseException", e);
         }
         return jsonObject;
-    }*/
+    }
 
     @RequestMapping(value = "/getTrafficLightStats")
     @ResponseBody

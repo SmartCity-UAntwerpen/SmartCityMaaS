@@ -2,36 +2,19 @@ package be.uantwerpen.controller;
 
 import be.uantwerpen.model.Delivery;
 import be.uantwerpen.model.User;
-import be.uantwerpen.services.BackboneService;
-import be.uantwerpen.services.MongoService;
-import be.uantwerpen.services.PassengerService;
-import be.uantwerpen.services.UserService;
-import be.uantwerpen.visualization.model.DummyVehicle;
+import be.uantwerpen.services.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This controller handles the user specific request mappings.
@@ -50,15 +33,17 @@ public class DeliveryController {
     @Autowired
     private UserService userService;
     @Autowired
+    private DeliveryService deliveryService;
+    @Autowired
     private PassengerService passengerService;
     @Autowired
     public BackendRestTemplate backendRestTemplate;
 
     @Autowired
     private BackboneService backboneService;
-
-    @Autowired
-    private MongoService mongoService;
+//
+//    @Autowired
+//    private MongoService mongoService;
 
     /**
      * Return page with all the deliveries save in the mongoDB database.
@@ -69,7 +54,8 @@ public class DeliveryController {
     @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
     public String viewDeliveries(final ModelMap model) {
         logger.info(userService.getPrincipalUser() + " requested /deliveries");
-        Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
+       // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
+        Iterable<Delivery> deliveries = deliveryService.findAll();
         model.addAttribute("allDeliveries", deliveries);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
@@ -84,7 +70,7 @@ public class DeliveryController {
      */
     @RequestMapping(value = "/deliveries/put", method = RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model) {
-        Delivery del = new Delivery("", "", "");
+        Delivery del = new Delivery();
         model.addAttribute("delivery", del);
         model.addAttribute("allPassengers", passengerService.findAll());
 
@@ -101,8 +87,8 @@ public class DeliveryController {
      * @return
      */
     @RequestMapping(value = "/deliveries/{idDelivery}/delete", method = RequestMethod.GET)
-    public String deleteDelivery(@PathVariable String idDelivery) {
-        mongoService.deleteDelivery(idDelivery);
+    public String deleteDelivery(@PathVariable long idDelivery) {
+        deliveryService.delete(idDelivery);
         logger.info(userService.getPrincipalUser() + " deleted delivery " + idDelivery);
         return "redirect:/deliveries";
     }
@@ -126,25 +112,18 @@ public class DeliveryController {
         }
         delivery.setType("HumanTransport");
 
-        mongoService.putStatement(delivery);
-        Delivery delivery_return = mongoService.getLastDelivery();
-        if (delivery_return.getFirstName() == null) {
-            logger.error("Could not retrieve last delivery from MongoDB service.");
-            return "home_user";
-
-        } else {
-            logger.info("Retrieve last delivery from MongoDB service.");
-            delivery_return.print();
-        }
-
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
 
         try {
             int backboneId = backboneService.planPath(Integer.parseInt(delivery.getPointA()), delivery.getMapA(), Integer.parseInt(delivery.getPointB()), delivery.getMapB());
-            mongoService.setDeliveryBackboneId(delivery_return.getIdDelivery(), backboneId);
+            delivery.setBackboneID(backboneId);
+            delivery =  deliveryService.save(delivery);
+            if (delivery == null)
+                return "delivery-manage-user";
             logger.info("Job has been created by " + loginUser);
-            model.addAttribute("delivery", delivery_return);
+
+            model.addAttribute("delivery", delivery);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "delivery-manage-user";
@@ -176,7 +155,7 @@ public class DeliveryController {
             // DEPRECATED
             //List<DummyVehicle> vehicles = getAllSimData();
             //model.addAttribute("vehiclesInfo", vehicles);
-            model.addAttribute("deliveries", mongoService.getAllBusyDeliveries());
+            model.addAttribute("deliveries", deliveryService.findAll());
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             logger.error(e);
