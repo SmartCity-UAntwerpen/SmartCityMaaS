@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <!-- Jquery & bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Jquery UI -->
+    <script src="/mapBuilder/lib/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/mapBuilder/lib/jquery-ui.css"/>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"/>
+
+
+    <!-- Nodes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.8.34/go.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+
+    <!-- Custom -->
+    <link rel="stylesheet" href="/mapBuilder/style.css"/>
+    <script src="/mapBuilder/script.js"></script>
+    <script src="/mapBuilder/sql.js"></script>
+
+
+    <script src="/mapBuilder/event.js"></script>
+    <script src="/mapBuilder/top.js"></script>
+    <script src="/mapBuilder/car.js"></script>
+    <script src="/mapBuilder/drone.js"></script>
+    <script src="/mapBuilder/robot.js"></script>
+
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/default.css" rel="stylesheet" />
+    <link href="/css/cards.css" rel="stylesheet" />
+    <link href="/css/dashboard.css" rel="stylesheet" />
+    <link href="/css/adminp.css" rel="stylesheet" />
+
+    <!-- Datafiles -->
+    <script src="/mapBuilder/data2.js"></script>
+    <title>Map Builder</title>
+
+  </head>
+  <body>
+
+
+
+  <div class="container-fluid display-table">
+    <div class="row display-table-row">
+      <div th:replace="layout :: side-menu"></div>
+
+      <div class="col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
+        <div th:replace="layout :: header('Visualisation')"></div>
+        <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
+        <div class="inside-con">
+
+
+          <div class="col-md-12 unselect header">
+            <div class="center">
+              <div class="col-md-4" id="mapHeader" onclick="mapHeaderClick()"><p>Map</p></div>
+              <div class="col-md-4" id="dataHeader" onclick="dataHeaderClick()"><p>Data</p></div>
+              <div class="col-md-2" id="sqlHeader" onclick="sqlHeaderClick()"><p>SQL</p></div>
+            </div>
+          </div>
+
+          <div class="col-md-12" id="map" oncontextmenu="return false;">
+
+            <div class="center" id="mapselect"></div>
+            <div class="center">
+
+              <div id="top">
+                <canvas id="topCanvas"></canvas>
+                <div id="topInstructions" class="instructions">
+                  <ul>
+                    <li>Drag from a node to another node, to add a link between these nodes.</li>
+                    <li>Drag a node to another location, to move this node.</li>
+                    <li>Left click the circle on a link, to edit this link.</li>
+                    <li>Right click the circle on a link, to delete this link.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div id="car">
+                <canvas id="carCanvas"></canvas>
+                <div id="carOffsets">
+                  offSetX <input id="carOffSetX" type="number" value="0"/>
+                  offSetY <input id="carOffSetY" type="number" value="0"/>
+                  <button onclick="saveOffsetsCar()">Save offsets</button>
+                </div>
+                <div id="carInstructions" class="instructions">
+                  <ul>
+                    <li>Double click an empty space to add a node.</li>
+                    <li>Double click a node, to delete this node.</li>
+                    <li>Right click a node, to edit this node.</li>
+                  </ul>
+                </div>
+                <div hidden="hidden" id="carDialog" title="Change car node">
+                  <p>Id: <b id="carId">0</b></p>
+                  X: <label for="carInputX"></label><input type="text" id="carInputX"/><br></br>
+                  Y: <label for="carInputY"></label><input type="text" id="carInputY"/><br></br>
+                  Z: <label for="carInputZ"></label><input type="text" id="carInputZ"/><br></br>
+                  W: <label for="carInputW"></label><input type="text" id="carInputW"/><br></br>
+                  MapName: <label for="carInputMapName"></label><input type="text" id="carInputMapName"/><br></br>
+                  Transit: <label for="carInputIsTransit"></label><input type="checkbox" id="carInputIsTransit"/><br></br>
+                </div>
+              </div>
+
+              <div id="drone">
+                <canvas id="droneCanvas"></canvas>
+                <div id="droneOffsets">
+                  offSetX <input id="droneOffSetX" type="number" value="0"/>
+                  offSetY <input id="droneOffSetY" type="number" value="0"/>
+                  <button onclick="saveOffsetsDrone()">Save offsets</button>
+                </div>
+                <div id="droneInstructions" class="instructions">
+                  <ul>
+                    <li>Double click an empty space to add a node.</li>
+                    <li>Double click a node, to delete this node.</li>
+                    <li>Drag a node to another location, to move this node.</li>
+                    <li>Right click a node, to edit this node.</li>
+                  </ul>
+                </div>
+                <div hidden="hidden" id="droneDialog" title="Change Drone Node">
+                  <p>Id: <b id="droneId"></b></p>
+                  X: <input type="text" id="droneInputX"/><br></br>
+                  Y: <input type="text" id="droneInputY"/><br></br>
+                  Z: <input type="text" id="droneInputZ"/><br></br>
+                  Transit: <input type="checkbox" id="droneInputIsTransit"/><br></br>
+                </div>
+              </div>
+
+              <div hidden="hidden" id="robot">
+                <canvas id="robotFrontendCanvas"></canvas>
+                <canvas id="robotBackendCanvas"></canvas>
+                <div id="robotOffsets">
+                  offSetX <input id="robotOffSetX" type="number" value="0"/>
+                  offSetY <input id="robotOffSetY" type="number" value="0"/>
+                  <button onclick="saveOffsetsRobot()">Save offsets</button>
+                </div>
+                <div id="robotInstructions" class="instructions">
+                  <ul>
+                    <li>FRONT: Left click an empty space to add a tile.</li>
+                    <li>FRONT: Left click a tile, to edit this tile.</li>
+                    <li>FRONT: Right click a tile to delete this tile.</li>
+                    <li>BACK: Drag from a node to another node, to add a link between these nodes.</li>
+                    <li>BACK: Left click the circle of a link, to edit this link.</li>
+                    <li>BACK: Right click the circle of a link, to delete this link.</li>
+                  </ul>
+                </div>
+                <div hidden="hidden" id="robotTileDialog" title="Change Tile">
+                  <p>Id: <b id="robotTileId">0</b></p>
+                  Type: <label for="robotTileInputCanvasType"></label><input type="text" id="robotTileInputCanvasType"/><br></br>
+                  RFID: <label for="robotTileInputRfid"></label><input type="text" id="robotTileInputRfid"/><br></br>
+                  <img src="/mapBuilder/img/robot_canvastypes.png" alt=""/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div hidden="hidden" class="col-md-12" id="data">
+            <div class="center">
+              <b><i>data.js</i></b><button onclick="copyDataJs()">copy</button><br></br>
+              <textarea id="datajs" rows="10" cols="100"></textarea><br></br>
+              <b><i>JSON</i></b><button onclick="copyJson()">copy</button><br></br>
+              <textarea id="json" rows="10" cols="100"></textarea><br></br>
+            </div>
+          </div>
+
+          <div hidden="hidden" class="col-md-12" id="sql">
+            <div class="center">
+              <b><i>SQL-TopMap</i></b><button onclick="copyTopSql()">copy</button><br></br>
+              <textarea id="topSql" rows="10" cols="100"></textarea><br></br>
+              <b><i>SQL-CarMap</i></b><button onclick="copyCarSql()">copy</button><br></br>
+              <textarea id="carSql" rows="10" cols="100"></textarea><br></br>
+              <b><i>SQL-DroneMap</i></b><button onclick="copyDroneSql()">copy</button><br></br>
+              <textarea id="droneSql" rows="10" cols="100"></textarea><br></br>
+              <b><i>SQL-RobotMap</i></b><button onclick="copyRobotSql()">copy</button><br></br>
+              <textarea id="robotSql" rows="10" cols="100"></textarea><br></br>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  <script src="/js/tabs.js"></script>
+
+
+  </body>
+</html>

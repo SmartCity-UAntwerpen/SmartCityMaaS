@@ -1,0 +1,11 @@
+var maps = [{"id":0,"type":"TOP"}]
+
+var top_nodes = []
+var top_links = []
+var car_nodes = []
+var car_links = []
+var drone_nodes = []
+var drone_links = []
+var robot_nodes = []
+var robot_links =[]
+var robot_tiles = []
