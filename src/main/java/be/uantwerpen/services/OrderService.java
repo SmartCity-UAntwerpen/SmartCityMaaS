@@ -1,7 +1,8 @@
 package be.uantwerpen.services;
 
+import be.uantwerpen.model.APIResponse;
 import be.uantwerpen.model.Delivery;
-import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.repositories.OrderRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,19 @@ import java.util.List;
  * Changed to get data via REST from backbone
  */
 @Service
-public class DeliveryService {
+public class OrderService {
 
-    private static final Logger logger = LogManager.getLogger(DeliveryService.class);
+    private static final Logger logger = LogManager.getLogger(OrderService.class);
 
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private OrderRepository repository;
+
     private String basePath;
 
-    public DeliveryService(@Value("${core.ip}") String coreIp, @Value("${core.port}") int corePort) {
+    public OrderService(@Value("${core.ip}") String coreIp, @Value("${core.port}") int corePort) {
         // build URL using properties
         basePath = "http://" + coreIp + ":" + corePort + "/deliveries/";
     }
@@ -49,22 +53,28 @@ public class DeliveryService {
         }
     }
 
-    public Delivery save(final Delivery delivery) {
+    public boolean save(final Delivery delivery) {
         String path = basePath + "savedelivery";
         //set your headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         //set your entity to send
-        HttpEntity entity = new HttpEntity<>(delivery, headers);
+        HttpEntity object = new HttpEntity<>(delivery, headers);
 
         // send it!
         try {
-           return restTemplate.exchange(path, HttpMethod.POST, entity, Delivery.class).getBody();
+           APIResponse res = restTemplate.exchange(path, HttpMethod.POST, object, APIResponse.class).getBody();
+           if (res.success) {
+               logger.info(res.message);
+           } else {
+               logger.error(res.message);
+           }
+           return res.success;
         } catch (RestClientException e) {
             logger.warn("Error while saving job " + delivery.getId());
             logger.debug(e);
-            return null;
+            return false;
         }
     }
 

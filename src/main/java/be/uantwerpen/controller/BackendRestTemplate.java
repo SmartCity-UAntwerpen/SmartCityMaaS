@@ -124,4 +124,10 @@ public class BackendRestTemplate {
 
         return points;
     }
+
+
+    public boolean placeOrder() {
+
+        return true;
+    }
 }

@@ -1,3 +1,5 @@
+@import "materialize.css";
+
 html, body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: #F3F3F4;
@@ -6,8 +8,17 @@ html, body {
     width: 100%;
 }
 
+.btn {
+    background-color: #3498db;
+}
+
 .box {
     border: 1px red dotted;
+}
+
+.main_container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 #side-menu {
@@ -114,10 +125,14 @@ html, body {
 #nav-header {
     background-color: #fff;
     border-bottom:  1px solid #e7eaec;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 #nav-header #header-title {
-    padding-top: 17px;
+    padding-top: 0;
     vertical-align: center;
     border: none;
 }
@@ -139,6 +154,10 @@ html, body {
     color: #676a6c;
 }
 
+#nav-header .logout .glyphicon {
+    color: #ffffff !important;
+}
+
 .label-warning {
     background-color: #cc0099;
 }
@@ -148,12 +167,12 @@ html, body {
 }
 
 #nav-header .logout {
-    color: #676a6C;
+    color: #ffffff;
 }
 
-#nav-header .logout:hover {
+/*#nav-header .logout:hover {
     color: #676a6C;
-}
+}*/
 
 #nav-header #campus {
     margin-right: 20px;
@@ -271,8 +290,4 @@ span.pink-letter {
 
 .deliverBtn button {
     width: 80px;
-}
-
-.card-body {
-    margin-left: 20px;
 }

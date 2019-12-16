@@ -6,35 +6,29 @@ import javax.persistence.*;
 
 /**
  * Created by NV 2018
- * The delivery is linked to a specific user.
+ * The delivery is solely used as a data model which (in serialized form) is send to the backbone.
  * It contains all the information of the delivery that is required to perform the Astart algorithm.
  * PointA is the start point of the delivery, while pointB is the end point of the delivery.
- * Its ID is retrieved from the MongoDB database.
+ * The orderID links to the order which is saved in the MySQL database.
  *
  */
 @Entity
 public class Delivery extends MyAbstractPersistable<Long> {
-     private String username = "";
-    private String firstname = "";
-    private String lastname = "";
-    private String pointA = "";
-    private String pointB = "";
-    private int mapA =0;
-    private int mapB = 0;
-    private int passengers = 0;
-    private String type = "";
-    private String date = "";
+    private int pointA;
+    private int pointB;
+    private int mapA;
+    private int mapB;
+    private int passengers;
+    private String type;
+    private String date;
     private boolean complete = false;
-    private int backboneID = 0;
+    private int orderID;
 
     public Delivery() {
 
     }
 
-    public Delivery(String userName, String firstName, String lastName, String pointA, String pointB, int mapA, int mapB, int passengers, String type, String date, boolean complete, int backboneId) {
-        this.username = userName;
-        this.firstname = firstName;
-        this.lastname = lastName;
+    public Delivery(int pointA, int pointB, int mapA, int mapB, int passengers, String type, String date, boolean complete, int orderID) {
         this.pointA = pointA;
         this.pointB = pointB;
         this.mapA = mapA;
@@ -43,26 +37,14 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.type = type;
         this.date = date;
         this.complete = complete;
-        this.backboneID = backboneId;
+        this.orderID = orderID;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public String getPointA() {
+    public int getPointA() {
         return pointA;
     }
 
-    public String getPointB() {
+    public int getPointB() {
         return pointB;
     }
 
@@ -90,27 +72,15 @@ public class Delivery extends MyAbstractPersistable<Long> {
         return complete;
     }
 
-    public int getBackboneID() {
-        return backboneID;
+    public int getOrderID() {
+        return orderID;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public void setPointA(String pointA) {
+    public void setPointA(int pointA) {
         this.pointA = pointA;
     }
 
-    public void setPointB(String pointB) {
+    public void setPointB(int pointB) {
         this.pointB = pointB;
     }
 
@@ -138,7 +108,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.complete = complete;
     }
 
-    public void setBackboneID(int backboneID) {
-        this.backboneID = backboneID;
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
     }
 }

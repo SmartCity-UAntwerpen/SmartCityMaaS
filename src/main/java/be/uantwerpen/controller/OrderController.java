@@ -21,8 +21,8 @@ import javax.validation.Valid;
  */
 
 @Controller
-public class DeliveryController {
-    private static final Logger logger = LogManager.getLogger(DeliveryController.class);
+public class OrderController {
+    private static final Logger logger = LogManager.getLogger(OrderController.class);
 
     @Value("${core.ip:localhost}")
     private String serverCoreIP;
@@ -33,7 +33,7 @@ public class DeliveryController {
     @Autowired
     private UserService userService;
     @Autowired
-    private DeliveryService deliveryService;
+    private OrderService orderService;
     @Autowired
     private PassengerService passengerService;
     @Autowired
@@ -55,7 +55,7 @@ public class DeliveryController {
     public String viewDeliveries(final ModelMap model) {
         logger.info(userService.getPrincipalUser() + " requested /deliveries");
        // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
-        Iterable<Delivery> deliveries = deliveryService.findAll();
+        Iterable<Delivery> deliveries = orderService.findAll();
         model.addAttribute("allDeliveries", deliveries);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
@@ -88,7 +88,7 @@ public class DeliveryController {
      */
     @RequestMapping(value = "/deliveries/{idDelivery}/delete", method = RequestMethod.GET)
     public String deleteDelivery(@PathVariable long idDelivery) {
-        deliveryService.delete(idDelivery);
+        orderService.delete(idDelivery);
         logger.info(userService.getPrincipalUser() + " deleted delivery " + idDelivery);
         return "redirect:/deliveries";
     }
@@ -116,9 +116,8 @@ public class DeliveryController {
         model.addAttribute("currentUser", loginUser);
 
         try {
-            int backboneId = backboneService.planPath(Integer.parseInt(delivery.getPointA()), delivery.getMapA(), Integer.parseInt(delivery.getPointB()), delivery.getMapB());
-            delivery.setBackboneID(backboneId);
-            delivery =  deliveryService.save(delivery);
+            boolean success = orderService.save(delivery);
+            //delivery =  deliveryService.save(delivery);
             if (delivery == null)
                 return "delivery-manage-user";
             logger.info("Job has been created by " + loginUser);
@@ -155,7 +154,7 @@ public class DeliveryController {
             // DEPRECATED
             //List<DummyVehicle> vehicles = getAllSimData();
             //model.addAttribute("vehiclesInfo", vehicles);
-            model.addAttribute("deliveries", deliveryService.findAll());
+            model.addAttribute("deliveries", orderService.findAll());
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             logger.error(e);

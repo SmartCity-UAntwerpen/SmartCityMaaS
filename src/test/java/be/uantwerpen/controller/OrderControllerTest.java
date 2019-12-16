@@ -20,10 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DeliveryControllerTest {
+public class OrderControllerTest {
 
     @InjectMocks
-    private DeliveryController deliveryController;
+    private OrderController orderController;
     @Mock
     private UserService userService;
     @Mock
@@ -44,15 +44,13 @@ public class DeliveryControllerTest {
         when(userService.getPrincipalUser()).thenReturn(loginUser);
 
         Delivery delivery = new Delivery();
-        delivery.setFirstname("test");
-        delivery.setLastname("Mock");
-        delivery.setPointA("1");
-        delivery.setPointB("2");
+        delivery.setPointA(1);
+        delivery.setPointB(2);
         delivery.setMapA(1);
         delivery.setMapB(2);
       //  when(mongoService.getLastDelivery()).thenReturn(delivery);
 
-        mvc = MockMvcBuilders.standaloneSetup(deliveryController).build();
+        mvc = MockMvcBuilders.standaloneSetup(orderController).build();
     }
 
     @Test

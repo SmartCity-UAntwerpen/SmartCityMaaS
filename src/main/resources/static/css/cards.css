@@ -9,15 +9,19 @@
     margin: 10px 0;
 }
 
+.card-body {
+    margin-left: 20px;
+    padding-top: 12px;
+}
+
 .card-top {
     height: 100%;
     padding: 10px;
-    border-radius: 5px 5px 0 0;
     color: white;
 }
 
 .cyan {
-    background-color: #3498db;
+    background-color: #3498db !important;
     color: white;
 }
 
