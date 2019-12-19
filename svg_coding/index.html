@@ -2,11 +2,35 @@
 <html>
 <head>
   <title>SVG.js</title>
+  
   <script src="svg.js"></script>
   <script src="visualisationCore.js"></script>
   <script src="figures.js"></script>
+  <script src="mapbuilder.js"></script>
+  <style>
+    body {
+      margin: 40px;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-template-columns: 200px 900px 200px;
+      grid-gap: 10px;
+    }
+
+    .box {
+      color: black;
+      border-radius: 5px;
+      padding: 20px;
+      font-size: 150%;
+    }
+    </style>
 </head>
 <body>
-
+<div class="wrapper">
+  <div class="box a" id="library">Library</div>
+  <div class="box b" id="map">Map</div>
+  <div class="box c" id="properties">Properties</div>
+</div>
 </body>
 </html>
