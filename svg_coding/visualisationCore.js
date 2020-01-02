@@ -73,6 +73,16 @@ var visualisationCore = {
     drawRobotIconTargetted : function(x,y){
         return this._drawAndTranslate(x,y,robotTargetted,mapDrawer);
     },
+    drawDroneLink : function(pointA, pointB){
+        // Calculate center of start and endpoint
+        var xStart = pointA.transform().translateX+(pointA.width()/2);
+        var yStart = pointA.transform().translateY+(pointA.height()/2);
+        var xEnd = pointB.transform().translateX+(pointB.width()/2);
+        var yEnd = pointB.transform().translateY+(pointB.height()/2);
+        var link = mapDrawer.line(xStart, yStart, xEnd, yEnd).stroke({ color: "grey",width: 1 });
+        return link;
+
+    },
     drawLibrary : function(){
         // Plot a library for the mapbuilder
         // Car gas, drone helipad, robot tiles
