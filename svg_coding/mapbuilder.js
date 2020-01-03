@@ -1,4 +1,4 @@
-var _smartcityNamespace = "http://smartcity.dyndns.net";
+var _smartcityNamespace = "ss";
 
 var map = null;
 var selectedWaypointType = null;
@@ -8,6 +8,8 @@ var _counterRobotWaypoint = 0;
 var _activeHoverElement = null;
 var _activeWaypointElement = null;
 var _previewingLink = false;
+var _dragging = false;
+var _draggingTarget = null;
 
 /**
  * Add eventlisteners
@@ -25,8 +27,14 @@ window.addEventListener('load', (event) => {
     // Attach onclick handlers to the map-canvas
     map = document.getElementById("mapcontainer");
     map.addEventListener('click', _mapOnClickHandler);
+    map.addEventListener('mousemove', _mapOnMouseMoveHandler);
+    map.addEventListener('mouseup', _mapOnMouseUpHandler);
 });
 
+/**
+ * Handles the click on library items
+ * @param {*} event 
+ */
 function _menuOnClickHandler(event){
     var type = event.currentTarget.getAttribute('type');
     console.log("menu click happened" + type);
@@ -47,6 +55,18 @@ function _menuOnClickHandler(event){
 
 }
 
+function _transformScreenCoordsToMapCoords(screenX, screenY){
+    var mapOriginX = map.getBoundingClientRect().x;
+    var mapOriginY = map.getBoundingClientRect().y;
+    var mapX = screenX - mapOriginX;
+    var mapY = screenY - mapOriginY;
+    return {x:mapX,y:mapY};
+}
+
+/**
+ * Handles and dispatches click events. A onclick attribute is added to the SVG map as a whole
+ * @param {} event 
+ */
 function _mapOnClickHandler(event){
     console.log("map click happened");
     var target = event.currentTarget;
@@ -56,30 +76,42 @@ function _mapOnClickHandler(event){
         // Create new waypoint
         // Translate the coordinates of the mouse pointer to the relative position within
         // the canvas
-        var mapOriginX = map.getBoundingClientRect().x;
-        var mapOriginY = map.getBoundingClientRect().y;
-        var x = event.clientX - mapOriginX;
-        var y = event.clientY - mapOriginY;
+        const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
         createNewWaypoint(x,y);
         selectedWaypointType = null;
     }
-    // 2) Waypoint: target must become active for edit or must become the endpoint of a link creation. 
-    // When a waypoint is targetted, we have to select the rangeParent-attribute of the event as target
+    // Examine type attribute
     else if(event.rangeParent.getAttributeNS(_smartcityNamespace, "type")){
-        if(event.rangeParent.getAttributeNS(_smartcityNamespace, "type").indexOf("wp")>0){
+        var type = event.rangeParent.getAttributeNS(_smartcityNamespace, "type")
+        // 2) Waypoint: target must become active for edit or must become the endpoint of a link creation. 
+        // When a waypoint is targetted, we have to select the rangeParent-attribute of the event as target
+        // Todo:  show properties on the right
+        if(type.indexOf("wp")>-1){
             _waypointOnClickHandler(event.rangeParent);
+        }
+        // 3) Link: show properties
+        else if(type.indexOf("link") > -1){
+            _updatePropertiesWindow(event.rangeParent);
         }
     }
     else{
         _activeWaypointElement = null;
-        _activeHoverElement = null;
+        //_activeHoverElement = null;
         console.log("No action needed for click, reset _active properties");
 
     }
+}
 
-    // do switch thing here to examine target
+/**
+ * Show the properties of element in the properties window
+ * @param {} element 
+ */
+function _updatePropertiesWindow(element){
+    // Treat the element as a SVG.js object, not as a SVG DOM element
+    var object = SVG.find("#"+waypoint.id)[0];
 
-    
+    // Parsing of properties depends on object type
+    // Todo: implement propertieswindow
 }
 
 /**
@@ -97,8 +129,68 @@ function _waypointOnClickHandler(waypoint){
     }
     else{
         // Use case 2: other waypoint already active
-        // Create a new link
-        _establishLink(_activeWaypointElement, waypoint);
+        // Create a new link between the _activeWaypointElement as source and the targeted element as destination
+        _establishLink(_activeWaypointElement, SVG.find("#"+waypoint.id)[0]);
+    }
+}
+
+function _dragElement(destX, destY){
+    // update position of _draggintTarget
+    _draggingTarget.transform({translateX:destX, translateY:destY});
+    var id = _draggingTarget.attr("id");
+    // Get center of drag element
+    var centerX = _draggingTarget.transform().translateX+(_draggingTarget.width()/2);
+    var centerY = _draggingTarget.transform().translateY+(_draggingTarget.height()/2);
+
+    // Find its links
+    // Find links with draggingTarget as destination
+    var arrivingLinks = SVG.find("[to="+id+"]");
+    // Find links with draggingTarget as source
+    var departingLinks = SVG.find("[from="+id+"]");
+    // Set new position for each link
+    arrivingLinks.forEach(link => {
+        // set x2, y2 to center of dragging target
+        link.attr("x2", centerX);
+        link.attr("y2", centerY);
+    });
+    departingLinks.forEach(link => {
+        // set x1, y1 to center of dragging target
+        link.attr("x1", centerX);
+        link.attr("y1", centerY);
+    });
+}
+
+/**
+ * Handles mousemove event on the map
+ * @param {} event 
+ */
+function _mapOnMouseMoveHandler(event){
+    if(_dragging){
+        const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
+        _dragElement(x,y);
+    }
+}
+
+/**
+ * This is a catch for when a user drags too fast, i.e. the mouse up event
+ * happens outside the drag target. 
+ * @param {} event 
+ */
+function _mapOnMouseUpHandler(event){
+    _elementMouseUpHandler(event);
+}
+
+function _elementMouseDownHandler(event){
+    console.log("start dragging");
+    _dragging = true;
+    _draggingTarget = SVG.find("#"+event.currentTarget.id)[0];
+}
+
+function _elementMouseUpHandler(event){
+    if(_dragging){
+        _dragging = false;
+        _draggingTarget = null;
+        console.log("stop dragging");
     }
 }
 
@@ -109,7 +201,27 @@ function _waypointOnClickHandler(waypoint){
  * @param {destination} pointB 
  */
 function _establishLink(pointA, pointB){
-    console.log("should establish link function implement");
+    var linktype = pointA.node.getAttributeNS(_smartcityNamespace, "type");
+    var link;
+    if(linktype === "car_wp"){
+        link = visualisationCore.drawCarLink(pointA, pointB);
+        link.attr("id", "car_link_" + pointA.attr("id") + "_" + pointB.attr("id"));
+        link.attr('type', "car_link", _smartcityNamespace);    
+    }
+    else if(linktype === "drone_wp"){
+        link = visualisationCore.drawDroneLink(pointA, pointB);
+        link.attr("id", "drone_link_" + pointA.attr("id") + "_" + pointB.attr("id"));
+        link.attr('type', "drone_link", _smartcityNamespace);
+    }
+    // Set from and to attributes
+    link.attr("from", pointA.attr("id"));
+    link.attr("to", pointB.attr("id"));
+    // Attach eventlisteners for hovering
+    link.on('mouseover', _elementHoverInHandler);
+    link.on('mouseout', _elementHoverOutHandler);
+
+    // Link is established, end previewing
+    _activeWaypointElement = null;
 }
 
 /**
@@ -118,17 +230,18 @@ function _establishLink(pointA, pointB){
  * @param {*} pointB 
  */
 function _previewLink(pointA, pointB){
-    console.log("Todo: implement preview link");
-    // Assert type
+    // Todo: Assert type
    
     // Get type
     var linktype = pointA.node.getAttributeNS(_smartcityNamespace, "type");
+    var previewLink;
     if(linktype === "car_wp"){
-        var previewLink = visualisationCore.drawDroneLink(pointA, pointB);
-        previewLink.attr("id", "linkpreview")
+        previewLink = visualisationCore.drawCarLink(pointA, pointB);
     }
-    
-
+    else if(linktype === "drone_wp"){
+        previewLink = visualisationCore.drawDroneLink(pointA, pointB);
+    }
+    previewLink.attr("id", "linkpreview");
 }
 
 function _removeLinkPreview(){
@@ -154,26 +267,34 @@ function _refreshPropertiesWindow(eUC){
  * @param {} event 
  */
 function _elementHoverInHandler(event){
-    console.log("element mousein happened");
+    if(_dragging) return;
     if(!_activeHoverElement){
         var target = event.currentTarget;
         var element = SVG.find("#"+target.id)[0];
         _scaleElementUp(element);
         _activeHoverElement = element;
-        if(_activeWaypointElement && _activeWaypointElement !== element){
+        // Get the type of the element: link or waypoint
+        var elementType = element.node.getAttributeNS(_smartcityNamespace, "type");
+
+        // Type is waypoint
+        if(_activeWaypointElement && _activeWaypointElement !== element && elementType.indexOf("wp") > -1){
             // User is choosing target for new link. Visualize a preview
             _previewLink(_activeWaypointElement, _activeHoverElement);
+        }
+        // Type is link
+        else if(elementType.indexOf("link") > -1){
+            // nothing special should happen
         }
     }
 }
 
 /**
- * Mouseout on an element. Means end of hovering, decrease scale.
+ * Mouseout on an element. Means end of hovering, decrease scale, remove link preview (if any)
  * @param {} event 
  */
 function _elementHoverOutHandler(event){
     if(_activeHoverElement){
-        console.log("element mouseout happened");
+        //console.log("element mouseout happened");
         var target = event.currentTarget;
         var element = SVG.find("#"+target.id);
         _scaleElementDown(element);
@@ -196,9 +317,7 @@ function _scaleElementDown(element){
  * @param {*} y 
  */
 function createNewWaypoint(x, y){
-    
-
-    // Draw a new element on the map
+    // Place a new waypoint on the map
     switch (selectedWaypointType){
         case "car_gas":
             // Call viscore to create new item
@@ -211,6 +330,7 @@ function createNewWaypoint(x, y){
             // Call viscore to create new item
             var newWaypoint = visualisationCore.drawDroneHelipad(x, y);
             newWaypoint.attr('id', "drone_wp_"+_counterDroneWaypoint++);
+            // We want type as an attribute in our own XML namespace
             newWaypoint.attr('type', "drone_wp", _smartcityNamespace);
             document.body.style.cursor = "default";
             break;
@@ -219,4 +339,6 @@ function createNewWaypoint(x, y){
     }
     newWaypoint.on('mouseover', _elementHoverInHandler);
     newWaypoint.on('mouseout', _elementHoverOutHandler);
+    newWaypoint.on('mousedown', _elementMouseDownHandler);
+    newWaypoint.on('mouseup', _elementMouseUpHandler);
 }

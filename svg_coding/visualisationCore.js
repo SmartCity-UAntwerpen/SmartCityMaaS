@@ -1,11 +1,14 @@
 var mapDrawer;
+var _linksgroup;
 window.addEventListener('load', (event) => {
     console.log('## SmartCity SVG Visualisation Core ##');
     var canvasWidth = 1000;
     var canvasHeight = 1000;
     mapDrawer = SVG().addTo('#map').size(canvasWidth, canvasHeight).id("mapcontainer");
     libraryDrawer = SVG().addTo('#library').size(180,1000).id("librarycontainer");
-    //var rect = draw.rect(100, 100).attr({ fill: '#f06' });
+    _linksgroup = mapDrawer.group();
+    _linksgroup.attr("id", "links");
+
 
     // Insert your testcode below
     
@@ -79,9 +82,17 @@ var visualisationCore = {
         var yStart = pointA.transform().translateY+(pointA.height()/2);
         var xEnd = pointB.transform().translateX+(pointB.width()/2);
         var yEnd = pointB.transform().translateY+(pointB.height()/2);
-        var link = mapDrawer.line(xStart, yStart, xEnd, yEnd).stroke({ color: "grey",width: 1 });
+        var link = _linksgroup.line(xStart, yStart, xEnd, yEnd).stroke({ color: "RoyalBlue",width: 3, dasharray:"10,10" });
         return link;
-
+    },
+    drawCarLink : function(pointA, pointB){
+        // Calculate center of start and endpoint
+        var xStart = pointA.transform().translateX+(pointA.width()/2);
+        var yStart = pointA.transform().translateY+(pointA.height()/2);
+        var xEnd = pointB.transform().translateX+(pointB.width()/2);
+        var yEnd = pointB.transform().translateY+(pointB.height()/2);
+        var link = _linksgroup.line(xStart, yStart, xEnd, yEnd).stroke({ color: "grey",width: 4});
+        return link;
     },
     drawLibrary : function(){
         // Plot a library for the mapbuilder
@@ -115,7 +126,6 @@ var visualisationCore = {
         obj.transform({translateX:x,translateY:y});
         return obj;
     }
-
 }
 
 function _sayHelloWorldByConsultant(){
