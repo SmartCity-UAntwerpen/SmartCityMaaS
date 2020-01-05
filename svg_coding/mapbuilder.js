@@ -96,7 +96,8 @@ function _mapOnClickHandler(event){
         var type = event.target.getAttributeNS(_smartcityNamespace, "type");
         // 3) Link: show properties.
         if(type.indexOf("link") > -1){
-            _updatePropertiesWindow(event.rangeParent);
+            var object = SVG.find("#"+event.target.id)[0];
+            _refreshPropertiesWindow(object);
         }
     }
     // 3) Cancel click
@@ -109,23 +110,11 @@ function _mapOnClickHandler(event){
 }
 
 /**
- * Show the properties of element in the properties window
- * @param {} element 
- */
-function _updatePropertiesWindow(element){
-    // Treat the element as a SVG.js object, not as a SVG DOM element
-    var object = SVG.find("#"+waypoint.id)[0];
-
-    // Parsing of properties depends on object type
-    // Todo: implement propertieswindow
-}
-
-/**
  * Processes the click on a waypoint. 2 possible use cases:
  * 1) no other waypoint active. This waypoint becomes active.
  * 2) One other waypoint active and shifting. This waypoint becomes the endpoint of a new link
  * 3) One other waypoint active and not shifting: this waypoint becomes new active waypoint. No link is drawn.
- * @param {*} waypoint 
+ * @param {svg dom node} waypoint 
  * @param {*} shiftActive: shift has been pressed when clicking
  */
 function _waypointOnClickHandler(waypoint, shiftActive){
