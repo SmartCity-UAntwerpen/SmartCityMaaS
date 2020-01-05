@@ -22,15 +22,20 @@
       color: black;
       border-radius: 5px;
       padding: 20px;
-      font-size: 150%;
+      /*font-size: 150%;*/
     }
     </style>
 </head>
 <body>
 <div class="wrapper">
-  <div class="box a" id="library">Library</div>
-  <div class="box b" id="map">Map</div>
-  <div class="box c" id="properties">Properties</div>
+  <div class="box a" id="library"><h4>Library</h4></div>
+  <div class="box b" id="map"><h4>Map</h4></div>
+  <div class="box c" id="properties">
+    <h4>Properties</h4>
+    <label for="name">Name</label>
+    <input type="text" id="name" disabled="true">
+    <button type="button" onclick="_deleteElement(null)" id="deleteBtn">Delete</button>
+  </div>
 </div>
 </body>
 </html>

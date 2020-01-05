@@ -108,7 +108,6 @@ function getDeliveries() {
     })
 }
 
-
 function drawWorld(){
     mapCanvas = document.getElementById("mapCanvas");
 

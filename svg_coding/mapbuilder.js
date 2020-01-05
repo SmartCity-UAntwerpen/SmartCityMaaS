@@ -71,7 +71,7 @@ function _mapOnClickHandler(event){
     console.log("map click happened");
     var target = event.currentTarget;
     // Examine the target:
-    // 1) empty spot: target is the svg root element. User wants to create a new waypoint
+    // 1) empty spot: target is the svg root element. User wants to create a new waypoint when a selection in library has been made 
     if(event.currentTarget.id === "mapcontainer" && selectedWaypointType !== null){
         // Create new waypoint
         // Translate the coordinates of the mouse pointer to the relative position within
@@ -80,20 +80,26 @@ function _mapOnClickHandler(event){
         createNewWaypoint(x,y);
         selectedWaypointType = null;
     }
-    // Examine type attribute
+    // Is the target a waypoint?
     else if(event.rangeParent.getAttributeNS(_smartcityNamespace, "type")){
-        var type = event.rangeParent.getAttributeNS(_smartcityNamespace, "type")
-        // 2) Waypoint: target must become active for edit or must become the endpoint of a link creation. 
+        var type = event.rangeParent.getAttributeNS(_smartcityNamespace, "type");
+        var shiftActive = event.shiftKey;
+        // 2) Waypoint: link creation. Target must become active for edit or must become the endpoint of a link creation. 
         // When a waypoint is targetted, we have to select the rangeParent-attribute of the event as target
-        // Todo:  show properties on the right
         if(type.indexOf("wp")>-1){
-            _waypointOnClickHandler(event.rangeParent);
+            _waypointOnClickHandler(event.rangeParent, shiftActive);
         }
-        // 3) Link: show properties
-        else if(type.indexOf("link") > -1){
+        
+    }
+    // Is the target a link?
+    else if(event.target.getAttributeNS(_smartcityNamespace, "type")){
+        var type = event.target.getAttributeNS(_smartcityNamespace, "type");
+        // 3) Link: show properties.
+        if(type.indexOf("link") > -1){
             _updatePropertiesWindow(event.rangeParent);
         }
     }
+    // 3) Cancel click
     else{
         _activeWaypointElement = null;
         //_activeHoverElement = null;
@@ -117,25 +123,39 @@ function _updatePropertiesWindow(element){
 /**
  * Processes the click on a waypoint. 2 possible use cases:
  * 1) no other waypoint active. This waypoint becomes active.
- * 2) One other waypoint active. This waypoint becomes the endpoint of a new link
+ * 2) One other waypoint active and shifting. This waypoint becomes the endpoint of a new link
+ * 3) One other waypoint active and not shifting: this waypoint becomes new active waypoint. No link is drawn.
  * @param {*} waypoint 
+ * @param {*} shiftActive: shift has been pressed when clicking
  */
-function _waypointOnClickHandler(waypoint){
-    if(!_activeWaypointElement){
+function _waypointOnClickHandler(waypoint, shiftActive){
+    if((!_activeWaypointElement) || (!shiftActive && _activeWaypointElement)){
         // Use case 1: no other waypoint active
+        // Use case 3: not shifting and already an active waypoint
         _activeWaypointElement = SVG.find("#"+waypoint.id)[0];
         // Update properties window
-        _refreshPropertiesWindow(_activeWaypointElement);
+        _refreshPropertiesWindow(_activeWaypointElement);  
+        return;
     }
-    else{
+    else if(shiftActive && _activeWaypointElement){
         // Use case 2: other waypoint already active
+        var previousActiveWaypointElement = _activeWaypointElement;
+        _activeWaypointElement = SVG.find("#"+waypoint.id)[0];
+
+        // Update properties window
+        _refreshPropertiesWindow(_activeWaypointElement);
+
         // Create a new link between the _activeWaypointElement as source and the targeted element as destination
-        _establishLink(_activeWaypointElement, SVG.find("#"+waypoint.id)[0]);
+        //_establishLink(_activeWaypointElement, SVG.find("#"+waypoint.id)[0]);
+        _establishLink(previousActiveWaypointElement, _activeWaypointElement);
+        
+        
     }
+    
 }
 
 function _dragElement(destX, destY){
-    // update position of _draggintTarget
+    // update position of _draggingTarget
     _draggingTarget.transform({translateX:destX, translateY:destY});
     var id = _draggingTarget.attr("id");
     // Get center of drag element
@@ -254,11 +274,60 @@ function _removeLinkPreview(){
 
 
 /**
- * Refresh the properties window
- * @param {element under consideration} eUC 
+ * Refresh the properties window for given object
+ * @param {SVG.js node} object 
  */
-function _refreshPropertiesWindow(eUC){
-    console.log("Todo: implement refreshpropertieswindow");
+function _refreshPropertiesWindow(object){
+    switch (object.node.getAttributeNS(_smartcityNamespace, "type")){
+        case "drone_link":
+            _showDroneLinkProperties(object);
+            break;
+        case "drone_wp":
+            _showDroneWaypointProperties(object);
+            break;
+        default:
+            console.error("Unknown object type: cannot refresh properties window");
+    }
+    
+}
+
+function _showDroneWaypointProperties(link){
+    var wpId = link.attr("id");
+    var nameTxt = document.getElementById("name");
+    nameTxt.value = wpId;
+    var deleteButton = document.getElementById("deleteBtn");
+    deleteButton.setAttribute("onclick", "_deleteElement('"+wpId+"')")
+}
+
+function _showDroneLinkProperties(link){
+    var linkId = link.attr("id");
+    var nameTxt = document.getElementById("name");
+    nameTxt.value = linkId;
+    var deleteButton = document.getElementById("deleteBtn");
+    deleteButton.setAttribute("onclick", "_deleteElement('"+linkId+"')")
+}
+
+function _deleteElement(elementId){
+    if(!elementId){
+        console.log("helloooo");
+        return;
+    }
+    var element = SVG.find("#"+elementId)[0];
+    // If element is a waypoint, we need to delete its links
+    if(element.node.getAttributeNS(_smartcityNamespace, "type") === "drone_wp" || element.node.getAttributeNS(_smartcityNamespace, "type") === "car_wp"){
+        // Find its links
+        // Find links with draggingTarget as destination
+        var arrivingLinks = SVG.find("[to="+elementId+"]");
+        // Find links with draggingTarget as source
+        var departingLinks = SVG.find("[from="+elementId+"]");
+        // Remove links
+        arrivingLinks.forEach((link) => {link.remove()});
+        departingLinks.forEach((link) => {link.remove()});
+    }
+   
+    // Remove element itself
+    element.remove();
+
 }
 
 /**
@@ -277,7 +346,8 @@ function _elementHoverInHandler(event){
         var elementType = element.node.getAttributeNS(_smartcityNamespace, "type");
 
         // Type is waypoint
-        if(_activeWaypointElement && _activeWaypointElement !== element && elementType.indexOf("wp") > -1){
+        // Conditions: an activewaypoint element has been chosen, not being equally to the hover target, being a waypoint type and shiftkey is active
+        if(_activeWaypointElement && _activeWaypointElement !== element && elementType.indexOf("wp") > -1 && event.shiftKey){
             // User is choosing target for new link. Visualize a preview
             _previewLink(_activeWaypointElement, _activeHoverElement);
         }
