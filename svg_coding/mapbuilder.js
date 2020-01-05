@@ -103,9 +103,9 @@ function _mapOnClickHandler(event){
     // 3) Cancel click
     else{
         _activeWaypointElement = null;
+        _clearPropertiesWindow();
         //_activeHoverElement = null;
         console.log("No action needed for click, reset _active properties");
-
     }
 }
 
@@ -137,12 +137,14 @@ function _waypointOnClickHandler(waypoint, shiftActive){
         // Create a new link between the _activeWaypointElement as source and the targeted element as destination
         //_establishLink(_activeWaypointElement, SVG.find("#"+waypoint.id)[0]);
         _establishLink(previousActiveWaypointElement, _activeWaypointElement);
-        
-        
     }
-    
 }
 
+/**
+ * Move the drag element to destination x,y. When dragging a node, move the links too
+ * @param {*} destX 
+ * @param {*} destY 
+ */
 function _dragElement(destX, destY){
     // update position of _draggingTarget
     _draggingTarget.transform({translateX:destX, translateY:destY});
@@ -269,36 +271,57 @@ function _removeLinkPreview(){
 function _refreshPropertiesWindow(object){
     switch (object.node.getAttributeNS(_smartcityNamespace, "type")){
         case "drone_link":
-            _showDroneLinkProperties(object);
+            _showLinkProperties(object);
+            break;
+        case "car_link":
+            _showLinkProperties(object);
             break;
         case "drone_wp":
-            _showDroneWaypointProperties(object);
+            _showWaypointProperties(object);
+            break;
+        case "car_wp":
+            _showWaypointProperties(object);
             break;
         default:
             console.error("Unknown object type: cannot refresh properties window");
     }
-    
 }
 
-function _showDroneWaypointProperties(link){
+/**
+ * Clear the fields in the propertieswindow
+ */
+function _clearPropertiesWindow(){
+    var nameTxt = document.getElementById("name");
+    nameTxt.value = "";
+    var deleteButton = document.getElementById("deleteBtn");
+    deleteButton.setAttribute("onclick", "_deleteElement('null')")
+}
+
+function _showWaypointProperties(link){
     var wpId = link.attr("id");
     var nameTxt = document.getElementById("name");
     nameTxt.value = wpId;
     var deleteButton = document.getElementById("deleteBtn");
-    deleteButton.setAttribute("onclick", "_deleteElement('"+wpId+"')")
+    deleteButton.setAttribute("onclick", "_deleteElement('"+wpId+"')");
 }
 
-function _showDroneLinkProperties(link){
+function _showLinkProperties(link){
     var linkId = link.attr("id");
     var nameTxt = document.getElementById("name");
     nameTxt.value = linkId;
     var deleteButton = document.getElementById("deleteBtn");
-    deleteButton.setAttribute("onclick", "_deleteElement('"+linkId+"')")
+    deleteButton.setAttribute("onclick", "_deleteElement('"+linkId+"')");
 }
 
+
+
+/**
+ * Remove an SVG element
+ * @param {string} elementId: id of the element to remove
+ */
 function _deleteElement(elementId){
     if(!elementId){
-        console.log("helloooo");
+        console.log("Cannot delete null element");
         return;
     }
     var element = SVG.find("#"+elementId)[0];
@@ -316,6 +339,9 @@ function _deleteElement(elementId){
    
     // Remove element itself
     element.remove();
+
+    // Clear the propertieswindow
+    _clearPropertiesWindow();
 
 }
 
