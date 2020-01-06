@@ -1,6 +1,8 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.APIResponse;
+import be.uantwerpen.model.DBDelivery;
+import be.uantwerpen.model.Order;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import org.apache.log4j.LogManager;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * This controller handles the user specific request mappings.
@@ -55,7 +58,7 @@ public class OrderController {
     public String viewDeliveries(final ModelMap model) {
         logger.info(userService.getPrincipalUser() + " requested /deliveries");
        // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
-        Iterable<Delivery> deliveries = orderService.findAll();
+        Iterable<Order> deliveries = orderService.findAll();
         model.addAttribute("allDeliveries", deliveries);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
@@ -70,7 +73,7 @@ public class OrderController {
      */
     @RequestMapping(value = "/deliveries/put", method = RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model) {
-        Delivery del = new Delivery();
+        DBDelivery del = new DBDelivery();
         model.addAttribute("delivery", del);
         model.addAttribute("allPassengers", passengerService.findAll());
 
@@ -94,7 +97,7 @@ public class OrderController {
     }
 
     /**
-     * Add a delivery to deliveries in the mongoDB database.
+     * Add a delivery
      *
      * @param delivery
      * @param result
@@ -102,7 +105,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping(value = {"/deliveries/", "/deliveries/{id}"}, method = RequestMethod.POST)
-    public String addDelivery(@Valid Delivery delivery, BindingResult result, final ModelMap model) {
+    public String addDelivery(@Valid DBDelivery delivery, BindingResult result, final ModelMap model) {
         logger.info(result.getModel());
         logger.info("Delivery: point A " + delivery.getPointA() + " map " + delivery.getMapA() + ", point B " + delivery.getPointB() + " map " + delivery.getMapB());
 
@@ -115,16 +118,36 @@ public class OrderController {
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
 
+        /* **************************************************
+           TODO:
+            - save order to database (returns success boolean)
+            - send delivery to backend (returns success boolean in JSON object)
+         */
+
+        Long orderID = orderService.createNewOrderWithDescription(delivery.getDescription());
+        delivery.setOrderID(orderID);
+        delivery.setDate(new Date().toString());
+        /* **************************************************/
+
         try {
-            boolean success = orderService.save(delivery);
+            APIResponse res = orderService.save(delivery);
             //delivery =  deliveryService.save(delivery);
-            if (delivery == null)
-                return "delivery-manage-user";
+            if (!res.success) {
+                if (res.message == null || res.message.equals("")) {
+                    throw new Exception("Something went wrong at the backbone");
+                } else {
+                    throw new Exception(res.message);
+                }
+                //return "delivery-manage-user";
+            }
             logger.info("Job has been created by " + loginUser);
 
             model.addAttribute("delivery", delivery);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            DBDelivery del = new DBDelivery();
+            model.addAttribute("delivery", del);
+            model.addAttribute("currentUser", loginUser);
             return "delivery-manage-user";
         }
 

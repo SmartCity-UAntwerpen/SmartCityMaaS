@@ -1,6 +1,6 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.DBDelivery;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class OrderControllerTest {
         loginUser.setUserName("TestAdmin");
         when(userService.getPrincipalUser()).thenReturn(loginUser);
 
-        Delivery delivery = new Delivery();
+        DBDelivery delivery = new DBDelivery();
         delivery.setPointA(1);
         delivery.setPointB(2);
         delivery.setMapA(1);

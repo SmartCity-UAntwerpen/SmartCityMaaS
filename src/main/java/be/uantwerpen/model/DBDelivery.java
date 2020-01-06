@@ -6,14 +6,14 @@ import javax.persistence.*;
 
 /**
  * Created by NV 2018
- * The delivery is solely used as a data model which (in serialized form) is send to the backbone.
+ * The delivery is solely used as a data model which (in serialized form) is read from the backbone.
  * It contains all the information of the delivery that is required to perform the Astart algorithm.
  * PointA is the start point of the delivery, while pointB is the end point of the delivery.
  * The orderID links to the order which is saved in the MySQL database.
  *
  */
 @Entity
-public class Delivery extends MyAbstractPersistable<Long> {
+public class DBDelivery extends MyAbstractPersistable<Long> {
     private int pointA;
     private int pointB;
     private int mapA;
@@ -22,13 +22,14 @@ public class Delivery extends MyAbstractPersistable<Long> {
     private String type;
     private String date;
     private boolean complete = false;
-    private int orderID;
+    private Long orderID;
+    private String description;
 
-    public Delivery() {
+    public DBDelivery() {
 
     }
 
-    public Delivery(int pointA, int pointB, int mapA, int mapB, int passengers, String type, String date, boolean complete, int orderID) {
+    public DBDelivery(int pointA, int pointB, int mapA, int mapB, int passengers, String type, String date, boolean complete, Long orderID) {
         this.pointA = pointA;
         this.pointB = pointB;
         this.mapA = mapA;
@@ -72,7 +73,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
         return complete;
     }
 
-    public int getOrderID() {
+    public Long getOrderID() {
         return orderID;
     }
 
@@ -108,7 +109,11 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.complete = complete;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(Long orderID) {
         this.orderID = orderID;
     }
+
+    public void setDescription(String description) { this.description = description; }
+
+    public String getDescription() { return description; }
 }

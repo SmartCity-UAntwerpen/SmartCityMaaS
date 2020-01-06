@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -75,7 +76,7 @@ public class BackendRestTemplate {
 
         try {
             ////// TEST - 2018
-            //obj = parser.parse(new FileReader("testdata/stringmapjsonNEW.txt"));
+            //obj = parser.parse(new FileReader("testdata/stringmapjson.txt"));
             /////
             obj = parser.parse(listOfCore);
             /////

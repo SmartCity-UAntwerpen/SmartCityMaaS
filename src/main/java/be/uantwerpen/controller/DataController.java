@@ -234,7 +234,7 @@ public class DataController {
     public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
         logger.info("getting delivery: " + delivery_id);
         JSONObject jsonObject = new JSONObject();
-        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByDelivery/" + delivery_id;
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByOrder/" + delivery_id;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);

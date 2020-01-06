@@ -1,7 +1,9 @@
 package be.uantwerpen.services;
 
 import be.uantwerpen.model.APIResponse;
-import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.DBDelivery;
+import be.uantwerpen.model.DBOrder;
+import be.uantwerpen.model.Order;
 import be.uantwerpen.repositories.OrderRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,31 +34,44 @@ public class OrderService {
     @Autowired
     private OrderRepository repository;
 
-    private String basePath;
+    private String basePathToBackbone;
 
     public OrderService(@Value("${core.ip}") String coreIp, @Value("${core.port}") int corePort) {
         // build URL using properties
-        basePath = "http://" + coreIp + ":" + corePort + "/deliveries/";
+        basePathToBackbone = "http://" + coreIp + ":" + corePort + "/deliveries/";
     }
 
-    public Iterable<Delivery> findAll() {
-        String path = basePath + "getall";
+    public Iterable<Order> findAll() {
+        String path = basePathToBackbone + "getall";
         try {
-            ResponseEntity<List<Delivery>> response = restTemplate.exchange(
+            ResponseEntity<List<DBDelivery>> response = restTemplate.exchange(
                     path,
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<List<Delivery>>() {
+                    new ParameterizedTypeReference<List<DBDelivery>>() {
                     });
-            return response.getBody();
+            List<DBDelivery> resDeliveries = response.getBody();
+            ArrayList<Order> orders = new ArrayList<Order>();
+            for (DBDelivery del: resDeliveries) {
+                DBOrder tempDbOrder = repository.findOne(del.getOrderID());
+                if (tempDbOrder != null) {
+                    orders.add(new Order(tempDbOrder, del));
+                }
+            }
+            return orders;
         } catch (RestClientException e) {
             logger.debug(e);
+            return null;
+        } catch (Exception e) {
+            logger.debug(e);
+            e.printStackTrace();
             return null;
         }
     }
 
-    public boolean save(final Delivery delivery) {
-        String path = basePath + "savedelivery";
+    public APIResponse save(final DBDelivery delivery) {
+        String path = basePathToBackbone + "createDelivery";
+
         //set your headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -64,27 +81,39 @@ public class OrderService {
 
         // send it!
         try {
-           APIResponse res = restTemplate.exchange(path, HttpMethod.POST, object, APIResponse.class).getBody();
-           if (res.success) {
-               logger.info(res.message);
-           } else {
-               logger.error(res.message);
-           }
-           return res.success;
+            APIResponse res = restTemplate.exchange(path, HttpMethod.POST, object, APIResponse.class).getBody();
+            if (res.success) {
+                logger.info(res.message);
+            } else {
+                logger.error(res.message);
+            }
+            return res;
         } catch (RestClientException e) {
             logger.warn("Error while saving job " + delivery.getId());
             logger.debug(e);
-            return false;
+            return null;
         }
     }
 
-    public Delivery findOne(Long id) {
-        String path = basePath + "get/{id}";
+    public Long createNewOrder() {
+        DBOrder order = repository.save(new DBOrder());
+        return order.getId();
+    }
+
+    public Long createNewOrderWithDescription(String description) {
+        DBOrder tempOrder = new DBOrder();
+        tempOrder.description = description;
+        DBOrder order = repository.save(tempOrder);
+        return order.getId();
+    }
+
+    public DBDelivery findOne(Long id) {
+        String path = basePathToBackbone + "get/{id}";
         try {
-            ResponseEntity<Delivery> exchange = restTemplate.exchange(path,
+            ResponseEntity<DBDelivery> exchange = restTemplate.exchange(path,
                     HttpMethod.GET,
                     null,
-                    Delivery.class,
+                    DBDelivery.class,
                     id
             );
             return exchange.getBody();
@@ -95,7 +124,7 @@ public class OrderService {
     }
 
     public boolean delete(Long id) {
-        String path = basePath + "delete/{id}";
+        String path = basePathToBackbone + "delete/{id}";
         try {
             restTemplate.exchange(path,
                     HttpMethod.POST,
@@ -112,7 +141,7 @@ public class OrderService {
     }
 
     public boolean deleteAll() {
-        String path = basePath + "deleteall";
+        String path = basePathToBackbone + "deleteall";
         try {
             restTemplate.exchange(path,
                     HttpMethod.POST,
