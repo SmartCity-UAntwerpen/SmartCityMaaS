@@ -10,7 +10,6 @@ window.addEventListener('load', (event) => {
     visualisationCore.robotgridgroup = mapDrawer.group();
     visualisationCore.robotgridgroup.attr("id", "robotgrid");
 
-
     // Insert your testcode below
     
     //draw.svg(drone_icon);
@@ -22,6 +21,7 @@ var visualisationCore = {
     canvasWidth : 1000,
     canvasHeight : 1000,
     robotgridgroup: null,
+    gridCellSize : 100,
     helloWorld: "Hi there",
     sayHelloWorld : function(a){
         console.log(a);
@@ -99,25 +99,99 @@ var visualisationCore = {
         return link;
     },
     drawRobotGrid : function(){
-        var cellWidth = 100;
-        var cellHeight = 100;
-        var columns = Math.floor(this.canvasWidth/cellWidth);
-        var rows = Math.floor(this.canvasHeight/cellHeight);
+        // var cellWidth = 100;
+        // var cellHeight = 100;
+        var columns = Math.floor(this.canvasWidth/this.gridCellSize);
+        var rows = Math.floor(this.canvasHeight/this.gridCellSize);
         for(var i = 0; i<rows;i++){
             for(var j = 0; j<columns; j++){
-                var x = i*cellWidth;
-                var y = j*cellHeight;
+                var x = i*this.gridCellSize;
+                var y = j*this.gridCellSize;
                 var gridcell = this._drawAndTranslate(x,y, gridpoint, this.robotgridgroup);
                 gridcell.attr("id", "gp_"+j+"_"+i);
             }
         }
     },
+    drawRobotTile1 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_1,mapDrawer);
+    },
+    drawRobotTile2 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_2,mapDrawer);
+    },
+    drawRobotTile3 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_3,mapDrawer);
+    },
+    drawRobotTile4 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_4,mapDrawer);
+    },
+    drawRobotTile5 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_5,mapDrawer);
+    },
+    drawRobotTile6 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_6,mapDrawer);
+    },
+    drawRobotTile7 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_7,mapDrawer);
+    },
+    drawRobotTile8 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_8,mapDrawer);
+    },
+    drawRobotTile9 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_9,mapDrawer);
+    },
+    drawRobotTile10 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_10,mapDrawer);
+    },
+    drawRobotTile11 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_11,mapDrawer);
+    },
+    drawRobotTile12 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_12,mapDrawer);
+    },
+    drawRobotTile13: function(x,y){
+        return this._drawAndTranslate(x,y,robottile_13,mapDrawer);
+    },
+    drawRobotTile14 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_14,mapDrawer);
+    },
+    drawRobotTile15 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_15,mapDrawer);
+    },
+    drawRobotTile16 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_16,mapDrawer);
+    },
+    drawRobotTile17 : function(x,y){
+        return this._drawAndTranslate(x,y,robottile_17,mapDrawer);
+    },
+    drawRobotTileDirectionsSW : function(x,y, tile){
+        return this._drawAndTranslate(x,y,robottile_directions_SW,tile);
+    },
+    drawRobotTileDirectionsEW : function(x,y, tile){
+        return this._drawAndTranslate(x,y,robottile_directions_EW,tile);
+    },
+    drawRobotTileDirectionsES : function(x,y, tile){
+        return this._drawAndTranslate(x,y,robottile_directions_ES,tile);
+    },
+    drawRobotTileDirectionsNW : function(x,y, tile){
+        return this._drawAndTranslate(x,y,robottile_directions_NW,tile);
+    },
+    drawRobotTileDirectionsNS : function(x,y, tile){
+        return this._drawAndTranslate(x,y,robottile_directions_NS,tile);
+    },
+    drawRobotTileDirectionsNE : function(x,y, tile){
+        return this._drawAndTranslate(x,y,robottile_directions_NE,tile);
+    },
+
     drawLibrary : function(){
         // Plot a library for the mapbuilder
         // Car gas, drone helipad, robot tiles
         // Displayed in a grid of 2 by ..
         // Dimensions of each cell are 90px*90px
-        var library = [car_gas, drone_h, robottile_1,car_gas_A];
+        var library = [car_gas, drone_h, robottile_1,robottile_2,
+            robottile_3, robottile_4, robottile_5, robottile_6, 
+            robottile_7, robottile_8, robottile_9, robottile_10,
+            robottile_11, robottile_12,robottile_13, robottile_14,
+            robottile_15, robottile_16,robottile_17];
         //var library = [car_gas, drone_h, robottile_1];
         var objects = [];
         // todo: add robot tiles to this library

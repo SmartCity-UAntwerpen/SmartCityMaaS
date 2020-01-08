@@ -11,6 +11,9 @@ var _previewingLink = false;
 var _dragging = false;
 var _draggingTarget = null;
 var _gridActive = false;
+const _constants = {
+    gridCellSize : 100
+}
 
 /**
  * Add eventlisteners
@@ -39,7 +42,6 @@ window.addEventListener('load', (event) => {
     map.addEventListener('click', _mapOnClickHandler);
     map.addEventListener('mousemove', _mapOnMouseMoveHandler);
     map.addEventListener('mouseup', _mapOnMouseUpHandler);
-    crossreference();
 });
 
 
@@ -63,7 +65,7 @@ function _menuOnClickHandler(event){
     }
     else if(type.includes("robot_tile")){
         // change mouse pointer to drone_helipad icon
-        document.body.style.cursor = "url(robot_tile_1.png) 0 0,auto";
+        document.body.style.cursor = "url("+type+".png) 0 0,auto";
         selectedWaypointType = type;
         // Activate the grid
         visualisationCore.robotgridgroup.attr("visibility", "visible");
@@ -72,25 +74,6 @@ function _menuOnClickHandler(event){
     else{
         console.error("No valid type detected in _menuOnClickHandler")
     }
-    /*switch(type){
-        case "car_gas":
-            // change mouse pointer to car gas icon
-            document.body.style.cursor = "url(car_gas.png) 0 0,auto";
-            selectedWaypointType = "car_gas";
-            break;
-        case "drone_h":
-            // change mouse pointer to drone_helipad icon
-            document.body.style.cursor = "url(drone_h.png) 0 0,auto";
-            selectedWaypointType = "drone_h";
-            break;
-        case "robot_tile":
-            // change mouse pointer to drone_helipad icon
-            document.body.style.cursor = "url(car_gas_pointA.png) 0 0,auto";
-            selectedWaypointType = "car_gas_A";
-            break;
-        default:
-            console.error("No valid type detected in _menuOnClickHandler")
-    }*/
 
 }
 
@@ -233,40 +216,55 @@ function _gridpointMouseOut(event){
  * @param {} event 
  */
 function _mapOnMouseMoveHandler(event){
+    const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
     if(_dragging){
-        const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
+        // Call draghandler
         _dragElement(x,y);
     }
     else if(_gridActive){
-        const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
-        // Determine in which gridcell the mousepointer is,
-        // so the corners of this cell kan light up
-        const {i,j} = _getGridPosition(x,y);
-        // Reset colors of previously colored corners
-        visualisationCore.robotgridgroup.children().forEach((gridpoint)=>{
-            gridpoint.attr("fill", "SlateGrey");
-        })
-
-        // Loop over the corners of this cell
-        for(k = i; k<i+2; k++){
-            for(l = j; l<j+2; l++){
-                var cellcorner = SVG.find("#gp_"+k+"_"+l);
-                cellcorner.attr("fill", "Red");
-            }
-        }
-
-
+        _toggleGridCellHighlight(x,y);
     }
 }
 
 /**
- * Returns the position in the grid as <i,j>, i.e. row-i and column-j
- * @param {*} x 
- * @param {*} y 
+ * Highlights the corners of the cell in which the mousepointer is located
+ * @param {int} x . X coordinate of mousepointer (mapcoordinates)
+ * @param {int} y . Y coordinate of mousepointer (mapcoordinates)
+ */
+function _toggleGridCellHighlight(x,y){
+    // Determine in which gridcell the mousepointer is,
+    // so the corners of this cell kan light up
+    const {i,j} = _getGridPosition(x,y);
+    //  Reset colors of previously colored corners
+    _removeAllGridCellHighlights();   
+
+    // Loop over the corners of this cell
+    for(k = i; k<i+2; k++){
+        for(l = j; l<j+2; l++){
+            var cellcorner = SVG.find("#gp_"+k+"_"+l);
+            cellcorner.attr("fill", "Red");
+        }
+    }
+}
+
+/**
+ *  Reset colors of previously colored corners
+ * 
+ */
+function _removeAllGridCellHighlights(){
+    visualisationCore.robotgridgroup.children().forEach((gridpoint)=>{
+        gridpoint.attr("fill", "SlateGrey");
+    });
+}
+
+/**
+ * Returns the gridcell in which a coordinate (x,y) is located. Return as {i,j}, i.e. row-i and column-j
+ * @param {int} x . X coordinate in mapcoords
+ * @param {int} y . X coordinate in mapcoords
  */
 function _getGridPosition(x,y){
-    var cellI = Math.floor(y/100);
-    var cellJ = Math.floor(x/100);
+    var cellI = Math.floor(y/visualisationCore.gridCellSize);
+    var cellJ = Math.floor(x/visualisationCore.gridCellSize);
     return {i:cellI,j:cellJ};
 }
 
@@ -443,6 +441,7 @@ function _elementHoverInHandler(event){
     if(!_activeHoverElement){
         var target = event.currentTarget;
         var element = SVG.find("#"+target.id)[0];
+        if(element.node.getAttributeNS(_smartcityNamespace, "type").includes("tile")) return;
         _scaleElementUp(element);
         _activeHoverElement = element;
         // Get the type of the element: link or waypoint
@@ -505,7 +504,6 @@ function createNewWaypoint(x, y){
         newWaypoint = visualisationCore.drawCarGas(x, y);
         newWaypoint.attr('id', "car_wp_"+_counterCarWaypoint++);
         newWaypoint.attr('type', "car_wp", _smartcityNamespace);
-        document.body.style.cursor = "default";
     }
     else if(selectedWaypointType.includes("drone_h")){
         // Call viscore to create new item
@@ -513,21 +511,82 @@ function createNewWaypoint(x, y){
         newWaypoint.attr('id', "drone_wp_"+_counterDroneWaypoint++);
         // We want type as an attribute in our own XML namespace
         newWaypoint.attr('type', "drone_wp", _smartcityNamespace);
-        document.body.style.cursor = "default";
     }
     else if(selectedWaypointType.includes("robot_tile")){
         // Determine in which cellgrid this tile is dropped
-
-        
+        const {i,j} = _getGridPosition(x,y);
+        // Calculate X and Y coordinate of left-top of gridcell
+        // At this coordinate, the tile will be placed
+        const xTile = j*visualisationCore.gridCellSize;
+        const yTile = i*visualisationCore.gridCellSize;
+        _removeAllGridCellHighlights();
         switch(selectedWaypointType){
             case "robot_tile_1":        
-                newWaypoint = visualisationCore.drawRobotTile1(x,y);
+                newWaypoint = visualisationCore.drawRobotTile1(xTile,yTile);
+                break;
+            case "robot_tile_2":        
+                newWaypoint = visualisationCore.drawRobotTile2(xTile,yTile);
+                break;
+            case "robot_tile_3":        
+                newWaypoint = visualisationCore.drawRobotTile3(xTile,yTile);
+                break;
+            case "robot_tile_4":        
+                newWaypoint = visualisationCore.drawRobotTile4(xTile,yTile);
+                break;
+            case "robot_tile_5":        
+                newWaypoint = visualisationCore.drawRobotTile5(xTile,yTile);
+                break;
+            case "robot_tile_6":        
+                newWaypoint = visualisationCore.drawRobotTile6(xTile,yTile);
+                break;
+            case "robot_tile_7":        
+                newWaypoint = visualisationCore.drawRobotTile7(xTile,yTile);
+                break;
+            case "robot_tile_8":        
+                newWaypoint = visualisationCore.drawRobotTile8(xTile,yTile);
+                break;
+            case "robot_tile_9":        
+                newWaypoint = visualisationCore.drawRobotTile9(xTile,yTile);
+                break;
+            case "robot_tile_10":        
+                newWaypoint = visualisationCore.drawRobotTile10(xTile,yTile);
+                break;
+            case "robot_tile_11":        
+                newWaypoint = visualisationCore.drawRobotTile11(xTile,yTile);
+                break;
+            case "robot_tile_12":        
+                newWaypoint = visualisationCore.drawRobotTile12(xTile,yTile);
+                break;
+            case "robot_tile_13":        
+                newWaypoint = visualisationCore.drawRobotTile13(xTile,yTile);
+                break;
+            case "robot_tile_14":        
+                newWaypoint = visualisationCore.drawRobotTile14(xTile,yTile);
+                break;
+            case "robot_tile_15":        
+                newWaypoint = visualisationCore.drawRobotTile15(xTile,yTile);
+                break;
+            case "robot_tile_16":        
+                newWaypoint = visualisationCore.drawRobotTile16(xTile,yTile);
+                break;
+            case "robot_tile_17":        
+                newWaypoint = visualisationCore.drawRobotTile17(xTile,yTile);
                 break;
             default:
                 console.error("Unknown robot tile type");
                 return;
-                
         }
+        newWaypoint.attr("id", "robot_wp_" + _counterRobotWaypoint++);
+        newWaypoint.attr("type", selectedWaypointType, _smartcityNamespace);
+        newWaypoint.attr("type", selectedWaypointType);
+        // Size of figures is to small, this is a workaround
+        // Should fix in final version
+        // TODO
+        newWaypoint.scale(1.99,0,0);
+
+        // Attach direction arrows to tile
+        _addTileDirectionArrows(newWaypoint);
+    
     }
     
     newWaypoint.on('mouseover', _elementHoverInHandler);
@@ -538,4 +597,57 @@ function createNewWaypoint(x, y){
     document.body.style.cursor = "default";
     _gridActive = false;
     visualisationCore.robotgridgroup.attr("visibility", "visible");
+}
+
+/**
+ * Adds direction arrows to the tile element (if applicable)
+ * @param {*} tileElement . SVG.js element
+ */
+function _addTileDirectionArrows(tileElement){
+    // Get left-top coordinates
+    var x = tileElement.transform().translateX;
+    var y = tileElement.transform().translateY;
+    var cellsize = visualisationCore.gridCellSize;
+    switch(tileElement.node.getAttributeNS(_smartcityNamespace, "type")){
+        case "robot_tile_2":
+            // Attach NW arrows to left top
+            var nw_arrows = visualisationCore.drawRobotTileDirectionsNW(0,0,tileElement);
+            nw_arrows.scale(0.5,0,0);
+            // Attach SW arrows to left bottom
+            var sw_arrows = visualisationCore.drawRobotTileDirectionsSW(0, cellsize/4+10, tileElement);
+            sw_arrows.scale(0.5,0,0);
+
+            // Attach NS arrows to the right
+            // var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4+10, cellsize/4-cellsize/7, tileElement);
+            var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileElement);
+            ns_arrows.scale(0.5,0.9,0,0);
+
+            break;
+        case "robot_tile_1":
+            // Attach NW arrows to left top
+            var nw_arrows = visualisationCore.drawRobotTileDirectionsNW(0,0,tileElement);
+            nw_arrows.scale(0.5,0,0);
+            // Attach SW arrows to left bottom
+            var sw_arrows = visualisationCore.drawRobotTileDirectionsSW(0, cellsize/4+10, tileElement);
+            sw_arrows.scale(0.5,0,0);
+            // Attach NE arrows to right top
+            var nw_arrows = visualisationCore.drawRobotTileDirectionsNE(cellsize/4+10, 0, tileElement);
+            nw_arrows.scale(0.5,0,0);
+            // Attach ES arrows to right bottom
+            var es_arrows = visualisationCore.drawRobotTileDirectionsES(cellsize/4+10, cellsize/4+10, tileElement);
+            es_arrows.scale(0.5,0,0);
+
+            // Attach NS, vertical right
+            var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileElement);
+            ns_arrows.scale(0.5,0.9,0,0);
+            // Attach EW, horizontal bottom 
+            var ew_arrows = visualisationCore.drawRobotTileDirectionsEW(0, cellsize/4-4, tileElement);
+            ew_arrows.scale(0.9,0.5,0,0);
+
+            break;
+        default:
+            // Only crossings and trafficlights can have direction arrows
+            break;
+
+    }
 }
