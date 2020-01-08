@@ -1,13 +1,14 @@
 var mapDrawer;
 var _linksgroup;
+
 window.addEventListener('load', (event) => {
     console.log('## SmartCity SVG Visualisation Core ##');
-    var canvasWidth = 1000;
-    var canvasHeight = 1000;
-    mapDrawer = SVG().addTo('#map').size(canvasWidth, canvasHeight).id("mapcontainer");
+    mapDrawer = SVG().addTo('#map').size(visualisationCore.canvasWidth, visualisationCore.canvasHeight).id("mapcontainer");
     libraryDrawer = SVG().addTo('#library').size(180,1000).id("librarycontainer");
     _linksgroup = mapDrawer.group();
     _linksgroup.attr("id", "links");
+    visualisationCore.robotgridgroup = mapDrawer.group();
+    visualisationCore.robotgridgroup.attr("id", "robotgrid");
 
 
     // Insert your testcode below
@@ -18,6 +19,9 @@ window.addEventListener('load', (event) => {
 
   });
 var visualisationCore = {
+    canvasWidth : 1000,
+    canvasHeight : 1000,
+    robotgridgroup: null,
     helloWorld: "Hi there",
     sayHelloWorld : function(a){
         console.log(a);
@@ -94,12 +98,27 @@ var visualisationCore = {
         var link = _linksgroup.line(xStart, yStart, xEnd, yEnd).stroke({ color: "grey",width: 4});
         return link;
     },
+    drawRobotGrid : function(){
+        var cellWidth = 100;
+        var cellHeight = 100;
+        var columns = Math.floor(this.canvasWidth/cellWidth);
+        var rows = Math.floor(this.canvasHeight/cellHeight);
+        for(var i = 0; i<rows;i++){
+            for(var j = 0; j<columns; j++){
+                var x = i*cellWidth;
+                var y = j*cellHeight;
+                var gridcell = this._drawAndTranslate(x,y, gridpoint, this.robotgridgroup);
+                gridcell.attr("id", "gp_"+j+"_"+i);
+            }
+        }
+    },
     drawLibrary : function(){
         // Plot a library for the mapbuilder
         // Car gas, drone helipad, robot tiles
         // Displayed in a grid of 2 by ..
         // Dimensions of each cell are 90px*90px
-        var library = [car_gas, drone_h];
+        var library = [car_gas, drone_h, robottile_1,car_gas_A];
+        //var library = [car_gas, drone_h, robottile_1];
         var objects = [];
         // todo: add robot tiles to this library
         var hMax = 1000;

@@ -10,6 +10,7 @@ var _activeWaypointElement = null;
 var _previewingLink = false;
 var _dragging = false;
 var _draggingTarget = null;
+var _gridActive = false;
 
 /**
  * Add eventlisteners
@@ -24,12 +25,24 @@ window.addEventListener('load', (event) => {
         item.click(_menuOnClickHandler);
     }
 
+    // Draw grid for robot tiles
+    visualisationCore.drawRobotGrid();
+    visualisationCore.robotgridgroup.attr("visibility", "hidden");
+    visualisationCore.robotgridgroup.children().forEach((gridpoint)=>{
+        gridpoint.on('mouseover', _gridpointMouseOver);
+        gridpoint.on('mouseout', _gridpointMouseOut);
+    })
+
+
     // Attach onclick handlers to the map-canvas
     map = document.getElementById("mapcontainer");
     map.addEventListener('click', _mapOnClickHandler);
     map.addEventListener('mousemove', _mapOnMouseMoveHandler);
     map.addEventListener('mouseup', _mapOnMouseUpHandler);
+    crossreference();
 });
+
+
 
 /**
  * Handles the click on library items
@@ -38,7 +51,28 @@ window.addEventListener('load', (event) => {
 function _menuOnClickHandler(event){
     var type = event.currentTarget.getAttribute('type');
     console.log("menu click happened" + type);
-    switch(type){
+    if(type.includes("car_gas")){
+        // change mouse pointer to car gas icon
+        document.body.style.cursor = "url(car_gas.png) 0 0,auto";
+        selectedWaypointType = "car_gas";
+    }
+    else if(type.includes("drone_h")){
+        // change mouse pointer to drone_helipad icon
+        document.body.style.cursor = "url(drone_h.png) 0 0,auto";
+        selectedWaypointType = "drone_h";
+    }
+    else if(type.includes("robot_tile")){
+        // change mouse pointer to drone_helipad icon
+        document.body.style.cursor = "url(robot_tile_1.png) 0 0,auto";
+        selectedWaypointType = type;
+        // Activate the grid
+        visualisationCore.robotgridgroup.attr("visibility", "visible");
+        _gridActive = true;
+    }
+    else{
+        console.error("No valid type detected in _menuOnClickHandler")
+    }
+    /*switch(type){
         case "car_gas":
             // change mouse pointer to car gas icon
             document.body.style.cursor = "url(car_gas.png) 0 0,auto";
@@ -49,9 +83,14 @@ function _menuOnClickHandler(event){
             document.body.style.cursor = "url(drone_h.png) 0 0,auto";
             selectedWaypointType = "drone_h";
             break;
+        case "robot_tile":
+            // change mouse pointer to drone_helipad icon
+            document.body.style.cursor = "url(car_gas_pointA.png) 0 0,auto";
+            selectedWaypointType = "car_gas_A";
+            break;
         default:
             console.error("No valid type detected in _menuOnClickHandler")
-    }
+    }*/
 
 }
 
@@ -172,6 +211,24 @@ function _dragElement(destX, destY){
 }
 
 /**
+ * Highlight gridpoint red when hovering
+ * @param {} event 
+ */
+function _gridpointMouseOver(event){
+    var object = SVG.find("#"+event.target.id)[0];
+    object.attr("fill", "Red");
+}
+
+/**
+ * Reset color of gridpoint when mouseover ends
+ * @param {*} event 
+ */
+function _gridpointMouseOut(event){
+    var object = SVG.find("#"+event.target.id)[0];
+    object.attr("fill", "SlateGrey");
+}
+
+/**
  * Handles mousemove event on the map
  * @param {} event 
  */
@@ -180,6 +237,37 @@ function _mapOnMouseMoveHandler(event){
         const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
         _dragElement(x,y);
     }
+    else if(_gridActive){
+        const {x,y} = _transformScreenCoordsToMapCoords(event.clientX, event.clientY);
+        // Determine in which gridcell the mousepointer is,
+        // so the corners of this cell kan light up
+        const {i,j} = _getGridPosition(x,y);
+        // Reset colors of previously colored corners
+        visualisationCore.robotgridgroup.children().forEach((gridpoint)=>{
+            gridpoint.attr("fill", "SlateGrey");
+        })
+
+        // Loop over the corners of this cell
+        for(k = i; k<i+2; k++){
+            for(l = j; l<j+2; l++){
+                var cellcorner = SVG.find("#gp_"+k+"_"+l);
+                cellcorner.attr("fill", "Red");
+            }
+        }
+
+
+    }
+}
+
+/**
+ * Returns the position in the grid as <i,j>, i.e. row-i and column-j
+ * @param {*} x 
+ * @param {*} y 
+ */
+function _getGridPosition(x,y){
+    var cellI = Math.floor(y/100);
+    var cellJ = Math.floor(x/100);
+    return {i:cellI,j:cellJ};
 }
 
 /**
@@ -398,32 +486,56 @@ function _scaleElementDown(element){
 
 /**
  * Creates a new waypoint on the map. The type of the waypoint is stored in selectedwaypointtype
- * @param {*} x 
- * @param {*} y 
+ * @param {int} x xcoord in map coordinates
+ * @param {int} y ycoord in map coordinates
  */
 function createNewWaypoint(x, y){
     // Place a new waypoint on the map
-    switch (selectedWaypointType){
-        case "car_gas":
-            // Call viscore to create new item
-            var newWaypoint = visualisationCore.drawCarGas(x, y);
-            newWaypoint.attr('id', "car_wp_"+_counterCarWaypoint++);
-            newWaypoint.attr('type', "car_wp", _smartcityNamespace);
-            document.body.style.cursor = "default";
-            break;
-        case "drone_h":
-            // Call viscore to create new item
-            var newWaypoint = visualisationCore.drawDroneHelipad(x, y);
-            newWaypoint.attr('id', "drone_wp_"+_counterDroneWaypoint++);
-            // We want type as an attribute in our own XML namespace
-            newWaypoint.attr('type', "drone_wp", _smartcityNamespace);
-            document.body.style.cursor = "default";
-            break;
-        default:
-            console.error("Unknown selected waypoint type");
+    // switch (selectedWaypointType){
+    //     case "car_gas":
+            
+    //     case "drone_h":
+            
+    //     default:
+    //         console.error("Unknown selected waypoint type");
+    // }
+    var newWaypoint = null;
+    if(selectedWaypointType.includes("car_gas")){
+        // Call viscore to create new item
+        newWaypoint = visualisationCore.drawCarGas(x, y);
+        newWaypoint.attr('id', "car_wp_"+_counterCarWaypoint++);
+        newWaypoint.attr('type', "car_wp", _smartcityNamespace);
+        document.body.style.cursor = "default";
     }
+    else if(selectedWaypointType.includes("drone_h")){
+        // Call viscore to create new item
+        newWaypoint = visualisationCore.drawDroneHelipad(x, y);
+        newWaypoint.attr('id', "drone_wp_"+_counterDroneWaypoint++);
+        // We want type as an attribute in our own XML namespace
+        newWaypoint.attr('type', "drone_wp", _smartcityNamespace);
+        document.body.style.cursor = "default";
+    }
+    else if(selectedWaypointType.includes("robot_tile")){
+        // Determine in which cellgrid this tile is dropped
+
+        
+        switch(selectedWaypointType){
+            case "robot_tile_1":        
+                newWaypoint = visualisationCore.drawRobotTile1(x,y);
+                break;
+            default:
+                console.error("Unknown robot tile type");
+                return;
+                
+        }
+    }
+    
     newWaypoint.on('mouseover', _elementHoverInHandler);
     newWaypoint.on('mouseout', _elementHoverOutHandler);
     newWaypoint.on('mousedown', _elementMouseDownHandler);
     newWaypoint.on('mouseup', _elementMouseUpHandler);
+
+    document.body.style.cursor = "default";
+    _gridActive = false;
+    visualisationCore.robotgridgroup.attr("visibility", "visible");
 }
