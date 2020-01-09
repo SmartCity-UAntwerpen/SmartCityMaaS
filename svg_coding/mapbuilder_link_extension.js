@@ -3,18 +3,28 @@
  */
 export default class Link {
     /**
-     * Constructor
-     * @param {*} from 
-     * @param {*} to 
+     * 
+     * @param {*} startNode . Id of the startnode
+     * @param {*} startHeading . Heading in which the link starts
+     * @param {*} destinationNode . Id of the destination node
+     * @param {*} destinationHeading . Heading in which the link ends
      */
-    constructor(from, to){
-        this._from = from;
-        this._to = to;
+    constructor(startNode, startHeading, destinationNode, destinationHeading){
+        this._startNode = startNode;
+        this._startHeading = startHeading;
+        this._destinationNode = destinationNode;
+        this._destinationHeading = destinationHeading;
     }
-    get from(){
-        return this._from;
+    get startNode(){
+        return this._startNode;
     }
-    get to(){
-        return this._to;
+    get startHeading(){
+        return this._startHeading;
+    }
+    get destinationHeading(){
+        return this._destinationHeading;
+    }
+    get destinationNode(){
+        return this._destinationNode;
     }
 }

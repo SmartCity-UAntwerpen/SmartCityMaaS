@@ -640,7 +640,7 @@ function _directionArrowOnClickHandler(arrow){
     var tile = _tiles[parentNode.attr("id")];
     // Get status of this direction from the tile
     var status = tile.toggleDirection(node.attr("type"));
-    if(status === "enabled"){
+    if(status === "valid"){
         // Set color to green
         node.attr("stroke", "YellowGreen");
     }
@@ -649,11 +649,18 @@ function _directionArrowOnClickHandler(arrow){
         node.attr("stroke", "CornflowerBlue");
 
     }
-    else if(status === "error"){
+    else if(status === "invalid"){
         // Set color to red
         node.attr("stroke", "IndianRed");
 
     }
+}
 
-
+/**
+ * Returns tile
+ * @param {int} id . ID of the tile
+ * @return {Tile} tile with corresponding id
+ */
+export function getTile(id){
+    return _tiles[id];
 }

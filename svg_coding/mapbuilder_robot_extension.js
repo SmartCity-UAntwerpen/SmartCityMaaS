@@ -15,10 +15,10 @@ export default class Tile {
         this._i = element.attr("id").split("_")[2];
         this._j = element.attr("id").split("_")[3];;
         this._id = element.attr("id");
-        this._neighbours =  this._determineNeighbours();
+        this._neighbors =  this._determineNeighbors();
         this._localLinks = [];
-        this._externalLinks = [];
-        this._points = this._initializePoints();
+        this._outboundLinks = [];
+        this._headings = this._initializeHeadings();
         //this._arrows = this._generateArrows();
         this._generateArrows();
     }
@@ -31,40 +31,40 @@ export default class Tile {
      * Assume no neighbors by default
      * Returns dictionary with id's and/or nulls
      */
-    _determineNeighbours(){
-        var neighbourmap = [];
+    _determineNeighbors(){
+        var neighbors = [];
         // Assume no neighbors by default
-        neighbourmap["n"] = null;
-        neighbourmap["s"] = null;
-        neighbourmap["e"] = null;
-        neighbourmap["w"] = null;
+        neighbors["n"] = null;
+        neighbors["s"] = null;
+        neighbors["e"] = null;
+        neighbors["w"] = null;
 
         // Check if default case holds
 
         // North neighbor
-        var id = "#robot_wp_" + this._i-1 + "_" + this._j;
+        var id = "#robot_wp_" + String(this._i-1) + "_" + String(this._j);
         if(SVG.find(id)[0]){
-            neighbourmap["n"] = SVG.find(id)[0].attr("id");
+            neighbors["n"] = SVG.find(id)[0].attr("id");
         }
         
         // East neighbor
-        id = "#robot_wp_" + this._i + "_" + this._j+1;
+        id = "#robot_wp_" + String(this._i) + "_" + String(this._j+1);
         if(SVG.find(id)[0]){
-            neighbourmap["e"] = SVG.find(id)[0].attr("id");
+            neighbors["e"] = SVG.find(id)[0].attr("id");
         }
 
         // South neighbor
-        id = "#robot_wp_" + this._i+1 + "_" + this._j;
+        id = "#robot_wp_" + String(this._i+1) + "_" + String(this._j);
         if(SVG.find(id)[0]){
-            neighbourmap["s"] = SVG.find(id)[0].attr("id");
+            neighbors["s"] = SVG.find(id)[0].attr("id");
         }
 
         // West neighbor
-        id = "#robot_wp_" + this._i + "_" + this._j-1;
+        id = "#robot_wp_" + String(this._i) + "_" + String(this._j-1);
         if(SVG.find(id)[0]){
-            neighbourmap["w"] = SVG.find(id)[0].attr("id");
+            neighbors["w"] = SVG.find(id)[0].attr("id");
         }
-        return neighbourmap;
+        return neighbors;
     }
     /**
      * Initialize the points for this tile
@@ -73,41 +73,39 @@ export default class Tile {
      * Depending on the direction configuration, a point is enabled or disabled
      * By default, points are disabled
      */
-    _initializePoints(){
-        var points = [];
+    _initializeHeadings(){
+        var headings = [];
         // West
         if([1,2,3,5,6,10,12,15,16].includes(this._type)){
-            points["w_in"] = false;
-            points["w_out"] = false;
+            headings["w_in"] = false;
+            headings["w_out"] = false;
         }
         // North
         if([1,2,3,4,7,11,13,16,17].includes(this._type)){
-            points["n_in"] = false;
-            points["n_out"] = false;
+            headings["n_in"] = false;
+            headings["n_out"] = false;
         }
         // East
         if([1,3,4,5,6,8,12,14,17].includes(this._type)){
-            points["e_in"] = false;
-            points["e_out"] = false;
+            headings["e_in"] = false;
+            headings["e_out"] = false;
         }
         // South
         if([1,2,4,5,7,9,13,14,15].includes(this._type)){
-            points["s_in"] = false;
-            points["s_out"] = false;
+            headings["s_in"] = false;
+            headings["s_out"] = false;
         }
-        return points;
+        return headings;
     }
     /**
-     * Update a neighbor id. 
+     * Update neighbor id for a certain heading
      * @param {int} neighborId 
-     * @param {string: n,e,s,w} direction 
+     * @param {string: n,e,s,w} heading 
      */
-    setNeighbor(neighborId, direction){
-        this._neighbours[direction] = neighborId;
+    setNeighbor(neighborId, heading){
+        this._neighbors[heading] = neighborId;
     }
-    getPoint(direction){
-        return this._points[direction];
-    }
+
     /**
      * Draw the direction arrows
      * Regarding the DOM, arrows are appended as children of the groupnode of this tile
@@ -174,34 +172,254 @@ export default class Tile {
         return this._id;
     }
     /**
-     * 
+     * Enables or disables a direction on this tile.
+     * This direction will internally be represented as a link with
+     * the begin and end on this tile
+     * If a direction exists, it is removed
+     * If a direction does not exist, it will be created. The direction is 
+     * marked as valid when starting from the endpoint, a link can be made to another tile.
+     * If no link can be made (i.e. non-accepting point at neighbor or no neighbor at endpoint),
+     * the link is marked as invalid.
      * @param {string} direction
      */
     toggleDirection(direction){
+        // Return value
+        var directionStatus = "";
+
         // Direction is interpreted as a link on this tile
         // Check if it exists
-        var from = direction.split("_")[1];
-        var to = direction.split("_")[2];
+        var from = direction.split("_")[1].toLowerCase();
+        var to = direction.split("_")[2].toLowerCase();
         var link = this._localLinks.find((v)=>{
             return v.from===from && v.to===to;
         });
         // If link exists, remove it
         if(link){
             var index = this._localLinks.indexOf(link);
+            // If status of in and out points has to change, we need action:
+
+
+            // in-status changes: inbound link will break. Notify neighbor to take action
+            // (because he owns this link). he needs to remove the link and change
+            // its internal directions accordingly (will become invalid)
+
+            // out-status chagnes: outbound link will break. Remove this link
+            // TODO: notify
             this._localLinks.splice(index, 1);
-            return "disabled";
+            directionStatus = "disabled";
         }
         // Link does not exist, add it
         else {
             link = new Link(from, to);
             this._localLinks.push(link);
-            // Check if link is valid
-            // ask neighbor in the direction of this link if he accepts
-            // if accepts: return enabled
-            // else: return disabled
-            return "error";
+            // Check if external links can arise
+            if(this._isOutboundPossible(to)){
+                // Create external link
+                var linkProperties = this._getOutboundDestination(to);
+                // TODO: add distances
+                var outboundLink = new Link(this._id, from, linkProperties.destinationId, linkProperties.destinationHeading);
+                this._outboundLinks.push(outboundLink);
+                directionStatus = "valid";
+                this._headings[to+"_out"] = true;
+            }
+            else{
+                // No outbound links can arise, this link is invalid
+                directionStatus = "invalid";
+            }
+            // Check if inbound links arise
+            if(this._isInboundPossible(from)){
+                // Creation of inbound link by its source
+                var sourceId = this._getInboundSource(from);
+                var sourceHeading = this._getOppositeHeading(from);
+                var sourceTile = builder.getTile(sourceId);
+                sourceTile.createLink(sourceId, sourceHeading, this.id, from);
+            }
+            // from-heading is now accepting
+            this._headings[from+"_in"] = true;
 
+            return directionStatus;
+        }
+    }
+    /**
+     * Analyse if an outbound link can be established through a certain direction
+     * @param {*} heading . Outbound heading
+     */
+    _isOutboundPossible(heading){
+        return (this._getOutboundDestination(heading) !== null);
+    }
+
+    /**
+     * Analyse if an inbound link can be established through a certain direction
+     * @param {*} heading . Inbound heading
+     */
+    _isInboundPossible(heading){
+        return (this._getInboundSource(heading) !== null);
+    }
+
+    /**
+     * Returns the ID of source if an inbound link can be established for inbound heading
+     * @param {string} heading . inbound heading  
+     */
+    _getInboundSource(heading){
+        // Get opposite heading, this will be the outbound heading of the neighbor
+        var oppositeHeading = this._getOppositeHeading(heading);
+        // Get neighbor for heading
+        var neighborId = this._neighbors[heading];
+        if(!neighborId){
+            return null;
+        }
+        var neighbor = builder.getTile(neighborId);
+        if(neighbor.sends(oppositeHeading)){
+            return neighbor.id;
+        }
+        else{
+            return null;
+        }
+    }
+
+    /**
+     * Returns the ID of destination if an outbound link can be established for outbound heading.
+     * If no outboundlink is possible, return is null.
+     * @param {string} heading . outbound heading 
+     * @returns {int} id of outbound destination
+     */
+    _getOutboundDestination(heading){
+        // Get opposite heading, this will be the inbound heading of the neighbor
+        var oppositeHeading = this._getOppositeHeading(heading);
+        // Get neighbor for heading
+        var neighborId = this._neighbors[heading];
+        if(!neighborId){
+            return null;
         }
 
+        var neighbor = builder.getTile(neighborId);
+        const answer = neighbor.accepts(oppositeHeading, 10);
+        if(answer.accepts){
+            return answer;
+        }
+        else{
+            return null;
+        }
     }
+
+    /**
+     * Checks if this node accepts inbound links on a certain heading. If this tile 
+     * has no headings (i.e. straight line tiles and corner tiles), recursion is applied on neighbor
+     * @param {string} heading 
+     * @param {int} distance. Optional parameter for length calculation when recursing. Zero by default. Units: centimeters
+     * @return {boolean, string, int} accepts, destinationHeading, distance
+     */
+    accepts(heading, distance=0){
+        // Is this a straight line tile or corner tile?
+        if([12,13,14,15,16,17].includes(this._type)){
+            var oppositeHeading = this._getOppositeHeading(heading);
+            // It is. Propagate to neighbor
+            // Straight line
+            if(this._type === 12 || this._type ===13){
+                    var neighborId = this._neighbors[oppositeHeading];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts(heading,distance+30);
+            }
+            // Corners
+            else if (this._type === 14){
+                if(heading === "e"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["s"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("n", distance+25);
+                }
+                else if(heading === "s"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["e"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("w", distance+25);
+                }
+            }
+            else if (this._type === 15){
+                if(heading === "w"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["s"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("n", distance+25);
+                }
+                else if(heading === "s"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["w"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("e", distance+25);
+                }
+            }
+            else if (this._type === 16){
+                if(heading === "w"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["n"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("s", distance+25);
+                }
+                else if(heading === "n"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["w"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("e", distance+25);
+                }
+            }
+            else if (this._type === 17){
+                if(heading === "e"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["n"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("s", distance+25);
+                }
+                else if(heading === "n"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["e"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.accepts("w", distance+25);
+                }
+            }
+        }
+        else{
+            // Tile has headings
+            if(this._headings[heading+"_in"]){
+                return {accepts:true, destinationHeading: heading, destinationId: this.id,distance:distance+10};
+            }
+            else{
+                return {accepts:false};
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {Number} sourceId 
+     * @param {string} sourceHeading 
+     * @param {number} destinationId 
+     * @param {String} destinationHeading 
+     */
+    createLink(sourceId, sourceHeading, destinationId, destinationHeading){
+        var link = new Link(sourceId, sourceHeading, destinationId, destinationHeading);
+        this._outboundLinks.push(link);
+    }
+
+    /**
+     * Returns the opposite of a direction. E.g. N <-> S, E<->W
+     * @param {string} direction 
+     */
+    _getOppositeHeading(direction){
+        switch(direction){
+            case "n":
+                return "s";
+            case "s":
+                return "n";
+            case "w":
+                return "e";
+            case "e":
+                return "w";
+        }
+    }
+
+    get id(){
+        return this._id;
+    }
+
 }
