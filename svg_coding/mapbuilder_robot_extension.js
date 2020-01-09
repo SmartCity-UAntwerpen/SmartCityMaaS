@@ -2,6 +2,7 @@
  * Encapsulates methods and properties of a Robot Tile.
  */
 import * as builder from './mapbuilder.js';
+import Link from './mapbuilder_link_extension.js';
 export default class Tile {
     /**
      * Constructor that takes a SVG.js object as parameter
@@ -15,7 +16,8 @@ export default class Tile {
         this._j = element.attr("id").split("_")[3];;
         this._id = element.attr("id");
         this._neighbours =  this._determineNeighbours();
-        this._links = [];
+        this._localLinks = [];
+        this._externalLinks = [];
         this._points = this._initializePoints();
         //this._arrows = this._generateArrows();
         this._generateArrows();
@@ -119,12 +121,16 @@ export default class Tile {
             // Attach NW arrows to left top
             var nw_arrows = visualisationCore.drawRobotTileDirectionsNW(0,0,tileSVGNode);
             nw_arrows.scale(0.5,0,0);
+            nw_arrows.on('mouseover', builder.directionArrowHoverIn);
+            nw_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
         // NE arrows
         if([1,3,4].includes(this._type)){
             // Attach NE arrows to right top
             var ne_arrows = visualisationCore.drawRobotTileDirectionsNE(cellsize/4+10, 0, tileSVGNode);
             ne_arrows.scale(0.5,0,0);
+            ne_arrows.on('mouseover', builder.directionArrowHoverIn);
+            ne_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
 
         // ES arrows
@@ -132,6 +138,8 @@ export default class Tile {
             // Attach ES arrows to right bottom
             var es_arrows = visualisationCore.drawRobotTileDirectionsES(cellsize/4+10, cellsize/4+10, tileSVGNode);
             es_arrows.scale(0.5,0,0);
+            es_arrows.on('mouseover', builder.directionArrowHoverIn);
+            es_arrows.on('mouseout', builder.directionArrowHoverOut);
             
         }
 
@@ -140,6 +148,8 @@ export default class Tile {
             // Attach SW arrows to left bottom
             var sw_arrows = visualisationCore.drawRobotTileDirectionsSW(0, cellsize/4+10, tileSVGNode);
             sw_arrows.scale(0.5,0,0);
+            sw_arrows.on('mouseover', builder.directionArrowHoverIn);
+            sw_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
 
         // NS arrows
@@ -147,6 +157,8 @@ export default class Tile {
             // Attach NS, vertical right
             var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileSVGNode);
             ns_arrows.scale(0.5,0.9,0,0);
+            ns_arrows.on('mouseover', builder.directionArrowHoverIn);
+            ns_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
 
         // EW arrows
@@ -154,6 +166,42 @@ export default class Tile {
             // Attach EW, horizontal bottom
             var ew_arrows = visualisationCore.drawRobotTileDirectionsEW(0, cellsize/4-4, tileSVGNode);
             ew_arrows.scale(0.9,0.5,0,0);
+            ew_arrows.on('mouseover', builder.directionArrowHoverIn);
+            ew_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
+    }
+    get id(){
+        return this._id;
+    }
+    /**
+     * 
+     * @param {string} direction
+     */
+    toggleDirection(direction){
+        // Direction is interpreted as a link on this tile
+        // Check if it exists
+        var from = direction.split("_")[1];
+        var to = direction.split("_")[2];
+        var link = this._localLinks.find((v)=>{
+            return v.from===from && v.to===to;
+        });
+        // If link exists, remove it
+        if(link){
+            var index = this._localLinks.indexOf(link);
+            this._localLinks.splice(index, 1);
+            return "disabled";
+        }
+        // Link does not exist, add it
+        else {
+            link = new Link(from, to);
+            this._localLinks.push(link);
+            // Check if link is valid
+            // ask neighbor in the direction of this link if he accepts
+            // if accepts: return enabled
+            // else: return disabled
+            return "error";
+
+        }
+
     }
 }

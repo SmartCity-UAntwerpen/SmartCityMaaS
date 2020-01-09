@@ -13,6 +13,7 @@ var _previewingLink = false;
 var _dragging = false;
 var _draggingTarget = null;
 var _gridActive = false;
+var _tiles = [];
 const _constants = {
     gridCellSize : 100
 }
@@ -92,8 +93,6 @@ function _transformScreenCoordsToMapCoords(screenX, screenY){
  * @param {} event 
  */
 function _mapOnClickHandler(event){
-    console.log("map click happened");
-    var target = event.currentTarget;
     // Examine the target:
     // 1) empty spot: target is the svg root element. User wants to create a new waypoint when a selection in library has been made 
     if(event.currentTarget.id === "mapcontainer" && selectedWaypointType !== null){
@@ -493,6 +492,17 @@ function _scaleElementDown(element){
     element.scale(1/1.2);
 }
 
+export function directionArrowHoverIn(event){
+    console.log("hovering");
+    var node = SVG(event.target);
+    node.attr("stroke-opacity", 0.5);
+}
+
+export function directionArrowHoverOut(event){
+    var node = SVG(event.target);
+    node.attr("stroke-opacity", 1);
+}
+
 /**
  * Creates a new waypoint on the map. The type of the waypoint is stored in selectedwaypointtype
  * @param {int} x xcoord in map coordinates
@@ -591,6 +601,8 @@ function createNewWaypoint(x, y){
         newWaypoint.attr("type", selectedWaypointType, _smartcityNamespace);
         newWaypoint.attr("type", selectedWaypointType);
         var tile = new Tile(newWaypoint);
+        //_tiles.push(tile);
+        _tiles[tile.id] = tile;
         // Size of figures is to small, this is a workaround
         // Should fix in final version
         // TODO
@@ -612,64 +624,36 @@ function createNewWaypoint(x, y){
 }
 
 /**
- * Adds direction arrows to the tile element (if applicable)
- * @param {*} tileElement . SVG.js element
- */
-function _addTileDirectionArrows(tileElement){
-    // Get left-top coordinates
-    var x = tileElement.transform().translateX;
-    var y = tileElement.transform().translateY;
-    var cellsize = visualisationCore.gridCellSize;
-    switch(tileElement.node.getAttributeNS(_smartcityNamespace, "type")){
-        case "robot_tile_2":
-            // Attach NW arrows to left top
-            var nw_arrows = visualisationCore.drawRobotTileDirectionsNW(0,0,tileElement);
-            nw_arrows.scale(0.5,0,0);
-            // Attach SW arrows to left bottom
-            var sw_arrows = visualisationCore.drawRobotTileDirectionsSW(0, cellsize/4+10, tileElement);
-            sw_arrows.scale(0.5,0,0);
-
-            // Attach NS arrows to the right
-            // var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4+10, cellsize/4-cellsize/7, tileElement);
-            var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileElement);
-            ns_arrows.scale(0.5,0.9,0,0);
-
-            break;
-        case "robot_tile_1":
-            // Attach NW arrows to left top
-            var nw_arrows = visualisationCore.drawRobotTileDirectionsNW(0,0,tileElement);
-            nw_arrows.scale(0.5,0,0);
-            // Attach SW arrows to left bottom
-            var sw_arrows = visualisationCore.drawRobotTileDirectionsSW(0, cellsize/4+10, tileElement);
-            sw_arrows.scale(0.5,0,0);
-            // Attach NE arrows to right top
-            var nw_arrows = visualisationCore.drawRobotTileDirectionsNE(cellsize/4+10, 0, tileElement);
-            nw_arrows.scale(0.5,0,0);
-            // Attach ES arrows to right bottom
-            var es_arrows = visualisationCore.drawRobotTileDirectionsES(cellsize/4+10, cellsize/4+10, tileElement);
-            es_arrows.scale(0.5,0,0);
-
-            // Attach NS, vertical right
-            var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileElement);
-            ns_arrows.scale(0.5,0.9,0,0);
-            // Attach EW, horizontal bottom 
-            var ew_arrows = visualisationCore.drawRobotTileDirectionsEW(0, cellsize/4-4, tileElement);
-            ew_arrows.scale(0.9,0.5,0,0);
-
-            break;
-        default:
-            // Only crossings and trafficlights can have direction arrows
-            break;
-
-    }
-}
-
-/**
  * Handles the click op a direction arrow of a robot tile. 
  * The status of the link (enabled or disabled) is toggled.
  * @param {DOM node} arrow 
  */
 function _directionArrowOnClickHandler(arrow){
+    // Get SVG.js node for arrow
+    var node = SVG(arrow);
     // Find parent tile of this arrow
+    // The tile to which this arrow belongs, is located 2 
+    // levels up in the DOM tree
+    var parentNode = node.parent().parent();
+
+    // Get tile object
+    var tile = _tiles[parentNode.attr("id")];
+    // Get status of this direction from the tile
+    var status = tile.toggleDirection(node.attr("type"));
+    if(status === "enabled"){
+        // Set color to green
+        node.attr("stroke", "YellowGreen");
+    }
+    else if(status === "disabled"){
+        // Set color to blue
+        node.attr("stroke", "CornflowerBlue");
+
+    }
+    else if(status === "error"){
+        // Set color to red
+        node.attr("stroke", "IndianRed");
+
+    }
+
 
 }
