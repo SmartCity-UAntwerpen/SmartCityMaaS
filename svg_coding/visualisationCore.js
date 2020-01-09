@@ -4,6 +4,7 @@ var _linksgroup;
 window.addEventListener('load', (event) => {
     console.log('## SmartCity SVG Visualisation Core ##');
     mapDrawer = SVG().addTo('#map').size(visualisationCore.canvasWidth, visualisationCore.canvasHeight).id("mapcontainer");
+    mapDrawer.attr("xmlns:ss", "http://smartcity.ddns.net");
     libraryDrawer = SVG().addTo('#library').size(180,1000).id("librarycontainer");
     _linksgroup = mapDrawer.group();
     _linksgroup.attr("id", "links");

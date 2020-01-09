@@ -82,11 +82,11 @@ var robottile_17 = '<g type="robot_tile_17">    <path id="path4611" style="fill:
 /**
  * Robot tile direction arrows
  */
-var robottile_directions_SW = '<!-- left bottom corner--><g transform="matrix(1 0 0 1 50 50)" type="arrows_S_W"><path type="arrow_W_S" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none" d="M 0 0 h 25 v 25"></path><path type="arrow_S_W" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none" d="M 18 30 v -22 h -13"></path></g>';
+var robottile_directions_SW = '<g transform="matrix(1 0 0 1 50 50)" type="arrows_S_W"><path type="arrow_W_S" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none" d="M 0 0 h 25 v 25"></path><path type="arrow_S_W" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none" d="M 18 30 v -22 h -13"></path></g>';
 
-var robottile_directions_NW = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_N_W"><path type="arrow_W_N" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 0 30 h 25 v -25"></path><path type="arrow_N_W" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 18 0 v 22 h -13"></path></g>';
+var robottile_directions_NW = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_N_W"><path type="arrow_W_N" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 0 22 h 15 v -18"></path><path type="arrow_N_W" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 25 0 v 30 h -22"></path></g>';
 
-var robottile_directions_ES = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_E_S"><path type="arrow_E_S" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 30 0 h -25 v 25" ></path><path type="arrow_S_E" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 15 30 v -22 h 13"></path></g>';
+var robottile_directions_ES = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_E_S"><path type="arrow_E_S" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 30 7 h -17 v 20" ></path><path type="arrow_S_E" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 5 30 v -30 h 20"></path></g>';
 
 var robottile_directions_NE = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_N_E"><path type="arrow_E_N" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 30 30 h -25 v -25"></path><path type="arrow_N_E" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"   d="M 15 0 v 22 h 13"></path></g>';
 

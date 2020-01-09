@@ -1,3 +1,5 @@
+import Tile from './mapbuilder_robot_extension.js';
+
 var _smartcityNamespace = "ss";
 
 var map = null;
@@ -23,7 +25,7 @@ window.addEventListener('load', (event) => {
     // Draw library
     var libContents = visualisationCore.drawLibrary();
     // Attach onclick handlers to library objects
-    for(i = 0;i<libContents.length;++i){
+    for(var i = 0;i<libContents.length;++i){
         var item = libContents[i];
         item.click(_menuOnClickHandler);
     }
@@ -113,7 +115,15 @@ function _mapOnClickHandler(event){
         }
         
     }
-    // Is the target a link?
+    // Is the target a direction-arrow?
+    else if(event.target.getAttribute("type")){
+        var type = event.target.getAttribute("type");
+        if(type.includes("arrow_")){
+            console.log("Directional arrow clicked");
+            _directionArrowOnClickHandler(event.target);
+        }
+    }
+    // Is the target a drone or racecar link?
     else if(event.target.getAttributeNS(_smartcityNamespace, "type")){
         var type = event.target.getAttributeNS(_smartcityNamespace, "type");
         // 3) Link: show properties.
@@ -239,8 +249,8 @@ function _toggleGridCellHighlight(x,y){
     _removeAllGridCellHighlights();   
 
     // Loop over the corners of this cell
-    for(k = i; k<i+2; k++){
-        for(l = j; l<j+2; l++){
+    for(var k = i; k<i+2; k++){
+        for(var l = j; l<j+2; l++){
             var cellcorner = SVG.find("#gp_"+k+"_"+l);
             cellcorner.attr("fill", "Red");
         }
@@ -576,16 +586,18 @@ function createNewWaypoint(x, y){
                 console.error("Unknown robot tile type");
                 return;
         }
-        newWaypoint.attr("id", "robot_wp_" + _counterRobotWaypoint++);
+        //newWaypoint.attr("id", "robot_wp_" + _counterRobotWaypoint++);
+        newWaypoint.attr("id", "robot_wp_" + i + "_" + j);
         newWaypoint.attr("type", selectedWaypointType, _smartcityNamespace);
         newWaypoint.attr("type", selectedWaypointType);
+        var tile = new Tile(newWaypoint);
         // Size of figures is to small, this is a workaround
         // Should fix in final version
         // TODO
         newWaypoint.scale(1.99,0,0);
 
         // Attach direction arrows to tile
-        _addTileDirectionArrows(newWaypoint);
+        //_addTileDirectionArrows(newWaypoint);
     
     }
     
@@ -650,4 +662,14 @@ function _addTileDirectionArrows(tileElement){
             break;
 
     }
+}
+
+/**
+ * Handles the click op a direction arrow of a robot tile. 
+ * The status of the link (enabled or disabled) is toggled.
+ * @param {DOM node} arrow 
+ */
+function _directionArrowOnClickHandler(arrow){
+    // Find parent tile of this arrow
+
 }
