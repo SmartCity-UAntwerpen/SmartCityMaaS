@@ -13,7 +13,7 @@ export default class Tile {
     constructor(element){
         this._type = parseInt(element.node.getAttributeNS(builder._smartcityNamespace, "type").split("_")[2]);
         this._i = element.attr("id").split("_")[2];
-        this._j = element.attr("id").split("_")[3];;
+        this._j = element.attr("id").split("_")[3];
         this._id = element.attr("id");
         this._neighbors = [];
         this._determineNeighbors();
@@ -39,11 +39,13 @@ export default class Tile {
         neighbors["s"] = null;
         neighbors["e"] = null;
         neighbors["w"] = null;
+        var i = parseInt(this._i);
+        var j = parseInt(this._j);
 
         // Check if default case holds
 
         // North neighbor
-        var id = "#robot_wp_" + String(this._i-1) + "_" + String(this._j);
+        var id = "#robot_wp_" + String(i-1) + "_" + String(j);
         if(SVG.find(id)[0]){
             this._establishNeighbourship(id.substr(1), "n");
             // neighbors["n"] = id.substr(1);
@@ -52,14 +54,14 @@ export default class Tile {
         }
         
         // East neighbor
-        id = "#robot_wp_" + String(this._i) + "_" + String(this._j+1);
+        id = "#robot_wp_" + String(i) + "_" + String(j+1);
         if(SVG.find(id)[0]){
             // neighbors["e"] = id.substr(1);
             this._establishNeighbourship(id.substr(1), "e");
         }
 
         // South neighbor
-        id = "#robot_wp_" + String(this._i+1) + "_" + String(this._j);
+        id = "#robot_wp_" + String(i+1) + "_" + String(j);
         if(SVG.find(id)[0]){
             // neighbors["s"] = SVG.find(id)[0].attr("id");
             this._establishNeighbourship(id.substr(1), "s");
@@ -67,7 +69,7 @@ export default class Tile {
         }
 
         // West neighbor
-        id = "#robot_wp_" + String(this._i) + "_" + String(this._j-1);
+        id = "#robot_wp_" + String(i) + "_" + String(j-1);
         if(SVG.find(id)[0]){
             // neighbors["w"] = SVG.find(id)[0].attr("id");
             this._establishNeighbourship(id.substr(1), "w");
@@ -198,7 +200,7 @@ export default class Tile {
         var from = direction.split("_")[1].toLowerCase();
         var to = direction.split("_")[2].toLowerCase();
         var link = this._localLinks.find((v)=>{
-            return v.from===from && v.to===to;
+            return v.startHeading===from && v.destinationHeading===to;
         });
         // If link exists, remove it
         if(link){
