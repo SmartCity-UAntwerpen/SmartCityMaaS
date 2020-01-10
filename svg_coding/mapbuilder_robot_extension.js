@@ -15,7 +15,8 @@ export default class Tile {
         this._i = element.attr("id").split("_")[2];
         this._j = element.attr("id").split("_")[3];;
         this._id = element.attr("id");
-        this._neighbors =  this._determineNeighbors();
+        this._neighbors = [];
+        this._determineNeighbors();
         this._localLinks = [];
         this._outboundLinks = [];
         this._headings = this._initializeHeadings();
@@ -44,25 +45,33 @@ export default class Tile {
         // North neighbor
         var id = "#robot_wp_" + String(this._i-1) + "_" + String(this._j);
         if(SVG.find(id)[0]){
-            neighbors["n"] = SVG.find(id)[0].attr("id");
+            this._establishNeighbourship(id.substr(1), "n");
+            // neighbors["n"] = id.substr(1);
+            // var neighborTile = builder.getTile(id.substr(1));
+            // neighborTile.setNeighbor(this.id, "s")
         }
         
         // East neighbor
         id = "#robot_wp_" + String(this._i) + "_" + String(this._j+1);
         if(SVG.find(id)[0]){
-            neighbors["e"] = SVG.find(id)[0].attr("id");
+            // neighbors["e"] = id.substr(1);
+            this._establishNeighbourship(id.substr(1), "e");
         }
 
         // South neighbor
         id = "#robot_wp_" + String(this._i+1) + "_" + String(this._j);
         if(SVG.find(id)[0]){
-            neighbors["s"] = SVG.find(id)[0].attr("id");
+            // neighbors["s"] = SVG.find(id)[0].attr("id");
+            this._establishNeighbourship(id.substr(1), "s");
+
         }
 
         // West neighbor
         id = "#robot_wp_" + String(this._i) + "_" + String(this._j-1);
         if(SVG.find(id)[0]){
-            neighbors["w"] = SVG.find(id)[0].attr("id");
+            // neighbors["w"] = SVG.find(id)[0].attr("id");
+            this._establishNeighbourship(id.substr(1), "w");
+
         }
         return neighbors;
     }
@@ -168,9 +177,7 @@ export default class Tile {
             ew_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
     }
-    get id(){
-        return this._id;
-    }
+
     /**
      * Enables or disables a direction on this tile.
      * This direction will internally be represented as a link with
@@ -210,17 +217,16 @@ export default class Tile {
         }
         // Link does not exist, add it
         else {
-            link = new Link(from, to);
+            var angle = this._calculateDirectionAngle(from, to);
+            link = new Link(this._id, from, this._id, to, 0, angle);
             this._localLinks.push(link);
             // Check if external links can arise
             if(this._isOutboundPossible(to)){
                 // Create external link
                 var linkProperties = this._getOutboundDestination(to);
-                // TODO: add distances
-                var outboundLink = new Link(this._id, from, linkProperties.destinationId, linkProperties.destinationHeading);
+                var outboundLink = new Link(this._id, from, linkProperties.destinationId, linkProperties.destinationHeading, linkProperties.distance, 0);
                 this._outboundLinks.push(outboundLink);
                 directionStatus = "valid";
-                this._headings[to+"_out"] = true;
             }
             else{
                 // No outbound links can arise, this link is invalid
@@ -229,11 +235,14 @@ export default class Tile {
             // Check if inbound links arise
             if(this._isInboundPossible(from)){
                 // Creation of inbound link by its source
-                var sourceId = this._getInboundSource(from);
-                var sourceHeading = this._getOppositeHeading(from);
-                var sourceTile = builder.getTile(sourceId);
-                sourceTile.createLink(sourceId, sourceHeading, this.id, from);
+                var linkProperties = this._getInboundSource(from);
+                // var sourceHeading = this._getOppositeHeading(from);
+                var sourceTile = builder.getTile(linkProperties.sourceId);
+                // sourceTile.createLink(sourceId, sourceHeading, this.id, from);
+                sourceTile.createLink(linkProperties.sourceHeading, this._id, from, linkProperties.distance);
             }
+            // To-heading is now sending
+            this._headings[to+"_out"] = true;
             // from-heading is now accepting
             this._headings[from+"_in"] = true;
 
@@ -269,8 +278,10 @@ export default class Tile {
             return null;
         }
         var neighbor = builder.getTile(neighborId);
-        if(neighbor.sends(oppositeHeading)){
-            return neighbor.id;
+        // TODO: adjust initial distance to be dynamic (trafficlight, crossing, parkeerplaatske)
+        const answer = neighbor.sends(oppositeHeading, 10)
+        if(answer.sends){
+            return answer;
         }
         else{
             return null;
@@ -293,6 +304,7 @@ export default class Tile {
         }
 
         var neighbor = builder.getTile(neighborId);
+        // TODO: adjust initial distance to be dynamic (trafficlight, crossing, parkeerplaatske)
         const answer = neighbor.accepts(oppositeHeading, 10);
         if(answer.accepts){
             return answer;
@@ -307,7 +319,7 @@ export default class Tile {
      * has no headings (i.e. straight line tiles and corner tiles), recursion is applied on neighbor
      * @param {string} heading 
      * @param {int} distance. Optional parameter for length calculation when recursing. Zero by default. Units: centimeters
-     * @return {boolean, string, int} accepts, destinationHeading, distance
+     * @return {boolean, string, string, int} accepts, destinationHeading, destinationId, distance
      */
     accepts(heading, distance=0){
         // Is this a straight line tile or corner tile?
@@ -390,15 +402,112 @@ export default class Tile {
     }
 
     /**
-     * 
-     * @param {Number} sourceId 
+     * Checks if this node sends outbound links from a certain heading. If this tile 
+     * has no headings (i.e. straight line tiles and corner tiles), recursion is applied on neighbor
+     * @param {string} heading 
+     * @param {int} distance. Optional parameter for length calculation when recursing. Zero by default. Units: centimeters
+     * @return {boolean, string, string, int} sends, sourceHeading, sourceId, distance
+     */
+    sends(heading, distance=0){
+        // Is this a straight line tile or corner tile?
+        if([12,13,14,15,16,17].includes(this._type)){
+            var oppositeHeading = this._getOppositeHeading(heading);
+            // It is. Propagate to neighbor
+            // Straight line
+            if(this._type === 12 || this._type ===13){
+                    var neighborId = this._neighbors[oppositeHeading];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends(heading,distance+30);
+            }
+            // Corners
+            else if (this._type === 14){
+                if(heading === "e"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["s"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("n", distance+25);
+                }
+                else if(heading === "s"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["e"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("w", distance+25);
+                }
+            }
+            else if (this._type === 15){
+                if(heading === "w"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["s"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("n", distance+25);
+                }
+                else if(heading === "s"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["w"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("e", distance+25);
+                }
+            }
+            else if (this._type === 16){
+                if(heading === "w"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["n"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("s", distance+25);
+                }
+                else if(heading === "n"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["w"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("e", distance+25);
+                }
+            }
+            else if (this._type === 17){
+                if(heading === "e"){
+                    // Ask south neighbor
+                    var neighborId = this._neighbors["n"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("s", distance+25);
+                }
+                else if(heading === "n"){
+                    // Ask east neighbor
+                    var neighborId = this._neighbors["e"];
+                    var neighborTile = builder.getTile(neighborId);
+                    return neighborTile.sends("w", distance+25);
+                }
+            }
+        }
+        else{
+            // Tile has headings
+            if(this._headings[heading+"_out"]){
+                return {sends:true, sourceHeading: heading, sourceId: this.id,distance:distance+10};
+            }
+            else{
+                return {sends:false};
+            }
+        }
+    }
+
+    /**
+     * Callback function for when this tile can solve an invalid outbound direction
      * @param {string} sourceHeading 
      * @param {number} destinationId 
      * @param {String} destinationHeading 
+     * @param {number} distance 
      */
-    createLink(sourceId, sourceHeading, destinationId, destinationHeading){
-        var link = new Link(sourceId, sourceHeading, destinationId, destinationHeading);
+    createLink(sourceHeading, destinationId, destinationHeading, distance){
+        // Create link
+        var link = new Link(this.id, sourceHeading, destinationId, destinationHeading, distance, 0);
         this._outboundLinks.push(link);
+        // Adjust color of direction arrows
+        // Find local links with this heading as destination
+        this._localLinks.forEach((link) => {
+            if(link.destinationHeading === sourceHeading){
+                var direction = link.startHeading + "_" + link.destinationHeading;
+                builder.changeDirectionArrowColor(this.id, direction, "valid");
+            }
+        });
+
     }
 
     /**
@@ -416,6 +525,38 @@ export default class Tile {
             case "e":
                 return "w";
         }
+    }
+
+    /**
+     * Get the angle which a robot has to turn for a direction
+     * @param {string} from n|e|s|w
+     * @param {string} to n|e|s|w
+     * @return {int} angle in degrees
+     */
+    _calculateDirectionAngle(from, to){
+        var direction = from+to;
+        if (["wn", "ne", "es", "sw"].includes(direction)){
+            return 90;
+        }
+        else if(["ws", "nw", "en", "en", "se"].includes(direction)){
+            return -90;
+        }
+        else{
+            return 0;
+        }
+    }
+
+    /**
+     * Establishes a neighborship between this node and neighbor with neighborId
+     * This involves registering the neighborId with the heading in this tile
+     * and registering this Id with the opposite heading in the neighbor
+     * @param {string} heading n | e | s | w
+     * @param {string} neighborId . Format: robot_wp_i_j
+     */
+    _establishNeighbourship(neighborId, heading){
+        this._neighbors[heading] = neighborId;
+        var neighborTile = builder.getTile(neighborId);
+        neighborTile.setNeighbor(this.id, this._getOppositeHeading(heading));
     }
 
     get id(){

@@ -640,6 +640,43 @@ function _directionArrowOnClickHandler(arrow){
     var tile = _tiles[parentNode.attr("id")];
     // Get status of this direction from the tile
     var status = tile.toggleDirection(node.attr("type"));
+    _colorDirectionArrow(node, status);
+    // if(status === "valid"){
+    //     // Set color to green
+    //     node.attr("stroke", "YellowGreen");
+    // }
+    // else if(status === "disabled"){
+    //     // Set color to blue
+    //     node.attr("stroke", "CornflowerBlue");
+    // }
+    // else if(status === "invalid"){
+    //     // Set color to red
+    //     node.attr("stroke", "IndianRed");
+    // }
+}
+
+/**
+ * Colors a direction arrow according to its status
+ * @param {string} status . valid | invalid | disabled
+ * @param {string} tileId . robot_wp_i_j
+ * @param {string} direction . N_E, N_W, E_N, E_S, S_E, S_W, W_N, W_E, N_S, S_N, E_W, W_E
+ * 
+ */
+export function changeDirectionArrowColor(tileId, direction, status){
+    // Find SVG node for robottile
+    var tileNode = SVG.find("#"+tileId);
+    direction = direction.toUpperCase();
+    direction = "arrow_"+direction;
+    var arrowNode = tileNode.find("[type="+direction+"]")[0];
+    _colorDirectionArrow(arrowNode, status);
+}
+
+/**
+ * Changes color of a direction arrow, which is passed as an SVG.js node
+ * @param {*} node 
+ * @param {*} status 
+ */
+function _colorDirectionArrow(node, status){
     if(status === "valid"){
         // Set color to green
         node.attr("stroke", "YellowGreen");
@@ -647,12 +684,10 @@ function _directionArrowOnClickHandler(arrow){
     else if(status === "disabled"){
         // Set color to blue
         node.attr("stroke", "CornflowerBlue");
-
     }
     else if(status === "invalid"){
         // Set color to red
         node.attr("stroke", "IndianRed");
-
     }
 }
 
