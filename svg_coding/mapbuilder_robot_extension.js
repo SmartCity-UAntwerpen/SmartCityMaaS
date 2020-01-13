@@ -185,10 +185,10 @@ export default class Tile {
             var outboundLinkProperties = this._getOutboundDestination(destinationHeading);
             if(outboundLinkProperties !== null){
                 // Create outboundlink for this tile
-                this.createLink(this._id, sourceHeading, outboundLinkProperties.destinationId, outboundLinkProperties.destinationHeading, outboundLinkProperties.distance);
+                this.createLink(this._id, destinationHeading, outboundLinkProperties.destinationId, outboundLinkProperties.destinationHeading, outboundLinkProperties.distance);
                 // Create inboundlink for destination
                 var destinationTile = builder.getTile(outboundLinkProperties.destinationId);
-                destinationTile.createLink(this._id, sourceHeading, outboundLinkProperties.destinationId, outboundLinkProperties.destinationHeading, outboundLinkProperties.distance)
+                destinationTile.createLink(this._id, destinationHeading, outboundLinkProperties.destinationId, outboundLinkProperties.destinationHeading, outboundLinkProperties.distance)
             }
             // Check if inbound links arise
             var inboundLinkProperties = this._getInboundSource(sourceHeading);
@@ -447,13 +447,13 @@ export default class Tile {
      * @param {Link} link 
      */
     _saveLink(link){
-        if(link.sourceId === this.id){
-            var heading = link.sourceHeading;
+        if(link.startNode === this.id){
+            var heading = link.startHeading;
             this._headings[heading+"_s"].push(link);
         }
-        if(link.destinationId === this.id){
+        if(link.destinationNode === this.id){
             var heading = link.destinationHeading;
-            this._headings[headings+"_d"].push(link);
+            this._headings[heading+"_d"].push(link);
         }
     }
 
@@ -464,12 +464,12 @@ export default class Tile {
     _deleteLink(link){
         // Check in which arrays it will exist
         // delete da ding
-        if(link.sourceId === this.id){
-            var heading = link.sourceHeading;
+        if(link.startNode === this.id){
+            var heading = link.startHeading;
             this._headings[heading+"_s"].indexOf(link);
             this._headings[heading+"_s"].splice(index, 1);
         }
-        if(link.destinationId === this.id){
+        if(link.destinationNode === this.id){
             var heading = link.destinationHeading;
             this._headings[heading+"_d"].indexOf(link);
             this._headings[heading+"_d"].splice(index, 1);
@@ -491,7 +491,7 @@ export default class Tile {
             // It is a local link, so we need to check the status of the headings in which
             // this link is involved. 
             // Check if source heading can still accept
-            var sourceHeading = link.sourceHeading;
+            var sourceHeading = link.startHeading;
             var accepting = this._headings[sourceHeading+"_s"].some((link) => {
                 return link.isLocal;
             });
@@ -500,7 +500,7 @@ export default class Tile {
                 this._headings[sourceHeading+"_d"].forEach((link) => {
                     if(!link.isLocal) {
                         this._deleteLink(link); // Remove locally
-                        var externalSourceId = link.sourceId; 
+                        var externalSourceId = link.startNode; 
                         var externalSourceTile = builder.getTile(externalSourceId);
                         externalSourceTile.removeLink(link); // Remove externally
                     } 
@@ -516,7 +516,7 @@ export default class Tile {
                 this._headings[sourceHeading+"_s"].forEach((link) => {
                     if(!link.isLocal) {
                         this._deleteLink(link); // Remove locally
-                        var externalDestinationId = link.destinationId; 
+                        var externalDestinationId = link.destinationNode; 
                         var externalDestinationTile = builder.getTile(externalDestinationId);
                         externalDestinationTile.removeLink(link); // Remove externally
                     } 
@@ -529,11 +529,11 @@ export default class Tile {
             // Link is not local (i.e. external)
             this._deleteLink(link);
             // Is it an outbound link?
-            if(link.sourceHeading === this._id){
+            if(link.startHeading === this._id){
                 // Source heading of link has lost his outbound connection, it should be marked invalid because
                 // it points to nothing (IRL: robot will drive off the grid)
                 // Consequence: local links arriving at this heading, must be marked invalid
-                this._headings[link.sourceHeading+"_d"].forEach((l) =>{
+                this._headings[link.startHeading+"_d"].forEach((l) =>{
                     var direction = l.startHeading + "_" + l.destinationHeading;
                     if(l.isLocal) builder.changeDirectionArrowColor(this._id, direction, "invalid");
                 }) ;               
@@ -553,20 +553,21 @@ export default class Tile {
      */
     createLink(sourceId, sourceHeading, destinationId, destinationHeading, distance){
         // Create link
-        var angle = _calculateDirectionAngle(sourceHeading, destinationHeading);
+        var angle = this._calculateDirectionAngle(sourceHeading, destinationHeading);
         var link = new Link(sourceId, sourceHeading, destinationId, destinationHeading, distance, angle);
         this._saveLink(link);
 
         // If local link is established, change color of this arrow.
         if(link.isLocal){
             var direction = link.startHeading + "_" + link.destinationHeading;
-            builder.changeDirectionArrowColor(this.id, direction, "valid");
+            // Invalid by default. Link will become valid when outbound is created
+            builder.changeDirectionArrowColor(this.id, direction, "invalid");
         }
         // Check if it is an outbound link
-        else if (link.sourceId === this.id) {
+        else if (link.startNode === this.id) {
             // Any invalid internal links pointing to sourceHeading will become valid. 
             // Must change color of this arrows.
-            this._headings[link.sourceHeading+"_d"].forEach((l) =>{
+            this._headings[link.startHeading+"_d"].forEach((l) =>{
                 if(l.isLocal) {
                     var direction = l.startHeading + "_" + l.destinationHeading;
                     builder.changeDirectionArrowColor(this.id, direction, "valid");
