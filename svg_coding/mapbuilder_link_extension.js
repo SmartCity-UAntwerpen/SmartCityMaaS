@@ -9,7 +9,7 @@ export default class Link {
      * @param {*} destinationNode . Id of the destination node
      * @param {*} destinationHeading . Heading in which the link ends
      */
-    constructor(startNode, startHeading, destinationNode, destinationHeading, distance, angle){
+    constructor(startNode, startHeading, destinationNode, destinationHeading, distance, angle, status="invalid"){
         this._startNode = startNode;
         this._startHeading = startHeading;
         this._destinationNode = destinationNode;
@@ -17,6 +17,7 @@ export default class Link {
         this._distance = distance;
         this._angle = angle;
         this._isLocal = false;
+        this._status = status;
         if(startNode === destinationNode) this._isLocal = true;
     }
     get startNode(){
@@ -39,5 +40,11 @@ export default class Link {
     }
     get isLocal(){
         return this._isLocal;
+    }
+    get status(){
+        return this._status;
+    }
+    set status(status){
+        this._status = status;
     }
 }

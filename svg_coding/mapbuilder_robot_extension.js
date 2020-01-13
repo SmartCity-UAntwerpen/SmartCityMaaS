@@ -18,9 +18,7 @@ export default class Tile {
         this._headings = this._initializeHeadings();
         this._generateArrows();
     }
-    get type(){
-        return this._type;
-    }
+    
     /**
      * Find neighbors of this tile.
      * Algorithm uses <row,col> indexing
@@ -553,7 +551,10 @@ export default class Tile {
                 // Consequence: local links arriving at this heading, must be marked invalid
                 this._headings[link.startHeading+"_d"].forEach((l) =>{
                     var direction = l.startHeading + "_" + l.destinationHeading;
-                    if(l.isLocal) builder.changeDirectionArrowColor(this._id, direction, "invalid");
+                    if(l.isLocal) {
+                        builder.changeDirectionArrowColor(this._id, direction, "invalid");
+                        l.status = "invalid"
+                    }
                 }) ;               
             }
         }
@@ -573,7 +574,7 @@ export default class Tile {
         // Create link
         var angle = this._calculateDirectionAngle(sourceHeading, destinationHeading);
         var link = new Link(sourceId, sourceHeading, destinationId, destinationHeading, distance, angle);
-        this._saveLink(link);
+        
 
         // If local link is established, change color of this arrow.
         if(link.isLocal){
@@ -583,15 +584,19 @@ export default class Tile {
         }
         // Check if it is an outbound link
         else if (link.startNode === this.id) {
+            // Outboud links are always valid when created
+            link.status = "valid";
             // Any invalid internal links pointing to sourceHeading will become valid. 
             // Must change color of this arrows.
             this._headings[link.startHeading+"_d"].forEach((l) =>{
                 if(l.isLocal) {
                     var direction = l.startHeading + "_" + l.destinationHeading;
                     builder.changeDirectionArrowColor(this.id, direction, "valid");
+                    l.status = "valid";
                 }
             });
         }
+        this._saveLink(link);
     }
 
     /**
@@ -645,6 +650,22 @@ export default class Tile {
 
     get id(){
         return this._id;
+    }
+
+    get type(){
+        return this._type;
+    }
+
+    get i(){
+        return this._i;
+    }
+
+    get j(){
+        return this._j;
+    }
+
+    get headings(){
+        return this._headings;
     }
 
 }

@@ -1,4 +1,6 @@
 import Tile from './mapbuilder_robot_extension.js';
+import * as builder from './mapbuilder.js';
+window.builder = builder;
 
 var _smartcityNamespace = "ss";
 
@@ -13,9 +15,9 @@ var _previewingLink = false;
 var _dragging = false;
 var _draggingTarget = null;
 var _gridActive = false;
-var _tiles = [];
+var _tiles = {};
 const _constants = {
-    gridCellSize : 100
+    
 }
 
 /**
@@ -56,15 +58,15 @@ window.addEventListener('load', (event) => {
 function _menuOnClickHandler(event){
     var type = event.currentTarget.getAttribute('type');
     console.log("menu click happened" + type);
-    if(type.includes("car_gas")){
+    if(type.includes("car_wp")){
         // change mouse pointer to car gas icon
         document.body.style.cursor = "url(car_gas.png) 0 0,auto";
-        selectedWaypointType = "car_gas";
+        selectedWaypointType = "car_wp";
     }
-    else if(type.includes("drone_h")){
+    else if(type.includes("drone_wp")){
         // change mouse pointer to drone_helipad icon
         document.body.style.cursor = "url(drone_h.png) 0 0,auto";
-        selectedWaypointType = "drone_h";
+        selectedWaypointType = "drone_wp";
     }
     else if(type.includes("robot_tile")){
         // change mouse pointer to drone_helipad icon
@@ -109,7 +111,7 @@ function _mapOnClickHandler(event){
         var shiftActive = event.shiftKey;
         // 2) Waypoint: link creation. Target must become active for edit or must become the endpoint of a link creation. 
         // When a waypoint is targetted, we have to select the rangeParent-attribute of the event as target
-        if(type.indexOf("wp")>-1){
+        if(type.indexOf("wp")>-1 ||type.indexOf("robot_tile") > -1){
             _waypointOnClickHandler(event.rangeParent, shiftActive);
         }
         
@@ -364,21 +366,12 @@ function _removeLinkPreview(){
  * @param {SVG.js node} object 
  */
 function _refreshPropertiesWindow(object){
-    switch (object.node.getAttributeNS(_smartcityNamespace, "type")){
-        case "drone_link":
-            _showLinkProperties(object);
-            break;
-        case "car_link":
-            _showLinkProperties(object);
-            break;
-        case "drone_wp":
-            _showWaypointProperties(object);
-            break;
-        case "car_wp":
-            _showWaypointProperties(object);
-            break;
-        default:
-            console.error("Unknown object type: cannot refresh properties window");
+    var type = object.node.getAttributeNS(_smartcityNamespace, "type")
+    if(type === "drone_link" || type === "car_link"){
+        _showLinkProperties(object);
+    }
+    else {
+        _showWaypointProperties(object);
     }
 }
 
@@ -389,7 +382,7 @@ function _clearPropertiesWindow(){
     var nameTxt = document.getElementById("name");
     nameTxt.value = "";
     var deleteButton = document.getElementById("deleteBtn");
-    deleteButton.setAttribute("onclick", "_deleteElement('null')")
+    deleteButton.setAttribute("onclick", "builder.deleteElement('null')")
 }
 
 function _showWaypointProperties(link){
@@ -397,7 +390,7 @@ function _showWaypointProperties(link){
     var nameTxt = document.getElementById("name");
     nameTxt.value = wpId;
     var deleteButton = document.getElementById("deleteBtn");
-    deleteButton.setAttribute("onclick", "_deleteElement('"+wpId+"')");
+    deleteButton.setAttribute("onclick", "builder.deleteElement('"+wpId+"')");
 }
 
 function _showLinkProperties(link){
@@ -405,16 +398,14 @@ function _showLinkProperties(link){
     var nameTxt = document.getElementById("name");
     nameTxt.value = linkId;
     var deleteButton = document.getElementById("deleteBtn");
-    deleteButton.setAttribute("onclick", "_deleteElement('"+linkId+"')");
+    deleteButton.setAttribute("onclick", "builder.deleteElement('"+linkId+"')");
 }
-
-
 
 /**
  * Remove an SVG element
  * @param {string} elementId: id of the element to remove
  */
-function _deleteElement(elementId){
+export function deleteElement(elementId){
     if(!elementId){
         console.log("Cannot delete null element");
         return;
@@ -510,22 +501,14 @@ export function directionArrowHoverOut(event){
  */
 function createNewWaypoint(x, y){
     // Place a new waypoint on the map
-    // switch (selectedWaypointType){
-    //     case "car_gas":
-            
-    //     case "drone_h":
-            
-    //     default:
-    //         console.error("Unknown selected waypoint type");
-    // }
     var newWaypoint = null;
-    if(selectedWaypointType.includes("car_gas")){
+    if(selectedWaypointType.includes("car_wp")){
         // Call viscore to create new item
         newWaypoint = visualisationCore.drawCarGas(x, y);
         newWaypoint.attr('id', "car_wp_"+_counterCarWaypoint++);
         newWaypoint.attr('type', "car_wp", _smartcityNamespace);
     }
-    else if(selectedWaypointType.includes("drone_h")){
+    else if(selectedWaypointType.includes("drone_wp")){
         // Call viscore to create new item
         newWaypoint = visualisationCore.drawDroneHelipad(x, y);
         newWaypoint.attr('id', "drone_wp_"+_counterDroneWaypoint++);
@@ -678,5 +661,66 @@ function _colorDirectionArrow(node, status){
  * @return {Tile} tile with corresponding id
  */
 export function getTile(id){
+    //return _tiles[id];
     return _tiles[id];
+}
+
+/**
+ * Exports the contents of the map to a JSON format
+ */
+export function exportMapToJSON(){
+    var output = {drone:{points: [], links: []},
+                    racecar: {points: [], links: []},
+                    robot: {tiles: [], links: []}};
+
+    // Loop over drone waypoints
+    var drone_waypoints = SVG.find("[type=drone_wp]");
+    drone_waypoints.forEach((element) =>{
+        if(element.attr("id")){
+            var transform = element.transform();
+            var drone_point  = {x:transform.translateX, y: transform.translateY, id: element.attr("id")}
+            output.drone.points.push(drone_point);
+        }
+    });
+    // Loop over racecar waypoints
+    var racecar_waypoints = SVG.find("[type=car_wp]");
+    racecar_waypoints.forEach((element) =>{
+        if(element.attr("id")){
+            var transform = element.transform();
+            var racecar_point  = {x:transform.translateX, y: transform.translateY, id: element.attr("id")}
+            output.racecar.points.push(racecar_point);
+        }
+    });
+    // Loop over drone and car links
+    var carAndDroneLinks = SVG.find("#links")[0].children();
+    carAndDroneLinks.forEach((element)=>{
+        var link = {from: element.attr("from"), to:element.attr("to"), id:element.attr("id")}
+        if (element.attr("type") === "drone_link"){
+            output.drone.links.push(link);
+        }
+        else if(element.attr("type") === "car_link"){
+            output.racecar.links.push(link);
+        }
+    });
+
+    for(var id in _tiles){
+        var tile = _tiles[id];
+        output.robot.tiles.push({type: tile.type, i: tile.i, j:tile.j, id:tile.id});
+        // Consider only links at heading_start, both local and external types
+        // Links at heading_destination are duplicates from other (external) links at heading_start
+        for (var headingId in tile.headings){
+            if(headingId.split("_")[1] === "s"){
+                // Loop over links in this heading
+                tile.headings[headingId].forEach((link) =>{
+                    // Check if this link is valid
+                    if(link.status === "valid") output.robot.links.push(link);
+                });
+            }
+        }
+        
+        tile.headings.forEach((heading) => {
+            console.log("een ding");
+        });
+    }
+    return JSON.stringify(output);
 }
