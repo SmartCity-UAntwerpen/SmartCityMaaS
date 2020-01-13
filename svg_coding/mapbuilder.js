@@ -596,21 +596,15 @@ function createNewWaypoint(x, y){
                 console.error("Unknown robot tile type");
                 return;
         }
-        //newWaypoint.attr("id", "robot_wp_" + _counterRobotWaypoint++);
         newWaypoint.attr("id", "robot_wp_" + i + "_" + j);
         newWaypoint.attr("type", selectedWaypointType, _smartcityNamespace);
         newWaypoint.attr("type", selectedWaypointType);
         var tile = new Tile(newWaypoint);
-        //_tiles.push(tile);
         _tiles[tile.id] = tile;
         // Size of figures is to small, this is a workaround
         // Should fix in final version
         // TODO
         newWaypoint.scale(1.99,0,0);
-
-        // Attach direction arrows to tile
-        //_addTileDirectionArrows(newWaypoint);
-    
     }
     
     newWaypoint.on('mouseover', _elementHoverInHandler);
@@ -639,20 +633,7 @@ function _directionArrowOnClickHandler(arrow){
     // Get tile object
     var tile = _tiles[parentNode.attr("id")];
     // Get status of this direction from the tile
-    var status = tile.toggleDirection(node.attr("type"));
-    _colorDirectionArrow(node, status);
-    // if(status === "valid"){
-    //     // Set color to green
-    //     node.attr("stroke", "YellowGreen");
-    // }
-    // else if(status === "disabled"){
-    //     // Set color to blue
-    //     node.attr("stroke", "CornflowerBlue");
-    // }
-    // else if(status === "invalid"){
-    //     // Set color to red
-    //     node.attr("stroke", "IndianRed");
-    // }
+    tile.toggleDirection(node.attr("type"));
 }
 
 /**

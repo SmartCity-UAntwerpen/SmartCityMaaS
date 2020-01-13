@@ -16,6 +16,8 @@ export default class Link {
         this._destinationHeading = destinationHeading;
         this._distance = distance;
         this._angle = angle;
+        this._isLocal = false;
+        if(startNode === destinationNode) this._isLocal = true;
     }
     get startNode(){
         return this._startNode;
@@ -34,5 +36,8 @@ export default class Link {
     }
     get distance(){
         return this._distance;
+    }
+    get isLocal(){
+        return this._isLocal;
     }
 }
