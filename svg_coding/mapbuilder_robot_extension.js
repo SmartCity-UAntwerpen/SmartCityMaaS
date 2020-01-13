@@ -263,6 +263,7 @@ export default class Tile {
      */
     accepts(heading, distance=0){
         // TODO: catch cases in which neighbor does not exist
+        // TODO: catch cases in which incoming heading does not exist
         // Is this a straight line tile or corner tile?
         if([12,13,14,15,16,17].includes(this._type)){
             // It is. Propagate to neighbor
@@ -466,12 +467,30 @@ export default class Tile {
         // delete da ding
         if(link.startNode === this.id){
             var heading = link.startHeading;
-            this._headings[heading+"_s"].indexOf(link);
+            var index;
+            // Search for link to remove
+            this._headings[heading+"_s"].forEach((l, i) =>{
+                if(link.destinationNode === l.destinationNode &&
+                    link.startNode === l.startNode &&
+                    link.startHeading == l.startHeading &&
+                    link.destinationHeading == l.destinationHeading){
+                        index = i;
+                    }
+            });
             this._headings[heading+"_s"].splice(index, 1);
         }
         if(link.destinationNode === this.id){
             var heading = link.destinationHeading;
-            this._headings[heading+"_d"].indexOf(link);
+            var index;
+            // Search for link to remove
+            this._headings[heading+"_d"].forEach((l, i) =>{
+                if(link.destinationNode === l.destinationNode &&
+                    link.startNode === l.startNode &&
+                    link.startHeading == l.startHeading &&
+                    link.destinationHeading == l.destinationHeading){
+                        index = i;
+                    }
+            });
             this._headings[heading+"_d"].splice(index, 1);
         }
     }
@@ -527,9 +546,8 @@ export default class Tile {
         }
         else {
             // Link is not local (i.e. external)
-            this._deleteLink(link);
             // Is it an outbound link?
-            if(link.startHeading === this._id){
+            if(link.startNode === this._id){
                 // Source heading of link has lost his outbound connection, it should be marked invalid because
                 // it points to nothing (IRL: robot will drive off the grid)
                 // Consequence: local links arriving at this heading, must be marked invalid
