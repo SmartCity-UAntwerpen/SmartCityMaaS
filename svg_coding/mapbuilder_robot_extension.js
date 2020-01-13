@@ -159,13 +159,10 @@ export default class Tile {
 
     /**
      * Enables or disables a direction on this tile.
-     * This direction will internally be represented as a link with
-     * the begin and end on this tile.
-     * If a direction exists, it is removed.
-     * If a direction does not exist, it will be created. The direction is 
-     * marked as valid when starting from the endpoint, a link can be made to another tile.
-     * If no link can be made (i.e. non-accepting point at neighbor or no neighbor at endpoint),
-     * the link is marked as invalid.
+     * A direction is considered as a local link: begin and end are on this tile.
+     * If a direction exists, it is removed. If a direction does not exist, it will be created. 
+     * When direction is created, back- and forwardpropagation is executed to check if
+     * any inbound/oubound links can arise
      * @param {string} direction
      */
     toggleDirection(direction){
@@ -265,6 +262,7 @@ export default class Tile {
      * @return {boolean, string, string, int} accepts, destinationHeading, destinationId, distance
      */
     accepts(heading, distance=0){
+        // TODO: catch cases in which neighbor does not exist
         // Is this a straight line tile or corner tile?
         if([12,13,14,15,16,17].includes(this._type)){
             // It is. Propagate to neighbor
