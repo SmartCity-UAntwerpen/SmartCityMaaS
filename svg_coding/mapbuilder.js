@@ -8,17 +8,12 @@ var map = null;
 var selectedWaypointType = null;
 var _counterCarWaypoint = 0;
 var _counterDroneWaypoint = 0;
-var _counterRobotWaypoint = 0;
 var _activeHoverElement = null;
 var _activeWaypointElement = null;
-var _previewingLink = false;
 var _dragging = false;
 var _draggingTarget = null;
 var _gridActive = false;
 var _tiles = {};
-const _constants = {
-    
-}
 
 /**
  * Add eventlisteners
@@ -41,15 +36,12 @@ window.addEventListener('load', (event) => {
         gridpoint.on('mouseout', _gridpointMouseOut);
     })
 
-
     // Attach onclick handlers to the map-canvas
     map = document.getElementById("mapcontainer");
     map.addEventListener('click', _mapOnClickHandler);
     map.addEventListener('mousemove', _mapOnMouseMoveHandler);
     map.addEventListener('mouseup', _mapOnMouseUpHandler);
 });
-
-
 
 /**
  * Handles the click on library items
@@ -168,7 +160,6 @@ function _waypointOnClickHandler(waypoint, shiftActive){
         _refreshPropertiesWindow(_activeWaypointElement);
 
         // Create a new link between the _activeWaypointElement as source and the targeted element as destination
-        //_establishLink(_activeWaypointElement, SVG.find("#"+waypoint.id)[0]);
         _establishLink(previousActiveWaypointElement, _activeWaypointElement);
     }
 }
@@ -303,10 +294,10 @@ function _elementMouseUpHandler(event){
 }
 
 /**
- * Draw a new link between two waypoints
+ * Draw a new link between two waypoints.
  * Assert that a link is valid (equal waypoint types, no robot)
- * @param {source} pointA 
- * @param {destination} pointB 
+ * @param {'SVG.js object'} pointA . source
+ * @param {'SVG.js object'} pointB . destination
  */
 function _establishLink(pointA, pointB){
     var linktype = pointA.node.getAttributeNS(_smartcityNamespace, "type");
@@ -496,22 +487,36 @@ export function directionArrowHoverOut(event){
 
 /**
  * Creates a new waypoint on the map. The type of the waypoint is stored in selectedwaypointtype
- * @param {int} x xcoord in map coordinates
- * @param {int} y ycoord in map coordinates
+ * @param {int} x . xcoord in map coordinates
+ * @param {int} y . ycoord in map coordinates
+ * @param {string} id . Optional: if provided, element is given this id
  */
-function createNewWaypoint(x, y){
+function createNewWaypoint(x, y, id=null){
     // Place a new waypoint on the map
     var newWaypoint = null;
     if(selectedWaypointType.includes("car_wp")){
         // Call viscore to create new item
         newWaypoint = visualisationCore.drawCarGas(x, y);
-        newWaypoint.attr('id', "car_wp_"+_counterCarWaypoint++);
+        if(!id) {
+            id = "car_wp_"+_counterCarWaypoint++;
+        }
+        else {
+            _counterCarWaypoint++;
+        }
+
+        newWaypoint.attr('id', id);
         newWaypoint.attr('type', "car_wp", _smartcityNamespace);
     }
     else if(selectedWaypointType.includes("drone_wp")){
         // Call viscore to create new item
         newWaypoint = visualisationCore.drawDroneHelipad(x, y);
-        newWaypoint.attr('id', "drone_wp_"+_counterDroneWaypoint++);
+        if(!id){
+            id = "drone_wp_"+_counterDroneWaypoint++;
+        } 
+        else{
+            _counterDroneWaypoint++;
+        }
+        newWaypoint.attr('id', id);
         // We want type as an attribute in our own XML namespace
         newWaypoint.attr('type', "drone_wp", _smartcityNamespace);
     }
@@ -579,13 +584,14 @@ function createNewWaypoint(x, y){
                 console.error("Unknown robot tile type");
                 return;
         }
-        newWaypoint.attr("id", "robot_wp_" + i + "_" + j);
+        if(!id) id = "robot_wp_" + i + "_" + j
+        newWaypoint.attr("id", id);
         newWaypoint.attr("type", selectedWaypointType, _smartcityNamespace);
         newWaypoint.attr("type", selectedWaypointType);
         var tile = new Tile(newWaypoint);
         _tiles[tile.id] = tile;
         // Size of figures is to small, this is a workaround
-        // Should fix in final version
+        // Should fix in future version
         // TODO
         newWaypoint.scale(1.99,0,0);
     }
@@ -657,18 +663,20 @@ function _colorDirectionArrow(node, status){
 
 /**
  * Returns tile
- * @param {int} id . ID of the tile
+ * @param {String} id . ID of the tile
  * @return {Tile} tile with corresponding id
  */
 export function getTile(id){
-    //return _tiles[id];
     return _tiles[id];
 }
 
 /**
  * Exports the contents of the map to a JSON format
+ * @returns {Object} map structure
  */
-export function exportMapToJSON(){
+export function exportJSONMap(){
+    var succes = true;
+    // Output structure
     var output = {drone:{points: [], links: []},
                     racecar: {points: [], links: []},
                     robot: {tiles: [], links: []}};
@@ -702,10 +710,11 @@ export function exportMapToJSON(){
             output.racecar.links.push(link);
         }
     });
-
+    // Loop over Tiles
     for(var id in _tiles){
         var tile = _tiles[id];
-        output.robot.tiles.push({type: tile.type, i: tile.i, j:tile.j, id:tile.id});
+        var transform = SVG.find("#"+id)[0].transform();
+        output.robot.tiles.push({type: tile.type, x: transform.translateX, y:transform.translateY, id:tile.id});
         // Consider only links at heading_start, both local and external types
         // Links at heading_destination are duplicates from other (external) links at heading_start
         for (var headingId in tile.headings){
@@ -714,13 +723,66 @@ export function exportMapToJSON(){
                 tile.headings[headingId].forEach((link) =>{
                     // Check if this link is valid
                     if(link.status === "valid") output.robot.links.push(link);
+                    if(link.status === "invalid"){
+                        succes = false;
+                        window.alert("Please solve invalid robot links before exporting the map.");
+                    }
                 });
             }
         }
-        
-        tile.headings.forEach((heading) => {
-            console.log("een ding");
-        });
     }
-    return JSON.stringify(output);
+    if(succes) {
+        return (output)
+    }
+    else{
+        return {error: "Could not parse JSON due to invalid Robot links"};
+    }
+}
+
+/**
+ * Construct map which is defined in JSON structure.
+ * @param {Object} map . 
+ */
+export function importJSONMap(map){
+    // Import drone waypoints
+    selectedWaypointType = "drone_wp";
+    map.drone.points.forEach((point) => {
+        createNewWaypoint(point.x, point.y, point.id);
+    });
+    // Import drone links
+    map.drone.links.forEach((link)=>{
+        // startpoint of node
+        var from = SVG.find("#"+link.from)[0];
+        var to = SVG.find("#"+link.to)[0];
+        _establishLink(from, to);
+    });
+    // Import racecar waypoints
+    selectedWaypointType = "car_wp";
+    map.racecar.points.forEach((point) => {
+        createNewWaypoint(point.x, point.y, point.id);
+    });
+    // Import racecar links
+    map.racecar.links.forEach((link) =>{
+        var from = SVG.find("#"+link.from)[0];
+        var to = SVG.find("#"+link.to)[0];
+        _establishLink(from, to);
+    });
+    // Import robot tiles
+    map.robot.tiles.forEach((tile)=>{
+        selectedWaypointType = "robot_tile_"+tile.type;
+        createNewWaypoint(tile.x, tile.y, tile.id);
+    });
+    // Import robot links
+    map.robot.links.forEach((link)=>{
+        // We construct only local links, a.k.a. directions. Non-local links will be
+        // generated implicitly by the tiles itself
+        // Get link headings to deduct type
+        if(link._isLocal){
+            var type = "arrow_" + link._startHeading.toUpperCase() + "_" + link._destinationHeading.toUpperCase();
+            var tileId = link._startNode;
+            var tile = getTile(tileId);
+            tile.toggleDirection(type);
+        }
+    });
+
 }
