@@ -99,6 +99,15 @@ var visualisationCore = {
         var link = _linksgroup.line(xStart, yStart, xEnd, yEnd).stroke({ color: "grey",width: 4});
         return link;
     },
+    drawTransitLink : function(pointA, pointB){
+        // Calculate center of start and endpoint
+        var xStart = pointA.transform().translateX+(pointA.width()/2);
+        var yStart = pointA.transform().translateY+(pointA.height()/2);
+        var xEnd = pointB.transform().translateX+(pointB.width()/2);
+        var yEnd = pointB.transform().translateY+(pointB.height()/2);
+        var link = _linksgroup.line(xStart, yStart, xEnd, yEnd).stroke({ color: "Orange",width: 4});
+        return link;
+    },
     drawRobotGrid : function(){
         // var cellWidth = 100;
         // var cellHeight = 100;

@@ -14,6 +14,7 @@ var _dragging = false;
 var _draggingTarget = null;
 var _gridActive = false;
 var _tiles = {};
+var _transitLinks = [];
 
 /**
  * Add eventlisteners
@@ -300,7 +301,13 @@ function _elementMouseUpHandler(event){
  * @param {'SVG.js object'} pointB . destination
  */
 function _establishLink(pointA, pointB){
-    var linktype = pointA.node.getAttributeNS(_smartcityNamespace, "type");
+    // Get type
+    var pointAType = pointA.node.getAttributeNS(_smartcityNamespace, "type");
+    var pointBType = pointB.node.getAttributeNS(_smartcityNamespace, "type");
+    var linktype;
+    if(pointAType === pointBType){
+        linktype = pointAType;
+    }
     var link;
     if(linktype === "car_wp"){
         link = visualisationCore.drawCarLink(pointA, pointB);
@@ -311,6 +318,12 @@ function _establishLink(pointA, pointB){
         link = visualisationCore.drawDroneLink(pointA, pointB);
         link.attr("id", "drone_link_" + pointA.attr("id") + "_" + pointB.attr("id"));
         link.attr('type', "drone_link", _smartcityNamespace);
+    }
+    else{
+        // Type is Transitlink
+        link = visualisationCore.drawTransitLink(pointA, pointB);
+        link.attr("id", "transit_link-" + pointA.attr("id") + "-" + pointB.attr("id"));
+        link.attr('type', "transit_link", _smartcityNamespace);
     }
     // Set from and to attributes
     link.attr("from", pointA.attr("id"));
@@ -329,16 +342,26 @@ function _establishLink(pointA, pointB){
  * @param {*} pointB 
  */
 function _previewLink(pointA, pointB){
-    // Todo: Assert type
-   
     // Get type
-    var linktype = pointA.node.getAttributeNS(_smartcityNamespace, "type");
+    var pointAType = pointA.node.getAttributeNS(_smartcityNamespace, "type");
+    var pointBType = pointB.node.getAttributeNS(_smartcityNamespace, "type");
+    var linktype;
+    if(pointAType === pointBType){
+        linktype = pointAType;
+    }
+    else{
+        linktype = "transit";
+    }
     var previewLink;
     if(linktype === "car_wp"){
         previewLink = visualisationCore.drawCarLink(pointA, pointB);
     }
     else if(linktype === "drone_wp"){
         previewLink = visualisationCore.drawDroneLink(pointA, pointB);
+    }
+    else{
+        // Linktype is Transit
+        previewLink = visualisationCore.drawTransitLink(pointA, pointB);
     }
     previewLink.attr("id", "linkpreview");
 }
@@ -432,15 +455,14 @@ function _elementHoverInHandler(event){
     if(!_activeHoverElement){
         var target = event.currentTarget;
         var element = SVG.find("#"+target.id)[0];
-        if(element.node.getAttributeNS(_smartcityNamespace, "type").includes("tile")) return;
-        _scaleElementUp(element);
+        if(!element.node.getAttributeNS(_smartcityNamespace, "type").includes("tile")) _scaleElementUp(element);
         _activeHoverElement = element;
         // Get the type of the element: link or waypoint
         var elementType = element.node.getAttributeNS(_smartcityNamespace, "type");
 
         // Type is waypoint
         // Conditions: an activewaypoint element has been chosen, not being equally to the hover target, being a waypoint type and shiftkey is active
-        if(_activeWaypointElement && _activeWaypointElement !== element && elementType.indexOf("wp") > -1 && event.shiftKey){
+        if(_activeWaypointElement && _activeWaypointElement !== element && (elementType.indexOf("wp") > -1 || elementType.indexOf("tile") > -1)&& event.shiftKey){
             // User is choosing target for new link. Visualize a preview
             _previewLink(_activeWaypointElement, _activeHoverElement);
         }
@@ -460,7 +482,7 @@ function _elementHoverOutHandler(event){
         //console.log("element mouseout happened");
         var target = event.currentTarget;
         var element = SVG.find("#"+target.id);
-        _scaleElementDown(element);
+        if(!element[0].node.getAttributeNS(_smartcityNamespace, "type").includes("tile")) _scaleElementDown(element);
         _activeHoverElement = null;
         _removeLinkPreview();
     }
@@ -679,7 +701,8 @@ export function exportJSONMap(){
     // Output structure
     var output = {drone:{points: [], links: []},
                     racecar: {points: [], links: []},
-                    robot: {tiles: [], links: []}};
+                    robot: {tiles: [], links: []},
+                    transitlinks: []};
 
     // Loop over drone waypoints
     var drone_waypoints = SVG.find("[type=drone_wp]");
@@ -699,7 +722,7 @@ export function exportJSONMap(){
             output.racecar.points.push(racecar_point);
         }
     });
-    // Loop over drone and car links
+    // Loop over drone- and car- and transitlinks
     var carAndDroneLinks = SVG.find("#links")[0].children();
     carAndDroneLinks.forEach((element)=>{
         var link = {from: element.attr("from"), to:element.attr("to"), id:element.attr("id")}
@@ -708,6 +731,9 @@ export function exportJSONMap(){
         }
         else if(element.attr("type") === "car_link"){
             output.racecar.links.push(link);
+        }
+        else if(element.attr("type") === "transit_link"){
+            output.transitlinks.push(link);
         }
     });
     // Loop over Tiles
@@ -763,6 +789,12 @@ export function importJSONMap(map){
     });
     // Import racecar links
     map.racecar.links.forEach((link) =>{
+        var from = SVG.find("#"+link.from)[0];
+        var to = SVG.find("#"+link.to)[0];
+        _establishLink(from, to);
+    });
+    // Import transit links
+    map.transitlinks.forEach((link) =>{
         var from = SVG.find("#"+link.from)[0];
         var to = SVG.find("#"+link.to)[0];
         _establishLink(from, to);

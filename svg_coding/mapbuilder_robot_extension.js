@@ -140,7 +140,15 @@ export default class Tile {
         if([1,2,4,7,9,11].includes(this._type)){
             // Attach NS, vertical right
             var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileSVGNode);
-            ns_arrows.scale(0.5,0.9,0,0);
+            if(this._type === 11) {
+                ns_arrows.scale(0.5,0.5,0,0);
+            }
+            else if(this._type === 9){
+                ns_arrows.scale(0.5,0.5,0,48);
+            }
+            else{
+                ns_arrows.scale(0.5,0.9,0,0);
+            }
             ns_arrows.on('mouseover', builder.directionArrowHoverIn);
             ns_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
@@ -149,7 +157,16 @@ export default class Tile {
         if([1,3,5,6,8,10].includes(this._type)){
             // Attach EW, horizontal bottom
             var ew_arrows = visualisationCore.drawRobotTileDirectionsEW(0, cellsize/4-4, tileSVGNode);
-            ew_arrows.scale(0.9,0.5,0,0);
+            if(this._type === 10) {
+                ew_arrows.scale(0.5,0.5,0,0);
+            }
+            else if(this._type === 8){
+                ew_arrows.scale(0.5,0.5,48,0);
+
+            }
+            else{
+                ew_arrows.scale(0.9,0.5,0,0);
+            }
             ew_arrows.on('mouseover', builder.directionArrowHoverIn);
             ew_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
