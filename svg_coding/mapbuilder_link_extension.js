@@ -18,7 +18,9 @@ export default class Link {
         this._angle = angle;
         this._isLocal = false;
         this._status = status;
+        this._loopback = false;
         if(startNode === destinationNode) this._isLocal = true;
+        if(this.startHeading === this.destinationHeading) this._loopback = true;
     }
     get startNode(){
         return this._startNode;
@@ -46,5 +48,8 @@ export default class Link {
     }
     set status(status){
         this._status = status;
+    }
+    get loopback(){
+        return this._loopback;
     }
 }

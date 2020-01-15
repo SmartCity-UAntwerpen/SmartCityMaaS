@@ -705,7 +705,7 @@ export function getTile(id){
  * Exports the contents of the map to a JSON format
  * @returns {Object} map structure
  */
-export function exportJSONMap(){
+export function exportMap(){
     var succes = true;
     // Output structure
     var output = {drone:{points: [], links: []},
@@ -785,7 +785,7 @@ export function exportJSONMap(){
  * Construct map which is defined in JSON structure.
  * @param {Object} map . 
  */
-export function importJSONMap(map){
+export function importMap(map){
     // Import drone waypoints
     selectedWaypointType = "drone_wp";
     map.drone.points.forEach((point) => {

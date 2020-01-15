@@ -98,7 +98,9 @@ export default class Tile {
 
     /**
      * Draw the direction arrows.
-     * Regarding the DOM, arrows are appended as children of the groupnode of this tile
+     * Regarding the DOM, arrows are appended as children of the groupnode of this tile.
+     * Only intersections (X and T) have arrows. Parking tile has implicit a local loopback
+     * link. 
      */
     _generateArrows(){
         // Get the corresponding SVG node for this tile
@@ -137,7 +139,7 @@ export default class Tile {
             sw_arrows.on('mouseout', builder.directionArrowHoverOut);
         }
         // NS arrows
-        if([1,2,4,7,9,11].includes(this._type)){
+        if([1,2,4,7].includes(this._type)){
             // Attach NS, vertical right
             var ns_arrows = visualisationCore.drawRobotTileDirectionsNS(cellsize/4-4, 0, tileSVGNode);
             if(this._type === 11) {
@@ -154,7 +156,7 @@ export default class Tile {
         }
 
         // EW arrows
-        if([1,3,5,6,8,10].includes(this._type)){
+        if([1,3,5,6].includes(this._type)){
             // Attach EW, horizontal bottom
             var ew_arrows = visualisationCore.drawRobotTileDirectionsEW(0, cellsize/4-4, tileSVGNode);
             if(this._type === 10) {
@@ -169,6 +171,19 @@ export default class Tile {
             }
             ew_arrows.on('mouseover', builder.directionArrowHoverIn);
             ew_arrows.on('mouseout', builder.directionArrowHoverOut);
+        }
+        // Create active direction for parking tiles
+        if(8 === this._type){
+            this.toggleDirection("arrow_E_E");
+        }
+        else if (9 === this._type){
+            this.toggleDirection("arrow_S_S");
+        }
+        else if (10 === this._type){
+            this.toggleDirection("arrow_W_W");
+        }
+        else if (11 === this._type){
+            this.toggleDirection("arrow_N_N");
         }
     }
 
@@ -592,15 +607,14 @@ export default class Tile {
         var angle = this._calculateDirectionAngle(sourceHeading, destinationHeading);
         var link = new Link(sourceId, sourceHeading, destinationId, destinationHeading, distance, angle);
         
-
         // If local link is established, change color of this arrow.
-        if(link.isLocal){
+        if(link.isLocal && !link.loopback){
             var direction = link.startHeading + "_" + link.destinationHeading;
             // Invalid by default. Link will become valid when outbound is created
             builder.changeDirectionArrowColor(this.id, direction, "invalid");
         }
         // Check if it is an outbound link
-        else if (link.startNode === this.id) {
+        else if (link.startNode === this.id && !link.loopback) {
             // Outboud links are always valid when created
             link.status = "valid";
             // Any invalid internal links pointing to sourceHeading will become valid. 
@@ -612,6 +626,9 @@ export default class Tile {
                     l.status = "valid";
                 }
             });
+        }
+        else if(link.loopback){
+            link.status = "valid";
         }
         this._saveLink(link);
     }
@@ -646,6 +663,11 @@ export default class Tile {
         }
         else if(["ws", "nw", "en", "en", "se"].includes(direction)){
             return -90;
+        }
+        else if(["ww", "nn", "ss", "ee"].includes(direction)){
+            // Parking tile , robot should make a U-turn
+            return 180;
+
         }
         else{
             return 0;
