@@ -47,7 +47,11 @@ export default class Link {
         return this._status;
     }
     set status(status){
+        // Can't change status of loopback link, this is always valid
         this._status = status;
+        if(this._loopback){
+            this._status = "valid"; 
+        }
     }
     get loopback(){
         return this._loopback;

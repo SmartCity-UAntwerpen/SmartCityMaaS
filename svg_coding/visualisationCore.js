@@ -19,8 +19,8 @@ window.addEventListener('load', (event) => {
 
   });
 var visualisationCore = {
-    canvasWidth : 1000,
-    canvasHeight : 1000,
+    canvasWidth : 1300,
+    canvasHeight : 1300,
     robotgridgroup: null,
     gridCellSize : 100,
     droneCircleRadius : 200,

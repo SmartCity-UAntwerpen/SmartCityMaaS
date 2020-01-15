@@ -562,7 +562,7 @@ export default class Tile {
             });
             if(!sending){
                 // Remove external outbound links starting from this heading
-                this._headings[sourceHeading+"_s"].forEach((link) => {
+                this._headings[destinationHeading+"_s"].forEach((link) => {
                     if(!link.isLocal) {
                         this._deleteLink(link); // Remove locally
                         var externalDestinationId = link.destinationNode; 

@@ -825,13 +825,15 @@ export function importMap(map){
         // We construct only local links, a.k.a. directions. Non-local links will be
         // generated implicitly by the tiles itself
         // Get link headings to deduct type
-        if(link._isLocal){
+        if(link._isLocal && !link._loopback){
             var type = "arrow_" + link._startHeading.toUpperCase() + "_" + link._destinationHeading.toUpperCase();
             var tileId = link._startNode;
             var tile = getTile(tileId);
             tile.toggleDirection(type);
         }
     });
+    selectedWaypointType = null;
+    
 
 }
 
