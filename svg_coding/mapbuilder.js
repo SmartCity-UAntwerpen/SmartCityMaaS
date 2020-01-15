@@ -1,5 +1,6 @@
 import Tile from './mapbuilder_robot_extension.js';
 import * as builder from './mapbuilder.js';
+import Link from './mapbuilder_link_extension.js';
 window.builder = builder;
 
 var _smartcityNamespace = "ss";
@@ -14,7 +15,7 @@ var _dragging = false;
 var _draggingTarget = null;
 var _gridActive = false;
 var _tiles = {};
-var _transitLinks = [];
+var _linklocks = [];
 
 /**
  * Add eventlisteners
@@ -701,7 +702,7 @@ export function exportJSONMap(){
     // Output structure
     var output = {drone:{points: [], links: []},
                     racecar: {points: [], links: []},
-                    robot: {tiles: [], links: []},
+                    robot: {tiles: [], links: [], locks: []},
                     transitlinks: []};
 
     // Loop over drone waypoints
@@ -748,12 +749,19 @@ export function exportJSONMap(){
                 // Loop over links in this heading
                 tile.headings[headingId].forEach((link) =>{
                     // Check if this link is valid
-                    if(link.status === "valid") output.robot.links.push(link);
+                    if(link.status === "valid") {
+                        // Get linklock
+                        var lockId = _getLinkLockId(link);
+                        output.robot.locks.push({id:lockId});
+                        link._lockId = lockId;
+                        output.robot.links.push(link);
+                    }
                     if(link.status === "invalid"){
                         succes = false;
                         window.alert("Please solve invalid robot links before exporting the map.");
                     }
                 });
+                
             }
         }
     }
@@ -793,16 +801,16 @@ export function importJSONMap(map){
         var to = SVG.find("#"+link.to)[0];
         _establishLink(from, to);
     });
+    // Import robot tiles
+    map.robot.tiles.forEach((tile)=>{
+        selectedWaypointType = "robot_tile_"+tile.type;
+        createNewWaypoint(tile.x, tile.y, tile.id);
+    });
     // Import transit links
     map.transitlinks.forEach((link) =>{
         var from = SVG.find("#"+link.from)[0];
         var to = SVG.find("#"+link.to)[0];
         _establishLink(from, to);
-    });
-    // Import robot tiles
-    map.robot.tiles.forEach((tile)=>{
-        selectedWaypointType = "robot_tile_"+tile.type;
-        createNewWaypoint(tile.x, tile.y, tile.id);
     });
     // Import robot links
     map.robot.links.forEach((link)=>{
@@ -817,4 +825,25 @@ export function importJSONMap(map){
         }
     });
 
+}
+
+/**
+ * Ask locknumber for link. Each tile combination of start and destination has a unique lock.
+ * E.g.: Local links (i.e. links within the same tile) have the same linklock. Two external links between
+ * same tiles share also the a linklock.
+ * 
+ * @param {Link} link 
+ */
+function _getLinkLockId(link){
+    // Sort start and destination alphabetically. A lock is multi-directional.
+    var tileCombo = (link.startNode < link.destinationNode) ? {from: link.startNode, to: link.destinationNode} : {from: link.destinationNode, to: link.startNode}
+    var index = _linklocks.indexOf(tileCombo);
+    if(index > -1){
+        return index;
+    }
+    else {
+        // array.push returns the new length of the array. We want the index to which
+        // this newly inserted tileCombo belongs. Index of last element = length-1
+        return _linklocks.push(tileCombo)-1;
+    }
 }
