@@ -93,3 +93,5 @@ var robottile_directions_NE = '<g transform="matrix(1 0 0 1 150 150)" type="arro
 var robottile_directions_EW = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_E_W"><path type="arrow_W_E" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 0 0 h 50"></path><path type="arrow_E_W" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 55 15 h -50"></path></g>';
 
 var robottile_directions_NS = '<g transform="matrix(1 0 0 1 150 150)" type="arrows_N_S"><path type="arrow_N_S" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 0 0 v 50"></path><path type="arrow_S_N" stroke-width="3" marker-end="url(#arrow)" stroke="CornflowerBlue" fill="none"  d="M 16 55 v -50"></path></g>';
+
+var droneWaypointCircle = '<circle id="" fill="none" stroke-width="3" type="droneCircle" stroke="grey" r="200" cy="0" cx="0"></circle>';

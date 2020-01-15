@@ -359,6 +359,14 @@ function _previewLink(pointA, pointB){
     }
     else if(linktype === "drone_wp"){
         previewLink = visualisationCore.drawDroneLink(pointA, pointB);
+        // Get length of link.
+        // Drone link maximum length is 1m. 
+        // 1m = 200px;
+        var linkLength = previewLink.node.getTotalLength();
+        if(linkLength > 200){
+            // Link must me marked invalid
+            previewLink.attr("stroke", "red");
+        }
     }
     else{
         // Linktype is Transit
@@ -831,7 +839,6 @@ export function importJSONMap(map){
  * Ask locknumber for link. Each tile combination of start and destination has a unique lock.
  * E.g.: Local links (i.e. links within the same tile) have the same linklock. Two external links between
  * same tiles share also the a linklock.
- * 
  * @param {Link} link 
  */
 function _getLinkLockId(link){

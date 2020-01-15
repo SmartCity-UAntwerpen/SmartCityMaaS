@@ -23,6 +23,7 @@ var visualisationCore = {
     canvasHeight : 1000,
     robotgridgroup: null,
     gridCellSize : 100,
+    droneCircleRadius : 200,
     helloWorld: "Hi there",
     sayHelloWorld : function(a){
         console.log(a);
@@ -109,8 +110,6 @@ var visualisationCore = {
         return link;
     },
     drawRobotGrid : function(){
-        // var cellWidth = 100;
-        // var cellHeight = 100;
         var columns = Math.floor(this.canvasWidth/this.gridCellSize);
         var rows = Math.floor(this.canvasHeight/this.gridCellSize);
         for(var i = 0; i<rows;i++){
@@ -191,7 +190,9 @@ var visualisationCore = {
     drawRobotTileDirectionsNE : function(x,y, tile){
         return this._drawAndTranslate(x,y,robottile_directions_NE,tile);
     },
-
+    drawDroneCircle : function(x,y){
+        return this._drawAndTranslate(x,y,droneWaypointCircle, mapDrawer);
+    },
     drawLibrary : function(){
         // Plot a library for the mapbuilder
         // Car gas, drone helipad, robot tiles
