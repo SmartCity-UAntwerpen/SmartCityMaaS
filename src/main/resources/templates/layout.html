@@ -122,6 +122,49 @@
             </header>
         </div>
 
+        <div th:fragment="header3(pagename)" id="header">
+            <!--div class="row">
+                <header id="nav-header" class="clearfix">
+                    <div class="hidden-lg hidden-md hidden-sm col-xs-1">
+                        <nav class="navbar-default pull-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#side-menu">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="col-md-7 col-sm-7 hidden-xs" id="header-title">
+                        <b><span class="webapp-name" th:text="#{appname}">APPNAME</span>:</b> <span id="top-title" th:text="${pagename}"></span>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-10 pull-right">
+                        <ul class="navbar-ul pull-right">
+                            <li>
+                                <a href="/logout" class="btn-small red logout">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            </div-->
+            <nav>
+                <div class="nav-wrapper light-blue darken-3">
+                    <a><span class="brand-logo center" th:text="${pagename}">APPNAME</span></a>
+                    <ul class="left hide-on-med-and-up">
+                        <li>
+                            <a class="collapsed" data-toggle="offcanvas" data-target="#side-menu"><i class="fas fa-bars"></i></a>
+                        </li>
+                    </ul>
+                    <ul class="right hide-on-med-and-down">
+                        <li><a href="/logout" class="btn-small red lighten-1 logout"><span class="glyphicon glyphicon-log-out"></span>Log out</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
         <div class="dashboard-con">
             <div class="row">
                 <!-- Afhankelijk van het aantal notificaties, een aangepaste melding weergeven -->

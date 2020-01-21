@@ -12,6 +12,7 @@
     <link href="/css/cards.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
     <link href="/css/adminp.css" rel="stylesheet" />
+
 </head>
 
 <body onload="initFunction()" style="margin:0;">
@@ -22,7 +23,7 @@
         <div th:replace="layout :: side-menu"></div>
 
         <div class="main_container col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
-            <div th:replace="layout :: header('Delivery')"></div>
+            <div th:replace="layout :: header3('Delivery')"></div>
             <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
             <div class="inside-con">
 
@@ -33,9 +34,13 @@
 
                 <div class="row">
                     <div class="col-sm-12 content" id="content" ><!--style="width:100%">-->
-                            <div id="myMapCanvas" >
-                                <canvas id="mapCanvas"></canvas>
+                        <div class="box b" id="map">
+                            <div class="zoom-button-container">
+                                <button class="btn-small white" type="button" onclick="zoomIn()" id="zoomInBtn"><i class="fas fa-plus grey-text text-darken-2"></i></button>
+                                <button class="btn-small white" type="button" onclick="zoomOut()" id="zoomOutBtn"><i class="fas fa-minus grey-text text-darken-2"></i></button>
                             </div>
+
+                        </div>
                             <form action="#" th:action="@{/deliveries/${id}(id=${delivery.orderID})}" th:object="${delivery}"  method="post">
                                 <input th:type="hidden" th:field="*{id}"/>
 
@@ -87,6 +92,10 @@
                                 </div>
 
                                 <div>
+                                    <input class="form-control" th:type="hidden" id="del_type" type="text" th:field="*{type}" />
+                                </div>
+
+                                <div>
                                     <label id="passengersLabel" th:text="#{passengers}">Passengers</label>
                                     <select id="passengersSelect" th:field="*{passengers}">
                                         <option th:each="passenger : ${allPassengers}"
@@ -108,10 +117,17 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    var hideMapBuilder = true;
+</script>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script src="/js/tabs.js"></script>
+<script src="/js/svg.js"></script>
+<script src="/js/visualisationCore.js"></script>
+<script src="/js/figures.js"></script>
 <script th:inline="javascript">
     var only_view = false;
     var visualization = false;
@@ -134,5 +150,7 @@
     });
 </script>
 <script  src="/js/map.js"></script>
+<script src="https://kit.fontawesome.com/ecdecbd5a1.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
 </body>
 </html>

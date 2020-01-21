@@ -1,7 +1,10 @@
 package be.uantwerpen.controller;
 
 import be.uantwerpen.visualization.model.DummyPoint;
+import be.uantwerpen.visualization.model.Link;
+import be.uantwerpen.visualization.model.Tile;
 import be.uantwerpen.visualization.model.World;
+import com.google.gson.Gson;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -59,10 +62,99 @@ public class DataController {
      * @return The world
      */
     @RequestMapping(value = "/retrieveWorld") // Request from http
-    public World getWorld() {
+    public JSONObject getWorld() {
         logger.info("/retrieveWorld requested");
-        if (myWorld == null) {
-            List<DummyPoint> listPoints = getMapDataBackend();
+        //if (myWorld == null) {
+        JSONObject data = getMapDataBackend();
+        Gson gson = new Gson();
+
+        JSONObject robot = (JSONObject) data.get("robot");
+        JSONObject drone = (JSONObject) data.get("drone");
+        JSONObject car = (JSONObject) data.get("racecar");
+
+        JSONArray tempCarLinks = (JSONArray) car.get("links");
+        JSONArray tempCarPoints = (JSONArray) car.get("points");
+
+        JSONArray tempDroneLinks = (JSONArray) drone.get("links");
+        JSONArray tempDronePoints = (JSONArray) drone.get("points");
+
+
+
+        JSONArray tempLinks = (JSONArray) robot.get("links");
+        JSONArray tempTiles = (JSONArray) robot.get("tiles");
+
+        List<Tile> tiles = new ArrayList<Tile>();
+        List<Link> links = new ArrayList<Link>();
+
+        List<Tile> carPoints = new ArrayList<Tile>();
+        List<Link> carLinks = new ArrayList<Link>();
+
+        List<Tile> dronePoints = new ArrayList<Tile>();
+        List<Link> droneLinks = new ArrayList<Link>();
+
+
+
+        for (int i = 0; i < tempTiles.size(); i++) {
+            JSONObject obj = (JSONObject) tempTiles.get(i);
+            Tile tile = gson.fromJson(obj.toJSONString(), Tile.class);
+            tiles.add(tile);
+        }
+
+        for (int i = 0; i < tempLinks.size(); i++) {
+            JSONObject obj = (JSONObject) tempLinks.get(i);
+            Link link = gson.fromJson(obj.toJSONString(), Link.class);
+            for (Tile t: tiles) {
+                if (t.id.equals(link._destinationNode)) {
+                    link.destination = t;
+                }
+                if (t.id.equals(link._startNode)) {
+                    link.start = t;
+                }
+            }
+            links.add(link);
+        }
+
+        for (int i = 0; i < tempCarPoints.size(); i++) {
+            JSONObject obj = (JSONObject) tempCarPoints.get(i);
+            Tile tile = gson.fromJson(obj.toJSONString(), Tile.class);
+            carPoints.add(tile);
+        }
+
+        for (int i = 0; i < tempCarLinks.size(); i++) {
+            JSONObject obj = (JSONObject) tempCarLinks.get(i);
+            Link link = gson.fromJson(obj.toJSONString(), Link.class);
+            for (Tile t: carPoints) {
+                if (t.id.equals(link.to)) {
+                    link.destination = t;
+                }
+                if (t.id.equals(link.from)) {
+                    link.start = t;
+                }
+            }
+            carLinks.add(link);
+        }
+
+        for (int i = 0; i < tempDronePoints.size(); i++) {
+            JSONObject obj = (JSONObject) tempDronePoints.get(i);
+            Tile tile = gson.fromJson(obj.toJSONString(), Tile.class);
+            dronePoints.add(tile);
+        }
+
+        for (int i = 0; i < tempDroneLinks.size(); i++) {
+            JSONObject obj = (JSONObject) tempDroneLinks.get(i);
+            Link link = gson.fromJson(obj.toJSONString(), Link.class);
+            for (Tile t: dronePoints) {
+                if (t.id.equals(link.to)) {
+                    link.destination = t;
+                }
+                if (t.id.equals(link.from)) {
+                    link.start = t;
+                }
+            }
+            droneLinks.add(link);
+        }
+
+
 
         /*
             !!! The dimensions of the world must in the right ration with the Mapcanvas from the  html file !!!
@@ -71,14 +163,17 @@ public class DataController {
             Example: html : width : 900 height : 900 ==> world : 900,900
          */
             myWorld = new World(300, 300);
-            logger.info("World's listPoints size is " + listPoints.size());
             //myWorld.parseMap(listPoints);
             myWorld.setWorld_ID("world1");
             //this.world.parseMap(listPoints);
             worlds.add(myWorld);
-            myWorld.setPoints(listPoints);
-        }
-        return myWorld;
+            //myWorld.setPoints(listPoints);
+        myWorld.links = links;
+        myWorld.droneLinks = droneLinks;
+        myWorld.carLinks = carLinks;
+
+        //}
+        return data;
     }
 
     /**
@@ -86,7 +181,7 @@ public class DataController {
      *
      * @return List of DummyPoints
      */
-    private List<DummyPoint> getMapDataBackend() {
+    private JSONObject getMapDataBackend() {
         logger.info("/dataCore requested, retrieve map from backend");
         return backendRestTemplate.getDataBackend();
     }
@@ -180,8 +275,8 @@ public class DataController {
      * param type    The type of the vehicle
      * return Returns a JSON response [x, y, percentage, status]
      */
-    @RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startId}/{endId}/{type}")
-    public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int mapId, @PathVariable int startId, @PathVariable int endId, @PathVariable String type) {
+    @RequestMapping(value = "/{worldId}/progress/{jobId}/{mapId}/{startX}/{startY}/{endX}/{endY}/{startID}/{endID}")
+    public JSONObject getProgress(@PathVariable String worldId, @PathVariable int jobId, @PathVariable int mapId, @PathVariable int startX, @PathVariable int startY, @PathVariable int endX, @PathVariable int endY, @PathVariable int startID, @PathVariable int endID) {
         World world = new World();
         for (World world1 : worlds) {
             if (world1.getWorld_ID().equals(worldId)) {
@@ -215,7 +310,7 @@ public class DataController {
             int x = 0;
             int y = 0;
             if (status.equals("BUSY")) {
-                int[] coordinatesVehicle_temp = world.getDistance(mapId, startId, endId, (double) (progress) / 100.0, type);
+                int[] coordinatesVehicle_temp = world.getDistance(mapId, startX, startY, endX, endY, startID, endID, (double) (progress) / 100.0);
                 x = coordinatesVehicle_temp[0];
                 y = coordinatesVehicle_temp[1];
             }
@@ -223,6 +318,7 @@ public class DataController {
             response.put("y", y);
             response.put("progress", progress);
             response.put("status", status);
+            logger.info("progress = "  + progress);
         } catch (ParseException e) { // | IOException
             logger.error("ParseException", e);
         }
@@ -230,11 +326,14 @@ public class DataController {
         return response;
     }
 
-    @RequestMapping(value = "/{worldId}/delivery/{delivery_id}")
-    public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String delivery_id) {
-        logger.info("getting delivery: " + delivery_id);
+    @RequestMapping(value = "/abortJob/{jobID}")
+    public JSONObject abortJob(@PathVariable int jobID) {
+
+        JSONObject response = new JSONObject();
+
         JSONObject jsonObject = new JSONObject();
-        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/jobs/findOneByOrder/" + delivery_id;
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/job/service/abortJob/" + jobID;
+        logger.info("Abort URL = " + URL);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -243,13 +342,46 @@ public class DataController {
                 HttpMethod.GET,
                 entity,
                 String.class);
-        String delivery = httpResponse.getBody();
+        String httpBody = httpResponse.getBody();
         JSONParser parser = new JSONParser();
         try {
+            //Object obj = parser.parse(new FileReader("testdata/getJobProgress"+jobId+".txt"));
+            Object obj = parser.parse(httpBody);
+            jsonObject = (JSONObject) obj;
+            String status = (String) jsonObject.get("Report");
+
+            logger.info("Report: "  + status);
+        } catch (ParseException e) { // | IOException
+            logger.error("ParseException", e);
+        }
+
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "/{worldId}/delivery/{order_id}")
+    public JSONObject getDelivery(@PathVariable String worldId, @PathVariable String order_id) {
+        logger.info("getting delivery: " + order_id);
+        JSONObject jsonObject = new JSONObject();
+        String URL = "http://" + serverCoreIP + ":" + serverCorePort + "/deliveries/getByOrderId/" + order_id;
+        logger.info("calling backbone endpoint: " + URL);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        try {
+            HttpEntity<String> httpResponse = restTemplate.exchange(
+                URL,
+                HttpMethod.GET,
+                entity,
+                String.class);
+        String delivery = httpResponse.getBody();
+        JSONParser parser = new JSONParser();
             Object obj = parser.parse(delivery);
             jsonObject = (JSONObject) obj;
         } catch (ParseException e) { //IOException
             logger.error("ParseException", e);
+        } catch (Exception e) {
+            logger.error("Error bij abort");
+            return null;
         }
         return jsonObject;
     }

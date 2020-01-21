@@ -1,7 +1,7 @@
 /**
  */
 
-let delta = 1;
+let delta = 10;
 
 let _smartcityNamespace = 'SC';
 
@@ -37,6 +37,21 @@ var traveledCarPath = [];
 var jobs = [];
 var jobLists = [];
 
+var droneDefault;
+var dronePointA;
+var dronePointB;
+var carDefault;
+var carPointA;
+var carPointB;
+var robotDefault;
+var robotPointA;
+var robotPointB;
+var robotIcon;
+var robotIconTarget;
+var droneIcon;
+var droneIconTarget;
+var racecarIcon;
+var racecarIconTarget;
 var lightGreenIcon;
 var lightRedIcon;
 
@@ -44,7 +59,7 @@ var vehiclesInterval;
 var trafficInterval;
 
 
-var trackingInterval = 500;
+var trackingInterval = 1000;
 var iconSize = 8;
 
 
@@ -101,6 +116,14 @@ function getWorld(){
         worldLoaded = true;
         console.log(result);
 
+        var ratio = world.dimensionX/world.dimensionY;
+        /*$("#mapCanvas").width($("#myMapCanvas").width()).height( $("#myMapCanvas").width()/ratio ).attr("width", $("#mapCanvas").width()).attr("height", $("#mapCanvas").height());
+
+
+        console.log("mapX = " + document.getElementById("mapCanvas").offsetWidth + " mapY = " + document.getElementById("mapCanvas").offsetHeight);
+        xSize = (document.getElementById("mapCanvas").offsetWidth/world.dimensionX);
+        ySize = (document.getElementById("mapCanvas").offsetHeight/world.dimensionY);*/
+        console.log(" x size = " + xSize + " y size = " + ySize);
         drawWorld();
         showPage();
     }).fail(function() {
@@ -111,60 +134,138 @@ function getWorld(){
 function getDeliveries() {
     $.getJSON("/orders", function(result) {
         orders = result;
+        print("test")
     })
 }
 
 
 function drawWorld(){
 
-    world.racecar.points.forEach((point) => {
-        let drawing = visualisationCore.drawCarGas(point.x * delta, point.y * delta);
-        drawing.attr('id', point.id);
-        drawing.attr('mapID', world.racecar.mapId, _smartcityNamespace);
-        drawing.attr('pointID', point.pointName, _smartcityNamespace);
-        drawing.attr('vehicleType', "racecar", _smartcityNamespace);
-    });
+    //ctx = mapCanvas.getContext("2d");
 
-    world.drone.points.forEach((point) => {
-        let drawing = visualisationCore.drawDroneHelipad(point.x * delta, point.y * delta);
-        drawing.attr('id', point.id);
-        drawing.attr('mapID', world.drone.mapId, _smartcityNamespace);
-        drawing.attr('pointID', point.pointName, _smartcityNamespace);
-        drawing.attr('vehicleType', "drone", _smartcityNamespace);
-    });
-    world.robot.tiles.forEach((tile) => {
-        let point = tile;
-        let drawing = visualisationCore.drawRobotTile(point.type, point.x * delta, point.y * delta);
-        drawing.attr('id', point.id);
-        drawing.attr('mapID', world.robot.mapId, _smartcityNamespace);
-        drawing.attr('pointID', point.pointName, _smartcityNamespace);
-        drawing.attr('vehicleType', "robot", _smartcityNamespace);
-        drawing.attr('tileType', point.type, _smartcityNamespace);
-    });
+    for(var i=0; i<world.points.length; i++){
+        var point = world.points[i];
 
-    world.drone.links.forEach((drone) => {
-        let from = findSVGById(drone.from);
-        let to = findSVGById(drone.to);
-        let type = getAttribute(from, "vehicleType");
-        drawLink(type, from, to, false);
-    });
+        var drawing;
+        if( point.pointCharacteristic === "INTERSECTION"){
+            drawing = visualisationCore.drawIntersection(point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+        } else {
+            switch (point.type) {
+                case "robot":
+                    // check for id
+                    if (point.pointCharacteristic === "LIGHT") {
+                        if (!point.status) { // if it has no status, just make in green (bv in delivery)
+                            point.status = lightGreenIcon;
+                        }
+                        //drawing = visualisationCore.drawRobotCharge(point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+                        drawing = visualisationCore.drawRobotTile(point.pointName, point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+                    } else {
+                        //drawing = visualisationCore.drawRobotCharge(point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+                        drawing = visualisationCore.drawRobotTile(point.pointName, point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+                    }
+                    break;
+                case "car":
+                    drawing = visualisationCore.drawCarGas(point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+                    break;
+                case "drone":
+                    drawing = visualisationCore.drawDroneHelipad(point.physicalPoisionX*delta, point.physicalPoisionY*delta);
+                    break;
+            }
+        }
+        if (typeof drawing !== 'undefined') {
+            drawing.attr('id', "svg_"+point.mapId+"_"+point.pointName);
+            drawing.attr('mapID', point.mapId, _smartcityNamespace);
+            drawing.attr('pointID', point.pointName, _smartcityNamespace);
+            drawing.attr('vehicleType', point.type, _smartcityNamespace);
+        }
+    }
 
-    world.racecar.links.forEach((racecar) => {
-        let from = findSVGById(racecar.from);
-        let to = findSVGById(racecar.to);
-        let type = getAttribute(from, "vehicleType");
-        drawLink(type, from, to, false);
-    });
+    for(var index=0; index<world.points.length; index++) {
+        point = world.points[index];
+
+        for (var j = 0; j < point.neighbours.length; j++) {
+            var neigbourID = point.neighbours[j];
+            var neigbour = $.grep(world.points, function (e) {
+                return e.mapId === point.mapId && e.pointName === neigbourID;
+            })[0];
+            var linkAlreadyDrawn = false;
+            for (var k = 0; k < linksDrawn.length; k++) {
+                if (linksDrawn[k].map === point.mapId) {
+                    if (linksDrawn[k].end === point.pointName && linksDrawn[k].start === neigbourID) {
+                        linkAlreadyDrawn = true;
+                        break;
+                    } else if (linksDrawn[k].start === point.pointName && linksDrawn[k].end === neigbourID) {
+                        linkAlreadyDrawn = true;
+                        break;
+                    }
+                }
+            }
+            if (!linkAlreadyDrawn) {
+                linksDrawn.push({map: point.mapId, start: point.pointName, end: neigbourID});
+                let start = SVG.find("#svg_"+point.mapId+"_"+point.pointName)[0];
+                let end = SVG.find("#svg_"+point.mapId+"_" + neigbourID)[0];
+                drawLink(point.type, start, end, false);
+            }
+        }
+    }
 
     document.getElementById("loader").style.display = "none";
     map_ready = true;
 
 }
 
+/**
+ * Shows a loading animation when data is loaded.
+ * When all information is tranferred to the html page, the functional elements are shown while to loading animation
+ * is hidden.
+ */
+function showPage() {
+    if(map_ready === false) {
+        if(only_view === false)
+        {
+            // Hide the devices,labels,... and show them when the that og the map is loaded.
+            document.getElementById("content").style.visibility = "hidden";
+            document.getElementById("passengersLabel").style.visibility = "hidden";
+            document.getElementById("passengersSelect").style.visibility = "hidden";
+        }else
+        {
+            if(visualization === false) {
+                document.getElementById("content").style.visibility = "hidden";
+                document.getElementById("passengersLabel").style.visibility = "hidden";
+                document.getElementById("passengersNumber").style.visibility = "hidden";
+                document.getElementById("pointALabel").style.visibility = "hidden";
+                document.getElementById("pointAtext").style.visibility = "hidden";
+                document.getElementById("pointBLabel").style.visibility = "hidden";
+                document.getElementById("pointBtext").style.visibility = "hidden";
+                document.getElementById("deliveryIDLabel").style.visibility = "hidden";
+                document.getElementById("deliveryID").style.visibility = "hidden";
+                document.getElementById("deliveryDone").style.visibility = "hidden";
 
-
-
-
+            }else
+            {
+                document.getElementById("table_deliveries").style.visibility = "hidden";
+            }
+        }
+    }else
+    {
+        if(only_view === false)
+        {
+            document.getElementById("content").style.visibility = "visible";
+        }else
+        if(visualization === false) {
+            document.getElementById("content").style.visibility = "visible";
+            document.getElementById("pointALabel").style.visibility = "visible";
+            document.getElementById("pointAtext").style.visibility = "visible";
+            document.getElementById("pointBLabel").style.visibility = "visible";
+            document.getElementById("pointBtext").style.visibility = "visible";
+            document.getElementById("deliveryIDLabel").style.visibility = "visible";
+            document.getElementById("deliveryID").style.visibility = "visible";
+        }else
+        {
+            document.getElementById("table_deliveries").style.visibility = "visible";
+        }
+    }
+}
 
 function getJobVehicles(){
     if (jobs.length === 0){
@@ -172,30 +273,30 @@ function getJobVehicles(){
     }
     //reDrawWorld();
     var allDone = false;
-    for (let i = 0; i < jobs.length; i++) {
+    for (var i = 0; i < jobs.length; i++) {
         (function(i){
-            $.getJSON("/world1/progress/" + jobs[i].id + "/" + jobs[i].idMap + "/" + jobs[i].startPoint.x + "/" + jobs[i].startPoint.y + "/" + jobs[i].endPoint.x + "/" + jobs[i].endPoint.y + "/" + jobs[i].startPoint.pointName + "/" + jobs[i].endPoint.pointName, function (progress) {
+            $.getJSON("/world1/progress/" + jobs[i].id + "/" + jobs[i].idMap + "/" + jobs[i].idStart + "/" + jobs[i].idEnd + "/" + jobs[i].startPoint.type, function (progress) {
                 //progress = [x, y, progress, status]
                 switch (progress.status) {
                     case "TODO":
                         //ctx.strokeStyle = '#d90d1d';
-                        //drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);
-                        drawVehicle(jobs[i].startPoint.type, jobs[i].startPoint.x, jobs[i].startPoint.y, false, jobs[i].startPoint);
+                        drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);
+                        drawVehicle(jobs[i].startPoint.type, jobs[i].startPoint.physicalPoisionX, jobs[i].startPoint.physicalPoisionY, false, jobs[i].startPoint);
                         break;
                     case "DONE":
                         if(i === jobs.length-1){
                             allDone = true;
                         }
                         //ctx.strokeStyle = '#00d900';
-                        //drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);
-                        drawVehicle(jobs[i].endPoint.type, jobs[i].endPoint.x, jobs[i].endPoint.y, false, jobs[i].startPoint);
+                        drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);
+                        drawVehicle(jobs[i].endPoint.type, jobs[i].endPoint.physicalPoisionX, jobs[i].endPoint.physicalPoisionY, false, jobs[i].startPoint);
                         break;
                     case "BUSY":
                         /*ctx.strokeStyle = '#d90d1d';
                         drawLink(jobs[i].startPoint.type, jobs[i].startPoint, jobs[i].endPoint, true);*/
                         var endPoint = {
-                            "x": progress.x,
-                            "y": progress.y,
+                            "physicalPoisionX": progress.x,
+                            "physicalPoisionY": progress.y,
                             "pointName": jobs[i].endPoint.pointName
                         };
                         console.log("New position:");
@@ -204,7 +305,7 @@ function getJobVehicles(){
                         if (jobs[i].startPoint.type === "car") { // car difficult to track
                             //trackCarLink(jobs[i].startPoint, endPoint, jobs[i].endPoint, progress.progress/100);
                         } else {
-                            //drawLink(jobs[i].startPoint.type, jobs[i].startPoint, endPoint, true);
+                            drawLink(jobs[i].startPoint.type, jobs[i].startPoint, endPoint, true);
                         }
                         drawVehicle(jobs[i].startPoint.type, progress.x, progress.y, true, jobs[i].startPoint);
                         break;
@@ -214,23 +315,7 @@ function getJobVehicles(){
                 }
 
                 $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" .prog").text(progress.progress);
-                if (progress.status === "BUSY") {
-                    $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge green");
-                    $("#progress_" + jobs[i].id).attr("class","determinate");
-                    $("#progress_" + jobs[i].id).attr("style", "width: " + progress.progress + "%");
-                } else if (progress.status === "TODO") {
-                    $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge grey");
-                    $("#progress_" + jobs[i].id).attr("class","indeterminate");
-                    $("#progress_" + jobs[i].id).attr("style", "width: " + progress.progress + "%");
-                } else if (progress.status === "DONE" ){
-                    $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge grey");
-                    $("#progress_" + jobs[i].id).attr("class","determinate");
-                    $("#progress_" + jobs[i].id).attr("style", "width: " + 100 + "%");
-                }
-                else {
-                    $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge red");
-                }
-                $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").text(progress.status);
+                $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" .stat").text(progress.status);
             }).fail(function() {
                 showError("Delivery job " + jobs[i].id + " not found!");
             });
@@ -253,103 +338,6 @@ function getJobVehicles(){
 
 // is used inline: visualization_map.html
 function trackDelivery(deliveryId){
-    $('.track').text("TRACK");
-    if(currentDeliveryId !== deliveryId) {
-        currentDeliveryId = deliveryId;
-        $("#"+deliveryId + " .track").text('UNTRACK');
-        var startPoint;
-        var endPoint;
-
-        $("#"+currentDeliveryId + "-jobs .deliveryJobs").empty();
-        $.getJSON("/world1/delivery/" + deliveryId).done(function (delivery) {
-            console.log(delivery);
-            jobLists = delivery.jobLists;
-            for (var j = 0; j < jobLists.length; j++) {
-                jobs = jobLists[j].jobs;
-                for (var i = 0; i < jobs.length; i++) {
-
-                    startPoint = findPointByPointNameAndMapID(jobs[i].idStart, jobs[i].idMap);
-                    /*startPoint = $.grep(world.points, function (e) {
-                        return e.pointName === jobs[i].idStart && e.mapId === jobs[i].idMap;
-                    })[0];*/
-                    jobs[i].startPoint = startPoint;
-
-                    endPoint = findPointByPointNameAndMapID(jobs[i].idEnd, jobs[i].idMap);
-
-                    /*endPoint = $.grep(world.points, function (e) {
-                        return e.pointName === jobs[i].idEnd && e.mapId === jobs[i].idMap;
-                    })[0];*/
-                    jobs[i].endPoint = endPoint;
-
-                    //SHOW IN FRONTEND:
-                    var progressBarString = "<div class='progress' style='width: 50%'> <div class='indeterminate' id='progress_" +jobs[i].id+ "' style='width: 0%'></div></div>";
-                    $("#" + currentDeliveryId + "-jobs .deliveryJobs").append(
-                        "<div class='card-panel'><p class=" + jobs[i].id + ">Start: " + jobs[i].idStart +
-                        " - End: " + jobs[i].idEnd +
-                        " - Map: " + jobs[i].idMap +
-                        " - Progress: <span class='prog'>0</span>% <span id='stat' class='stat new badge grey' style='float: none; margin-left: 0.8em' data-badge-caption=''>" + jobs[i].status + "</span></p>" + progressBarString + "</div>"
-                    );
-                    if (jobs[i].idMap === "2" || jobs[i].idMap === 2) {
-                        $("#" + currentDeliveryId + "-jobs .deliveryJobs").append(
-                            "<button class='btn-small red' onclick='abortJob(" + jobs[i].id + ")'>ABORT</button>"
-                        );
-                    }
-                    if (jobs[i].status === "BUSY") {
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge green");
-                    } else if (jobs[i].status === "DONE" || jobs[i].status === "TODO") {
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge grey");
-                    } else {
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge red");
-                    }
-
-                    if (jobs[i].status === "BUSY") {
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge green");
-                        $("#progress_" + jobs[i].id).attr("class","determinate");
-                        $("#progress_" + jobs[i].id).attr("style", "width: 0%");
-                    } else if (jobs[i].status === "TODO") {
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge grey");
-                        $("#progress_" + jobs[i].id).attr("class","indeterminate");
-                        $("#progress_" + jobs[i].id).attr("style", "width: 0%");
-                    } else if (jobs[i].status === "DONE" ){
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge grey");
-                        $("#progress_" + jobs[i].id).attr("class","determinate");
-                        $("#progress_" + jobs[i].id).attr("style", "width: " + 100 + "%");
-                    }
-                    else {
-                        $("#"+currentDeliveryId + "-jobs ."+jobs[i].id+" #stat").attr("class", "new badge red");
-                    }
-                }
-            }
-        }).fail(function() {
-            showError("Delivery "+ deliveryId +" not found!");
-        });
-        vehiclesInterval = setInterval(getJobVehicles, trackingInterval);
-    } else {
-        currentDeliveryId = -1;
-        reDrawWorld();
-        clearInterval(vehiclesInterval);
-        jobs = [];
-        var trackedVehicles = SVG.find(".vehicleTrack_svg");
-        trackedVehicles.forEach(element => element.remove());
-
-    }
-}
-
-function abortJob(jobID) {
-    showWarning("Drone abort initiated");
-    console.warn("Drone abort initiated");
-    $.getJSON("/abortJob/" + jobID).done(function (delivery) {
-        if (typeof delivery.Report !== 'undefined') {
-            showWarning(delivery.Report);
-            console.warn(delivery.Report);
-        }
-    }).fail(function() {
-        showError("Drone abort failed!");
-    });
-}
-
-// is used inline: visualization_map.html
-function trackDelivery_old(deliveryId){
     $('.track').text("TRACK");
     if(currentDeliveryId !== deliveryId) {
         currentDeliveryId = deliveryId;
@@ -406,11 +394,19 @@ function reDrawWorld(){
 }
 
 function drawLink(type, startpoint, endpoint, track){
+    //if (startpoint.node.attributes["vehicleType"] !== endpoint.node.attributes["vehicleType"]) { return; }
+    /*ctx.beginPath();
+    if(track){
+        ctx.setLineDash([20, 5]);
+        ctx.lineWidth = 3;
+    }
 
+
+    ctx.moveTo(startpoint.physicalPoisionX*xSize,startpoint.physicalPoisionY*ySize);
+*/
     if (typeof startpoint.node === 'undefined') {
-        console.warn("WARNING: startpoint (or endpoint) is of the wrong type. Searching for alternative now ...");
-        startpoint = findSVGById(startpoint.id);
-        endpoint = findSVGById(endpoint.id);
+        startpoint = SVG.find("#svg_"+startpoint.mapId+"_"+startpoint.pointName)[0];
+        endpoint = SVG.find("#svg_"+endpoint.mapId+"_" + endpoint.pointName)[0];
     }
 
     if (typeof startpoint === 'undefined' || typeof endpoint === 'undefined') { return; }
@@ -431,7 +427,7 @@ function drawLink(type, startpoint, endpoint, track){
                 //ctx.lineTo(startpoint.physicalPoisionX * xSize, endpoint.physicalPoisionY * ySize);
             }
             break;
-        case "racecar":
+        case "car":
             visualisationCore.drawCarLink(startpoint, endpoint);
             /*if (!track) {
                 ctx.setLineDash([]);
@@ -470,9 +466,12 @@ function drawLink(type, startpoint, endpoint, track){
             }*/
             break;
     }
+
+    //ctx.lineTo(endpoint.physicalPoisionX*xSize,endpoint.physicalPoisionY*ySize);
+    //ctx.stroke();
 }
 
-/*function trackCarLink(startpoint, currentpoint, endpoint, progress){
+function trackCarLink(startpoint, currentpoint, endpoint, progress){
     // Similar code in World.java
     ctx.beginPath();
     ctx.setLineDash([20, 5]);
@@ -525,7 +524,7 @@ function drawLink(type, startpoint, endpoint, track){
         ctx.lineTo(currentpoint.physicalPoisionX * xSize, currentpoint.physicalPoisionY * ySize);
     }
     ctx.stroke();
-}*/
+}
 
 function drawIcon(point) {
     var drawing;
@@ -543,7 +542,7 @@ function drawIcon(point) {
                     drawing = visualisationCore.drawRobotCharge(point.physicalPoisionX, point.physicalPoisionY);
                 }
                 break;
-            case "racecar":
+            case "car":
                 drawing = visualisationCore.drawCarGas(point.physicalPoisionX, point.physicalPoisionY);
                 break;
             case "drone":
@@ -564,12 +563,11 @@ function drawVehicle(type, x, y,selected, point){
     //if (x === 0 && y === 0) { return; }
     var drawing;
     drawing = SVG.find("#svg_"+point.mapId+"_"+point.pointName+"_"+"vehicle")[0];
-    type = getTypeOfPoint(point);
     if (typeof drawing !== 'undefined') {
-        let isRobot = type === "robot";
-        visualisationCore.moveTo(drawing, x*delta, y*delta, isRobot);
-        //drawing.animate().transform({translateX:(x*delta) + visualisationCore.gridCellSize/2,translateY:(y*delta) + visualisationCore.gridCellSize/2});
-        return;
+        //drawing.transform({translate: {x: x, y: y}});
+        //drawing.animate().move(x,y);
+        drawing.animate().transform({translateX:x*delta,translateY:y*delta});
+        //drawing.remove()
     }
     else {
         if(type === "robot") {
@@ -578,14 +576,14 @@ function drawVehicle(type, x, y,selected, point){
             } else {
                 //ctx.drawImage(robotIcon, (x * xSize) - iconSize * 3 / 2, (y * ySize) - iconSize * 3 / 2, iconSize * 3, iconSize * 3);
             }
-            drawing = visualisationCore.drawRobot(x*delta,y*delta);
-        }else if(type === "car" || type === "racecar") {
+            drawing = visualisationCore.drawRobotIcon(x*delta,y*delta);
+        }else if(type === "car") {
             if (selected) {
                 //ctx.drawImage(racecarIconTarget, ((x * xSize) - (iconSize * 3 / 2)), ((y * ySize) - (iconSize * 3 / 2)), iconSize * 3, iconSize * 3);
             } else {
                 //ctx.drawImage(racecarIcon, ((x * xSize) - (iconSize * 3 / 2)), ((y * ySize) - (iconSize * 3 / 2)), iconSize * 3, iconSize * 3);
             }
-            drawing = visualisationCore.drawCar(x*delta,y*delta);
+            drawing = visualisationCore.drawRaceCar(x*delta,y*delta);
         } else if(type === "drone") {
             if (selected) {
                 //ctx.drawImage(droneIconTarget, ((x * xSize) + iconSize * -1), (y * ySize) - iconSize * 1, iconSize * 3, iconSize * 3);
@@ -618,7 +616,7 @@ function getTrafficStatus() {
                     status = lightRedIcon;
                 }
                 point.status = status;
-                ctx.drawImage(status, (point.x * xSize) - xSize, (point.y * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
+                ctx.drawImage(status, (point.physicalPoisionX * xSize) - xSize, (point.physicalPoisionY * ySize) - ySize * 3 / 2, xSize * 3, ySize * 3);
             }
         }
     }).fail(function() {
@@ -626,24 +624,57 @@ function getTrafficStatus() {
     });
 }
 
+/**
+ * Load all the images from the html.
+ */
+
+function loadImages() {
+    droneDefault = new Image();
+    droneDefault.src = "/images/map/drone_h.png";
+    dronePointA = new Image();
+    dronePointA.src = "/images/map/drone_h_pointA.png";
+    dronePointB = new Image();
+    dronePointB.src = "/images/map/drone_h_pointB.png";
+    carDefault = new Image();
+    carDefault.src = "/images/map/car_gas.png";
+    carPointA = new Image();
+    carPointA.src = "/images/map/car_gas_pointA.png";
+    carPointB = new Image();
+    carPointB.src = "/images/map/car_gas_pointB.png";
+    robotDefault = new Image();
+    robotDefault.src = "/images/map/robot_charge.png";
+    robotPointA = new Image();
+    robotPointA.src = "/images/map/robot_charge_pointA.png";
+    robotPointB = new Image();
+    robotPointB.src = "/images/map/robot_charge_pointB.png";
+
+    robotIcon = new Image();
+    robotIcon.src = "/images/map/robotIcon.png";
+    robotIconTarget = new Image();
+    robotIconTarget.src = "/images/map/robotTargetted.png";
+    droneIcon = new Image();
+    droneIcon.src = "/images/map/droneIcon.png";
+    droneIconTarget = new Image();
+    droneIconTarget.src = "/images/map/droneTargetted.png";
+    racecarIcon = new Image();
+    racecarIcon.src = "/images/map/racecarIcon.png";
+    racecarIconTarget = new Image();
+    racecarIconTarget.src = "/images/map/raceCarTargetted.png";
+
+    lightGreenIcon = new Image();
+    lightGreenIcon.src = "/images/map/traffic_green.png";
+    lightRedIcon = new Image();
+    lightRedIcon.src = "/images/map/traffic_red.png";
+
+}
 
 function  showError(error){
-    M.toast({html: error, classes:'customToast red', displayLength: '120000'});
-    /*$("#error-bar").remove();
+    $("#error-bar").remove();
     $(".dashboard-con .row").append(
         "<div class='col-md-12 alert alert-danger' id='error-bar'>" +
         "<span>"+error+"</span>" +
         "</div>"
-    );*/
-}
-
-function showMessage(message) {
-    M.toast({html: message, classes:'customToast grey darken-4', displayLength: '6000'})
-}
-
-
-function showWarning(message) {
-    M.toast({html: message, classes:'customToast orange', displayLength: '60000'});
+    );
 }
 
 /**
@@ -651,57 +682,32 @@ function showWarning(message) {
  * @param {} event
  */
 function _mapOnClickHandler(event){
+    console.log("map click happened");
     var target = event.target;
     var point = target.parentNode;
-    if (point.getAttribute("id") === "map") {
-        pointA = null;
-        pointAset = false;
-        pointB = null;
-        pointBset = false;
-        document.getElementById("inputA").value = null;
-        document.getElementById("mapA").value = null;
-        document.getElementById("inputB").value = null;
-        document.getElementById("mapB").value = null;
-        document.getElementById('saveDelivery').style.visibility = 'hidden';
-        return;
-    }
-    var type = getAttribute(point, "vehicleType");
+    //var point = event.rangeParent;
+    var type = point.getAttributeNS(_smartcityNamespace, "vehicleType");
 
-    if (type !== "car" && type !== "racecar" && type !== "drone" && type !== "robot") { return; }
-    var pointID = getAttribute(point, "pointID");
-    var mapID = getAttribute(point, "mapID")
-
-    if (mapID === "3") {
-        let tileType = getAttribute(point, "tileType");
-        if (tileType !== "10" && tileType !== "11" && tileType !== "8" && tileType !== "9") {
-            return;
-        }
-    }
-
+    if (type !== "car" && type !== "drone" && type !== "robot") { return; }
+    var pointID = point.getAttributeNS(_smartcityNamespace, "pointID");
+    var mapID = point.getAttributeNS(_smartcityNamespace, "mapID");
 
     if (!pointA) {
         pointA = point;
         pointAset = true;
-        document.getElementById("del_type").value = type;
         document.getElementById("inputA").value = pointID;
         document.getElementById("mapA").value = mapID;
-        console.log("(A) Point " + pointID + " of map " + mapID + " selected");
-        showMessage("(A) Point " + pointID + " of map " + mapID + " selected" )
     } else if (!pointB) {
         pointB = point;
         pointBset = true;
-        document.getElementById("del_type").value = type;
         document.getElementById("inputB").value = pointID;
         document.getElementById("mapB").value = mapID;
         document.getElementById('saveDelivery').style.visibility = 'visible';
-        console.log("(B) Point " + pointID + " of map " + mapID + " selected" );
-        showMessage("(B) Point " + pointID + " of map " + mapID + " selected" );
     } else {
         pointA = null;
         pointAset = false;
         pointB = null;
         pointBset = false;
-        document.getElementById("del_type").value = null;
         document.getElementById("inputA").value = null;
         document.getElementById("mapA").value = null;
         document.getElementById("inputB").value = null;
@@ -722,71 +728,6 @@ function zoomOut() {
     visualisationCore.zoomOut();
 }
 
-function findPointByPointNameAndMapID(name, mapId) {
-    if (mapId === world.drone.mapId) {
-        let obj = world.drone.points.find((dronePoint) => { return dronePoint.pointName === name; });
-        obj.mapId = mapId;
-        return obj;
-    }
-    if (mapId === world.racecar.mapId) {
-        let obj = world.racecar.points.find((carPoint) => { return carPoint.pointName === name; });
-        obj.mapId = mapId;
-        return obj;
-    }
-    if (mapId === world.robot.mapId) {
-        let obj = world.robot.tiles.find((robotPoint) => { return robotPoint.pointName === name; });
-        obj.mapId = mapId;
-        return obj;
-    }
-    console.error("Unable to find point: " + name + "from map: " + mapId);
-}
-
-function getTypeOfPoint(point) {
-    if (typeof point.mapId !== 'undefined') {
-        if (point.mapId === world.drone.mapId) {
-            return "drone"
-        }
-        if (point.mapId === world.racecar.mapId) {
-            return "car"
-        }
-        if (point.mapId === world.robot.mapId) {
-            return "robot"
-        }
-    } else if (typeof point.id !== 'undefined' && typeof point.id !== 'Number') {
-        if (point.id.includes("drone")) {
-            return "drone"
-        }
-        if (point.id.includes("car")) {
-            return "car"
-        }
-        if (point.id.includes("robot")) {
-            return "robot"
-        }
-    }
-    console.error("Unable to find point");
-}
-
-function findSVGById(id) {
-    var obj = SVG.find("#"+id)[0];
-    if (!obj) {
-        console.error("No SVG found with id: " + id);
-        return null;
-    }
-    return obj;
-}
-
-
-function getAttribute(obj, attr) {
-    if (!obj.node) {
-        console.warn("WARNING: obj is of wrong type. Trying to solve the problem ... ");
-        if (!obj || !obj.getAttributeNS(_smartcityNamespace, attr)) { console.error("ERROR: Unable to find attribute or object") }
-        return obj.getAttributeNS(_smartcityNamespace, attr);
-    }
-    return obj.node.getAttributeNS(_smartcityNamespace, attr);
-}
-
-
-
 /**
  * Handles mousemove event on the map
  * @param {} event
@@ -805,59 +746,6 @@ function _mapOnMouseMoveHandler(event){
  */
 function _mapOnMouseUpHandler(event){
     _elementMouseUpHandler(event);
-}
-
-/**
- * Shows a loading animation when data is loaded.
- * When all information is tranferred to the html page, the functional elements are shown while to loading animation
- * is hidden.
- */
-function showPage() {
-    if(map_ready === false) {
-        if(only_view === false)
-        {
-            // Hide the devices,labels,... and show them when the that og the map is loaded.
-            document.getElementById("content").style.visibility = "hidden";
-            document.getElementById("passengersLabel").style.visibility = "hidden";
-            document.getElementById("passengersSelect").style.visibility = "hidden";
-        }else
-        {
-            if(visualization === false) {
-                document.getElementById("content").style.visibility = "hidden";
-                document.getElementById("passengersLabel").style.visibility = "hidden";
-                document.getElementById("passengersNumber").style.visibility = "hidden";
-                document.getElementById("pointALabel").style.visibility = "hidden";
-                document.getElementById("pointAtext").style.visibility = "hidden";
-                document.getElementById("pointBLabel").style.visibility = "hidden";
-                document.getElementById("pointBtext").style.visibility = "hidden";
-                document.getElementById("deliveryIDLabel").style.visibility = "hidden";
-                document.getElementById("deliveryID").style.visibility = "hidden";
-                document.getElementById("deliveryDone").style.visibility = "hidden";
-
-            }else
-            {
-                //document.getElementById("table_deliveries").style.visibility = "hidden";
-            }
-        }
-    }else
-    {
-        if(only_view === false)
-        {
-            document.getElementById("content").style.visibility = "visible";
-        }else
-        if(visualization === false) {
-            document.getElementById("content").style.visibility = "visible";
-            document.getElementById("pointALabel").style.visibility = "visible";
-            document.getElementById("pointAtext").style.visibility = "visible";
-            document.getElementById("pointBLabel").style.visibility = "visible";
-            document.getElementById("pointBtext").style.visibility = "visible";
-            document.getElementById("deliveryIDLabel").style.visibility = "visible";
-            document.getElementById("deliveryID").style.visibility = "visible";
-        }else
-        {
-            document.getElementById("table_deliveries").style.visibility = "visible";
-        }
-    }
 }
 
 

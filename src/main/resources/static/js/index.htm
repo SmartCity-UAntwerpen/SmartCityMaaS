@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG.js</title>
+  <meta charset="UTF-8">
+  <script src="svg.js"></script>
+  <script src="mapbuilder_link_extension.js" type="module"></script>
+  <script src="mapbuilder_robot_extension.js" type="module"></script>
+  <script src="visualisationCore.js"></script>
+  <script src="figures.js"></script>
+  <script src="mapbuilder.js" type="module"></script>
+  
+  <style>
+    body {
+      margin: 40px;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-template-columns: 200px 1300px 200px;
+      grid-gap: 10px;
+    }
+
+    .box {
+      color: black;
+      border-radius: 5px;
+      padding: 20px;
+      /*font-size: 150%;*/
+    }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="box a" id="library"><h4>Library</h4></div>
+  <div class="box b" id="map"><h4>Map</h4></div>
+  <div class="box c" id="properties">
+    <h4>Properties</h4>
+    <label for="name">Name</label>
+    <input type="text" id="name" disabled="true">
+    <button type="button" onclick="_deleteElement(null)" id="deleteBtn">Delete</button>
+  </div>
+  <svg>
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
+        markerWidth="3" markerHeight="3"
+        orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" />
+      </marker>
+    </defs>
+  </svg>
+</div>
+</body>
+</html>

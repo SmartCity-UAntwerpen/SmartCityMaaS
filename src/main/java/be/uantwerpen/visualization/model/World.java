@@ -33,6 +33,10 @@ public class World {
     private int unitWorld;
     private int unitMap;
     private List<CellLink> cellLinks;
+    public List<Link> links;
+    public List<Link> droneLinks;
+    public List<Link> carLinks;
+
     // Defines the diameter of cells around a location point.
     private int surround_layer = 1;
 
@@ -63,152 +67,119 @@ public class World {
     }
 
 
-    /**
-     * Returns current point on the world of a vehicle that is specified in the job together with its start
-     * and end point.
-     * The progress is used to determine its and distance on the link between these two points.
-     * @return
-     */
-
-    public int[] getDistancePoints(List<Integer> endPoints, int progress, String type, int mapId)
-    {
-        return getDistance(mapId, endPoints.get(0),endPoints.get(1),(double)(progress)/100.0, type);
-    }
-
-    public int[] getDistance(int mapId, int startID, int endID, double progress, String type){
-        int startX = 0;
-        int startY = 0;
-
-        int endX = 0;
-        int endY = 0;
+    public int[] getDistance(int mapId, int startX, int startY, int endX, int endY, int startID, int endID, double progress){
 
         boolean beginYaxis = true; //start in Y direction
-
-        logger.info("start ID = " + startID + " end ID = " + endID + " progress = "  + progress);
-        for(int i = 0; i < points.size(); i++){
-            if(points.get(i).getMapId() == mapId) {
-                if (points.get(i).getPointName() == startID) {
-                    startX = points.get(i).getPhysicalPoisionX();
-                    startY = points.get(i).getPhysicalPoisionY();
-                }
-                if (points.get(i).getPointName() == endID) {
-                    endX = points.get(i).getPhysicalPoisionX();
-                    endY = points.get(i).getPhysicalPoisionY();
-
-                }
-            }
-
-            if( startX != 0 && endX != 0 ) break;
-
-        }
-        //logger.info(" Points on map Start: x = "+startX + " y " + startY + " End: x = " + endX + " y = " + endY );
 
         int[] coordinates = new int[2];
         int distX = (endX - startX);
         int distY = (endY - startY);
 
-        switch (type) {
-            case "robot":
-                //90 graden
-                if(startX != endX || startY != endY) {
-                    // control corner direction: path starts from ID = 0 in x-direction
-                    if(startID < endID) {
-                        beginYaxis = false;
-                    }
-                    // procentual length of X and Y line
-                    double totalDist = Math.abs(distX) + Math.abs(distY);
-                    double Xprog = Math.abs(distX) / totalDist;
-                    double Yprog = Math.abs(distY)/totalDist;
+        switch (mapId) {
+            case 1: //RACECAR
+                if (startID < endID && (startID + 1) < endID) {
+                    Tile inter = searchForIntermediatePoint(mapId, startID, endID);
+                    if (inter != null) {
+                        if (progress >= 0.5) {
+                            if (inter.y < startY) {
+                                coordinates[0] = (int)(inter.x + ((endX - inter.x) * progress));
+                                coordinates[1] = (int)(inter.y - ((endY - inter.y) * progress));
+                            } else {
+                                coordinates[0] = (int)(inter.x + ((endX - inter.x) * progress));
+                                coordinates[1] = (int)(inter.y + ((endY - inter.y) * progress));
+                            }
+                        } else {
+                            if (inter.y < startY) {
+                                coordinates[0] = (int)(startX + ((inter.x - startX) * progress));
+                                coordinates[1] = (int)(startY - ((inter.y - startY) * progress));
+                            } else {
+                                coordinates[0] = (int)(startX + ((inter.x - startX) * progress));
+                                coordinates[1] = (int)(startY + ((inter.y - startY) * progress));
+                            }
 
-                    if(distX != 0 && distY != 0) { // if corner
-                        if (beginYaxis) { // start in Y direction
-                            if(progress <= Yprog){
-                                coordinates[0] = startX;
-                                coordinates[1] = (int) (startY + (distY * progress * 1/Yprog));
-                            } else {
-                                coordinates[0] = (int) (endX - (distX * (1 - progress) * 1/Xprog));
-                                coordinates[1] = endY;
-                            }
-                        } else { // start in X direction
-                            if(progress <= Xprog){
-                                coordinates[0] = (int) (startX + (distX * progress * 1/Xprog));
-                                coordinates[1] = startY;
-                            } else {
-                                coordinates[0] = endX;
-                                coordinates[1] = (int) (endY - (distY * (1 - progress) * 1/Yprog));
-                            }
+
                         }
-                    } else {
-                        coordinates[0] = (int) (startX + (distX * progress));
-                        coordinates[1] = (int) (startY + (distY * progress));
                     }
-                }
-                break;
-            case "car":
-                // curve with 2 points
-                float distXpiece = (float) distX/8;
-                float distYpiece = (float) distY/8;
-                double pointX;
-                double pointY;
-                // LENGTH OF SEPERATE LINE PIECES (Pythagoras):
-                double line1 =  Math.sqrt(Math.pow(Math.abs(5*distXpiece), 2) +  Math.pow(Math.abs(distYpiece),2));
-                double line2 =  Math.sqrt(Math.pow(Math.abs(2*distXpiece), 2) +  Math.pow(Math.abs(2*distYpiece),2));
-                double line3 =  Math.sqrt(Math.pow(Math.abs(distXpiece), 2) +  Math.pow(Math.abs(5*distYpiece),2));
-                // HOW MUCH PERCENT OF TOTAL LINE IS THIS LINE:
-                double totalLine = line1 + line2 + line3;
-                double line1prog = line1/totalLine;
-                double line2prog = line2/totalLine;
-                double line3prog = line3/totalLine;
+                    else {
+                        coordinates[0] = (int)(startX + (distX * progress));
+                        coordinates[1] = (int)(startY + (distY * progress));
+                    }
+                } else if (startID > endID && (endID + 1) < startID) {
+                    Tile inter = searchForIntermediatePoint(mapId, startID, endID);
+                    if (inter != null) {
+                        if (progress >= 0.5) {
+                            if (inter.x < startY) {
+                                coordinates[0] = (int)(inter.x - ((endX - inter.x) * progress));
+                                coordinates[1] = (int)(inter.y + ((endY - inter.y) * progress));
+                            } else {
+                                coordinates[0] = (int)(inter.x + ((endX - inter.x) * progress));
+                                coordinates[1] = (int)(inter.y + ((endY - inter.y) * progress));
+                            }
+                        } else {
+                            if (inter.x < startY) {
+                                coordinates[0] = (int)(startX - ((inter.x - startX) * progress));
+                                coordinates[1] = (int)(startY + ((inter.y - startY) * progress));
+                            } else {
+                                coordinates[0] = (int)(startX + ((inter.x - startX) * progress));
+                                coordinates[1] = (int)(startY + ((inter.y - startY) * progress));
+                            }
 
-                if(startID < endID) { // neighbour to the right (map is going to draw from 1st ID to last)
-                    if (progress < line1prog) {
-                        //progress = progress * (1 / 0.625); // change progress to between start and first kink: 0-0.625 TO 0-100
-                        progress = progress * (1/line1prog);
-                        pointX = 5 * distXpiece; // 5/8
-                        pointY = distYpiece; // 1/8
-                    } else if (progress < (line1prog+line2prog)) {
-                        startX = (int) (startX + (5 * distXpiece));
-                        startY = (int) (startY + distYpiece);
-                        progress = (progress-line1prog)*(1/line2prog); // change progress to between the two kinks: 0.625-0.875 TO 0-100
-                        pointX = (2 * distXpiece); // 7/8
-                        pointY = (2 * distYpiece); // 3/8
-                    } else {
-                        startX = (int)(startX + (7 * distXpiece));
-                        startY = (int)(startY + (3 * distYpiece));
-                        progress = (progress-(line1prog+line2prog))*(1/line3prog);
-                        pointX = distXpiece; // 8/8
-                        pointY = (5 * distYpiece); // 8/8
+
+                        }
+                    }
+                    else {
+                        coordinates[0] = (int)(startX + (distX * progress));
+                        coordinates[1] = (int)(startY + (distY * progress));
                     }
                 } else {
-                    if (progress < line3prog) {
-                        progress = progress  * (1/line3prog);
-                        pointX = (distXpiece);
-                        pointY = (5 * distYpiece);
-                    } else if (progress < (line3prog+line2prog)) {
-                        startX = (int)(startX + distXpiece);
-                        startY = (int)(startY + (5*distYpiece));
-                        progress = (progress-line3prog)*(1/line2prog);
-                        pointX = (2 * distXpiece);
-                        pointY = (2 * distYpiece);
-                    } else {
-                        startX = (int)(startX + (3 * distXpiece));
-                        startY = (int)(startY + (7 * distYpiece));
-                        progress = (progress-(line3prog+line2prog))*(1/line1prog);
-                        pointX = 5 * distXpiece; // 8/8
-                        pointY = distYpiece; // 8/8
-                    }
+                    coordinates[0] = (int)(startX + (distX * progress));
+                    coordinates[1] = (int)(startY + (distY * progress));
                 }
-                coordinates[0] = (int)(startX + (pointX * progress));
-                coordinates[1] = (int)(startY + (pointY * progress));
                 break;
-
-            default: //DRONE
+            default:
                 coordinates[0] = (int)(startX + (distX * progress));
                 coordinates[1] = (int)(startY + (distY * progress));
                 break;
         }
-        //logger.info(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
+
+        logger.info(" Progress Distance = x " +  coordinates[0] + " y = " + coordinates[1]);
+
         return coordinates;
+    }
+
+    public Tile searchForIntermediatePoint(int mapId, int startID, int endID){
+
+        ArrayList<Tile> tempPoints = new ArrayList<>();
+        switch (mapId) {
+            case 1: //RACECAR
+                Tile intermediateStart = new Tile();
+                Tile intermediateEnd = new Tile();
+                boolean startFound = false;
+                boolean endFound = false;
+                for (int i = 0; i < carLinks.size(); i++) {
+                    Link link = carLinks.get(i);
+                    if (Integer.parseInt(link.destination.pointName) == endID || Integer.parseInt(link.destination.pointName) == startID || Integer.parseInt(link.start.pointName) == startID || Integer.parseInt(link.start.pointName) == endID) {
+                        if (Integer.parseInt(link.destination.pointName) == endID || Integer.parseInt(link.destination.pointName) == startID) {
+                            tempPoints.add(link.start);
+                        } else {
+                            tempPoints.add(link.destination);
+                        }
+                    }
+                    }
+                if (tempPoints.size() > 1) {
+                    if (tempPoints.get(0).pointName.equals(tempPoints.get(1).pointName)) {
+                        if (tempPoints.get(0).id == null) {
+                            return tempPoints.get(1);
+                        } else {
+                            return tempPoints.get(0);
+                        }
+                    }
+                }
+
+                break;
+
+        }
+        return null;
     }
 
 

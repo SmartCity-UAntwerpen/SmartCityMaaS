@@ -41,7 +41,7 @@ public class OrderService {
         basePathToBackbone = "http://" + coreIp + ":" + corePort + "/deliveries/";
     }
 
-    public Iterable<Order> findAll() {
+    /*public Iterable<Order> findAll() {
         String path = basePathToBackbone + "getall";
         try {
             ResponseEntity<List<DBDelivery>> response = restTemplate.exchange(
@@ -67,6 +67,10 @@ public class OrderService {
             e.printStackTrace();
             return null;
         }
+    }*/
+
+    public Iterable<DBOrder> getAll() {
+        return repository.findAll();
     }
 
     public APIResponse save(final DBDelivery delivery) {
@@ -89,7 +93,7 @@ public class OrderService {
             }
             return res;
         } catch (RestClientException e) {
-            logger.warn("Error while saving job " + delivery.getId());
+            logger.warn("Error while saving job " + delivery.getOrderID());
             logger.debug(e);
             return null;
         }
@@ -100,9 +104,10 @@ public class OrderService {
         return order.getId();
     }
 
-    public Long createNewOrderWithDescription(String description) {
+    public Long createNewOrderWithDescription(String description, String type) {
         DBOrder tempOrder = new DBOrder();
         tempOrder.description = description;
+        tempOrder.type = type;
         DBOrder order = repository.save(tempOrder);
         return order.getId();
     }

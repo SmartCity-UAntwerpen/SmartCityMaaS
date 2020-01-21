@@ -8,6 +8,8 @@
     <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Open+Sans:600'/>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
+
     <link href="/css/default.css" rel="stylesheet" />
     <link href="/css/cards.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
@@ -22,7 +24,7 @@
         <div th:replace="layout :: side-menu"></div>
 
         <div class="main_container col-md-10 col-sm-11 display-table-cell valign-top padding-bottom">
-            <div th:replace="layout :: header('Visualisation')"></div>
+            <div th:replace="layout :: header3('Visualisation')"></div>
             <!-- In deze "div" komt de inhoud van de webapplicatie waar alle "actie" zich bevindt -->
             <div class="inside-con">
 
@@ -32,9 +34,23 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12 content" id="content" ><!--style="width:100%">-->
-                        <div id="myMapCanvas" >
+                        <!--div id="myMapCanvas" >
                             <canvas id="mapCanvas"></canvas>
+                        </div-->
+                        <!--div class="box a" id="library"><h4>Library</h4></div-->
+                        <div class="box b" id="map">
+                            <div class="zoom-button-container">
+                                <button class="btn-small white" type="button" onclick="zoomIn()" id="zoomInBtn"><i class="fas fa-plus grey-text text-darken-2"></i></button>
+                                <button class="btn-small white" type="button" onclick="zoomOut()" id="zoomOutBtn"><i class="fas fa-minus grey-text text-darken-2"></i></button>
+                            </div>
                         </div>
+                        <!--div class="box c" id="properties">
+                            <h4>Properties</h4>
+                            <label for="name">Name</label>
+                            <input type="text" id="name" disabled="true"/>
+                            <button type="button" onclick="_deleteElement(null)" id="deleteBtn">Delete</button>
+                        </div-->
+
                     </div>
                 </div>
 
@@ -42,7 +58,7 @@
                     <div class="scrollingtable">
                         <div>
                             <div>
-                                <table class="table table-hover" id = "table_deliveries">
+                                <!--table class="table table-hover" id = "table_deliveries">
                                     <thead>
                                     <tr class="bg-primary">
                                         <th><span th:label="#{idVehicle}">Backbone ID</span></th>
@@ -54,25 +70,43 @@
                                         <th><span th:text="#{show}">SHOW</span></th>
                                     </tr>
                                     </thead>
-                                    <!-- IMPORTANT, class="list" have to be at tbody -->
                                     <tbody class="list" >
-                                    <div th:each="delivery : ${deliveries}">
-                                        <tr th:id="${delivery.orderID }">
-                                            <td class="idVehicle" th:value="${idVehicle}" th:text="${delivery.orderID }">Delivery ID</td>
-                                            <td class="lastName" th:value="${username}" th:text="${delivery.username }">User Name</td>
-                                            <td class="pointName" th:value="${mapA}" th:text="${delivery.mapA }">Map A</td>
-                                            <td class="pointName" th:value="${pointA}" th:text="${delivery.pointA }">Point A</td>
-                                            <td class="pointName" th:value="${mapB}" th:text="${delivery.mapB }">Map B</td>
-                                            <td class="pointName" th:value="${pointB}" th:text="${delivery.pointB }">Point B</td>
-                                            <td><button class="button track" data-toggle="collapse" th:attr="data-target='#'+${delivery.orderID}+'-jobs'" th:text="#{show}" th:onclick="'javascript:trackDelivery(\'' + ${delivery.orderID} + '\');'">Track</button></td>
+                                    <div th:each="order : ${orders}">
+                                        <tr th:id="${order.id}">
+                                            <td class="idVehicle" th:value="${idVehicle}" th:text="${order.id}">Delivery ID</td>
+                                            <td class="lastName" th:value="${username}" th:text="${order.userName }">User Name</td>
+                                            <td class="pointName" th:value="${pointA}" th:text="${order.pointA }">Point A</td>
+                                            <td class="pointName" th:value="${mapB}" th:text="${order.mapB }">Map B</td>
+                                            <td class="pointName" th:value="${pointB}" th:text="${order.pointB }">Point B</td>
+                                            <td><button class="btn-small light-blue darken-4" data-toggle="collapse" th:attr="data-target='#'+${order.id}+'-jobs'" th:text="#{show}" th:onclick="'javascript:trackDelivery(\'' + ${order.id} + '\');'">Track</button></td>
                                         </tr>
-                                        <tr th:id="${delivery.orderID} + '-jobs'" class="collapse">
+                                        <tr th:id="${order.id} + '-jobs'" class="collapse">
                                             <td>Jobs:</td>
                                             <td class="deliveryJobs"></td>
                                         </tr>
                                     </div>
                                     </tbody>
-                                </table>
+                                </table-->
+
+
+                                <ul class="collapsible">
+                                    <li th:each="order : ${orders}">
+                                        <div th:id="${order.id}" class="collapsible-header" th:attr="data-target='#'+${order.id}+'-jobs'" th:onclick="'javascript:trackDelivery(\'' + ${order.id} + '\');'">
+                                            <i th:class="${order.type}"> </i>
+                                            <span th:text="${order.description}">Description</span>
+                                            <span class="new badge blue" data-badge-caption="" th:text="${order.id}">0</span></div>
+                                        <div class="collapsible-body">
+                                            <ul th:id="${order.id} + '-jobs'">
+                                                <li><span th:text="${order.getDateString()}">date</span></li>
+                                                <li><p></p></li>
+                                                <li>Jobs:</li>
+                                                <li class="deliveryJobs"></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
                             </div>
                         </div>
                     </div>
@@ -83,16 +117,31 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    var hideMapBuilder = true;
+</script>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="/js/tabs.js"></script>
+<script src="/js/svg.js"></script>
+<script src="/js/visualisationCore.js"></script>
+<script src="/js/figures.js"></script>
 
 <script th:inline="javascript">
     var only_view = true;
     var visualization = true;
+    $(document).ready(function(){
+        $('.collapsible').collapsible();
+    });
 </script>
 <script  src="/js/map.js"></script>
+<script src="https://kit.fontawesome.com/ecdecbd5a1.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
 </body>
 </html>
 

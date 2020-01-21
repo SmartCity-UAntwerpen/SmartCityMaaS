@@ -363,3 +363,17 @@ div.scrollable {
 .scrollingtable > div > div > table > tbody:last-of-type > tr:last-child > * {border-bottom: none;}
 .scrollingtable > div > div > table > tbody > tr:nth-child(even) {background: gainsboro;} /*alternate row color*/
 .scrollingtable > div > div > table > tbody > tr > * + * {border-left: 1px solid black;} /*borders between body cells*/
+
+
+.wrapper {
+	display: grid;
+	grid-template-columns: 200px 900px 200px;
+	grid-gap: 10px;
+}
+
+.box {
+	color: black;
+	border-radius: 5px;
+	padding: 20px;
+	/*font-size: 150%;*/
+}

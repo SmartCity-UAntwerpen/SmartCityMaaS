@@ -1,9 +1,6 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.model.APIResponse;
-import be.uantwerpen.model.DBDelivery;
-import be.uantwerpen.model.Order;
-import be.uantwerpen.model.User;
+import be.uantwerpen.model.*;
 import be.uantwerpen.services.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -48,18 +45,20 @@ public class OrderController {
 //    @Autowired
 //    private MongoService mongoService;
 
+
+
     /**
      * Return page with all the deliveries save in the mongoDB database.
      *
      * @param model
      * @return
      */
-    @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
-    public String viewDeliveries(final ModelMap model) {
-        logger.info(userService.getPrincipalUser() + " requested /deliveries");
-       // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
-        Iterable<Order> deliveries = orderService.findAll();
-        model.addAttribute("allDeliveries", deliveries);
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    public String fetchOrders(final ModelMap model) {
+        logger.info(userService.getPrincipalUser() + " requested /orders");
+        // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
+        Iterable<DBOrder> orders = orderService.getAll();
+        model.addAttribute("allOrders", orders);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         return "delivery-list";
@@ -113,7 +112,6 @@ public class OrderController {
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage2";
         }
-        delivery.setType("HumanTransport");
 
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
@@ -124,7 +122,7 @@ public class OrderController {
             - send delivery to backend (returns success boolean in JSON object)
          */
 
-        Long orderID = orderService.createNewOrderWithDescription(delivery.getDescription());
+        Long orderID = orderService.createNewOrderWithDescription(delivery.getDescription(), delivery.getType());
         delivery.setOrderID(orderID);
         delivery.setDate(new Date().toString());
         /* **************************************************/
@@ -177,7 +175,8 @@ public class OrderController {
             // DEPRECATED
             //List<DummyVehicle> vehicles = getAllSimData();
             //model.addAttribute("vehiclesInfo", vehicles);
-            model.addAttribute("deliveries", orderService.findAll());
+            Iterable<DBOrder> orders = orderService.getAll();
+            model.addAttribute("orders", orders);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             logger.error(e);
