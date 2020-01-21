@@ -1,7 +1,6 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.model.Delivery;
-import be.uantwerpen.model.User;
+import be.uantwerpen.model.*;
 import be.uantwerpen.services.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -15,14 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * This controller handles the user specific request mappings.
  */
 
 @Controller
-public class DeliveryController {
-    private static final Logger logger = LogManager.getLogger(DeliveryController.class);
+public class OrderController {
+    private static final Logger logger = LogManager.getLogger(OrderController.class);
 
     @Value("${core.ip:localhost}")
     private String serverCoreIP;
@@ -33,7 +33,7 @@ public class DeliveryController {
     @Autowired
     private UserService userService;
     @Autowired
-    private DeliveryService deliveryService;
+    private OrderService orderService;
     @Autowired
     private PassengerService passengerService;
     @Autowired
@@ -45,18 +45,20 @@ public class DeliveryController {
 //    @Autowired
 //    private MongoService mongoService;
 
+
+
     /**
      * Return page with all the deliveries save in the mongoDB database.
      *
      * @param model
      * @return
      */
-    @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
-    public String viewDeliveries(final ModelMap model) {
-        logger.info(userService.getPrincipalUser() + " requested /deliveries");
-       // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
-        Iterable<Delivery> deliveries = deliveryService.findAll();
-        model.addAttribute("allDeliveries", deliveries);
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    public String fetchOrders(final ModelMap model) {
+        logger.info(userService.getPrincipalUser() + " requested /orders");
+        // Iterable<Delivery> deliveries = mongoService.getAllDeliveries(); // TO BACKBONE
+        Iterable<DBOrder> orders = orderService.getAll();
+        model.addAttribute("allOrders", orders);
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
         return "delivery-list";
@@ -70,7 +72,7 @@ public class DeliveryController {
      */
     @RequestMapping(value = "/deliveries/put", method = RequestMethod.GET)
     public String viewCreateDelivery(final ModelMap model) {
-        Delivery del = new Delivery();
+        DBDelivery del = new DBDelivery();
         model.addAttribute("delivery", del);
         model.addAttribute("allPassengers", passengerService.findAll());
 
@@ -88,13 +90,13 @@ public class DeliveryController {
      */
     @RequestMapping(value = "/deliveries/{idDelivery}/delete", method = RequestMethod.GET)
     public String deleteDelivery(@PathVariable long idDelivery) {
-        deliveryService.delete(idDelivery);
+        orderService.delete(idDelivery);
         logger.info(userService.getPrincipalUser() + " deleted delivery " + idDelivery);
         return "redirect:/deliveries";
     }
 
     /**
-     * Add a delivery to deliveries in the mongoDB database.
+     * Add a delivery
      *
      * @param delivery
      * @param result
@@ -102,7 +104,7 @@ public class DeliveryController {
      * @return
      */
     @RequestMapping(value = {"/deliveries/", "/deliveries/{id}"}, method = RequestMethod.POST)
-    public String addDelivery(@Valid Delivery delivery, BindingResult result, final ModelMap model) {
+    public String addDelivery(@Valid DBDelivery delivery, BindingResult result, final ModelMap model) {
         logger.info(result.getModel());
         logger.info("Delivery: point A " + delivery.getPointA() + " map " + delivery.getMapA() + ", point B " + delivery.getPointB() + " map " + delivery.getMapB());
 
@@ -110,22 +112,40 @@ public class DeliveryController {
             model.addAttribute("allPassengers", passengerService.findAll());
             return "delivery-manage2";
         }
-        delivery.setType("HumanTransport");
 
         User loginUser = userService.getPrincipalUser();
         model.addAttribute("currentUser", loginUser);
 
+        /* **************************************************
+           TODO:
+            - save order to database (returns success boolean)
+            - send delivery to backend (returns success boolean in JSON object)
+         */
+
+        Long orderID = orderService.createNewOrderWithDescription(delivery.getDescription(), delivery.getType());
+        delivery.setOrderID(orderID);
+        delivery.setDate(new Date().toString());
+        /* **************************************************/
+
         try {
-            int backboneId = backboneService.planPath(Integer.parseInt(delivery.getPointA()), delivery.getMapA(), Integer.parseInt(delivery.getPointB()), delivery.getMapB());
-            delivery.setBackboneID(backboneId);
-            delivery =  deliveryService.save(delivery);
-            if (delivery == null)
-                return "delivery-manage-user";
+            APIResponse res = orderService.save(delivery);
+            //delivery =  deliveryService.save(delivery);
+            if (!res.success) {
+                if (res.message == null || res.message.equals("")) {
+                    throw new Exception("Something went wrong at the backbone");
+                } else {
+                    throw new Exception(res.message);
+                }
+                //return "delivery-manage-user";
+            }
             logger.info("Job has been created by " + loginUser);
 
             model.addAttribute("delivery", delivery);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            DBDelivery del = new DBDelivery();
+            model.addAttribute("delivery", del);
+            model.addAttribute("currentUser", loginUser);
             return "delivery-manage-user";
         }
 
@@ -155,7 +175,8 @@ public class DeliveryController {
             // DEPRECATED
             //List<DummyVehicle> vehicles = getAllSimData();
             //model.addAttribute("vehiclesInfo", vehicles);
-            model.addAttribute("deliveries", deliveryService.findAll());
+            Iterable<DBOrder> orders = orderService.getAll();
+            model.addAttribute("orders", orders);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             logger.error(e);

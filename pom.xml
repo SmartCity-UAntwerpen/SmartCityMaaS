@@ -153,6 +153,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>biz.paluch.logging</groupId>
+            <artifactId>logstash-gelf</artifactId>
+            <version>1.11.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -202,13 +208,13 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                    <execution>
+                    <!--execution>
                         <id>test-compile</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
-                    </execution>
+                    </execution-->
                 </executions>
                 <configuration>
                     <jvmTarget>1.8</jvmTarget>
@@ -226,13 +232,13 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                    <execution>
+                    <!--execution>
                         <id>testCompile</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
-                    </execution>
+                    </execution-->
                 </executions>
                 <inherited>true</inherited>
                 <configuration>

@@ -1,6 +1,6 @@
 package be.uantwerpen.controller;
 
-import be.uantwerpen.model.Delivery;
+import be.uantwerpen.model.DBDelivery;
 import be.uantwerpen.model.User;
 import be.uantwerpen.services.*;
 import org.junit.Before;
@@ -20,10 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DeliveryControllerTest {
+public class OrderControllerTest {
 
     @InjectMocks
-    private DeliveryController deliveryController;
+    private OrderController orderController;
     @Mock
     private UserService userService;
     @Mock
@@ -43,16 +43,14 @@ public class DeliveryControllerTest {
         loginUser.setUserName("TestAdmin");
         when(userService.getPrincipalUser()).thenReturn(loginUser);
 
-        Delivery delivery = new Delivery();
-        delivery.setFirstname("test");
-        delivery.setLastname("Mock");
-        delivery.setPointA("1");
-        delivery.setPointB("2");
+        DBDelivery delivery = new DBDelivery();
+        delivery.setPointA(1);
+        delivery.setPointB(2);
         delivery.setMapA(1);
         delivery.setMapB(2);
       //  when(mongoService.getLastDelivery()).thenReturn(delivery);
 
-        mvc = MockMvcBuilders.standaloneSetup(deliveryController).build();
+        mvc = MockMvcBuilders.standaloneSetup(orderController).build();
     }
 
     @Test

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -46,12 +47,12 @@ public class BackendRestTemplate {
      * @return A list of dummy points
      */
     @SuppressWarnings("unchecked")
-    public List<DummyPoint> getDataBackend() {
+    public JSONObject getDataBackend() {
         logger.info("Retrieve info from core.");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://" + serverCoreIP + ":" + serverCorePort + "/map/stringmapjson/visual");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://" + serverCoreIP + ":" + serverCorePort + "/map/getmap");
         logger.info("Builder from: " + builder.build().encode().toUri());
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
@@ -64,6 +65,7 @@ public class BackendRestTemplate {
                 String.class);
         logger.info("Response core: " + httpResponse.getBody());
         logger.info("Response body core: " + httpResponse.hasBody());
+        String listofCore;
         String listOfCore = httpResponse.getBody();
 
         JSONParser parser = new JSONParser();
@@ -75,13 +77,15 @@ public class BackendRestTemplate {
 
         try {
             ////// TEST - 2018
-            //obj = parser.parse(new FileReader("testdata/stringmapjsonNEW.txt"));
+            //obj = parser.parse(new FileReader("testdata/map_volledig.json"));
             /////
             obj = parser.parse(listOfCore);
             /////
             JSONObject jsonObject = (JSONObject) obj;
+            return jsonObject;
 
-            JSONArray maplist = (JSONArray) jsonObject.get("maplist");
+            /*
+
             Iterator<JSONObject> mapIterator = maplist.iterator();
             while (mapIterator.hasNext()) {
                 mapListObject = mapIterator.next();
@@ -117,11 +121,17 @@ public class BackendRestTemplate {
                     }
                     points.add(point);
                 }
-            }
+            }*/
         } catch (ParseException e) { //IOException
             e.printStackTrace();
         }
 
-        return points;
+        return null;
+    }
+
+
+    public boolean placeOrder() {
+
+        return true;
     }
 }
